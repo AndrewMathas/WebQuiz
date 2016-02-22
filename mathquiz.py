@@ -1,6 +1,6 @@
-#!/usr/bin/python
 """  MathQuiz.py | 2001-03-21     | Don Taylor
                    2004 Version 3 | Andrew Mathas
+		   2010 minor hacking by Bob Howlett
 
      Convert an XML quiz description file to an HTML file
      using CSS and JavaScript.
@@ -14,7 +14,7 @@
      tags coming from the tex4ht conversion.
 """
 
-VERSION   = 'MathQuiz 4.3'
+VERSION   = 'MathQuiz 4.4'
 
 # -----------------------------------------------------
 import sys, os, mathquizXml
@@ -33,7 +33,7 @@ alphabet = " abcdefghijklmnopqrstuvwxyz"
 TIMED = 0
 if TIMED:
   import time
- 
+
 def main():
 
   dispatch = {
@@ -83,7 +83,7 @@ def text(doc):
 
 
 # -----------------------------------------------------
-#  Visitor classes 
+#  Visitor classes
 # -----------------------------------------------------
 # A visitor class must define the following interface
 #
@@ -155,11 +155,6 @@ class TeXWriter(mathquizXml.nodeVisitor):
 # -----------------------------------------------------
 # Conversion routines: XML to DHTML
 # -----------------------------------------------------
-NoScript = """If you are reading this message either your
-  browser does not support JavaScript or else JavaScript
-  is not enabled.  You will need to enable JavaScript and
-  then reload this page before you can use this quiz."""
-
 CSStop = """<style type="text/css">
 <!--
     span.nav { font-size: 90%; color: #999999 }
@@ -168,34 +163,44 @@ CSStop = """<style type="text/css">
     th a:visited.tha { color: #ffffcc;}
     div.footer a:hover.global { text-decoration: underline;}
     td a:hover.global { text-decoration: underline;}
-
     #quiz tr { vertical-align: top; }
-
-    #copy {
-	font-family: sans-serif, verdana, helvetica;
-	font-size: 60%; 
+    #menu table.controls { font-size:120%;}
+    #menu table.controls td.header{ color:#ce1126; padding:10px 0px 7px 0px; font-weight:bold;}
+    #menu table.controls td{padding:0px 0px 2px 20px;}
+    #menu li.discussion{margin-left:20px;}
+   #copy {
+    font-family: sans-serif, verdana, helvetica;
+    font-size:110%;
+    width: 100%;
+    padding:20px 0px 20px 0px;
+    margin: 0px 0px 600px 0px;
     }
     #copy A{
 	text-decoration: none;
     }
-    .QuizList { color: #3333AC; font-family: sans-serif, verdana, helvetica; font-weight: bold; text-decoration: none; text-align: left; }
+    .QuizList { color: #3333AC; font-family: Arial, Helvetica, sans-serif; text-decoration: none; text-align: left; }
     li.QuizList { list-style-image: url('"""+Images+"""arrow.gif'); }
     li.QuizList:hover { list-style-image: url('"""+Images+"""red_arrow.gif'); background-color: #FFFCF0; text-decoration: none; }
     .brown    { color: #cc3300; }
     .red      { color: red; }
-    .QText    { text-align: left; }
+    .QText    { text-align: left;  padding-top:20px;}
     .RText    { color: black; text-align: left; }
-    .QChoices { text-align: left; }
-    span.ArrowQuestion img {text-align: top;}
-    span.ArrowQuestion {color: #993333; font-size: 15px;line-height: 41px; background-color: #FFF3D9;}""" 
+    .QChoices { text-align: left; padding-left:10px; padding-right:15px;}
+    .question_choices td{padding-top:7px;}
+    #menu div.controls { padding-top:10px;}
+    span.ArrowQuestion img {vertical-align: top;}
+    div.ArrowQuestion:hover {color: #000000; background-color:#f9cf66;}
+    div.ArrowQuestion {color: #FFFFFF; font-size: 15px; font-weight:bold; background-color: #99CCCC; padding:5px 0px 5px 0px; float:right; margin:-32px -23px 0px 0px;}
+"""
 
 Qgeometry = """    {
-      top: 160px;
-      left: 180px;
+      top: 60px;
+      left: 230px;
       z-index: 0;
-      position: absolute; 
+      position: absolute;
       margin: -10px 0px 0px 0px;
-      padding: 5px 0px 0px 0px;"""
+      padding: 5px 0px 0px 0px;
+"""
 
 Rgeometry = """    {
       position: absolute;
@@ -204,18 +209,18 @@ Rgeometry = """    {
       padding: 5px;
       border: solid black 2px;
       visibility: hidden;
-    }"""
+    }
+"""
 
 QuizColour = ["purple","darkred","darkblue","darkgreen"]
 
 # Document tree structure
-
 #   doc.title
 #      .questionList[].question
 #                     .answer.type               (Choice)
 #                            .itemList[].expect
 #                                       .answer
-#                                       .response 
+#                                       .response
 #                     .answer.tag                (Answer)
 #                            .whenTrue
 #                            .whenFalse
@@ -223,39 +228,17 @@ QuizColour = ["purple","darkred","darkblue","darkgreen"]
 def html(doc):
   """ Converts the document tree to HTML
   """
-  print '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"'
-  print '    "http://www.w3.org/TR/html401/loose.dtd">'
-  print '<html>\n<head>'
-  # fudge, and hope to fix below!
-  for attr in doc.metaList:
-    s = '<meta'
-    for k in attr.keys():
-      s += ' %s="%s"' % (k, attr[k])
-    s += '/>'
-    print s
-  for attr in doc.linkList:
-    s = '<link'
-    for k in attr.keys():
-      s += ' %s="%s"' % (k, attr[k])
-    s += '/>'
-    print s
-  print '<title>%s</title>' % doc.title
-
   course=doc.course[0]
-  if course['code']=="MathQuiz":
-    level = 'MOW'
-    year  = 'GEM'
-  elif len(course['code'])>4:
-    level={'1':'JM', '2':'IM', '3':'SM', 'o':'', 'Q':''}[course['code'][4]]
-    year ={'JM':'Junior', 'IM':'Intermediate', 'SM':'Senior', '':''}[level]
-    level='UG/'+level
-  else:
-    level=''
-    year=''
 
-  print """  <meta name="organization" content="School of Mathematics and Statistics, University of Sydney">
-  <meta name="Copyright" content="University of Sydney 2004"> 
-  <meta name="GENERATOR" content="%s"> 
+  meta = ''
+  for attr in doc.metaList:
+    meta += '<meta'
+    for k in attr.keys():
+      meta += ' %s="%s"' % (k, attr[k])
+    meta += '>\n'
+  meta +="""<meta name="organization" content="School of Mathematics and Statistics, University of Sydney">
+  <meta name="Copyright" content="University of Sydney 2004">
+  <meta name="GENERATOR" content="%s">
   <meta name="AUTHORS" content="Andrew Mathas and Don Taylor">
   <!--
   By reading through this file you should be able to extract the
@@ -263,231 +246,173 @@ def html(doc):
   you do the questions yourself. Of course, you are free to read the
   source if you wish.
   -->""" % VERSION
+  headData = ''
+  # fudge, and hope to fix below!
+  for attr in doc.linkList:
+    headData += '<link'
+    for k in attr.keys():
+      headData += ' %s="%s"' % (k, attr[k])
+    headData += '>\n'
   qTotal = len(doc.questionList)
   if len(doc.discussionList)==0:
     currentQ='1'
   else:
     currentQ='-1     // start showing discussion'
-  mathquizConfig.printInitialization(doc.src,course,currentQ,qTotal,level)
-
-  # Automatically generated css specifying the quiz page
-  print CSStop
+  headData += mathquizConfig.headData(doc.src,course,currentQ,qTotal)
+  headData += CSStop
   if len(doc.quizList)>0:       # index listing
-    print '    #question-0'
-    print Qgeometry
-    print '    visibility: visible;\n    }'
-      
+    headData += '    #question-0\n'
+    headData +=  Qgeometry
+    headData += '    visibility: visible;\n    }\n'
   dnum=0
   for d in doc.discussionList:  # discussion
     dnum+=1
-    print '    #question-%d' % dnum
-    print Qgeometry
+    headData += '    #question-%d\n' % dnum
+    headData +=  Qgeometry
     if dnum==1:
-      print '      visibility: visible;\n    }'
+      headData += '      visibility: visible;\n    }\n'
     else:
-      print '      visibility: hidden;\n    }'
-
+      headData += '      visibility: hidden;\n    }\n'
   qnum = 0
   for q in doc.questionList:     # questions
     qnum += 1
-    print '\n    #question%d %s' % (qnum, Qgeometry)
+    headData += '\n    #question%d %s\n' % (qnum, Qgeometry)
     if len(doc.discussionList)==0 and qnum==1:
-      print '      visibility: visible;'
+      headData += '      visibility: visible;\n'
     else:
-      print '      visibility: hidden;'
-#    print '      color: %s;' % QuizColour[qnum % len(QuizColour)]
-    print '    }'
-    print '\n    #answer%d' % qnum
-    print '    {'
-    print '      position: relative;'
-    print '      visibility: visible;'
-    print '      width: 100%;'
-    print '    }'
+      headData += '      visibility: hidden;\n'
+#    headData += '      color: %s;' % QuizColour[qnum % len(QuizColour)]
+    headData += '    }\n'
+    headData += '\n    #answer%d\n' % qnum
+    headData += """    {
+      position: relative;
+      visibility: visible;
+    }
+"""
     if isinstance(q.answer,mathquizXml.Choice):
       if q.answer.type == "multiple":
-        print '\n    #q%dresponse0' % qnum
-        print Rgeometry
+        headData += '\n    #q%dresponse0\n' % qnum
+        headData +=  Rgeometry
       rnum = 0
       for s in q.answer.itemList:
         rnum += 1
-        print '\n    #q%dresponse%d' % (qnum,rnum)
-        print Rgeometry
+        headData += '\n    #q%dresponse%d\n' % (qnum,rnum)
+        headData += Rgeometry
     else:
-      print '\n    #q%dtrue' % qnum
-      print Rgeometry
-      print '\n    #q%dfalse' % qnum
-      print Rgeometry
-  print '-->\n</style>'
-
+      headData += '\n    #q%dtrue\n' % qnum
+      headData += Rgeometry
+      headData += '\n    #q%dfalse\n' % qnum
+      headData += Rgeometry
+  headData += '-->\n</style>'
   # print the javascript variables holding the quiz solutions and responses
-  setPatterns(doc.questionList, doc.discussionList)
+  headData += setPatterns(doc.questionList, doc.discussionList)
 
-  print '</head>'
-  print """<body bgcolor="#ffffff" background="" text="#000000" 
-                 style="margin: 0px;">""" 
-  print '<noscript>%s</noscript>' % NoScript
-
-  # print the top of the table (using local configuration)
-  mathquizConfig.printTableTop(doc, level, year, course)
-
-  triangle="""  <tr valign="top">
-      <td nowrap>&nbsp;<img src=\""""+Images+"""right_arrow.gif" alt="" width="9"
-        height="9">&nbsp;</td>"""
-
-  space=   """    <tr>  <td height="5" colspan="3"><img src=\""""+Images+"""navy.gif" width="1" 
-           height="1" alt="" vspace="5" class="decor"></td>
-   </tr>"""
-
-  thinline="""  <tr valign="top" bgcolor="#EFE9C2">
-         <td class="menuDivLine" colspan="3"><img src=\""""+Images+"""navy.gif" width="1" height="2" 
-           alt="" class="decor"></td>
-   </tr>"""
-
-  if len(course['name'])>0:
-    # button for question numbers and meaning of symbols
-    if len(doc.quizList)==0:
-      if  doc.src=="mathquiz-manual":
-        print """<ul class="navmenu">
-    <li class="navmenu" style="list-style-image: none; list-style: none;">
-      <div class="selspacing"><div class="dropdownroot" id="QSubmenu"></div></div>
-      <script type="text/javascript"> domMenu_activate('QSubmenu'); </script>
-    </li>
-    <li class="navselected" style="list-style-image: none; list-style: none;">
-       <div class="navselected">MathQuiz</div>
-    </li>
-  </ul>
-"""
-      else:
-        print """<ul class="navmenu">
-    <li class="navselectedsub" style="list-style-image: none; list-style: none;">
-      <div class="selspacing"><div class="dropdownroot" id="CourseQSubmenu"></div></div>
-      <script type="text/javascript"> domMenu_activate('CourseQSubmenu'); </script>
-    </li>
-  </ul>
-"""
-    else:
-      mathquizConfig.printIndexSideMenu()
-
-  print """<table width="160" border="0" cellspacing="0" cellpadding="0" class="nav">"""
+  menuname = mathquizConfig.menu(doc, course)[0]
+  menu = mathquizConfig.menu(doc, course)[1]
   if len(doc.discussionList)>0:
     # links for discussion items
     dnum=0
     for d in doc.discussionList:
       dnum+=1
-      print """<tr valign="top">
-  <td class="navselectedsub"><img src=\""""+Images+"""navy.gif" width="1" height="1" alt=""></td>
-  <td width="5" class="navselectedsub">
-     <img src=\""""+Images+"""bullet.gif" width="6" height="9" alt="" hspace="3" vspace="3">
-  </td>
-  <td width="100%%" class="navselectedsub">
-     <a class="nav" href="javascript:void(0);" 
+      menu += """<li class="discussion">
+     <a href="javascript:void(0);"
         onMouseOver="window.status=\'%s\'; return true;"
         onMouseOut="window.status=\'\'; return true;"
         onClick="return gotoQuestion(-%d);">
           %s
      </a>
-  </td>""" % (d.heading, dnum, d.heading)
-    print space
-    print thinline
-    print space
+  </li>
+""" % (d.heading, dnum, d.heading)
+  menu += '</ul>\n'
+  menu += '<table class="controls">\n'
 
   if len(doc.questionList)>0:
-    print """  <tr valign="top">
-      <td nowrap>&nbsp;<img src=\""""+Images+"""right_arrow.gif" alt="" width="9" height="9" style="padding-top: 8px">&nbsp;</td>
-      <td colspan="2" class="headerright" style="padding-top: 8px"><B>Questions</B></td>
-  </tr>"""
-    print space
-    print """  <tr valign="top">
-     <td class="navselectedsub"><img src=\""""+Images+"""bpixel.gif" width="1" height="1" alt=""></td>
-     <td class="navselectedsub" colspan="2">
-     <a HREF="javascript:void(0);" onMouseOver="window.status=\'Question 1\';return true;"
-        onClick="return gotoQuestion(1);">"""
+    menu += """  <tr valign="top">
+      <td colspan="3" class="header">Questions:</td>
+</tr>
+<tr valign="top">
+  <td ><a HREF="javascript:void(0);" onMouseOver="window.status=\'Question 1\';return true;"
+        onClick="return gotoQuestion(1);">
+"""
     if len(doc.discussionList)==0:
       firstimage='%sborder1.gif' % Images
     else:
       firstimage='%sclear1.gif' % Images
-    print '  <img alt="" src="%s" name="progress1" align="TOP"' % firstimage
-    print '       height="31"width="31" border="0" hspace="2" vspace="2"></a>'
+    menu += '  <img alt="" src="%s" name="progress1" align="TOP"\n' % firstimage
+    menu += '       height="31"width="31" border="0" hspace="2" vspace="2"></a>\n'
     for i in range(2,qTotal+1):
       if i % 2 == 1:
-        print '<br>'
-      print '<a HREF="javascript:void(0);" onClick="return gotoQuestion(%d);"' % i
-      print '   OnMouseOver="window.status=\'Question %d\';return true;">' % i
-      print '<img alt="" src="%sclear%d.gif" name="progress%d" align="TOP" height="31" width="31" border="0" hspace="2" vspace="2"></a>' % (Images,i,i)
+        menu += '<br>\n'
+      menu += '<a HREF="javascript:void(0);" onClick="return gotoQuestion(%d);"\n' % i
+      menu += '   OnMouseOver="window.status=\'Question %d\';return true;">\n' % i
+      menu += '<img alt="" src="%sclear%d.gif" name="progress%d" align="TOP" height="31" width="31" border="0" hspace="2" vspace="2"></a>\n' % (Images,i,i)
 
-    print '                 </td></tr>'
-    print space
-    imgTag = '    <tr>  <td class="nav"></td><td class="nav" colspan="2"><img alt="" src="'+Images+'%s.gif" align="%s" height="%d" width="%d" border="0" hspace="2" vspace="2">'
-    print imgTag % ('star',"MIDDLE",12,12)
-    print 'right first<br>&nbsp;&nbsp;&nbsp;&nbsp;attempt</td></tr>'
-    print space
-    print imgTag % ('tick',"MIDDLE",18,14)
-    print 'right</td></tr>'
-    print space
-    print imgTag % ('cross',"MIDDLE",9,10)
-    print 'wrong</td></tr>'
-    print space
-    print thinline
+    menu += '                 </td></tr>\n'
+    imgTag = '    <tr>  <td %s><img alt="" src="'+Images+'%s.gif" %s>\n'
+    menu += imgTag % ('style="line-height:95%; padding-top:10px;"','star','style="vertical-align:-40%;"')
+    menu += 'right first<br>&nbsp;&nbsp;&nbsp;&nbsp;attempt</td></tr>\n'
+    menu += imgTag % ('','tick','')
+    menu += 'right</td></tr>\n'
+    menu += imgTag % ('style="padding-top:7px;"','cross','')
+    menu += 'wrong</td></tr>\n'
   # end of progress buttons
 
-  print """  </tbody></table>
-  <div align="center" ID="copy" style="width: 100%%; padding:20px 0px 20px 0px; margin: 0px;">
+  menu += """  </tbody></table>
+  <div align="center" ID="copy">
     <a href="/u/MOW/MathQuiz/doc/credits.html"
        onMouseOver="window.status='%s'; return true">
-       <font face="3DArial, ArialBlack" color="yellow"><B>%s</B></font></a><br>
+       <B>%s</B></a><br>
          <a href="http://www.usyd.edu.au"
             onMouseOver="window.status='University of Sydney'; return true">
-            <font color="white">University of Sydney</font>
+            University of Sydney
 	 </a><br>
 	   <a href="http://www.maths.usyd.edu.au"
               onMouseOver="window.status='School of Mathematics and Statistics'; return true">
-         <font color="#CCFFFF">School of Mathematics<br> and Statistics</font>
+         School of Mathematics<br> and Statistics
            </a>
 	<br>
 	&copy; Copyright 2004-2006
   </div>
   <!-- end of side menu -->""" % ( VERSION, VERSION )
-  print """</td>
-   <td class="nav"><img src=\""""+Images+"""navy.gif" alt="" width="2"></td>
-   <td valign="top" width="100%" class="content" id="content">
-     <!-- start of main page -->"""
 
-  print """<h1 style="padding: 15px 0px 0px 18px; margin: 5px 0px 7px 0px;">
-    %s</h1>""" % doc.title
+  pagebody = """<h1 class="top">
+    %s</h1>
+ """ % doc.title
 
   if len(doc.questionList)>0:
-      print   """<div style="position: relative; z-index: 100; float:right; padding: 0px 10px 0px 0px;">
+      pagebody += """<div  class="ArrowQuestion">
     <span class="ArrowQuestion">
-    <a onmouseover="return navOver('prevpage','Last unanswered question');" 
-       onmouseout="return navOut('prevpage');" onclick="NextQuestion(-1);" 
+    <a onmouseover="return navOver('prevpage','Last unanswered question');"
+       onmouseout="return navOut('prevpage');" onclick="NextQuestion(-1);"
        title="Last unanswered question">
      <img src=\""""+Images+"""n-prevpage.gif" alt="Last unanswered question"
-          name="prevpage" id="prevpage" align="middle" border="0" height="15"
+          name="prevpage" id="prevpage" style="vertical-align:-20%; border:0; height:15px;"
           hspace="0" width="32">
    </a> &nbsp;Question&nbsp;
-   <a onmouseover="return navOver('nextpage','Next unanswered question');" 
-      onmouseout="return navOut('nextpage');" onclick="NextQuestion(1);" 
+   <a onmouseover="return navOver('nextpage','Next unanswered question');"
+      onmouseout="return navOut('nextpage');" onclick="NextQuestion(1);"
       title="Next unanswered question">
      <img src=\""""+Images+"""n-nextpage.gif" alt="Next unanswered question"
-          name="nextpage" id="nextpage" align="middle" border="0" height="15"
+          name="nextpage" id="nextpage" style="vertical-align:-20%; border:0; height:15px;"
           hspace="0" width="32">
    </a>
    </span>
   </div>"""
 
-  # now print the main page text
+  # now comes the main page text
   if len(doc.quizList)>0:
-    print '<div ID="question-0" style="width=80%;">'
-    printHeading( course['name'] + ' Quizzes' )
-    print "<ul>"
+    pagebody += '<div ID="question-0">\n'
+    pagebody += '<h2>' +course['name'] + ' Quizzes</h2>\n'
+    pagebody += '<ul>\n'
     qnum=0
     quizmenu=open('quiztitles.js','w')
     quizmenu.write("var QuizTitles = [\n")
     for q in doc.quizList:
       qnum+=1
-      print """<li class="QuizList"><a href="%s" onMouseOver="window.status='%s'; return true" onMouseOut="window.status=''; return true">
+      pagebody += """<li class="QuizList"><a href="%s" onMouseOver="window.status='%s'; return true" onMouseOut="window.status=''; return true">
   %s
-</a></li>""" % (q['url'], q['title'], q['title'])
+</a></li>
+""" % (q['url'], q['title'], q['title'])
       quizmenu.write("  ['%s','%sQuizzes/%s']" %(q['title'],course['url'],q['url']))
       if qnum<len(doc.quizList):
 	quizmenu.write(",\n");
@@ -495,7 +420,7 @@ def html(doc):
 	quizmenu.write("\n");
 
 
-    print '</ul>\n</div>'
+    pagebody += '</ul>\n</div>\n'
     quizmenu.write("];\n");
     quizmenu.close();
 
@@ -504,162 +429,155 @@ def html(doc):
     dnum = 0
     for d in doc.discussionList:
       dnum+=1
-      print '\n<div ID="question-%d" style="width:80%%;">' % dnum
-      printHeading(d.heading)
-      print '%s\n<p><br>\n' % strval(d.discussion)
+      pagebody += '\n<div ID="question-%d">\n' % dnum
+      pagebody += '<h2>' + d.heading + '</h2>\n<p>\n'
+      pagebody += '%s\n</p>\n\n' % strval(d.discussion)
       if len(doc.questionList)>0 and dnum==len(doc.discussionList):
-        print '<input TYPE="button" NAME="next" VALUE="Start quiz"\n'
-        print '       onClick="return gotoQuestion(1);">'
-      print '</div>'
+        pagebody += '<input TYPE="button" NAME="next" VALUE="Start quiz"\n\n'
+        pagebody += '       onClick="return gotoQuestion(1);">\n'
+      pagebody += '</div>\n'
 
   if len(doc.questionList)>0:
     qnum = 0
     for q in doc.questionList:
       qnum += 1
-      print '\n<div ID="question%d" style="width:80%%;">' % qnum
-      printQuestion(q,qnum)
-      printResponse(q,qnum)
-      print '</div>'
+      pagebody += '\n<div ID="question%d">\n' % qnum
+      pagebody += printQuestion(q,qnum)
+      pagebody += printResponse(q,qnum)
+      pagebody += '</div>\n'
 
-  print """
-  </table>
-</body>
-</html>"""
+  mathquizConfig.printQuizPage(doc,meta,headData,menuname,menu,course,pagebody)
 
 def setPatterns(questionList, discussionList):
-  print '<script language="javascript" type="text/javascript">\n<!--'
+  patterns = '<script language="javascript" type="text/javascript">\n<!--\n'
   i = 0
   for q in questionList:
-    print '  QList[%d] = new Array()' % i
+    patterns+= '  QList[%d] = new Array()\n' % i
     a = q.answer
     if isinstance(a,mathquizXml.Answer):
-      print '  QList[%d].value = "%s"' % (i,a.value)
-      print '  QList[%d].type = "input"' % i
+      patterns += '  QList[%d].value = "%s"\n' % (i,a.value)
+      patterns += '  QList[%d].type = "input"\n' % i
     else:
-      print '  QList[%d].type = "%s"' % (i,a.type)
+      patterns += '  QList[%d].type = "%s"\n' % (i,a.type)
       j = 0
       for s in a.itemList:
-        print '  QList[%d][%d] = %s' % (i,j,s.expect)
+        patterns += '  QList[%d][%d] = %s\n' % (i,j,s.expect)
         j += 1
     i += 1
-  print '// -->\n</script>'
-    
-def printHeading(title):
-  print """<div class="superspcr">&nbsp;</div>
-       <div class="subheader">
-         <div style="background-image: url("""+Images+"""wt.gif); background-position: right top; background-repeat: no-repeat;">"""
-  print """    <h2>%s</h2>
-         </div>
-         <div class="subline">&nbsp;</div>
-       </div>
-       <div class="subspcr">&nbsp;</div>""" % title
+  patterns += '// -->\n</script>\n'
+  return patterns
 
 def printQuestion(Q,n):
-  printHeading( 'Question %d' % n )
-  print '<div class="QText">'
-  print strval(Q.question) 
-  print '</div>'
-  print '<form name="Q%dForm" action="" onSubmit="return false;">' % n
+  question = '<h2>Question %d</h2>\n' % n
+  question += '<div class="QText">\n<p>'
+  question += strval(Q.question)
+  question += '\n</div>\n'
+  question += '<form name="Q%dForm" action="" onSubmit="return false;">\n' % n
   snum = 0
   if isinstance(Q.answer,mathquizXml.Answer):
-    print '<p><input TYPE="text"  onChange="checkAnswer();" SIZE="5">'
+    question += '<p><input TYPE="text"  onChange="checkAnswer();" SIZE="5">\n'
     if Q.answer.tag:
-      print '<span class="QText"> ' + Q.answer.tag +'</span>'
+      question += '<span class="QText"> ' + Q.answer.tag +'</span>\n'
   else:
-    print '<table summary="List of question choices" cellspacing="4" cellpadding="4" width="100%">'
-    print '<col width="2"><col width="2"><col width="*">'
+    question += '<table summary="List of question choices" class="question_choices">\n'
+    question += '<col width="2"><col width="2"><col width="*">\n'
     # print extra column specifications as necessary
     for c in range(1,Q.answer.cols):
-      print '<col width="10"><col width="2"><col width="2"><col width="*">'
+      question += '<col width="10"><col width="2"><col width="2"><col width="*">\n'
     for s in Q.answer.itemList:
       snum += 1
-      printItem(s, n, snum)
+      question += printItem(s, n, snum)
     if s.parent.type=='single':  # no default answer for question
-      print '<tr>  <td colspan=2><input type="hidden" checked'
-      print '               name="Q%dhidden"></td></tr>' % n
-    print '</table>'
-  print '<p>'
-  print '<input TYPE="button" VALUE="Check Answer" NAME="answer" onClick="checkAnswer();">'
-  print '<span style="width:40px;">&nbsp;</span>'
-  print '<input TYPE="button" VALUE="Next Question" NAME="next" onClick="nextQuestion(1);">'
-  print '</form>'
+      question += '<tr>  <td colspan=2><input type="hidden" checked\n'
+      question +=  '               name="Q%dhidden"></td></tr>\n' % n
+    question += '</table>\n'
+  question += '<p>\n'
+  question += '<input TYPE="button" VALUE="Check Answer" NAME="answer" onClick="checkAnswer();">\n'
+  question += '<span style="width:40px;">&nbsp;</span>\n'
+  question += '<input TYPE="button" VALUE="Next Question" NAME="next" onClick="nextQuestion(1);">\n'
+  question += '</form>\n'
+  return question
+
+#def strval(ustr):
+#  if type(ustr) == type(u''):
+#    str = ''
+#    for c in ustr:
+ #     str += chr(ord(c))
+#      str += c.encode('ascii','xmlcharrefreplace')
+#  else:
+#    str = ustr
+#  return str
 
 def strval(ustr):
-  if type(ustr) == type(u''):
-    str = ''
-    for c in ustr:
-      str += chr(ord(c))
-  else:
-    str = ustr
-  return str
+  return ustr.encode('ascii','xmlcharrefreplace')
 
 def printItem(S,q,n):
-  if S.parent.cols==1 or (n % S.parent.cols)==1: 
-    print '<tr valign="top">'
-  else: 
-    print '  <td>&nbsp;</td>'
-  print '      <td class="brown">%s)</td>' % alphabet[n]
-  if S.parent.type == 'single':
-    print '      <td><input TYPE="radio" NAME="Q%doptions"></td>' % q
-    print '      <td><span class="QChoices">%s</span></td>' % strval(S.answer)
-  elif S.parent.type == 'multiple':
-    print '      <td><input TYPE="checkbox" NAME="Q%doptions%d"></td>' % (q,n)
-    print '      <td><span class="QChoices">%s</span></td>' % strval(S.answer)
+  if S.parent.cols==1 or (n % S.parent.cols)==1:
+    item = '<tr valign="top">\n'
   else:
-    print '<!-- internal error: %s -->' % S.parent.type
+    item = '  <td>&nbsp;</td>\n'
+  item += '      <td class="brown">%s)</td>\n' % alphabet[n]
+  if S.parent.type == 'single':
+    item += '      <td><input TYPE="radio" NAME="Q%doptions"></td>\n' % q
+    item += '      <td><div class="QChoices">%s</div></td>\n' % strval(S.answer)
+  elif S.parent.type == 'multiple':
+    item += '      <td><input TYPE="checkbox" NAME="Q%doptions%d"></td>\n' % (q,n)
+    item += '      <td><div class="QChoices">%s</div></td>\n' % strval(S.answer)
+  else:
+    item += '<!-- internal error: %s -->\n' % S.parent.type
     print >> sys.stderr, 'Unknown question type encountered:',S.parent.type
-  if (n % S.parent.cols)==0 or n==len(S.parent.itemList): print '</tr>'
-
+  if (n % S.parent.cols)==0 or n==len(S.parent.itemList): item += '</tr>'
+  return item
 
 def printResponse(Q,n):
   snum = 0
-  print '\n<div ID="answer%d">' % n
+  response = '\n<div ID="answer%d">\n' % n
   if isinstance(Q.answer,mathquizXml.Answer):
     s = Q.answer
-    print '\n<div ID="q%dtrue">' % n
-    print '<B>Your answer is correct</B><br>'
+    response += '\n<div ID="q%dtrue">\n' % n
+    response += '<B>Your answer is correct</B><br>\n'
     if s.whenTrue:
-      print '<div class="RText">%s</div>' % strval(s.whenTrue)
-    print '</div>'
-    print '\n<div ID="q%dfalse">' % n
-    print '<B>Not correct. You may try again.</B>'
+      response += '<div class="RText">%s</div>\n' % strval(s.whenTrue)
+    response += '</div>\n'
+    response += '\n<div ID="q%dfalse">\n' % n
+    response += '<B>Not correct. You may try again.</B>\n'
     if s.whenFalse:
-      print '<div class="RText">%s</div>' % strval(s.whenFalse)
-    print '</div>'
+      response += '<div class="RText">%s</div>\n' % strval(s.whenFalse)
+    response += '</div>\n'
   elif Q.answer.type == "single":
     for s in Q.answer.itemList:
       snum += 1
-      print '\n<div ID="q%dresponse%d">' % (n,snum)
-      print '<B>'
+      response += '\n<div ID="q%dresponse%d">\n' % (n,snum)
+      response += '<B>\n'
       if s.expect == "true":
-        print 'Your answer is correct.<br>'
+        response += 'Your answer is correct.<br>\n'
       else:
-        print 'Not correct. Choice <span class="brown">(%s)</span>' % alphabet[snum]
-	print 'is <span class="red">%s</span>.' % s.expect
-      print '</B>'
+        response += 'Not correct. Choice <span class="brown">(%s)</span>\n' % alphabet[snum]
+	response += 'is <span class="red">%s</span>.\n' % s.expect
+      response += '</B>\n'
       if s.response:
-        print '<div class="RText">%s</div>' % strval(s.response)
-      print '</div>'
+        response += '<div class="RText">%s</div>\n' % strval(s.response)
+      response += '</div>\n'
   else: # Q.answer.type == "multiple":
     for s in Q.answer.itemList:
       snum += 1
-      print '\n<div ID="q%dresponse%d">' % (n,snum)
-      print '<B>There is at least one mistake.</B><br>'
-      print 'For example, choice <span class="brown">(%s)</span>' % alphabet[snum]
-      print 'should be <span class="red">%s</span>.' % s.expect
+      response += '\n<div ID="q%dresponse%d">\n' % (n,snum)
+      response += '<B>There is at least one mistake.</B><br>\n'
+      response += 'For example, choice <span class="brown">(%s)</span>\n' % alphabet[snum]
+      response += 'should be <span class="red">%s</span>.\n' % s.expect
       if s.response:
-        print '<div class="RText">%s</div>' % strval(s.response)
-      print '</div>'
-    print '\n<div ID="q%dresponse0">' % n
-    print '<B>Your answers are correct</B>'
-    print '<ol type="a">'
+        response += '<div class="RText">%s</div>\n' % strval(s.response)
+      response += '</div>\n'
+    response += '\n<div ID="q%dresponse0">\n' % n
+    response += '<B>Your answers are correct</B>\n'
+    response += '<ol type="a">\n'
     for s in Q.answer.itemList:
-      print '<li class="brown"><div class="RText"><b>%s</b>. %s</div>' % (strval(s.expect.capitalize()),strval(s.response))
-    print '</ol>'
-    print '</div>'
-  print '</div>'
+      response += '<li class="brown"><div class="RText"><b>%s</b>. %s</div>\n' % (strval(s.expect.capitalize()),strval(s.response))
+    response += '</ol>\n'
+    response += '</div>\n'
+  response += '</div>\n'
+  return response
 
 # =====================================================
 if __name__ == '__main__':
   main()
-
