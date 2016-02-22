@@ -1,11 +1,11 @@
-import time, os, re, string, urlparse, httplib
+import time, os, re, string, urlparse, httplib, cgi
 
 startjsmath = '''
-<SCRIPT SRC="/jsMath/jsMath.js" type="text/javascript"></SCRIPT>
-<SCRIPT type="text/javascript">
+<script src="/jsMath/jsMath.js" type="text/javascript"></script>
+<script type="text/javascript">
     jsMath.Setup.Script("plugins/tex2math.js");
       if (!jsMath.Font) {jsMath.Font = {}}
-	  jsMath.Font.Message = function (message) {if (jsMath.Element("Warning")) return;
+      jsMath.Font.Message = function (message) {if (jsMath.Element("Warning")) return;
     var div = jsMath.Setup.DIV("Warning",{height:"0px"});
     div.innerHTML =
       '<center><table><tr><td>'
@@ -16,34 +16,48 @@ startjsmath = '''
       + '<span onclick="jsMath.Font.HideMessage()" title=" Remove this font warning message " class="link" style="font-size:100%">Hide This<\/span>'
       + '<\/span><\/div><\/div><\/div>'
       + '<\/td><\/tr><\/table><\/center>'};
-</SCRIPT>'''
+</script>'''
 endjsmath = '''
-<SCRIPT type="text/javascript">
+<script type="text/javascript">
 jsMath.ConvertTeX();
 jsMath.ProcessBeforeShowing(document);
-</SCRIPT>'''
+</script>'''
+# http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML
+usemathjax = '''
+<script src="/u/SMS/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"  type="text/javascript"></script>'''
 def processtemplate(things,pageinserts,page,pagename):
     proxy_server = 'siv'
     main_local_server = 'http://siv'
     local_servers = ['www.maths.usyd.edu.au','www.maths.usyd.edu.au','siv','rome','bari']
     localtime = time.localtime(time.time())
+    nextyeartime = time.localtime(time.time()+31536000)
     htpath = "/users/misc/httpd/htdocs"
     ustring = 'u'
+    things['thisPage'] = page + '/' + pagename
     things['monthname'] = time.strftime('%B',localtime)
     things['monthnumber'] = `int(time.strftime('%m',localtime))`
     things['dayofweek'] = time.strftime('%A',localtime)
     things['dayofmonth'] =  `int(time.strftime('%d',localtime))`
     things['year'] = time.strftime('%Y',localtime)
+    things['nextyear'] = time.strftime('%Y',nextyeartime)
     things['AMPM'] = time.strftime('%p',localtime)
     things['ampm'] = string.lower(things['AMPM'])
     things['hour12'] = `int(time.strftime('%I',localtime))`
     things['hour24'] = `int(time.strftime('%H',localtime))`
     things['minute'] = `int(time.strftime('%M',localtime))`
+    if not things.has_key('UNITS_OF_STUDY,doctype'):
+        things['UNITS_OF_STUDY,doctype'] = 'html'
+    if not things.has_key('UNIT_OF_STUDY,doctype'):
+        things['UNIT_OF_STUDY,doctype'] = things['UNITS_OF_STUDY,doctype']
     if not things.has_key('UNIT_OF_STUDY,template_file'):
-        things['UNIT_OF_STUDY,template_file'] = 'u/SMS/web2010/template.txt'
+        if things['UNIT_OF_STUDY,doctype'] in ['xhtml','mathml']:
+            things['UNIT_OF_STUDY,template_file'] = 'u/SMS/web2010/xmltemplate.txt'
+        else:
+            things['UNIT_OF_STUDY,template_file'] = 'u/SMS/web2010/template.txt'
     begin_block = '[@@'
     end_block = '@@]'
     bb_len = len(begin_block)
+    eb_len = len(end_block)
     begin_quote = '[^^'
     end_quote = '^^]'
     rebq = re.escape(begin_quote)
@@ -87,6 +101,12 @@ def processtemplate(things,pageinserts,page,pagename):
         s = string.strip(s)
         return s
 
+#  Remove nonalphanumeric characters from a string
+
+    def rnan(s):
+        s = re.sub(r'\W+', '', s)
+        return s
+    
     template_filename = pjoin(htpath,things['UNIT_OF_STUDY,template_file'])
     template_file = open(template_filename)
     t = template_file.read()
@@ -94,17 +114,17 @@ def processtemplate(things,pageinserts,page,pagename):
     files = [template_filename]
     errors = []
     URLproblems = []
-    start = 0
+    start = max(string.find(t,begin_block),0)
     b_end = string.find(t,end_block)
     while b_end != -1:
         rep = ''
         b_start = string.rfind(t,begin_block,start,b_end)
         if b_start == -1:
-            block_commands = {'error':"Unbalanced '[@@ @@]'"}
+            block_commands = {'error':"Grouping error: no '[@@' to match a '@@]', "}
         else:
             block_commands = parse_block(t[b_start+bb_len:b_end])
 
-        # convert all of the '~...' for `if' `is' `ifexists'
+        # convert all of the '~...' for 'if' 'is' 'ifexists'
         # to 'things[...]'
 
         for i in block_commands.keys():
@@ -149,31 +169,32 @@ def processtemplate(things,pageinserts,page,pagename):
             test_URL_old = block_commands['ifURLexists']
             del block_commands['ifURLexists']
             urlok = 0
-            if test_URL[:5] == 'http:':
-                split_URL = urlparse.urlparse(test_URL)
-                lastpart_URL = split_URL[2]+split_URL[3]+split_URL[4]+split_URL[5]
-                if split_URL[1] in local_servers:
-                    if os.access(pjoin(htpath,lastpart_URL[1:]),os.R_OK) == 1:
+            if test_URL != 'nonexistent':
+	        if test_URL[:5] == 'http:':
+                    split_URL = urlparse.urlparse(test_URL)
+                    lastpart_URL = split_URL[2]+split_URL[3]+split_URL[4]+split_URL[5]
+                    if split_URL[1] in local_servers:
+                        if os.access(pjoin(htpath,lastpart_URL[1:]),os.R_OK) == 1:
+                            urlok = 1
+                        else:
+                            test_URL = urlparse.urljoin(main_local_server,lastpart_URL)
+                else:
+                    if test_URL[:1] != '/':
+                        test_URL = '/'+pjoin(ustring,page,test_URL)
+                    if os.access(pjoin(htpath,test_URL[1:]),os.R_OK) == 1:
                         urlok = 1
                     else:
-                        test_URL = urlparse.urljoin(main_local_server,lastpart_URL)
-            else:
-                if test_URL[:1] != '/':
-                    test_URL = '/'+pjoin(ustring,page,test_URL)
-                if os.access(pjoin(htpath,test_URL[1:]),os.R_OK) == 1:
-                    urlok = 1
-                else:
-                    test_URL = urlparse.urljoin(main_local_server,test_URL[1:])
-            if urlok == 0:
-                conn = httplib.HTTPConnection(proxy_server)
-                conn.request("GET", test_URL)
-                resp = conn.getresponse()
-                while (resp.status < 400) and (resp.status > 299):
+                        test_URL = urlparse.urljoin(main_local_server,test_URL[1:])
+                if urlok == 0:
                     conn = httplib.HTTPConnection(proxy_server)
-                    conn.request("GET", resp.getheader("Location"))
+                    conn.request("GET", test_URL)
                     resp = conn.getresponse()
-                if resp.status < 300:
-                    urlok = 1
+                    while (resp.status < 400) and (resp.status > 299):
+                        conn = httplib.HTTPConnection(proxy_server)
+                        conn.request("GET", resp.getheader("Location"))
+                        resp = conn.getresponse()
+                    if resp.status < 300:
+                        urlok = 1
             if urlok == 0:
                 for at in block_commands.keys():
                     if at[:4] == 'else':
@@ -217,19 +238,32 @@ def processtemplate(things,pageinserts,page,pagename):
         if block_commands.has_key('text'):
             rep += block_commands['text']
             del block_commands['text']
+            if block_commands.has_key('replace'):
+                if block_commands.has_key('with'):
+                    rep = rep.replace(block_commands['replace'],block_commands['with'])
+                    del block_commands['with']
+                del block_commands['replace']
+            if block_commands.has_key('SliceStart'):
+                if block_commands.has_key('SliceEnd'):
+                    rep = rep[int(block_commands['SliceStart']):int(block_commands['SliceEnd'])]
+                    del block_commands['SliceEnd']
+                else:
+                    rep = rep[int(block_commands['SliceStart']):]
+                del block_commands['SliceStart']
+            elif block_commands.has_key('SliceEnd'):
+                rep = rep[:int(block_commands['SliceEnd'])]
+                del block_commands['SliceEnd']
 
-        if block_commands.has_key('text'):
-            rep = block_commands['text']
-            del block_commands['text']
-
-        if block_commands.has_key('eval'):
-            rep = eval(block_commands['eval'])
-            del block_commands['eval']
+ #       if block_commands.has_key('eval'):
+ #           rep = eval(block_commands['eval'])
+ #           del block_commands['eval']
 
 
         if block_commands.has_key('pageinsert'):
             if pageinserts.has_key(block_commands['pageinsert']):
-                block_commands['URLplus'] = pageinserts[block_commands['pageinsert']]
+	        if pageinserts[block_commands['pageinsert']] != 'nonexistent':
+                    block_commands['URLplus'] = pageinserts[block_commands['pageinsert']]
+		things['URL,' + block_commands['pageinsert']] = pageinserts[block_commands['pageinsert']]
             del block_commands['pageinsert']
 
         if block_commands.has_key('URL'):
@@ -263,8 +297,8 @@ def processtemplate(things,pageinserts,page,pagename):
                         insert_file.close()
                         repfound = 1
                 elif test_URL[:5] == 'http:':
-                    split_URL = urlparse.urlparse(test_URL)
-                    lastpart_URL = split_URL[2]+split_URL[3]+split_URL[4]+split_URL[5]
+                    split_URL = urlparse.urlsplit(test_URL)
+                    lastpart_URL = split_URL[2]
                     if split_URL[1] in local_servers:
                         if os.access(pjoin(htpath,lastpart_URL[1:]),os.R_OK) == 1:
                             insert_file = open(pjoin(htpath,lastpart_URL[1:]))
@@ -272,7 +306,7 @@ def processtemplate(things,pageinserts,page,pagename):
                             insert_file.close()
                             repfound = 1
                         else:
-                            test_URL = urlparse.urljoin(main_local_server,lastpart_URL)
+                            test_URL = urlparse.urlunsplit([split_URL[0],"siv",split_URL[2],split_URL[3],split_URL[4]])
                 else:
                     if test_URL[:1] != '/':
                         test_URL = '/'+pjoin(ustring,page,test_URL)
@@ -352,12 +386,17 @@ def processtemplate(things,pageinserts,page,pagename):
             elif block_commands['error'][:24] == 'Unknown files accessible':
                 errors.append(block_commands['error'])
             else:
-                errors.append(block_commands['error']+' near <br><table><tr><td><font size=3 color="#6666ff"><pre>'+cgi.escape(t[b_start-100:b_start]+'...'+t[b_end+3:b_end+100])+'</pre></font></td></tr></table>')
-            start = start+bb_len
+                errors.append(block_commands['error']+' near the following text: <br><table><tr><td><div style="color:#6666ff"><pre>'+cgi.escape(t[max(b_start-100,0):max(b_start,0)]+'...'+t[b_end+3:b_end+100])+'</pre></div></td></tr></table>')
+            start = start+eb_len
 
-        t = t[:b_start]+str(rep)+t[b_end+bb_len:]
-        start = string.find(t,begin_block,start)-bb_len
+        if b_start == -1:
+            t = str(rep)+t[b_end+eb_len:]
+        else:
+            t = t[:b_start]+str(rep)+t[b_end+eb_len:]
+        start = max(string.find(t,begin_block,start),0)
         b_end = string.find(t,end_block,start)
+    if string.find(t,begin_block) != -1:
+        errors.append("""Grouping error: a '[@@' without a matching '@@]' near the following text: <br><table><tr><td><div style="color:#6666ff"><pre>..."""+cgi.escape(t[max(start,0):max(start+100,0)])+'</pre></div></td></tr></table>')
     t = string.replace(t,'Check your marks|','Check your marks')
     if things.has_key('nopreview'):
         t = string.strip(t)
@@ -365,8 +404,7 @@ def processtemplate(things,pageinserts,page,pagename):
         t = re.sub('(\s?)+\\n((\s?)+\\n)+','\\n',t)
         t = string.replace(t,str('#########preview#########'),'')
         t = string.replace(t,str('#########basehref#########'),'')
-    if not things.has_key('UNIT_OF_STUDY,nojsMath'):
+    if not things.has_key('UNIT_OF_STUDY,noMathJax'):
         if string.find(t,'\\(') != -1 or string.find(t,'\\[') != -1:
-            t = string.replace(t,'</head>',startjsmath+'</head>')
-            t = string.replace(t,'</body>',endjsmath+'</body>')
+            t = string.replace(t,'</head>',usemathjax+'</head>')
     return t,errors,URLproblems

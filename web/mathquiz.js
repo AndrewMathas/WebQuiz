@@ -1,16 +1,6 @@
-//*****************************************************************************
-//       Copyright (C) 2004-2010 Andrew Mathas and Donald Taylor
-//                          University of Sydney
-//
-//  Distributed under the terms of the GNU General Public License (GPL)
-//                  http://www.gnu.org/licenses/
-//
-// This file is part of the MathQuiz system.
-// 
-// Copyright (C) 2004-2010 by the School of Mathematics and Statistics
-// <Andrew.Mathas@sydney.edu.au>
-// <Donald.Taylor@sydney.edu.au>
-//*****************************************************************************
+// $Id: common.js,v 1.4 2003/01/28 22:57:31 don Exp $
+// mathquiz.js | 2004-01-20 | Andrew Mathas | version 3.0
+// common.js   | 2002-09-29 | Don Taylor    | version 2.0
 
 // 27 Jan 03
 // At the moment this is a mix of old code that works
@@ -29,17 +19,6 @@ var currentRLayer;
 var wrongAnswers = new Array();
 var correct  = new Array();
 
-// image arrays
-var Images      = "/u/MOW/MathQuiz/Images/";
-var currentImage = new Array();
-var untouched    = new Array();
-var ticked       = new Array();
-var starred      = new Array();
-var crossed      = new Array();
-
-// QList will be an array of the expected responses for each question
-var QList = new Array();
-
 function getObject(str) {
   retval = null;
   if (document.getElementById) {
@@ -53,6 +32,17 @@ function getObject(str) {
   }
   return retval;
 }
+
+// image arrays
+var Images      = "/u/MOW/MathQuiz/Images/";
+var currentImage = new Array();
+var untouched    = new Array();
+var ticked       = new Array();
+var starred      = new Array();
+var crossed      = new Array();
+
+// QList will be an array of the expected responses for each question
+var QList = new Array();
 
 function MathQuizInit(num) {
   if (navigator.appName=="Netscape" && parseFloat(navigator.appVersion)<5) {
@@ -102,8 +92,6 @@ function MathQuizInit(num) {
     crossed[i-1] = new Image(31,31);
     crossed[i-1].src = Images+"cross"+i+".gif";
   }
-  document['nextpage']=new Image()
-  document['prevpage']=new Image()
   window.status="Finished loading";
 }
 // for hysterical reasons
@@ -116,14 +104,14 @@ function init(num) {
 function showQLayer(newQ) { // newQ is an integer
   hideRLayer();
   if (isDOM) {
-    getObject('question'+currentQ).display = 'none';
+    getObject('question'+currentQ).visibility = 'hidden';
     currentQ = newQ;
-    getObject('question'+currentQ).display = 'block';
+    getObject('question'+currentQ).visibility = 'visible';
   }
   else {
-    eval(layerRef + "['question" + currentQ + "']" + styleRef + ".display = 'none'");
+    eval(layerRef + "['question" + currentQ + "']" + styleRef + ".visibility = 'hidden'");
     currentQ = newQ;
-    eval(layerRef + "['question" + currentQ + "']" + styleRef + ".display = 'block'");
+    eval(layerRef + "['question" + currentQ + "']" + styleRef + ".visibility = 'visible'");
   }
 }
 
@@ -132,9 +120,9 @@ function showQLayer(newQ) { // newQ is an integer
 function hideRLayer() {
   if (currentRLayer != null) {
     if (isDOM)
-      currentRLayer.display = 'none';
+      currentRLayer.visibility = 'hidden';
     else
-      eval(currentRLayer + styleRef + ".display = 'none'");
+      eval(currentRLayer + styleRef + ".visibility = 'hidden'");
   }
 }
 
@@ -142,12 +130,12 @@ function showRLayer(tag) {
   hideRLayer()
   if (isDOM) {
     currentRLayer = getObject(tag);
-    currentRLayer.display = 'block';
+    currentRLayer.visibility = 'visible';
   } 
   else {
     currentRLayer = layerRef+"['question"+currentQ+"']."+layerRef+"['answer"+currentQ+"']."
       +layerRef+"['"+tag+"']";
-    eval(currentRLayer + styleRef + ".display = 'block'");
+    eval(currentRLayer + styleRef + ".visibility = 'visible'");
   }
 }
 
@@ -166,12 +154,12 @@ function nextQuestion (increment) {
     else if (q>totalQ) q=1;
   } while (q!=currentQ && correct[q-1] );
   if (q==currentQ) 
-    alert("There are no more unanswered questions");
+    alert("There are no more unwrongAnswers questions");
   else {
     if ( increment==1 ) {
-      self.status = 'Question '+q+' is the next unanswered question';
+      self.status = 'Question '+q+' is the next unwrongAnswers question';
     } else {
-      self.status = 'Question '+q+' was the last unanswered question';
+      self.status = 'Question '+q+' was the last unwrongAnswers question';
     }
     gotoQuestion( q );
   }
@@ -180,8 +168,8 @@ function nextQuestion (increment) {
 // nextQuestion + calls to navOver and navOut
 function NextQuestion(increment) {
   var q=currentQ+increment;
-  if (increment==1) { image='nextpage'; msg='Next unanswered question';
-  } else { image ='prevpage'; msg='Last unanswered question' ;
+  if (increment==1) { image='nextpage'; msg='Next unwrongAnswers question';
+  } else { image ='prevpage'; msg='Last unwrongAnswers question' ;
   }
   navOut(image);
   nextQuestion(increment);

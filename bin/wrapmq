@@ -1,0 +1,28 @@
+#!/bin/sh -f
+
+# shell script to create a tar file for exporting the system
+
+cd ~/Courses/MathQuiz/install
+/bin/rm -Rf MathQuiz    # remove any previous versions
+mkdir -p MathQuiz/{src,latex,web/{doc,Images}}
+
+# first copy latest version of source files into the mathquiz 
+# src directory
+/bin/cp ../src/{mathquiz,mathquizLocal,mathquizXml}.py  MathQuiz/src
+/bin/cp ../src/mathquiz.{cfg,dtd}                       MathQuiz/src
+/bin/cp ../src/mathquiz.cls                             MathQuiz/latex
+/bin/cp ../src/mathquiz-manual.tex                      MathQuiz/web/doc
+/bin/cp -R ../web/Images                                MathQuiz/web
+/bin/cp ../src/mathquiz.{css,js}                        MathQuiz/web
+/bin/cp README                                          MathQuiz
+/bin/cp ../src/mathquiz.sh                              MathQuiz/mathquiz
+
+# create the tar file for the system
+tar zhcpf mathquiz.tgz mathquiz
+
+cp mathquiz.tgz ~/.html/mq
+
+# remove all of the copied files
+/bin/rm -R MathQuiz
+
+echo "MathQuiz system wrapped to mathquiz.tgz"
