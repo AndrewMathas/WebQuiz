@@ -1,27 +1,31 @@
-"""  MathQuiz.py | 2001-03-21     | Don Taylor
-                   2004 Version 3 | Andrew Mathas
-		   2010 minor hacking by Bob Howlett
+r"""  MathQuiz.py | 2001-03-21       | Don Taylor
+                    2004 Version 3   | Andrew Mathas
+                    2010 Version 4.5 | Updated and streamlined in many respects
 
-     Convert an XML quiz description file to an HTML file
-     using CSS and JavaScript.
+#*****************************************************************************
+#       Copyright (C) 2004-2010 Andrew Mathas and Donald Taylor
+#                          University of Sydney
+#
+#  Distributed under the terms of the GNU General Public License (GPL)
+#                  http://www.gnu.org/licenses/
+#
+# This file is part of the MathQuiz system.
+#
+# Copyright (C) 2004-2010 by the School of Mathematics and Statistics
+# <Andrew.Mathas@sydney.edu.au>
+# <Donald.Taylor@sydney.edu.au>
+#*****************************************************************************
 
-     See quiz.dtd for the DTD and mathquizXml.py for the
-     Python object structure reflecting the DTD.
-
-     27 Jan 03
-     Swapped the position of the progress strip with
-     the main text.  Added support for <meta> and <link>
-     tags coming from the tex4ht conversion.
 """
 
-VERSION   = 'MathQuiz 4.4'
+# ----------------------------------------------------
+VERSION   = 'MathQuiz 4.5'
+alphabet = " abcdefghijklmnopqrstuvwxyz"
 
 # -----------------------------------------------------
 import sys, os, mathquizXml
 from optparse import OptionParser
 
-# -----------------------------------------------------
-alphabet = " abcdefghijklmnopqrstuvwxyz"
 
 TIMED = 0
 if TIMED: import time
@@ -44,9 +48,12 @@ def main():
   # ------------------------------
   # parse the command line options
   # ------------------------------
-  usage="Usage: %s [--local <local xml file>] [--format format] <filename>" % sys.argv[0]
-  parser = OptionParser(usage='Usage: mathquiz [-local <local page file>] <xmlfile> <target>',
+  usage="Usage: %s [--local <local xml file>] [--format format] [--url MathQuizURL] <filename>" % sys.argv[0]
+  parser = OptionParser(usage='Usage: mathquiz [--local <local page file>] --url MathQuizURL <xmlfile> <target>',
                         version=VERSION)
+  parser.add_option('-u','--url',action='store',type='string',dest='MathQuizURL',default="/MathQuiz",
+      help='relative URL for MathQuiz web files '
+  )
   parser.add_option('-l','--local',action='store',type='string',dest='localXML',default="mathquizLocal",
       help='local python for generating web page '
   )
@@ -66,7 +73,7 @@ def main():
   # -----------------------------------------------------
   localPageStyle=__import__(options.localXML)
   printQuizPage = localPageStyle.printQuizPage
-  MathQuizURL = localPageStyle.MathQuizURL
+  MathQuizURL=options.MathQuizURL
   Images = MathQuizURL + 'Images/'
 
   try:
@@ -185,7 +192,6 @@ Rgeometry = """    {
     }
 """
 
-QuizColour = ["purple","darkred","darkblue","darkgreen"]
 
 # Document tree structure
 #   doc.title
@@ -224,7 +230,7 @@ class html(dict):
         self.header+= ' %s="%s"' % (k, attr[k])
       self.header+= '>\n'
     self.header+="""  <meta name="organization" content="School of Mathematics and Statistics, University of Sydney">
-  <meta name="Copyright" content="University of Sydney 2004">
+  <meta name="Copyright" content="University of Sydney 2004-2010">
   <meta name="GENERATOR" content="%s">
   <meta name="AUTHORS" content="Andrew Mathas and Don Taylor">
   <link href="%smathquiz.css" type="text/css" rel="stylesheet">
@@ -262,7 +268,6 @@ class html(dict):
       self.header+= '\n    #question%d %s\n' % (qnum, Qgeometry)
       if len(doc.discussionList)==0 and qnum==1: self.header+= '      visibility: visible;\n'
       else: self.header+= '      visibility: hidden;\n'
-  #    self.header+= '      color: %s;' % QuizColour[qnum % len(QuizColour)]
       self.header+= '    }\n'
       self.header+= '\n    #answer%d\n' % qnum
       self.header+= """    {
@@ -291,9 +296,10 @@ class html(dict):
     """ construct the left hand quiz menu """
     if len(doc.discussionList)>0: # links for discussion items
       dnum=0
+      self.side_menu+="\n <!- start of discussion lists -->\n<ul>"
       for d in doc.discussionList:
         dnum+=1
-        self.side_menu+= """  <ul><li class="discussion">
+        self.side_menu+= """  <li class="discussion">
      <a href="javascript:void(0);"
         onMouseOver="window.status=\'%s\'; return true;"
         onMouseOut="window.status=\'\'; return true;"
@@ -301,8 +307,8 @@ class html(dict):
           %s
      </a>
   </li>
-  </ul>
 """ % (d.heading, dnum, d.heading)
+      self.side_menu+="\n </ul><!- end of discussion lists -->"
     self.side_menu+= '  <table class="controls">\n'
     if len(doc.questionList)>0:
       self.side_menu+= """  <tr valign="top">
@@ -331,7 +337,7 @@ class html(dict):
     # end of progress buttons, now for the credits
     self.side_menu+= """  </tbody></table>
     <div align="center" ID="copy">
-      <a href="/u/MOW/MathQuiz/doc/credits.html"
+      <a href="http://www.maths.usyd.edu.au/u/MOW/MathQuiz/doc/credits.html"
          onMouseOver="window.status='%s'; return true">
          <B>%s</B></a><br>
            <a href="http://www.usyd.edu.au"
@@ -343,7 +349,7 @@ class html(dict):
            School of Mathematics<br> and Statistics
              </a>
   	<br>
-  	&copy; Copyright 2004-2006
+  	&copy; Copyright 2004-2010
     </div>
     <!-- end of side self.side_menu -->""" % ( VERSION, VERSION )
 
@@ -352,6 +358,7 @@ class html(dict):
     self.qTotal = len(doc.questionList)
     if len(doc.discussionList)==0: currentQ='1'
     else: currentQ='-1     // start showing discussion'
+    # added MathML support 3/2/12
     self.javascript+="""  <script src="%smathquiz.js" type="text/javascript"></script>
   <script src="quiztitles.js" type="text/javascript"></script>
   <script language="javascript" type="text/javascript">
@@ -396,7 +403,7 @@ class html(dict):
     # now comes the main page text
     if len(doc.quizList)>0:
       self.pagebody+= '  <div ID="question-0">\n'
-      self.pagebody+= '  <h2>' +course['name'] + ' Quizzes</h2>\n'
+      self.pagebody+= '  <h2>' +doc.course[0]['name'] + ' Quizzes</h2>\n'
       self.pagebody+= '  <ul>\n'
       qnum=0
       # quizmenu = the index file for the quizzes in this directory
@@ -408,7 +415,7 @@ class html(dict):
     %s
   </a></li>
   """ % (q['url'], q['title'], q['title'])
-        quizmenu.write("  ['%s','%sQuizzes/%s']" %(q['title'],course['url'],q['url']))
+        quizmenu.write("  ['%s','%sQuizzes/%s']" %(q['title'],doc.course[0]['url'],q['url']))
         if qnum<len(doc.quizList): quizmenu.write(",\n");
         else: quizmenu.write("\n");
       quizmenu.write("];\n");
@@ -425,7 +432,7 @@ class html(dict):
         if len(doc.questionList)>0 and dnum==len(doc.discussionList):
           self.pagebody+= '  <input TYPE="button" NAME="next" VALUE="Start quiz"\n\n'
           self.pagebody+= '       onClick="return gotoQuestion(1);">\n'
-          self.pagebody+= '  </div>\n'
+        self.pagebody+= '  </div>\n'
     if len(doc.questionList)>0:
       qnum = 0
       for q in doc.questionList:
