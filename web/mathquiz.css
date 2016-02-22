@@ -1,0 +1,94 @@
+span.nav {
+  font-size: 90%; color: #999999 }
+th a.tha {
+  text-decoration: none; color: #ffffcc;}
+th a:hover.tha {
+  text-decoration: underline; color: #ffffcc;}
+th a:visited.tha {
+  color: #ffffcc;}
+div.footer a:hover.global {
+  text-decoration: underline;}
+td a:hover.global {
+  text-decoration: underline;}
+#quiz tr {
+  vertical-align: top; }
+#menu table.controls { 
+  font-size:120%;
+}
+#menu table.controls td.header{ 
+  color:#ce1126; 
+  padding:10px 0px 7px 0px; 
+  font-weight:bold;
+}
+#menu table.controls td {
+  padding:0px 0px 2px 20px;
+}
+#menu li.discussion{
+  margin-left:20px;
+}
+#menu div.controls { 
+  padding-top:10px;
+}
+#copy {
+  font-family: sans-serif, verdana, helvetica;
+  font-size:110%;
+  width: 100%;
+  padding:20px 0px 20px 0px;
+  margin: 0px 0px 600px 0px;
+}
+#copy A{
+	    text-decoration: none;
+}
+.QuizList {
+  color: #3333AC;
+  font-family: Arial, Helvetica, sans-serif;
+  text-decoration: none;
+  text-align: left;
+  }
+li.QuizList {
+  list-style-image: url('"""+Images+"""arrow.gif'); }
+li.QuizList:hover {
+  list-style-image: url('"""+Images+"""red_arrow.gif');
+  background-color: #FFFCF0;
+  text-decoration: none;
+  }
+.brown    {
+  color: #cc3300; }
+.red      {
+  color: red; }
+.QText    {
+  text-align: left;
+   padding-top:20px;}
+.RText    {
+  color: black;
+  text-align: left;
+  }
+.QChoices {
+  text-align: left;
+  padding-left:10px;
+  padding-right:15px;}
+.question_choices td{padding-top:7px;}
+span.ArrowQuestion img {
+  vertical-align: top;
+}
+div.ArrowQuestion:hover {
+  color: #990000; 
+  background-color:#f9cf66;
+  border-color:#CC9900;
+}
+div.ArrowQuestion {
+  position: relative; 
+  z-index:20;
+  color: #333333;
+  font-size: 15px;
+  font-weight:bold;
+  background-color: #CCFFFF;
+  border: 1px solid #0099CC;
+  padding:5px 0px 5px 0px;
+  float:right;
+  margin:15px -23px 0px 0px;
+}
+h1.quiz_title {
+  white-space:nowrap;
+  margin:0;
+}

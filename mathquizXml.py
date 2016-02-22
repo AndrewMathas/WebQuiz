@@ -1,5 +1,5 @@
-"""  xmlquiz.py | 2001-03-21     | Don Taylor
-                  2004 Version 3 | Andrew Mathas
+"""  mathquizXml.py | 2001-03-21     | Don Taylor
+                      2004 Version 3 | Andrew Mathas
 
      Convert an XML quiz description to a tree of Python objects
      whose structure reflects the DTD (quiz.dtd)
@@ -20,7 +20,7 @@
 import sys, getopt
 from xml.sax import saxlib, saxexts
 
-VERSION = "xmlquiz.py 2.0"
+VERSION = "mathquizXml.py 4.3"
 DEBUG = 0
 
 def main():
@@ -176,9 +176,14 @@ class XMLaction( SAXinterface ):
   def quiz_START( self, attrs ):
     self.root = Quiz()
     self.position = self.root
+    self.position.title=attrs.get('title','default')
+    self.position.breadCrumb=attrs.get('breadCrumb','default')
+    self.position.src=attrs.get('src','default')
 
   def meta_START( self, attrs ):
     addAttrs(self.position.metaList,attrs)
+    if DEBUG:
+	print "META start %s\n" % attrs
 
   def link_START( self, attrs ):
     addAttrs(self.position.linkList,attrs)
@@ -188,9 +193,6 @@ class XMLaction( SAXinterface ):
 
   def course_START( self, attrs ):
     addAttrs(self.position.course,attrs)
-
-  def title_END( self ):
-    self.position.title = self.text
 
   def question_START( self, attrs ):
     q = Question(self.position)
@@ -283,7 +285,7 @@ class Node:
 
 
 class Quiz(Node):
-  """<!ELEMENT quiz (meta*, link*, title, question*)>
+  """<!ELEMENT quiz (title, breadCrumb, meta*, link*, question*)>
      <!ELEMENT title (#PCDATA)>
   """
   def __init__(self):
@@ -292,7 +294,6 @@ class Quiz(Node):
     self.linkList = []
     self.quizList = []
     self.course= []
-    self.title = ""
     self.discussionList = []
     self.questionList = []
 

@@ -1,13 +1,13 @@
 <!--
-    $Id: quiz2html.dtd,v 1.4 2003/01/27 13:29:00 don Exp $
+    $Id: mathquiz.dtd,v 1.4 2003/01/27 13:29:00 don Exp $
 
     This is the DTD for Multiple Choice Quizzes.
 
     Author: Don Taylor & Andrew Mathas
 
-    2004/01/08 Version 3.0  - added discussion and quizlist elements 
-    2003/01/08 Version 2.0  
-    2002/11/26 Version 2.0  
+    2004/01/08 Version 3.0  - added discussion and quizlist elements
+    2003/01/08 Version 2.0
+    2002/11/26 Version 2.0
     2001/03/21 Version 1.2
 
 -->
@@ -19,7 +19,10 @@
 -->
 
 <!ELEMENT quiz
-(meta*,link*,title,course,(quizlist|question*,discussion?))>
+    title       #PCDATA #REQUIRED
+    breadCrumb  #PCDATA #REQUIRED
+    src         #PCDATA #REQUIRED
+(meta*,link*,course,(quizlist|question*,discussion?))>
 
 <!ELEMENT meta EMPTY>
 <!ATTLIST meta
@@ -35,14 +38,14 @@
   rel         CDATA     #IMPLIED
   target      CDATA     #IMPLIED
 >
-<!ELEMENT title (#PCDATA)>
 <!ELEMENT course >
-<!ATTLIST course 
-    code      #PCDATA #REQUIRED
-    name      #PCDATA #REQUIRED
-    quizzes   #PCDATA #REQUIRED
-    url       #PCDATA #REQUIRED
-    src       #PCDATA #REQUIRED
+<!ATTLIST course
+    code        #PCDATA #REQUIRED
+    name        #PCDATA #REQUIRED
+    quizzes     #PCDATA #REQUIRED
+    url         #PCDATA #REQUIRED
+    department  #PCDATA #REQUIRED
+    university  #PCDATA #REQUIRED
 >
 <!ELEMENT quizlist (quizitem*)>
 <!ELEMENT quizlistitem EMPTY>
@@ -66,4 +69,3 @@
 <!ELEMENT response %Flow;>
 <!ELEMENT whenRight %Flow;>
 <!ELEMENT whenWrong %Flow;>
-

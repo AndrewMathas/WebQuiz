@@ -1,0 +1,65 @@
+a {	font-family: Verdana, Arial, Helvetica, sans-serif; color : #0033CC;}
+table, td, p, li, lo {   font-family: Verdana, Arial, Helvetica, sans-serif; }
+
+table.role {font-size: 90%; background-color : #39628B;    }
+td.role {  font-size: 90%;  font-weight: bold; color: #FFFFCC; }
+
+td.global {  font-size:65%; color: #336699; font-weight: bold;  }
+a:hover.global {   text-decoration: underline; color: #336699;}
+a:link.global { text-decoration: none;color: #336699;}
+a:active.global  {  text-decoration: none; color: #336699;}
+a.global {  text-decoration: none; color: #336699;}
+
+td.breadcrumb {  font-size:65%; color: #336699}
+a.breadcrumb {color: #336699}
+a:link.breadcrumb {color: #336699}
+
+test input.search { font-size:90%;  font-weight: bold; color: #336699; background: #FFFFFF; border: solid #CCCC66;}
+ td.search { font-size: 65%; font-weight: bold; color: #336699; }
+
+td.tabnames {font-size: 75%; color: #FFFFFF; text-decoration: none;  font-weight : normal;  background-color :#39628B;   }
+td.tabnamesin {font-size: 75%; color: #FFFFFF; text-decoration: none;  font-weight : normal;  background-color :#AB2730 ;   }
+a:link.tabnames {color: #FFFFFF; text-decoration: none; }
+a:hover.tabnames {color:#FFD52E; text-decoration: none; }
+a:active.tabnames { color: #FFFFFF; text-decoration: none; }
+a.tabnames { color: #FFFFFF; text-decoration: none; }
+
+td.content {font-size:80%; }
+.content table {font-size:100%; }
+.content table .subheader {font-size:90%;background-color : #FAF8EC; }
+td.content a:visited {	font-family: Verdana, Arial, Helvetica, sans-serif; color : #990099;}
+
+.header {  font-size: 100%; font-weight: bold; color: #993333;}
+h1  {  font-size: 100%; font-weight: bold; color: #993333;}
+.headerblue {  font-size: 90%; font-weight: bold; color: #38628A;}
+
+table.subheader {  background-color : #CCCC66;  }
+.subheader {  font-size: 80%; font-weight: bold; color: #336699;  background-color : #FAF8EC;  }
+
+.footer {   font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; color: #999933;  text-decoration: none}
+.footer a:visited { color : #990099;}
+
+td.nav { background-color : #FFF3D9;   }
+table.nav { font-size: 90%;   }
+a:link.nav {font-size: 90%; color: #993333; text-decoration: none; }
+a:hover.nav {font-size: 90%; color:#336699; text-decoration: underline; }
+a:active.nav { font-size: 90%; color: #993333; text-decoration: none; }
+a.nav { font-size: 90%; color: #993333; text-decoration: none; }
+
+td.navselectedsub table { font-size: 100%;   }
+td.navselected  { background-color : White;  font-weight : bold; font-size : 90%;}
+td.navselectedsub { background-color : #FFFCF0;}
+td.navselectedsubIn { background-color : #FFFCF0;}
+td.menuDivLine { background-color : #EFE9C2;}
+
+table.feature {  background-color : #CCCC66;}
+.headerright {   font-size: 80%; color:  #993333; font-weight: bold}
+
+td.relatedlink p, td.relatedlink div, td.relatedlink ol, td.relatedlink table tr td  { font-size: 80%; color: #000000}
+a.relatedlink { color: #0033CC}
+td.relatedlink a:visited { color : #990099;}
+
+th {  font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 90%; font-weight: bold; color: #FFFFCC;  background-color : #38628A;  text-align : left; padding-left: 5px; padding-right: 5px}
+table.tabledata {  background-color : #CCCC33;}
+
+td img.decor {display: block;}
