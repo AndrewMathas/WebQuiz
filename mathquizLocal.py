@@ -1,18 +1,25 @@
-#!/usr/bin/python
-"""  mathquizConfig.py | 2005 Version 4.3 | Andrew Mathas
-     2010 minor hacking by Bob Howlett
+r"""  mathquizLocal.py | 2010 Version 4.5 | Andrew Mathas and Donald Taylor
 
-     Python configuration file for the mathquiz system. This
-     file controls the local components of the quiz page.
+     Specifies default printing of mathquiz web pages.
+
+#*****************************************************************************
+#       Copyright (C) 2004-2010 Andrew Mathas and Donald Taylor
+#                          University of Sydney
+#
+#  Distributed under the terms of the GNU General Public License (GPL)
+#                  http://www.gnu.org/licenses/
+#
+# This file is part of the MathQuiz system.
+#
+# Copyright (C) 2004-2010 by the School of Mathematics and Statistics
+# <Andrew.Mathas@sydney.edu.au>
+# <Donald.Taylor@sydney.edu.au>
+#*****************************************************************************
 """
+
 import string
 
 # -----------------------------------------------------
-
-# A relative URL which specifies the location of mathquizzes
-# system files on the web server.
-MathQuizURL="/u/MOW/MathQuiz/"
-Images=MathQuizURL+'Images/'
 
 NoScript = """
 <noscript><div style="margin:0px 10px 0px 10px; padding:0"><b>If you are reading this message either your

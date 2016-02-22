@@ -1,10 +1,24 @@
-#!/usr/bin/python
-"""  mathquizConfig.py | 2005 Version 4.3 | Andrew Mathas
-     2010 minor hacking by Bob Howlett
+r"""  mathquizSMS.py | 2005 Version 4.5 | Andrew Mathas
+                       2010 made "update" compatible by Bob Howlett
 
      Python configuration file for the mathquiz system. This
      file controls the local components of the quiz page.
+
+#*****************************************************************************
+#       Copyright (C) 2004-2010 Andrew Mathas and Donald Taylor
+#                          University of Sydney
+#
+#  Distributed under the terms of the GNU General Public License (GPL)
+#                  http://www.gnu.org/licenses/
+#
+# This file is part of the MathQuiz system.
+#
+# Copyright (C) 2004-2010 by the School of Mathematics and Statistics
+# <Andrew.Mathas@sydney.edu.au>
+# <Donald.Taylor@sydney.edu.au>
+#*****************************************************************************
 """
+
 import writepagenew, string
 
 # -----------------------------------------------------

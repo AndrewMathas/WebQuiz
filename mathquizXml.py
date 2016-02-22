@@ -1,8 +1,9 @@
-"""  mathquizXml.py | 2001-03-21     | Don Taylor
-                      2004 Version 3 | Andrew Mathas
+r"""  mathquizXml.py | 2001-03-21       | Don Taylor
+                       2004 Revisions   | Andrew Mathas
+                       2010 Version 4.5 | Updated and streamlined in many respects
 
      Convert an XML quiz description to a tree of Python objects
-     whose structure reflects the DTD (quiz.dtd)
+     whose structure reflects the DTD (mathquiz.dtd)
 
      Command line options:
 
@@ -16,11 +17,25 @@
 
      History:
        26 Jan 03  Add support for <meta> and <link> elements
+       May 2004   Expanded allowable xml tags and syntax
+
+#*****************************************************************************
+#       Copyright (C) 2004-2010 Andrew Mathas and Donald Taylor
+#                          University of Sydney
+#
+#  Distributed under the terms of the GNU General Public License (GPL)
+#                  http://www.gnu.org/licenses/
+#
+# This file is part of the MathQuiz system.
+#
+# Copyright (C) 2004-2010 by the School of Mathematics and Statistics
+# <Andrew.Mathas@sydney.edu.au>
+# <Donald.Taylor@sydney.edu.au>
+#*****************************************************************************
 """
 import sys, getopt
-from xml.sax import saxlib, saxexts
+from xml.sax import handler, make_parser
 
-VERSION = "mathquizXml.py 4.3"
 DEBUG = 0
 
 def main():
@@ -64,16 +79,16 @@ def main():
   quiz.accept(xmlWriter())
 
 def DocumentTree(infile):
-  parser = saxexts.make_parser()
+  parser = make_parser()
   dh = XMLaction()
-  parser.setDocumentHandler(dh)
+  parser.setContentHandler(dh)
   parser.setErrorHandler(dh)
-  parser.parseFile(infile)
-  parser.close()
+  parser.parse(infile)
+  #parser.close()
   return dh.root
 
 def addAttrs(lst,attrs):
-  lst.append(attrs.map.copy())
+  lst.append(attrs)
 
 #@-- Not presently used
 def asString(tag,lst):
@@ -98,7 +113,7 @@ def strval(ustr):
 # The HandlerBase class inherits from:
 #  DocumentHandler, DTDHandler, EntityResolver, ErrorHandler
 # -----------------------------------------------------
-class SAXinterface( saxlib.HandlerBase ):
+class SAXinterface( handler.ContentHandler ):
   "Provides generic callback methods for the SAX interface"
 
   def __init__(self):
@@ -110,7 +125,7 @@ class SAXinterface( saxlib.HandlerBase ):
 
   def startElement(self, name, attrs):
     self.text= ''
-    self.level = self.level + 1
+    self.level += 1
     method = name + "_START"
     if DEBUG:
       print 'Looking for', method
@@ -119,9 +134,9 @@ class SAXinterface( saxlib.HandlerBase ):
     else:
       self.default_START(name,attrs)
 
-  def characters(self,cdata,start,length):
+  def characters(self,chars): #data,start,length):
     if self.level > 0:
-      self.text += cdata[start:start+length]
+      self.text +=chars # cdata[start:start+length]
 
   def endElement(self,name):
     self.level = self.level-1
@@ -153,7 +168,7 @@ class SAXinterface( saxlib.HandlerBase ):
 
 # -----------------------------------------------------
 class XMLaction( SAXinterface ):
-  """provides callbacks for all the entities in quiz.dtd.
+  """provides callbacks for all the entities in mathquiz.dtd.
      These methods manage the construction of the document tree.
 
      The SAXinterface provides a dictionary of attributes when it
@@ -478,7 +493,7 @@ class xmlWriter(nodeVisitor):
 
   def forQuiz(self,node):
     print '<?xml version="1.0" encoding="iso-8859-1"?>'
-    print '<!DOCTYPE quiz SYSTEM "quiz.dtd">'
+    print '<!DOCTYPE quiz SYSTEM "mathquiz.dtd">' 
     print '<quiz>'
     for p in node.metaList:
       s = '<meta'

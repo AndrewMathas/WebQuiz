@@ -154,12 +154,12 @@ function nextQuestion (increment) {
     else if (q>totalQ) q=1;
   } while (q!=currentQ && correct[q-1] );
   if (q==currentQ) 
-    alert("There are no more unwrongAnswers questions");
+    alert("There are no more unanswered questions");
   else {
     if ( increment==1 ) {
-      self.status = 'Question '+q+' is the next unwrongAnswers question';
+      self.status = 'Question '+q+' is the next unanswered question';
     } else {
-      self.status = 'Question '+q+' was the last unwrongAnswers question';
+      self.status = 'Question '+q+' was the last unanswered question';
     }
     gotoQuestion( q );
   }
@@ -168,8 +168,8 @@ function nextQuestion (increment) {
 // nextQuestion + calls to navOver and navOut
 function NextQuestion(increment) {
   var q=currentQ+increment;
-  if (increment==1) { image='nextpage'; msg='Next unwrongAnswers question';
-  } else { image ='prevpage'; msg='Last unwrongAnswers question' ;
+  if (increment==1) { image='nextpage'; msg='Next unanswered question';
+  } else { image ='prevpage'; msg='Last unanswered question' ;
   }
   navOut(image);
   nextQuestion(increment);
