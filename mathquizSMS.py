@@ -1,11 +1,11 @@
-r"""  mathquizSMS.py | Version 4.6 | Andrew Mathas
-                       2010 made "update" compatible by Bob Howlett
+r"""  mathquizSMS.py | Version 4.7 | Andrew Mathas
+      2010 made "update" compatible by Bob Howlett
 
      Python configuration file for the mathquiz system. This
      file controls the local components of the quiz page.
 
 #*****************************************************************************
-#       Copyright (C) 2004-2010 Andrew Mathas and Donald Taylor
+#       Copyright (C) 2004-2016 Andrew Mathas and Donald Taylor
 #                          University of Sydney
 #
 #  Distributed under the terms of the GNU General Public License (GPL)

@@ -1,9 +1,9 @@
-r"""  mathquizLocal.py | 2012 Version 4.6 | Andrew Mathas and Donald Taylor
+r"""  mathquizLocal.py | 2016 Version 4.7 | Andrew Mathas and Donald Taylor
 
      Specifies default printing of mathquiz web pages.
 
 #*****************************************************************************
-#       Copyright (C) 2004-2012 Andrew Mathas and Donald Taylor
+#       Copyright (C) 2004-2016 Andrew Mathas and Donald Taylor
 #                          University of Sydney
 #
 #  Distributed under the terms of the GNU General Public License (GPL)

@@ -2,9 +2,10 @@ r"""  MathQuiz.py | 2001-03-21       | Don Taylor
                     2004 Version 3   | Andrew Mathas
                     2010 Version 4.5 | Updated and streamlined in many respects
                     2012 Version 4.6 | Updated to use MathML 
+                    2016 Version 4.7 | Updated to use MathJax 
 
 #*****************************************************************************
-#       Copyright (C) 2004-2010 Andrew Mathas and Donald Taylor
+#       Copyright (C) 2004-2016 Andrew Mathas and Donald Taylor
 #                          University of Sydney
 #
 #  Distributed under the terms of the GNU General Public License (GPL)
@@ -12,7 +13,7 @@ r"""  MathQuiz.py | 2001-03-21       | Don Taylor
 #
 # This file is part of the MathQuiz system.
 #
-# Copyright (C) 2004-2010 by the School of Mathematics and Statistics
+# Copyright (C) 2004-2016 by the School of Mathematics and Statistics
 % <Daniel.Daners@sydney.edu.au>
 # <Andrew.Mathas@sydney.edu.au>
 # <Donald.Taylor@sydney.edu.au>
@@ -50,10 +51,10 @@ def main():
   # ------------------------------
   # parse the command line options
   # ------------------------------
-  usage="Usage: %s [--local <local xml file>] [--format format] [--url MathQuizURL] <filename>" % sys.argv[0]
+  usage="Usage: %s [--local <local xml file>] [--format format] --url MathQuizURL <directory>" % sys.argv[0]
   parser = OptionParser(usage='Usage: mathquiz [--local <local page file>] --url MathQuizURL <xmlfile> <target>',
                         version=VERSION)
-  parser.add_option('-u','--url',action='store',type='string',dest='MathQuizURL',default="/MathQuiz",
+  parser.add_option('-u','--url',action='store',type='string',dest='MathQuizURL',default="/MathQuiz/",
       help='relative URL for MathQuiz web files '
   )
   parser.add_option('-l','--local',action='store',type='string',dest='localXML',default="mathquizLocal",
@@ -75,7 +76,14 @@ def main():
   # -----------------------------------------------------
   localPageStyle=__import__(options.localXML)
   printQuizPage = localPageStyle.printQuizPage
+
+  # make sure that MathQuizURL ends with / and not //
   MathQuizURL=options.MathQuizURL
+  if MathQuizURL[-1] !='/': 
+      MathQuizURL+='/'
+  elif MathQuizURL[-2:]=='//':
+      MathQuizURL=MathQuizURL[:len(MathQuizURL)-1]
+  # images
   Images = MathQuizURL + 'Images/'
 
   try:
@@ -177,7 +185,7 @@ class TeXWriter(mathquizXml.nodeVisitor):
 # Generic CSS templates for the questions and responses
 Qgeometry = """    {
       z-index: 0;
-      margin:  2ex 0ex 0ex 0ex;
+      margin: 2ex 0ex 0ex 0ex;
       padding: 0ex 0ex 0ex 0ex;
 """
 
@@ -224,13 +232,13 @@ class html(dict):
       self.header+= '<meta'
       for k in attr.keys():
         self.header+= ' %s="%s"' % (k, attr[k])
-      self.header+= '/>\n'
-    self.header+="""<meta name="organization" content="School of Mathematics and Statistics, University of Sydney"/>
-<meta name="Copyright" content="University of Sydney 2004-2010"/>
-<meta name="GENERATOR" content="%s"/>
-<meta name="AUTHORS" content="Andrew Mathas and Don Taylor"/>
-<link href="%smathquiz.css" type="text/css" rel="stylesheet"/>
-<!--
+      self.header+= '>\n'
+    self.header+="""  <meta name="organization" content="School of Mathematics and Statistics, University of Sydney">
+  <meta name="Copyright" content="University of Sydney 2004-2016">
+  <meta name="GENERATOR" content="%s">
+  <meta name="AUTHORS" content="Andrew Mathas and Don Taylor">
+  <link href="%smathquiz.css" type="text/css" rel="stylesheet">
+  <!--
   By reading through this file you should be able to extract the
   answers to the quiz; however, you will get more out of the quiz if
   you do the questions yourself. Of course, you are free to read the
@@ -297,9 +305,9 @@ class html(dict):
         dnum+=1
         self.side_menu+= """  <li class="discussion">
      <a href="javascript:void(0);"
-        onmouseover="window.status=\'%s\'; return true;"
-        onmouseout="window.status=\'\'; return true;"
-        onclick="return gotoQuestion(-%d);">
+        onMouseOver="window.status=\'%s\'; return true;"
+        onMouseOut="window.status=\'\'; return true;"
+        onClick="return gotoQuestion(-%d);">
           %s
      </a>
   </li>
@@ -311,7 +319,7 @@ class html(dict):
         <td colspan="3" class="header">Questions:</td>
   </tr>
   <tr valign="top">
-    <td ><a href="javascript:void(0);" onmouseover="window.status=\'Question 1\';return true;" onclick="return gotoQuestion(1);">
+    <td ><a href="javascript:void(0);" onMouseOver="window.status=\'Question 1\';return true;" onClick="return gotoQuestion(1);">
   """
       if len(doc.discussionList)==0: firstimage='%sborder1.gif' % Images
       else: firstimage='%sclear1.gif' % Images
@@ -319,8 +327,8 @@ class html(dict):
       self.side_menu+= '       style="height:31px;width:31px;padding:2px;"/></a>\n'
       for i in range(2,self.qTotal+1):
         if i % 2 == 1: self.side_menu+= '<br/>\n'
-        self.side_menu+= '''<a href="javascript:void(0);" onclick="return gotoQuestion(%d);"\n''' % i
-        self.side_menu+= '   onmouseover="window.status=\'Question %d\';return true;">\n' % i
+        self.side_menu+= '''<a href="javascript:void(0);" onClick="return gotoQuestion(%d);"\n''' % i
+        self.side_menu+= '   onMouseOver="window.status=\'Question %d\';return true;">\n' % i
         self.side_menu+= '<img alt="" src="%sclear%d.gif" id="progress%d" style="height:31px;width:31px;padding:2px;"/></a>\n' % (Images,i,i)
       self.side_menu+= '                 </td></tr>\n'
       imgTag = '    <tr><td %s><img alt="" src="'+Images+'%s.gif" %s/>\n'
@@ -334,18 +342,18 @@ class html(dict):
     self.side_menu+= """
     <div style="text-align:center;" id="copy">
       <a href="http://www.maths.usyd.edu.au/u/MOW/MathQuiz/doc/credits.html"
-         onmouseover="window.status='%s'; return true">
+         onMouseOver="window.status='%s'; return true">
          <b>%s</b></a><br/>
            <a href="http://www.usyd.edu.au"
-              onmouseover="window.status='University of Sydney'; return true">
+              onMouseOver="window.status='University of Sydney'; return true">
               University of Sydney
   	 </a><br/>
   	   <a href="http://www.maths.usyd.edu.au"
-                onmouseover="window.status='School of Mathematics and Statistics'; return true">
+                onMouseOver="window.status='School of Mathematics and Statistics'; return true">
            School of Mathematics<br/> and Statistics
              </a>
   	<br/>
-  	&copy; Copyright 2004-2010
+  	&copy; Copyright 2004-2016
     </div>
     <!-- end of side self.side_menu -->""" % ( VERSION, VERSION )
 
@@ -386,12 +394,12 @@ class html(dict):
     if len(doc.questionList)>0:
       self.pagebody+= '''  <div  class="ArrowQuestion">
     <span class="ArrowQuestion">
-    <a onmouseover="return navOver('prevpage','Last unanswered question');"
-       onmouseout="return navOut('prevpage');" onclick="NextQuestion(-1);"
+    <a onMouseOver="return navOver('prevpage','Last unanswered question');"
+       onmouseout="return navOut('prevpage');" onClick="NextQuestion(-1);"
        title="Last unanswered question"><img src=\"'''+Images+'''nn-prevpage.gif" alt="Last unanswered question"
           id="prevpage" name="prevpage" style="vertical-align:-20%; border:0; height:15px;width:32px;"/></a> &nbsp;Question&nbsp;
-     <a onmouseover="return navOver('nextpage','Next unanswered question');"
-        onmouseout="return navOut('nextpage');" onclick="NextQuestion(1);"
+     <a onMouseOver="return navOver('nextpage','Next unanswered question');"
+        onmouseout="return navOut('nextpage');" onClick="NextQuestion(1);"
         title="Next unanswered question"><img src=\"'''+Images+'''nn-nextpage.gif" alt="Next unanswered question"
           id="nextpage" name="nextpage" style="vertical-align:-20%; border:0; height:15px;width:32px;"/></a>
      </span>
@@ -407,7 +415,7 @@ class html(dict):
         self.pagebody+= '    <p>%s</p>\n\n\n' % strval(d.discussion)
         if len(doc.questionList)>0 and dnum==len(doc.discussionList):
           self.pagebody+= '  <input type="button" name="next" value="Start quiz"\n\n'
-          self.pagebody+= '''       onclick="return gotoQuestion(1);"/>\n'''
+          self.pagebody+= '''       onClick="return gotoQuestion(1);"/>\n'''
         self.pagebody+= '  </div>\n'
     # index for quiz
     if len(doc.quizList)>0:
@@ -420,7 +428,7 @@ class html(dict):
       quizmenu.write("var QuizTitles = [\n")
       for q in doc.quizList:
         qnum+=1
-        self.pagebody+= """    <li class="QuizList"><a href="%s" onmouseover="window.status='%s'; return true" onmouseout="window.status=''; return true">
+        self.pagebody+= """    <li class="QuizList"><a href="%s" onMouseOver="window.status='%s'; return true" onmouseout="window.status=''; return true">
     %s
   </a></li>
   """ % (q['url'], q['title'], q['title'])
@@ -444,11 +452,12 @@ class html(dict):
     <div class="QText">
       %s
     </div>
-    <form id="Q%dForm" action="" onsubmit="return false;"><div>
+    <form id="Q%dForm" action="" onSubmit="return false;">
+    <div>
 """% (n,strval(Q.question),n)
     snum = 0
     if isinstance(Q.answer,mathquizXml.Answer):
-      question+= '    <p/><input type="text"  onchange="checkanswer();" size="5"/>\n'
+      question+= '    <p/><input type="text"  onChange="checkanswer();" size="5"/>\n'
       if Q.answer.tag: question+= '    <span class="QText"> ' + Q.answer.tag +'</span>\n'
     else:
       question+= '    <table summary="List of question choices" class="question_choices">\n'
@@ -465,9 +474,10 @@ class html(dict):
     </td></tr>
 """ % n
       question+="    </table>\n"
-    question+="""    <p><input type="button" value="Check Answer" name="answer" onclick="checkAnswer();"/>
+    question+="""    <p>
+    <input type="button" value="Check Answer" name="answer" onClick="checkAnswer();"/>
     <span style="width:40px;">&nbsp;</span>
-    <input type="button" value="Next Question" name="next" onclick="nextQuestion(1);"/></p>
+    <input type="button" value="Next Question" name="next" onClick="nextQuestion(1);"/></p>
     </div></form>
 """
     return question

@@ -1,5 +1,5 @@
 //*****************************************************************************
-//       Copyright (C) 2004-2010 Andrew Mathas and Donald Taylor
+//       Copyright (C) 2004-2016 Andrew Mathas and Donald Taylor
 //                          University of Sydney
 //
 //  Distributed under the terms of the GNU General Public License (GPL)
@@ -30,7 +30,7 @@ var wrongAnswers = new Array();
 var correct  = new Array();
 
 // image arrays
-var Images      = "/u/MOW/MathQuiz/Images/";
+//var Images      = "/u/MOW/MathQuiz/Images/";
 var currentImage = new Array();
 var untouched    = new Array();
 var ticked       = new Array();

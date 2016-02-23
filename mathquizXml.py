@@ -2,6 +2,7 @@ r"""  mathquizXml.py | 2001-03-21       | Don Taylor
                        2004 Revisions   | Andrew Mathas
                        2010 Version 4.5 | Updated and streamlined 
                        2012 Version 4.6
+                       2016 Version 4.7
 
      Convert an XML quiz description to a tree of Python objects
      whose structure reflects the DTD (mathquiz.dtd)
@@ -21,7 +22,7 @@ r"""  mathquizXml.py | 2001-03-21       | Don Taylor
        May 2004   Expanded allowable xml tags and syntax
 
 #*****************************************************************************
-#       Copyright (C) 2004-2010 Andrew Mathas and Donald Taylor
+#       Copyright (C) 2004-2016 Andrew Mathas and Donald Taylor
 #                          University of Sydney
 #
 #  Distributed under the terms of the GNU General Public License (GPL)
