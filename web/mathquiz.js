@@ -1,6 +1,16 @@
-// $Id: common.js,v 1.4 2003/01/28 22:57:31 don Exp $
-// mathquiz.js | 2004-01-20 | Andrew Mathas | version 3.0
-// common.js   | 2002-09-29 | Don Taylor    | version 2.0
+//*****************************************************************************
+//       Copyright (C) 2004-2010 Andrew Mathas and Donald Taylor
+//                          University of Sydney
+//
+//  Distributed under the terms of the GNU General Public License (GPL)
+//                  http://www.gnu.org/licenses/
+//
+// This file is part of the MathQuiz system.
+// 
+// Copyright (C) 2004-2010 by the School of Mathematics and Statistics
+// <Andrew.Mathas@sydney.edu.au>
+// <Donald.Taylor@sydney.edu.au>
+//*****************************************************************************
 
 // 27 Jan 03
 // At the moment this is a mix of old code that works
@@ -19,6 +29,17 @@ var currentRLayer;
 var wrongAnswers = new Array();
 var correct  = new Array();
 
+// image arrays
+var Images      = "/u/MOW/MathQuiz/Images/";
+var currentImage = new Array();
+var untouched    = new Array();
+var ticked       = new Array();
+var starred      = new Array();
+var crossed      = new Array();
+
+// QList will be an array of the expected responses for each question
+var QList = new Array();
+
 function getObject(str) {
   retval = null;
   if (document.getElementById) {
@@ -32,17 +53,6 @@ function getObject(str) {
   }
   return retval;
 }
-
-// image arrays
-var Images      = "/u/MOW/MathQuiz/Images/";
-var currentImage = new Array();
-var untouched    = new Array();
-var ticked       = new Array();
-var starred      = new Array();
-var crossed      = new Array();
-
-// QList will be an array of the expected responses for each question
-var QList = new Array();
 
 function MathQuizInit(num) {
   if (navigator.appName=="Netscape" && parseFloat(navigator.appVersion)<5) {
@@ -92,6 +102,8 @@ function MathQuizInit(num) {
     crossed[i-1] = new Image(31,31);
     crossed[i-1].src = Images+"cross"+i+".gif";
   }
+  document['nextpage']=new Image()
+  document['prevpage']=new Image()
   window.status="Finished loading";
 }
 // for hysterical reasons
@@ -104,14 +116,14 @@ function init(num) {
 function showQLayer(newQ) { // newQ is an integer
   hideRLayer();
   if (isDOM) {
-    getObject('question'+currentQ).visibility = 'hidden';
+    getObject('question'+currentQ).display = 'none';
     currentQ = newQ;
-    getObject('question'+currentQ).visibility = 'visible';
+    getObject('question'+currentQ).display = 'block';
   }
   else {
-    eval(layerRef + "['question" + currentQ + "']" + styleRef + ".visibility = 'hidden'");
+    eval(layerRef + "['question" + currentQ + "']" + styleRef + ".display = 'none'");
     currentQ = newQ;
-    eval(layerRef + "['question" + currentQ + "']" + styleRef + ".visibility = 'visible'");
+    eval(layerRef + "['question" + currentQ + "']" + styleRef + ".display = 'block'");
   }
 }
 
@@ -120,9 +132,9 @@ function showQLayer(newQ) { // newQ is an integer
 function hideRLayer() {
   if (currentRLayer != null) {
     if (isDOM)
-      currentRLayer.visibility = 'hidden';
+      currentRLayer.display = 'none';
     else
-      eval(currentRLayer + styleRef + ".visibility = 'hidden'");
+      eval(currentRLayer + styleRef + ".display = 'none'");
   }
 }
 
@@ -130,12 +142,12 @@ function showRLayer(tag) {
   hideRLayer()
   if (isDOM) {
     currentRLayer = getObject(tag);
-    currentRLayer.visibility = 'visible';
+    currentRLayer.display = 'block';
   } 
   else {
     currentRLayer = layerRef+"['question"+currentQ+"']."+layerRef+"['answer"+currentQ+"']."
       +layerRef+"['"+tag+"']";
-    eval(currentRLayer + styleRef + ".visibility = 'visible'");
+    eval(currentRLayer + styleRef + ".display = 'block'");
   }
 }
 

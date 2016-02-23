@@ -1,9 +1,9 @@
-r"""  mathquizLocal.py | 2010 Version 4.5 | Andrew Mathas and Donald Taylor
+r"""  mathquizLocal.py | 2012 Version 4.6 | Andrew Mathas and Donald Taylor
 
      Specifies default printing of mathquiz web pages.
 
 #*****************************************************************************
-#       Copyright (C) 2004-2010 Andrew Mathas and Donald Taylor
+#       Copyright (C) 2004-2012 Andrew Mathas and Donald Taylor
 #                          University of Sydney
 #
 #  Distributed under the terms of the GNU General Public License (GPL)
@@ -11,7 +11,7 @@ r"""  mathquizLocal.py | 2010 Version 4.5 | Andrew Mathas and Donald Taylor
 #
 # This file is part of the MathQuiz system.
 #
-# Copyright (C) 2004-2010 by the School of Mathematics and Statistics
+# Copyright (C) 2004-2012 by the School of Mathematics and Statistics
 # <Andrew.Mathas@sydney.edu.au>
 # <Donald.Taylor@sydney.edu.au>
 #*****************************************************************************
@@ -31,7 +31,10 @@ NoScript = """
 def printQuizPage(html, doc):
   breadCrumb='<a href="%s">%s</a> / <a href="%s">Quizzes</a> / %s' % (
                 html.course['url'],html.course['code'],html.course['url']+'Quizzes', doc.title)
-  quizPage="""<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+  print """<?xml version="1.0" encoding="iso-8859-1" ?>
+  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+  "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd" />
+  <html xmlns="http://www.w3.org/1999/xhtml" /> 
 <html>
 <head>
 <title>
@@ -77,4 +80,3 @@ def printQuizPage(html, doc):
               NoScript,                              # warning to enable javascript
               html.side_menu,                        # navigation menu for quiz
               html.pagebody )                        # html for quiz
-  print string.replace(quizPage,'/>','>')

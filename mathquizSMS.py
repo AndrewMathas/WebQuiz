@@ -1,4 +1,4 @@
-r"""  mathquizSMS.py | 2005 Version 4.5 | Andrew Mathas
+r"""  mathquizSMS.py | Version 4.6 | Andrew Mathas
                        2010 made "update" compatible by Bob Howlett
 
      Python configuration file for the mathquiz system. This
@@ -40,14 +40,14 @@ NoScript = """
 # stuff to go in the <head> ... </head> section of the page
 def initialise_SMS_Menus(quiz,course):
   if course['code']=="MATH1001":
-    content="MATH1001/1901<br>Quizzes"
+    content="MATH1001/1901<br/>Quizzes"
   elif course['code']=="MATH1002":
-    content="MATH1002/1902<br>Quizzes"
+    content="MATH1002/1902<br/>Quizzes"
   elif course['code']=="MATH1005":
-    content="MATH1005/1905<br>Quizzes"
+    content="MATH1005/1905<br/>Quizzes"
   else:
     content="%s Quizzes" % course['code']
-  hd="""  <script language="javascript" type="text/javascript">
+  hd="""  <script type="text/javascript">
   <!--
     var QuizURI='%sQuizzes'
     var QuizContents='%s'
@@ -55,10 +55,10 @@ def initialise_SMS_Menus(quiz,course):
   </script>
 """ % (course['url'],content)
   if quiz=="index":
-    hd += """  <script type="text/javascript" language="javascript" src="/u/SMS/web2010/js/ResearchSubmenu.js"></script>
-  <script type="text/javascript" language="javascript" src="/u/SMS/web2010/js/JMSubmenu.js"></script>
-  <script type="text/javascript" language="javascript" src="/u/SMS/web2010/js/IMSubmenu.js"></script>
-  <script type="text/javascript" language="javascript" src="/u/SMS/web2010/js/SMSubmenu.js"></script>
+    hd += """  <script type="text/javascript" src="/u/SMS/web2010/js/ResearchSubmenu.js"></script>
+  <script type="text/javascript" src="/u/SMS/web2010/js/JMSubmenu.js"></script>
+  <script type="text/javascript" src="/u/SMS/web2010/js/IMSubmenu.js"></script>
+  <script type="text/javascript" src="/u/SMS/web2010/js/SMSubmenu.js"></script>
   <script type="text/javascript" src="/u/SMS/web2010/js/QSubmenu.js"></script>
 """
   elif quiz in [ 'mathquiz-manual','credits']:
@@ -144,10 +144,11 @@ def printQuizPage(html, doc):
   page['UNIT_OF_STUDY,menuname']=sms_menu_name
   page['UNIT_OF_STUDY,pagetitle']=doc.title
   page['UNIT_OF_STUDY,title']= ''
+  page['UNIT_OF_STUDY,doctype']= 'mathml'
   page['meta_string']=html.header
   page['head_data_string']= html.javascript+initialise_SMS_Menus(doc.src,html.course)+html.css
   page['breadcrumbs_string']=SMS_breadcrumbs(doc, html.course)
   page['menu_string']=sms_menu+html.side_menu
   page['page_body_string']=html.pagebody
   page['nopreview'] = ''
-  print string.replace(writepagenew.processtemplate(page,{},courseurl[3:],pagename)[0],'/>','>')
+  print writepagenew.processtemplate(page,{},courseurl[3:],pagename)[0]
