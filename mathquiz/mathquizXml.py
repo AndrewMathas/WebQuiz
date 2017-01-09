@@ -39,50 +39,16 @@ import sys, getopt
 from xml.sax import handler, make_parser
 
 DEBUG = 0
-
-def main():
-  global DEBUG
-
-  def fail(msg = None):
-    if msg:
-      print msg
-    print 'Usage: %s [-d] <xml-file>' % sys.argv[0]
-    sys.exit(1)
-
-  if len(sys.argv) < 2:
-    fail()
-
-  try:
-    opts, files = getopt.getopt(sys.argv[1:],'d')
-  except getopt.GetoptError,e:
-    print >> sys.stderr, e
-    sys.exit(1)
-    
-  if not files:
-    fail()
-  for opt in opts:
-    if opt[0] == '-d':
-      DEBUG = 1
-
-  try:
-    f = open(files[0])
-  except IOError,e:
-    print >> sys.stderr, e
-    sys.exit(1)
-
-  quiz = DocumentTree(f)
-  f.close()
-
-  # The default action is to write out the file as xml
-  # This should have the same content as the input, but
-  # may differ in the order of attributes and the amount
-  # of white space.
-
-  quiz.accept(xmlWriter())
+if DEBUG:
+    def Debugging(*arg):
+        sys.stderr.write(*arg+'\n')
+else:
+    def Debugging(*arg):
+        pass
 
 def DocumentTree(infile):
-  parser = make_parser()
   dh = XMLaction()
+  parser = make_parser()
   parser.setContentHandler(dh)
   parser.setErrorHandler(dh)
   parser.parse(infile)
@@ -129,8 +95,7 @@ class SAXinterface( handler.ContentHandler ):
     self.text= ''
     self.level += 1
     method = name + "_START"
-    if DEBUG:
-      print 'Looking for', method
+    Debugging('Looking for '+ method)
     if hasattr(self,method):
       getattr(self,method)(attrs)
     else:
@@ -155,12 +120,10 @@ class SAXinterface( handler.ContentHandler ):
 #    print "<?"+target+" "+data+"?>"
 
   def default_START( self, name, attrs ):
-    if DEBUG:
-      print >> sys.stderr, 'START:', name
+    Debugging('START:', name)
 
   def default_END( self, name ):
-    if DEBUG:
-      print >> sys.stderr, 'END:', name
+    Debugging('END:', name)
 
   def error(self, e):
     raise e
@@ -199,8 +162,7 @@ class XMLaction( SAXinterface ):
 
   def meta_START( self, attrs ):
     addAttrs(self.position.metaList,attrs)
-    if DEBUG:
-	print "META start %s\n" % attrs
+    Debugging("META start %s\n" % attrs)
 
   def link_START( self, attrs ):
     addAttrs(self.position.linkList,attrs)
@@ -221,15 +183,15 @@ class XMLaction( SAXinterface ):
 
   def choice_START( self, attrs ):
     if self.position.answer:
-      print >> sys.stderr, "Processing halted. Multiple <choice>/<answer> tags"
-      sys.exit(1)
+        sys.stderr.write("Processing halted. Multiple <choice>/<answer> tags\n")
+        sys.exit(1)
     self.position.answer=Choice(self.position,attrs.get('type'),attrs.get('cols'))
     self.position = self.position.answer
 
   def answer_START( self, attrs ):
     if self.position.answer:
-      print >> sys.stderr, "Processing halted. Multiple <choice>/<answer> tags"
-      sys.exit(1)
+        sys.stderr.write("Processing halted. Multiple <choice>/<answer> tags\n")
+        sys.exit(1)
     self.position.answer = Answer(self.position,attrs.get('value'))
     self.position = self.position.answer
 
@@ -271,8 +233,7 @@ class XMLaction( SAXinterface ):
     self.position = self.position.parent
 
   def quiz_END( self ):
-    if DEBUG:
-      print 'level =', self.level
+    Debugging('level =', self.level)
 
 # -----------------------------------------------------
 #  DTD structure
@@ -285,11 +246,8 @@ class XMLaction( SAXinterface ):
 class Node:
   def __init__(self,parent = None):
     self.parent = parent
-    if DEBUG:
-      if parent:
-        print self.__class__.__name__, parent.__class__.__name__
-      else:
-        print self.__class__.__name__
+    Debugging('Node: class={}, parent={}'.format(self.__class__.__name__,
+        parent.__class__.__name__ if parent else ''))
 
   def accept(self,visitor):
     pass
@@ -544,8 +502,4 @@ class xmlWriter(nodeVisitor):
     if node.response:
       print '      <response><![CDATA[%s]]></response>' % strval(node.response)
     print '    </item>'
-
-# =====================================================
-if __name__ == '__main__':
-  main()
 
