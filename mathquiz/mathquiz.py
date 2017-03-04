@@ -1,11 +1,11 @@
 r"""  MathQuiz.py | 2001-03-21       | Don Taylor
                     2004 Version 3   | Andrew Mathas
                     2010 Version 4.5 | Updated and streamlined in many respects
-                    2012 Version 4.6 | Updated to use MathML 
-                    2016 Version 4.7 | Updated to use MathJax 
+                    2012 Version 4.6 | Updated to use MathML
+                    2017 Version 5.0 | Updated to use MathJax
 
 #*****************************************************************************
-#       Copyright (C) 2004-2016 Andrew Mathas and Donald Taylor
+#       Copyright (C) 2004-2017 Andrew Mathas and Donald Taylor
 #                          University of Sydney
 #
 #  Distributed under the terms of the GNU General Public License (GPL)
@@ -13,8 +13,7 @@ r"""  MathQuiz.py | 2001-03-21       | Don Taylor
 #
 # This file is part of the MathQuiz system.
 #
-# Copyright (C) 2004-2016 by the School of Mathematics and Statistics
-% <Daniel.Daners@sydney.edu.au>
+# Copyright (C) 2004-2017 by the School of Mathematics and Statistics
 # <Andrew.Mathas@sydney.edu.au>
 # <Donald.Taylor@sydney.edu.au>
 #*****************************************************************************
@@ -22,7 +21,7 @@ r"""  MathQuiz.py | 2001-03-21       | Don Taylor
 """
 
 # ----------------------------------------------------
-VERSION   = 'MathQuiz 4.6'
+VERSION   = 'MathQuiz 5.0'
 alphabet = " abcdefghijklmnopqrstuvwxyz"
 
 # -----------------------------------------------------
@@ -65,7 +64,7 @@ def main():
   )
   (options, args) = parser.parse_args()
   # if no filename then exit
-  if len(args)!=1: 
+  if len(args)!=1:
     print usage
     sys.exit(1)
   format_quiz=formats[options.format]
@@ -79,7 +78,7 @@ def main():
 
   # make sure that MathQuizURL ends with / and not //
   MathQuizURL=options.MathQuizURL
-  if MathQuizURL[-1] !='/': 
+  if MathQuizURL[-1] !='/':
       MathQuizURL+='/'
   elif MathQuizURL[-2:]=='//':
       MathQuizURL=MathQuizURL[:len(MathQuizURL)-1]
@@ -234,7 +233,7 @@ class html(dict):
         self.header+= ' %s="%s"' % (k, attr[k])
       self.header+= '>\n'
     self.header+="""  <meta name="organization" content="School of Mathematics and Statistics, University of Sydney">
-  <meta name="Copyright" content="University of Sydney 2004-2016">
+  <meta name="Copyright" content="University of Sydney 2004-2017">
   <meta name="GENERATOR" content="%s">
   <meta name="AUTHORS" content="Andrew Mathas and Don Taylor">
   <link href="%smathquiz.css" type="text/css" rel="stylesheet">
@@ -295,7 +294,7 @@ class html(dict):
         self.header+= Rgeometry
     self.header+='  -->\n</style>\n'
   # print the javascript variables holding the quiz solutions and responses
-  
+
   def add_side_menu(self,doc):
     """ construct the left hand quiz menu """
     if len(doc.discussionList)>0: # links for discussion items
@@ -353,7 +352,7 @@ class html(dict):
            School of Mathematics<br/> and Statistics
              </a>
   	<br/>
-  	&copy; Copyright 2004-2016
+  	&copy; Copyright 2004-2017
     </div>
     <!-- end of side self.side_menu -->""" % ( VERSION, VERSION )
 
@@ -366,7 +365,7 @@ class html(dict):
     self.javascript+="""  <script src="%smathquiz.js" type="text/javascript"></script>
   <script src="quiztitles.js" type="text/javascript"></script>
   <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-  </script> 
+  </script>
   <script type="text/javascript">
   <!--
     var currentQ=%s;
@@ -499,7 +498,7 @@ class html(dict):
       print >> sys.stderr, 'Unknown question type encountered:',S.parent.type
     if (n % S.parent.cols)==0 or n==len(S.parent.itemList): item+= '    </tr>\n'
     return item
-  
+
   def printResponse(self,Q,n):
     snum = 0
     response = '\n<div id="answer%d">\n' % n

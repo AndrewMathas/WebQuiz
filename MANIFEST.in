@@ -1,0 +1,8 @@
+include  AUTHORS README.rst MANIFEST.in changes.rst
+recursive-include mathquiz/*.py
+recursive-include doc/*.tex
+include latex/mathquiz.cfg  latex/mathquiz.cls
+include css/mathquiz.css
+include javascript/mathquiz.js
+recursive-include Images/*.gif
+

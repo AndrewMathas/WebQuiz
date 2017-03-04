@@ -28,6 +28,7 @@ This package implements a way of writing on-line quizzes using latex.
 import os
 import sys
 from setuptools import setup, find_packages
+from setuptools.command.install import install
 from setuptools.command.test import test as TestCommand
 from codecs import open
 
@@ -37,15 +38,33 @@ here = os.path.abspath(os.path.dirname(__file__))
 with open(os.path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
+class MathQuizInstall(install):
+    r"""
+    We custom install class in order to be able to dynamically set the 
+    location of the web directory.
+    """
+    def run(self):
+        install.run(self)
+
+
 setup(name             = 'MathQuiz',
       version          = '5.0',
       description      = 'Writing online quizzes using latex',
       long_description = long_description,
-      url              = '...todo...',
+      url              = 'http://www.maths.usyd.edu.au/u/MOW/MathQuiz/doc/mathquiz-manual.html',
       author           = 'Andrew Mathas',
       author_email     = 'andrew.mathas@sydney.edu.au',
 
       keywords         = 'quizes, latex, mathematics'
+
+      package_data     = {'webfiles' : '/
+
+      cmdclass         = {'install': MathQuizInstall},
+      entry_points={
+            'console_scripts': [
+                'mathquiz=magthquiz-wrapper:main',
+            ],
+      },
 
       license          = 'GNU General Public License, Version 3, 29 June 2007',
       classifiers      = [
