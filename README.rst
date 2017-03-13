@@ -1,6 +1,6 @@
 
-GradedSpecht: Code for computing inside graded Specht modules
-==============================================================
+MathQuiz: write on-line quizzes using _LaTeX
+============================================
 
 Installation
 ------------
@@ -11,6 +11,9 @@ From a terminal, run the command:
 
 and then follow the command promnpts to set the location of the web and latex
 directories. See the MathQuiz_ manual for more information.
+
+Local configuration
+-------------------
 
 Author
 ======
@@ -33,3 +36,5 @@ PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 .. _`Andrew Mathas`: http://www.maths.usyd.edu.au/u/mathas/
 .. _MathQuiz: http://www.maths.usyd.edu.au/u/MOW/MathQuiz/doc/mathquiz-manual.html
 .. _GPL: https://www.gnu.org/licenses/gpl-3.0.en.html
+.. _LaTeX: https://www.latex-project.org/
+.. _TeX4ht: http://www.tug.org/tex4ht/
