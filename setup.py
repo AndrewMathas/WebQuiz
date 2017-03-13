@@ -34,10 +34,6 @@ from codecs import open
 
 here = os.path.abspath(os.path.dirname(__file__))
 
-# Get the long description from the README file
-with open(os.path.join(here, 'README.rst'), encoding='utf-8') as f:
-    long_description = f.read()
-
 class MathQuizInstall(install):
     r"""
     We custom install class in order to be able to dynamically set the 
@@ -50,14 +46,16 @@ class MathQuizInstall(install):
 setup(name             = 'MathQuiz',
       version          = '5.0',
       description      = 'Writing online quizzes using latex',
-      long_description = long_description,
+      long_description = open('README.rst').read(),
       url              = 'http://www.maths.usyd.edu.au/u/MOW/MathQuiz/doc/mathquiz-manual.html',
       author           = 'Andrew Mathas',
       author_email     = 'andrew.mathas@sydney.edu.au',
 
-      keywords         = 'quizes, latex, mathematics'
+      keywords         = 'web quizzes, latex, mathematics',
 
-      package_data     = {'webfiles' : '/
+      packages=find_packages(),
+      include_package_data=True,
+      #package_data     = {'webfiles' : '/'}
 
       cmdclass         = {'install': MathQuizInstall},
       entry_points={
@@ -68,12 +66,12 @@ setup(name             = 'MathQuiz',
 
       license          = 'GNU General Public License, Version 3, 29 June 2007',
       classifiers      = [
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 5 - Alpha',
         'Intended Audience :: Science/Research',
         'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
-        'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 3',
-      ],
-      packages         = find_packages(),
-      zip_safe         = False,
+      ]
 )
+
+# To update run
+# python setup.py sdist upload -r pypi

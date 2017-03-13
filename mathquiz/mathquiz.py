@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 r"""  MathQuiz.py | 2001-03-21       | Don Taylor
                     2004 Version 3   | Andrew Mathas
                     2010 Version 4.5 | Updated and streamlined in many respects
@@ -21,18 +23,24 @@ r"""  MathQuiz.py | 2001-03-21       | Don Taylor
 """
 
 # ----------------------------------------------------
-VERSION   = 'MathQuiz 5.0'
-alphabet = " abcdefghijklmnopqrstuvwxyz"
+__authors__  = "Andrew Mathas (and Don Taylor)"
+__author_email__ = 'andrew.mathas@sydney.edu.au'
+__date__    = "April 2017"
+__version__ =  "5.0"
+
+alphabet = "abcdefghijklmnopqrstuvwxyz"
 
 # -----------------------------------------------------
-import sys, os, mathquizXml
-from optparse import OptionParser
+import argparse
+import mathquizXml
+import os
+import shutil
+import sys
 
-
-TIMED = 0
-if TIMED: import time
-
-def strval(ustr): return ustr.encode('ascii','xmlcharrefreplace')
+# this should no lopnger be necessary as we have switched to python 3
+def strval(ustr): 
+    return ustr
+    return ustr.encode('ascii','xmlcharrefreplace')
 
 # -----------------------------------------------------
 def main():
@@ -50,25 +58,60 @@ def main():
   # ------------------------------
   # parse the command line options
   # ------------------------------
+  parser = argparse.ArgumentParser(description='Generate web quiz from a LaTeX file')
+  parser.add_argument('quizfile', nargs='?',type=str, default=None, help='latex file for quiz')
+
   usage="Usage: %s [--local <local xml file>] [--format format] --url MathQuizURL <directory>" % sys.argv[0]
-  parser = OptionParser(usage='Usage: mathquiz [--local <local page file>] --url MathQuizURL <xmlfile> <target>',
-                        version=VERSION)
-  parser.add_option('-u','--url',action='store',type='string',dest='MathQuizURL',default="/MathQuiz/",
+  parser.add_argument('-u','--url', action='store', type=str, dest='MathQuizURL', default="/MathQuiz/",
       help='relative URL for MathQuiz web files '
   )
-  parser.add_option('-l','--local',action='store',type='string',dest='localXML',default="mathquizLocal",
+  parser.add_argument('-l','--local', action='store', type=str, dest='localXML', default="mathquizLocal",
       help='local python for generating web page '
   )
-  parser.add_option('-f','--format',action='store',type='choice',dest='format',default="html",
-      choices=formats.keys(), help='local python for generating web page '
+  parser.add_argument('-f','--format', action='store', type=str, dest='format', default="html",
+      choices=formats.keys(), help='format of output'
   )
-  (options, args) = parser.parse_args()
+
+  # options suppressed from the help message
+  parser.add_argument('--version', action = 'version', version = '%(prog)s {}'.format(__version__), help = argparse.SUPPRESS)
+  parser.add_argument('--debugging', action = 'store_true', default = False, help = argparse.SUPPRESS)
+
+  # parse the options
+  options = parser.parse_args()
+  options.prog=parser.prog
+
   # if no filename then exit
-  if len(args)!=1:
-    print usage
+  if options.quizfile is None:
+    print(options.usage)
     sys.exit(1)
-  format_quiz=formats[options.format]
-  quiz_file=args[0]
+
+  # assume that the quizfile is a tex file by default
+  if not '.' in options.quizfile:
+      options.quizfile += '.tex'
+
+  if not os.path.isfile(options.quizfile):
+      print('Cannot read file {}'.format(options.quizfile))
+      sys.exit(1)
+
+  quizfile, extension = options.quizfile.split('.')
+
+  if extension == 'tex':
+      # run htlatex only if quizfile has a .tex textension
+      try:
+          print('make4ht --utf8 --config {config} --output-dir {quizfile}/ --build-file {build} {quizfile}.tex'.format(
+                  config='/Users/andrew/Code/MathQuiz/latex/mathquiz.cfg',
+                  quizfile=quizfile,
+                  build='/Users/andrew/Code/MathQuiz/latex/svgpng.mk4'))
+          from subprocess import call
+          os.system('make4ht --utf8 --config {config} --output-dir {quizfile}/ --build-file {build} {quizfile}.tex'.format(
+                  config='/Users/andrew/Code/MathQuiz/latex/mathquiz.cfg',
+                  quizfile=quizfile,
+                  build='/Users/andrew/Code/MathQuiz/latex/svgpng.mk4')
+          )
+          shutil.copy2(quizfile+'.html', quizfile+'.xml')
+      except Exception as err:
+          print('Running htlatex on {} resulted in the error\n  {}'.format(options.quizfile, err))
+          sys.exit(1)
 
   # -----------------------------------------------------
   # Load local configuration files and set system variables
@@ -83,28 +126,20 @@ def main():
   elif MathQuizURL[-2:]=='//':
       MathQuizURL=MathQuizURL[:len(MathQuizURL)-1]
   # images
+
+  # read in the xml version of the quiz
+  quiz = mathquizXml.ReadXMLTree(quizfile+'.xml')
+
   Images = MathQuizURL + 'Images/'
-
-  try:
-    quiz_file = open(quiz_file)
-  except IOError,e:
-    print >> sys.stderr, e
-    sys.exit(1)
-
-  if TIMED: start = time.clock()
-  quiz = mathquizXml.DocumentTree(quiz_file)
-  if TIMED: print >> sys.stderr, 'Parse time:',time.clock()-start
-  quiz_file.close()
-
-  if TIMED: start = time.clock()
-  format_quiz(quiz)
-  if TIMED: print >> sys.stderr,'Processing time:', time.clock()-start
+  with open(quizfile+'.'+options.format, 'w') as file:
+      # write the quiz in the specified format
+      file.write( formats[options.format](quiz).page )
 
 # -----------------------------------------------------
 # End of main()
 # -----------------------------------------------------
 def text(doc):
-  print doc
+  print(doc)
 
 
 # -----------------------------------------------------
@@ -123,7 +158,7 @@ def text(doc):
 #  to their children
 #
 # -----------------------------------------------------
-#  xmlWriter() is a visitor defined in mathquizXml.py
+#  mlWriter() is a visitor defined in mathquizXml.py
 # -----------------------------------------------------
 def xml(doc):
   doc.accept(mathquizXml.xmlWriter())
@@ -142,59 +177,149 @@ class TeXWriter(mathquizXml.nodeVisitor):
 # A lot of this needs improvement.  For example, the
 # number of choices per question is hard-wired to 4.
   def forQuiz(self,node):
-    print '\\input genquiz.sty'
-    print '\\def\\quizid{xxxxx}'
-    print '\\def\\infoline{%s}' % node.title
-    print '\\RecordAnswers'
-    print '\\quiztop{%d}{4}' % len(node.questionList)
-    print '\\signaturebox'
-    print '\\vskip\\quizskip'
-    print 'You may use the space below for your own work.'
-    print '\\newpage'
+    print('\\input genquiz.sty')
+    print('\\def\\quizid{xxxxx}')
+    print('\\def\\infoline{%s}' % node.title)
+    print('\\RecordAnswers')
+    print('\\quiztop{%d}{4}' % len(node.questionList))
+    print('\\signaturebox')
+    print('\\vskip\\quizskip')
+    print('You may use the space below for your own work.')
+    print('\\newpage')
     node.broadcast(self)
-    print '\\bye'
+    print('\\bye')
 
   def forQuestion(self,node):
-    print '\n\\exercise'
-    print strval(node.question)
+    print('\n\\exercise')
+    print(strval(node.question))
     node.broadcast(self)
 
   def forChoice(self,node):
-    print '\\beginparts'
+    print('\\beginparts')
     node.broadcast(self)
-    print '\\endparts'
+    print('\\endparts')
 
   def forAnswer(self,node):
-    print '\\fbox{\\hbox to 1cm{\strut\\hfil}}'
+    print('\\fbox{\\hbox to 1cm{\strut\\hfil}}')
 
   def forItem(self,node):
     if node.expect == 'true':
       tag = '\\correct'
     else:
       tag = ''
-    print '\\part %s%s' % (strval(node.answer),tag)
+    print('\\part %s%s' % (strval(node.answer),tag))
     if node.response:
-      print '[%s]' % strval(node.response)
+      print('[%s]' % strval(node.response))
 
 
 # -----------------------------------------------------
 # Conversion routines: XML to DHTML
 # -----------------------------------------------------
 
-# Generic CSS templates for the questions and responses
-Qgeometry = """    {
-      z-index: 0;
-      margin: 2ex 0ex 0ex 0ex;
-      padding: 0ex 0ex 0ex 0ex;
+# Generic CSS templates for the questions and responses. These are used as:
+#   question_css.format(<question number>, <display mode>)
+#   answer_css.format(<answer number>)
+#   response_css.format(<qnswer number>, <response number>)
+question_css = '    #question{}{{z-index: 0; margin: 2ex 0ex 0ex 0ex; padding: 0ex 0ex 0ex 0ex; display: {};}}\n'
+answer_css   = '    #answer{}{{position: relative; display: block;}}\n'
+response_css = '    #q{}response{}{{padding: 0ex; border: solid black 2px; display: none;}}\n'
+
+# question buttons
+button  = r'       <div id="button{b}" class="button{cls}" content="" onclick="gotoQuestion({b})">{b}</div>'
+discuss = r'       <li class="discussion" onClick="gotoQuestion(-{b}">{title}</li>'
+side_menu = r'''   <h2>MathQuiz</h2>{discussionList}
+       <div class="buttons"><div class="question_label">&nbsp;Questions&nbsp;</div><br>{buttons}
+       </div>
+       <p>
+       <div style="width:100%; clear:left; padding-top:2em;">
+          <span style="color: yellow;">&starf;</span> right first attempt<br>
+          <span style="color: green;">&check;</span> right<br>
+          <span style="color: red;">&cross;</span> wrong
+       </div>
+       <div class="copyright">
+          <a href="http://www.maths.usyd.edu.au/u/MOW/MathQuiz/doc/credits.html">
+             <b>MathQuiz {version}</b>
+          </a>
+          <p><a href="http://www.maths.usyd.edu.au">
+                 School of Mathematics<br> and Statistics</a>
+          <br><a href="http://www.usyd.edu.au">University of Sydney</a>
+          <br>&copy; Copyright 2004-2017
+          </p>
+       </div>'''
+
+# quiz title and navigation arrows
+quiz_title='''  <div id="quiz_header">
+        <div class="quiz_title">{title}</div>{arrows}
+      </div>
+'''
+navigation_arrows='''
+        <div class="arrows">
+          <span onClick="nextQuestion(1);"><span class="tooltip">Next unanswered question</span>&#9654;</span>
+          <div class="question_label">Questions</div>
+          <span onClick="nextQuestion(-1);"><span class="tooltip">Previous unanswered question</span>&#9664;</span>
+        </div>'''
+
+# discussion item
+discussion='''     <div id="question-{dnum}"><h2>{discussion.headind}</h2>
+        <p>{discussion.discussion}</p>{input_button}
+      </div>
+'''
+input_button='<input type="button" name="next" value="Start quiz" onClick="return gotoQuestion(1);"/>\n'
+
+#quiz index
+quiz_list='''     <div class="quiz_list"><h2>{course} Quizzes</h2>
+        <ul>
+          {quizindex}
+        </ul>
+      </div>'''
+quiz_list_item='''<li><a href={url}>{title}</a></li>'''
+
+# now we come to the question wrappers
+question_wrapper='''      <div id="question{qnum}" class="question" {display}>
+      {question}
+      {response}
+      </div>
+'''
+question_text='''  <div class="question_label">Question {qnum}</div>
+      <div class="question_text">
+        {question}
+      </div>
+      <form id="Q{qnum}Form" action="" onsubmit="return false;">
+        {questionOptions}
+        <p><input type="button" value="Check Answer" name="answer" onclick="checkAnswer();"/>
+        <span style="width:40px;">&nbsp;</span>
+        <input type="button" value="Next Question" name="next" onclick="nextQuestion(1);"/></p>
+      </form>
+'''
+input_answer='<input type="text"  onchange="checkanswer();" size="5"/>{tag}'
+choice_answer='<table class="question_choices">{choices}</table>{hidden}'
+hidden_choice='\n<input type="hidden" checked="checked" name="Q{qnum}hidden"/>'
+response_text='''
+'''
+
+# html meta statements
+html_meta = r"""<meta name="generator" content="MathQuiz {version} (http://www.maths.usyd.edu.au/u/MOW/MathQuiz/doc/mathquiz-manual.html)">
+  <meta name="organization" content="School of Mathematics and Statistics, University of Sydney">
+  <meta name="Copyright" content="University of Sydney 2004-2017">
+  <meta name="keywords" content="mathquiz, TeX4ht, make4ht, latex, python, quiz, mathematics">
+  <meta name="description" content="Interative quiz generated using MathQuiz from latex using TeX4ht ">
+  <meta name="authors" content="{authors}">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <link href="{MathQuizURL}mathquiz.css" type="text/css" rel="stylesheet">
+  <link href="{quizfile}.css" type="text/css" rel="stylesheet">
 """
 
-Rgeometry = """    {
-      padding: 0ex;
-      border: solid black 2px;
-      display: none;
-    }
-"""
 
+# Previously used
+#   <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+# but this case rendering errors
+
+# javascript for setting up the questions
+questions_javascript = r"""  <script src="{MathQuizURL}mathquiz.js" type="text/javascript"></script>
+  <script src="quiz_titles.js" type="text/javascript"></script>
+  <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" ></script> 
+  <style type="text/css"> .MathJax_MathML {{text-indent: 0;}}</style>
+  <script type="text/javascript">window.onload=MathQuizInit({qTotal},'{quiz}');</script>"""
 
 # Document tree structure
 #   doc.title
@@ -215,334 +340,165 @@ class html(dict):
     self.header=''      # everything printed in the page header: meta data, includes, javascript, CSS, ...
     self.css=''         # css specifications
     self.javascript=''  # javascript code
-    self.pagebody=''    # the main page
+    self.page_body=''    # the main page
     self.side_menu=''   # the left hand quiz menu
 
     self.add_meta_data(doc)
     self.add_question_javascript(doc)
-    self.add_question_css(doc)
     self.add_side_menu(doc)
     self.add_page_body(doc)
-    printQuizPage(self,doc)
+    self.page = printQuizPage(self,doc)
 
   def add_meta_data(self,doc):
     """ add the meta data for the web page to self.header """
-    for attr in doc.metaList:
-      self.header+= '<meta'
-      for k in attr.keys():
-        self.header+= ' %s="%s"' % (k, attr[k])
-      self.header+= '>\n'
-    self.header+="""  <meta name="organization" content="School of Mathematics and Statistics, University of Sydney">
-  <meta name="Copyright" content="University of Sydney 2004-2017">
-  <meta name="GENERATOR" content="%s">
-  <meta name="AUTHORS" content="Andrew Mathas and Don Taylor">
-  <link href="%smathquiz.css" type="text/css" rel="stylesheet">
-  <!--
-  By reading through this file you should be able to extract the
-  answers to the quiz; however, you will get more out of the quiz if
-  you do the questions yourself. Of course, you are free to read the
-  source if you wish.
--->
-""" % (VERSION,MathQuizURL)
+    # meta tags`
+    self.header += html_meta.format(version=__version__, authors=__authors__, MathQuizURL=MathQuizURL, quizfile=doc.src)
+    print('{}'.format('\n'.join('{}'.format(m) for m in doc.metaList)))
+    for met in doc.metaList:
+        self.header+= '  <meta {}/>\n'.format(' '.join('%s="%s"' %(k, met[k]) for k in met))
     # links
-    for attr in doc.linkList:
-      self.header+= '<link'
-      for k in attr.keys():
-        self.header+= ' %s="%s"' % (k, attr[k])
-      self.header+= '/>\n'
+    for link in doc.linkList:
+        self.header+= '  <link {}/>\n'.format(' '.join('%s="%s"' %(k, link[k]) for k in link))
 
-  def add_question_css(self,doc):
-    """ add the CSS for the questions to self """
-    self.header+='<style type="text/css">\n<!--\n'
-    dnum=0
-    for d in doc.discussionList:  # discussion
-      dnum+=1
-      self.header+= '    #question-%d\n' % dnum
-      self.header+=Qgeometry
-      if dnum==1: self.header+= '      display: block;\n    }\n'
-      else: self.header+= '      display: none;\n    }\n'
-    if len(doc.quizList)>0:       # index listing
-      self.header+= '    #quizList\n'
-      self.header+=Qgeometry
-      self.header+= '    display: block;\n    }\n'
-    qnum = 0
-    for q in doc.questionList:     # questions
-      qnum+= 1
-      self.header+= '\n    #question%d %s\n' % (qnum, Qgeometry)
-      if len(doc.discussionList)==0 and qnum==1: self.header+= '      display: block;\n'
-      else: self.header+= '      display: none;\n'
-      self.header+= '    }\n'
-      self.header+= '\n    #answer%d\n' % qnum
-      self.header+= """    {
-        position: relative;
-        display: block;
-      }
-"""
-      if isinstance(q.answer,mathquizXml.Choice):
-        if q.answer.type== "multiple":
-          self.header+='\n    #q%dresponse0\n' % qnum
-          self.header+=Rgeometry
-        rnum = 0
-        for s in q.answer.itemList:
-          rnum+= 1
-          self.header+= '\n    #q%dresponse%d\n' % (qnum,rnum)
-          self.header+= Rgeometry
-      else:
-        self.header+= '\n    #q%dtrue\n' % qnum
-        self.header+= Rgeometry
-        self.header+= '\n    #q%dfalse\n' % qnum
-        self.header+= Rgeometry
-    self.header+='  -->\n</style>\n'
-  # print the javascript variables holding the quiz solutions and responses
 
-  def add_side_menu(self,doc):
+  def add_side_menu(self, doc):
     """ construct the left hand quiz menu """
     if len(doc.discussionList)>0: # links for discussion items
-      dnum=0
-      self.side_menu+="\n <!-- start of discussion lists -->\n<ul>"
-      for d in doc.discussionList:
-        dnum+=1
-        self.side_menu+= """  <li class="discussion">
-     <a href="javascript:void(0);"
-        onMouseOver="window.status=\'%s\'; return true;"
-        onMouseOut="window.status=\'\'; return true;"
-        onClick="return gotoQuestion(-%d);">
-          %s
-     </a>
-  </li>
-""" % (d.heading, dnum, d.heading)
-      self.side_menu+="\n </ul><!-- end of discussion lists -->"
-    if len(doc.questionList)>0:
-      self.side_menu+= """  <table class="controls">
-  <tr valign="top">
-        <td colspan="3" class="header">Questions:</td>
-  </tr>
-  <tr valign="top">
-    <td ><a href="javascript:void(0);" onMouseOver="window.status=\'Question 1\';return true;" onClick="return gotoQuestion(1);">
-  """
-      if len(doc.discussionList)==0: firstimage='%sborder1.gif' % Images
-      else: firstimage='%sclear1.gif' % Images
-      self.side_menu+= '  <img alt="" src="%s" id="progress1" \n' % firstimage
-      self.side_menu+= '       style="height:31px;width:31px;padding:2px;"/></a>\n'
-      for i in range(2,self.qTotal+1):
-        if i % 2 == 1: self.side_menu+= '<br/>\n'
-        self.side_menu+= '''<a href="javascript:void(0);" onClick="return gotoQuestion(%d);"\n''' % i
-        self.side_menu+= '   onMouseOver="window.status=\'Question %d\';return true;">\n' % i
-        self.side_menu+= '<img alt="" src="%sclear%d.gif" id="progress%d" style="height:31px;width:31px;padding:2px;"/></a>\n' % (Images,i,i)
-      self.side_menu+= '                 </td></tr>\n'
-      imgTag = '    <tr><td %s><img alt="" src="'+Images+'%s.gif" %s/>\n'
-      self.side_menu+= imgTag % ('style="line-height:95%; padding-top:10px;"','star','style="vertical-align:-40%;"')
-      self.side_menu+= 'right first<br/>&nbsp;&nbsp;&nbsp;&nbsp;attempt</td></tr>\n'
-      self.side_menu+= imgTag % ('','tick','')
-      self.side_menu+= 'right</td></tr>\n'
-      self.side_menu+= imgTag % ('style="padding-top:7px;"','cross','')
-      self.side_menu+= 'wrong</td></tr>\n</table>'
-    # end of progress buttons, now for the credits
-    self.side_menu+= """
-    <div style="text-align:center;" id="copy">
-      <a href="http://www.maths.usyd.edu.au/u/MOW/MathQuiz/doc/credits.html"
-         onMouseOver="window.status='%s'; return true">
-         <b>%s</b></a><br/>
-           <a href="http://www.usyd.edu.au"
-              onMouseOver="window.status='University of Sydney'; return true">
-              University of Sydney
-  	 </a><br/>
-  	   <a href="http://www.maths.usyd.edu.au"
-                onMouseOver="window.status='School of Mathematics and Statistics'; return true">
-           School of Mathematics<br/> and Statistics
-             </a>
-  	<br/>
-  	&copy; Copyright 2004-2017
-    </div>
-    <!-- end of side self.side_menu -->""" % ( VERSION, VERSION )
+        discussionList = '\n        <ul>'+'        \n'.join(discuss.format(b=q, title=d.heading) for (q,d) in enumerate(doc.discussionList))+'</ul>'
+    else:
+        discussionList = ''
 
-  def add_question_javascript(self,doc):
+    buttons = '\n'+'\n'.join(button.format(b=q, cls=' button-selected' if len(doc.discussionList)==0 and q==1 else '')
+                               for q in range(1, self.qTotal+1))
+    # end of progress buttons, now for the credits
+    self.side_menu = side_menu.format(discussionList=discussionList, buttons=buttons, version=__version__)
+
+  def add_question_javascript(self, doc):
     """ add the javascript for the questions to self """
     self.qTotal = len(doc.questionList)
     if len(doc.discussionList)==0: currentQ='1'
     else: currentQ='-1     // start showing discussion'
-    # added MathML support 3/2/12
-    self.javascript+="""  <script src="%smathquiz.js" type="text/javascript"></script>
-  <script src="quiztitles.js" type="text/javascript"></script>
-  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-  </script>
-  <script type="text/javascript">
-  <!--
-    var currentQ=%s;
-    MathQuizInit(%d);
-""" % (MathQuizURL,currentQ,self.qTotal)
-    i=0
-    for q in doc.questionList:
-      self.javascript+= '    QList[%d] = new Array()\n' % i
-      a = q.answer
-      if isinstance(a,mathquizXml.Answer):
-        self.javascript+='    QList[%d].value = "%s"\n' % (i,a.value)
-        self.javascript+= '    QList[%d].type = "input"\n' % i
-      else:
-        self.javascript+= '    QList[%d].type = "%s"\n' % (i,a.type)
-        j=0
-        for s in a.itemList:
-          self.javascript+= '    QList[%d][%d] = %s\n' % (i,j,s.expect)
-          j+=1
-      i+= 1
-    self.javascript+= '  -->\n</script>\n'
+
+    if self.qTotal >0:
+        i=0
+        quiz_specs=''
+        for (i,q) in enumerate(doc.questionList):
+          quiz_specs += 'QuizSpecifications[%d]=new Array();\n' % i
+          a = q.answer
+          if isinstance(a,mathquizXml.Answer):
+            quiz_specs +='QuizSpecifications[%d].value="%s";\n' % (i,a.value)
+            quiz_specs += 'QuizSpecifications[%d].type="input";\n' % i
+          else:
+            quiz_specs += 'QuizSpecifications[%d].type="%s";' % (i,a.type)
+            quiz_specs += '\n'.join('QuizSpecifications[%d][%d]=%s;' % (i,j,s.expect) for (j,s) in enumerate(a.itemList))
+          quiz_specs+='\n\n'
+
+        try:
+            os.makedirs(doc.src, exist_ok=True)
+            with open(os.path.join(doc.src,'quiz_list.js'), 'w') as quiz_list:
+                quiz_list.write(quiz_specs)
+        except Exception as err:
+            print('Error writing quiz specifications:\n {}'.format(err))
+            sys.exit(1)
+
+    self.javascript += questions_javascript.format(MathQuizURL = MathQuizURL,
+                                                 currentQ = currentQ,
+                                                 qTotal = self.qTotal,
+                                                 quiz = doc.src)
 
   def add_page_body(self,doc):
     """ Write the page body! """
-    self.pagebody+='  <h1 class="quiz_title" >%s</h1>\n' % doc.title
-    if len(doc.questionList)>0:
-      self.pagebody+= '''  <div  class="ArrowQuestion">
-    <span class="ArrowQuestion">
-    <a onMouseOver="return navOver('prevpage','Last unanswered question');"
-       onmouseout="return navOut('prevpage');" onClick="NextQuestion(-1);"
-       title="Last unanswered question"><img src=\"'''+Images+'''nn-prevpage.gif" alt="Last unanswered question"
-          id="prevpage" name="prevpage" style="vertical-align:-20%; border:0; height:15px;width:32px;"/></a> &nbsp;Question&nbsp;
-     <a onMouseOver="return navOver('nextpage','Next unanswered question');"
-        onmouseout="return navOut('nextpage');" onClick="NextQuestion(1);"
-        title="Next unanswered question"><img src=\"'''+Images+'''nn-nextpage.gif" alt="Next unanswered question"
-          id="nextpage" name="nextpage" style="vertical-align:-20%; border:0; height:15px;width:32px;"/></a>
-     </span>
-  </div>'''
+    self.page_body=quiz_title.format(title=doc.title, arrows='' if len(doc.questionList)==0 else navigation_arrows)
     # now comes the main page text
     # discussion(s) masquerade as negative questions
     if len(doc.discussionList)>0:
       dnum = 0
       for d in doc.discussionList:
         dnum+=1
-        self.pagebody+= '  <div id="question-%d">\n' % dnum
-        self.pagebody+= '  <h2>' + d.heading + '</h2>\n\n'
-        self.pagebody+= '    <p>%s</p>\n\n\n' % strval(d.discussion)
-        if len(doc.questionList)>0 and dnum==len(doc.discussionList):
-          self.pagebody+= '  <input type="button" name="next" value="Start quiz"\n\n'
-          self.pagebody+= '''       onClick="return gotoQuestion(1);"/>\n'''
-        self.pagebody+= '  </div>\n'
+        self.page_body+=discussion.format(dnum=dnum, discussion=d,
+                           input_button=inputButton if len(doc.questionList)>0 and dnum==len(doc.discussionList) else '')
+
     # index for quiz
-    if len(doc.quizList)>0:
-      self.pagebody+= '  <div id="quizList">\n'
-      self.pagebody+= '  <h2>' +doc.course[0]['name'] + ' Quizzes</h2>\n'
-      self.pagebody+= '  <ul>\n'
-      qnum=0
+    if len(doc.quiz_list)>0:
+      # add index to the web page
+      self.page_body+=quiz_list.format(course=doc.course[0]['name'],
+                                       quizindex='\n          '.join(quiz_list_item.format(url=q['url'], title=q['title']) for q in doc.quiz_list)
+      )
+      # write a javascript file for displaying the menu
       # quizmenu = the index file for the quizzes in this directory
-      quizmenu=open('quiztitles.js','w')
-      quizmenu.write("var QuizTitles = [\n")
-      for q in doc.quizList:
-        qnum+=1
-        self.pagebody+= """    <li class="QuizList"><a href="%s" onMouseOver="window.status='%s'; return true" onmouseout="window.status=''; return true">
-    %s
-  </a></li>
-  """ % (q['url'], q['title'], q['title'])
-        quizmenu.write("  ['%s','%sQuizzes/%s']" %(q['title'],doc.course[0]['url'],q['url']))
-        if qnum<len(doc.quizList): quizmenu.write(",\n");
-        else: quizmenu.write("\n");
-      quizmenu.write("];\n");
-      quizmenu.close();
-      self.pagebody+= '  </ul>\n</div>\n'
+      with open('quiztitles.js','w') as quizmenu:
+         quizmenu.write('var QuizTitles = [\n{titles}\n];\n'.format(
+            titles = ',\n'.join("  ['{}', '{}Quizzes/{}']".format(q['title'],doc.course[0]['url'],q['url']) for q in doc.quiz_list)
+         ))
+
+    # finally we print the quesions
     if len(doc.questionList)>0:
-      qnum = 0
-      for q in doc.questionList:
-        qnum+= 1
-        self.pagebody+= '\n<div id="question%d">\n' % qnum
-        self.pagebody+= self.printQuestion(q,qnum)
-        self.pagebody+= self.printResponse(q,qnum)
-        self.pagebody+= '</div>\n'
+      self.page_body+=''.join(question_wrapper.format(qnum=qnum+1, 
+                                            display='style="display: block;"' if qnum==0 else '',
+                                            question=self.printQuestion(q,qnum+1),
+                                            response=self.printResponse(q,qnum+1))
+                            for (qnum,q) in enumerate(doc.questionList)
+      )
 
   def printQuestion(self,Q,n):
-    question="""    <h2>Question %d</h2>
-    <div class="QText">
-      %s
-    </div>
-    <form id="Q%dForm" action="" onSubmit="return false;">
-    <div>
-"""% (n,strval(Q.question),n)
-    snum = 0
     if isinstance(Q.answer,mathquizXml.Answer):
-      question+= '    <p/><input type="text"  onChange="checkanswer();" size="5"/>\n'
-      if Q.answer.tag: question+= '    <span class="QText"> ' + Q.answer.tag +'</span>\n'
+      options=input_answer(tag='<span class="question_text">' + Q.answer.tag +'</span>' if Q.answer.tag else '')
     else:
-      question+= '    <table summary="List of question choices" class="question_choices">\n'
-      question+= '    <col width="2"/><col width="2"/><col width="*"/>\n'
-      # print extra column specifications as necessary
-      for c in range(1,Q.answer.cols):
-        question+= '    <col width="10"/><col width="2"/><col width="2"/><col width="*"/>\n'
-      for s in Q.answer.itemList:
-        snum+= 1
-        question+=self.printItem(s, n, snum)
-      if s.parent.type=='single':  # no default answer for question
-        question+= """    <tr><td colspan="2">
-      <input type="hidden" checked="checked" name="Q%dhidden"/>
-    </td></tr>
-""" % n
-      question+="    </table>\n"
-    question+="""    <p>
-    <input type="button" value="Check Answer" name="answer" onClick="checkAnswer();"/>
-    <span style="width:40px;">&nbsp;</span>
-    <input type="button" value="Next Question" name="next" onClick="nextQuestion(1);"/></p>
-    </div></form>
-"""
-    return question
+      options=choice_answer.format(choices='\n'.join(self.printItem(opt, n, optnum) for (optnum, opt) in enumerate(Q.answer.itemList)),
+                                  hidden=hidden_choice.format(qnum=n) if Q.answer.type=="single" else '')
+    return question_text.format(qnum=n, question=Q.question, questionOptions=options)
 
-  def printItem(self,S,q,n):
-    if S.parent.cols==1 or (n % S.parent.cols)==1:
-      item = '    <tr valign="top">\n'
+  def printItem(self,opt,qnum,optnum):
+    item='<tr>' if opt.parent.cols==1 or (optnum % opt.parent.cols)==0 else '<td>&nbsp;</td>'
+    item+= '<td class="brown" >%s)</td>' % alphabet[optnum]
+    if opt.parent.type == 'single':
+      item+='<td><input type="radio" name="Q{qnum}option"/></td><td><div class="QChoices">{answer}</div></td>'.format(qnum=qnum, answer=opt.answer)
+    elif opt.parent.type == 'multiple':
+      item+='<td><input type="checkbox" name="Q{qnum}option{optnum}"/></td><td><div class="QChoices">{answer}</div></td>'.format(
+                   qnum=qnum, optnum=optnum, answer=opt.answer)
     else:
-      item = '      <td>&nbsp;</td>\n'
-    item+= '        <td class="brown">%s)</td>\n' % alphabet[n]
-    if S.parent.type == 'single':
-      item+= '      <td><input type="radio" name="Q%doptions"/></td>\n' % q
-      item+= '      <td><div class="QChoices">%s</div></td>\n' % strval(S.answer)
-    elif S.parent.type == 'multiple':
-      item+= '      <td><input type="checkbox" name="Q%doptions%d"/></td>\n' % (q,n)
-      item+= '      <td><div class="QChoices">%s</div></td>\n' % strval(S.answer)
-    else:
-      item+= '<!-- internal error: %s -->\n' % S.parent.type
-      print >> sys.stderr, 'Unknown question type encountered:',S.parent.type
-    if (n % S.parent.cols)==0 or n==len(S.parent.itemList): item+= '    </tr>\n'
+      item+= '<!-- internal error: %s -->\n' % opt.parent.type
+      sys.stderr.write('Unknown question type encountered: {}'.format(opt.parent.type))
+    if (optnum % opt.parent.cols)==1 or (optnum+1) % opt.parent.cols==0:
+      item+= '   </tr>\n'
     return item
 
   def printResponse(self,Q,n):
     snum = 0
-    response = '\n<div id="answer%d">\n' % n
+    response = '  <div class="answer">\n'
     if isinstance(Q.answer,mathquizXml.Answer):
       s = Q.answer
-      response+= '\n<div id="q%dtrue">\n' % n
-      response+= '<b>Your answer is correct</b><br/>\n'
+      response+= '  <div id="q%dtrue" class="response">\n' % n
+      response+= '    <em>Correct!</em><br/>\n'
       if s.whenTrue:
-        response+= '<div class="RText">%s</div>\n' % strval(s.whenTrue)
-      response+= '</div>\n'
-      response+= '\n<div id="q%dfalse">\n' % n
-      response+= '<b>Not correct. You may try again.</b>\n'
+        response+= '  <div class="response_text">%s</div>\n' % strval(s.whenTrue)
+      response+= '  </div>\n  <div id="q%dfalse" class="response"><em>Incorrect. Please try again.</em>\n' % n
       if s.whenFalse:
-        response+= '<div class="RText">%s</div>\n' % strval(s.whenFalse)
-      response+= '</div>\n'
+        response+= '  <div class="response_text">%s</div>\n' % strval(s.whenFalse)
+      response+= '  </div>\n'
     elif Q.answer.type == "single":
       for s in Q.answer.itemList:
         snum+= 1
-        response+= '\n<div id="q%dresponse%d">\n' % (n,snum)
-        response+= '<b>\n'
-        if s.expect == "true":
-          response+= 'Your answer is correct.<br/>\n'
-        else:
-          response+= 'Not correct. Choice <span class="brown">(%s)</span>\n' % alphabet[snum]
-          response+= 'is <span class="red">%s</span>.\n' % s.expect
-        response+= '</b>\n'
+        response+= '  <div id="q%dresponse%d" class="response">\n<em>Correct!</em>' % (n,snum)
+        if s.expect != "true":
+          response+= '    Choice (%s) is <span class="red">%s</span>.\n' % (alphabet[snum], s.expect)
         if s.response:
-          response+= '<div class="RText">%s</div>\n' % strval(s.response)
-        response+= '</div>\n'
+          response+= '  <div class="response_text">%s</div>\n' % strval(s.response)
+        response+= '  </div>\n'
     else: # Q.answer.type == "multiple":
       for s in Q.answer.itemList:
         snum+= 1
-        response+= '\n<div id="q%dresponse%d">\n' % (n,snum)
-        response+= '<b>There is at least one mistake.</b><br/>\n'
+        response+= '\n<div id="q%dresponse%d"  class="response">\n' % (n,snum)
+        response+= '<em>There is at least one mistake.</em><br/>\n'
         response+= 'For example, choice <span class="brown">(%s)</span>\n' % alphabet[snum]
         response+= 'should be <span class="red">%s</span>.\n' % s.expect
         if s.response:
-          response+= '<div class="RText">%s</div>\n' % strval(s.response)
+          response+= '<div class="response_text">%s</div>\n' % strval(s.response)
         response+= '</div>\n'
-      response+= '\n<div id="q%dresponse0">\n' % n
-      response+= '<b>Your answers are correct</b>\n'
+      response+= '\n<div id="q%dresponse0" class="response"><em>Correct!</em>\n' % n
       response+= '<ol style="list-style-type:lower-alpha;">\n'
       for s in Q.answer.itemList:
-        response+= '<li class="brown"><div class="RText"><b>%s</b>. %s</div></li>\n' % (strval(s.expect.capitalize()),strval(s.response))
+        response+= '<li class="brown"><div class="response_text"><em>%s</em>. %s</div></li>\n' % (strval(s.expect.capitalize()),strval(s.response))
       response+= '</ol>\n'
       response+= '</div>\n'
     response+= '</div>\n'

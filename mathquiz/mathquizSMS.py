@@ -1,21 +1,20 @@
-r"""  mathquizSMS.py | Version 4.7 | Andrew Mathas
+r"""  mathquizSMS.py | Version 5.0 | Andrew Mathas
       2010 made "update" compatible by Bob Howlett
 
      Python configuration file for the mathquiz system. This
      file controls the local components of the quiz page.
 
 #*****************************************************************************
-#       Copyright (C) 2004-2016 Andrew Mathas and Donald Taylor
-#                          University of Sydney
+#  Copyright (C) 2004-2017 Andrew Mathas
+#  University of Sydney
 #
 #  Distributed under the terms of the GNU General Public License (GPL)
 #                  http://www.gnu.org/licenses/
 #
-# This file is part of the MathQuiz system.
+#  This file is part of the MathQuiz system.
 #
-# Copyright (C) 2004-2010 by the School of Mathematics and Statistics
-# <Andrew.Mathas@sydney.edu.au>
-# <Donald.Taylor@sydney.edu.au>
+#  Copyright (C) 2004-2017 by the School of Mathematics and Statistics
+#  <Andrew.Mathas@sydney.edu.au>
 #*****************************************************************************
 """
 
@@ -26,39 +25,27 @@ import writepagenew, string
 # A relative URL which specifies the location of mathquizzes
 # system files on the web server.
 MathQuizURL="/u/MOW/MathQuiz/"
-Images=MathQuizURL+'Images/'
 
-NoScript = """
-<noscript><div style="margin:0px 10px 0px 10px; padding:0"><b>If you are reading this message either your
-    browser does not support JavaScript or else JavaScript
-    is not enabled.  You will need to enable JavaScript and
-    then reload this page before you can use this quiz.</b></div></noscript>
+NoScript = """   <noscript>
+      <div class="warning"><b>
+        If you are reading this message either your browser does not support
+        JavaScript or else JavaScript is not enabled.  You will need to enable
+        JavaScript and then reload this page before you can use this quiz.</b>
+       </div>
+    </noscript>
 """
 
 
 # -----------------------------------------------------
 # stuff to go in the <head> ... </head> section of the page
 def initialise_SMS_Menus(quiz,course):
-  if course['code']=="MATH1001":
-    content="MATH1001/1901<br/>Quizzes"
-  elif course['code']=="MATH1002":
-    content="MATH1002/1902<br/>Quizzes"
-  elif course['code']=="MATH1005":
-    content="MATH1005/1905<br/>Quizzes"
+  if course['code'] in ["MATH1001", "MAGTH1002", "MATH1005"]:
+    content="MATH100{0}/190{0}<br/>Quizzes".format(course['code'][-1])
   else:
     content="%s Quizzes" % course['code']
-  hd="""  <script type="text/javascript">
-  <!--
-    var QuizURI='%sQuizzes'
-    var QuizContents='%s'
-  -->
-  </script>
-""" % (course['url'],content)
+  hd='  <script type="text/javascript">var QuizURI='%sQuizzes';var QuizContents='%s';</script>\n' % (course['url'],content)
   if quiz=="index":
     hd += """  <script type="text/javascript" src="/u/SMS/web2010/js/ResearchSubmenu.js"></script>
-  <script type="text/javascript" src="/u/SMS/web2010/js/JMSubmenu.js"></script>
-  <script type="text/javascript" src="/u/SMS/web2010/js/IMSubmenu.js"></script>
-  <script type="text/javascript" src="/u/SMS/web2010/js/SMSubmenu.js"></script>
   <script type="text/javascript" src="/u/SMS/web2010/js/QSubmenu.js"></script>
 """
   elif quiz in [ 'mathquiz-manual','credits']:
@@ -116,15 +103,9 @@ def SMS_menu(doc,course):
     </li>
 """ % (type,type)
       if doc.src == "mathquiz-manual":
-        menu+="""    <li class="heading">
-       Manual Contents:
-    </li>
-"""
+        menu+="    <li class="heading"> Manual Contents: </li>"
       elif len(doc.discussionList)>0:
-	  menu+= """<li class="heading">G
-       Discussion:
-    </li>
-"""
+        menu+= "<li class="heading"> Discussion: </li>"
       menu+='  </ul>\n'
     else:
       menuname = "Current Students"
@@ -151,4 +132,4 @@ def printQuizPage(html, doc):
   page['menu_string']=sms_menu+html.side_menu
   page['page_body_string']=html.pagebody
   page['nopreview'] = ''
-  print writepagenew.processtemplate(page,{},courseurl[3:],pagename)[0]
+  return writepagenew.processtemplate(page,{},courseurl[3:],pagename)[0]

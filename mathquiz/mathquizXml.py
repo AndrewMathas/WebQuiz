@@ -22,7 +22,7 @@ r"""  mathquizXml.py | 2001-03-21       | Don Taylor
        May 2004   Expanded allowable xml tags and syntax
 
 #*****************************************************************************
-#       Copyright (C) 2004-2016 Andrew Mathas and Donald Taylor
+#       Copyright (C) 2004-2017 Andrew Mathas and Donald Taylor
 #                          University of Sydney
 #
 #  Distributed under the terms of the GNU General Public License (GPL)
@@ -30,43 +30,21 @@ r"""  mathquizXml.py | 2001-03-21       | Don Taylor
 #
 # This file is part of the MathQuiz system.
 #
-# Copyright (C) 2004-2010 by the School of Mathematics and Statistics
+# Copyright (C) 2004-2017 by the School of Mathematics and Statistics
 # <Andrew.Mathas@sydney.edu.au>
 # <Donald.Taylor@sydney.edu.au>
 #*****************************************************************************
 """
 import sys, getopt
-from xml.sax import handler, make_parser
+import xml.sax 
 
-DEBUG = 0
+DEBUG = False
 if DEBUG:
     def Debugging(*arg):
-        sys.stderr.write(*arg+'\n')
+        sys.stderr.write(' '.join('%s' % a for a in arg)+'\n')
 else:
     def Debugging(*arg):
         pass
-
-def DocumentTree(infile):
-  dh = XMLaction()
-  parser = make_parser()
-  parser.setContentHandler(dh)
-  parser.setErrorHandler(dh)
-  parser.parse(infile)
-  #parser.close()
-  return dh.root
-
-def addAttrs(lst,attrs):
-  lst.append(attrs)
-
-#@-- Not presently used
-def asString(tag,lst):
-  if lst:
-    s = tag+':\n'
-    for slot in lst:
-       s += '%s\n' % slot
-  else:
-     s = ''
-  return s
 
 def strval(ustr):
   if type(ustr) == type(u''):
@@ -77,16 +55,41 @@ def strval(ustr):
     str = ustr
   return str
 
+def ReadXMLTree(quizfile):
+    parser = xml.sax.make_parser()
+    quiz = QuizHandler()
+    parser.setContentHandler(quiz)
+    parser.setErrorHandler(quiz)
+    parser.parse(quizfile)
+    return quiz.root
+    #parser.close()
+
 # -----------------------------------------------------
 # The HandlerBase class inherits from:
 #  DocumentHandler, DTDHandler, EntityResolver, ErrorHandler
 # -----------------------------------------------------
-class SAXinterface( handler.ContentHandler ):
-  "Provides generic callback methods for the SAX interface"
+class QuizHandler(xml.sax.ContentHandler):
+  """
+     Provides callbacks for all the entities in mathquiz.dtd.
+     These methods manage the construction of the document tree.
 
+     The SAXinterface provides a dictionary of attributes when it
+     calls xxx_START.  The value of a given key can be
+     retrieved by attrs.get('keyname','default')
+
+     PCDATA is accumulated in self.text
+     self.position keeps track of where we are in the tree
+
+     Provide a list for all child elements of the form xxx*
+
+     The quiz files themselves may need to use the <![CDATA[ ... ]]>
+     construction to include HTML markup in the text sections.
+  """
   def __init__(self):
     self.level = 0
     self.text = ''
+    self.root = Node()
+    self.position = self.root
     # self.text accumulates character data.  It is set to
     # a null string by startElement but it may persist
     # after the corresponding endElement fires.
@@ -131,28 +134,6 @@ class SAXinterface( handler.ContentHandler ):
   def fatalError(self, e):
     raise e
 
-# -----------------------------------------------------
-class XMLaction( SAXinterface ):
-  """provides callbacks for all the entities in mathquiz.dtd.
-     These methods manage the construction of the document tree.
-
-     The SAXinterface provides a dictionary of attributes when it
-     calls xxx_START.  The value of a given key can be
-     retrieved by attrs.get('keyname','default')
-
-     PCDATA is accumulated in self.text
-     self.position keeps track of where we are in the tree
-
-     Provide a list for all child elements of the form xxx*
-
-     The quiz files themselves may need to use the <![CDATA[ ... ]]>
-     construction to include HTML markup in the text sections.
-  """
-  def __init__(self):
-    SAXinterface.__init__(self)
-    self.root = Node()
-    self.position = self.root
-
   def quiz_START( self, attrs ):
     self.root = Quiz()
     self.position = self.root
@@ -161,17 +142,17 @@ class XMLaction( SAXinterface ):
     self.position.src=attrs.get('src','default')
 
   def meta_START( self, attrs ):
-    addAttrs(self.position.metaList,attrs)
+    self.position.metaList.append(attrs)
     Debugging("META start %s\n" % attrs)
 
   def link_START( self, attrs ):
-    addAttrs(self.position.linkList,attrs)
+    self.position.linkList.append(attrs)
 
   def quizlistitem_START( self, attrs ):
-    addAttrs(self.position.quizList,attrs)
+    self.position.quiz_list.append(attrs)
 
   def course_START( self, attrs ):
-    addAttrs(self.position.course,attrs)
+    self.position.course.append(attrs)
 
   def question_START( self, attrs ):
     q = Question(self.position)
@@ -243,7 +224,7 @@ class XMLaction( SAXinterface ):
 # parent node in self.parent except for the root, which
 # defaults to None
 
-class Node:
+class Node(object):
   def __init__(self,parent = None):
     self.parent = parent
     Debugging('Node: class={}, parent={}'.format(self.__class__.__name__,
@@ -267,7 +248,7 @@ class Quiz(Node):
     Node.__init__(self)
     self.metaList = []
     self.linkList = []
-    self.quizList = []
+    self.quiz_list = []
     self.course= []
     self.discussionList = []
     self.questionList = []
@@ -447,59 +428,59 @@ class xmlWriter(nodeVisitor):
 
 #@-- Not presently used
   def element(self,node,tag):
-    print ' <%s>'  % tag
+    print(' <%s>'  % tag)
     node.broadcast(self)
-    print ' </%s>' % tag
+    print(' </%s>' % tag)
 
   def forQuiz(self,node):
-    print '<?xml version="1.0" encoding="iso-8859-1"?>'
-    print '<!DOCTYPE quiz SYSTEM "mathquiz.dtd">' 
-    print '<quiz>'
+    print('<?xml version="1.0" encoding="iso-8859-1"?>')
+    print('<!DOCTYPE quiz SYSTEM "mathquiz.dtd">' )
+    print('<quiz>')
     for p in node.metaList:
       s = '<meta'
       for q in p.keys():
         s += ' %s="%s"' % (q, p[q])
       s += '/>'
-      print s
+      print(s)
     for p in node.course:
       s = '<course'
       for q in p.keys():
         s += ' %s="%s"' % (q, p[q])
       s += '/>'
-      print s
+      print(s)
     for p in node.linkList:
       s = '<link'
       for q in p.keys():
         s += ' %s="%s"' % (q, p[q])
       s += '/>'
-      print s
-    print '<title>%s</title>' % node.title
+      print(s)
+    print('<title>%s</title>' % node.title)
     node.broadcast(self)
-    print '</quiz>'
+    print('</quiz>')
 
   def forQuestion(self,node):
-    print '<question>'
-    print '<text><![CDATA[%s]]></text>' % strval(node.question)
+    print('<question>')
+    print('<text><![CDATA[%s]]></text>' % strval(node.question))
     node.broadcast(self)
-    print '</question>'
+    print('</question>')
 
   def forChoice(self,node):
-    print '  <choice type="%s" cols="%s">' % (node.type, node.cols)
+    print('  <choice type="%s" cols="%s">' % (node.type, node.cols))
     node.broadcast(self)
-    print '  </choice>'
+    print('  </choice>')
 
   def forAnswer(self,node):
-    print '    <answer value="%s">' % node.value
+    print('    <answer value="%s">' % node.value)
     if node.tag:
-      print '      <tag>%s</tag>' % strval(node.tag)
-    print '      <whenRight><![CDATA[%s]]></whenRight>' % strval(node.whenTrue)
-    print '      <whenWrong><![CDATA[%s]]></whenWrong>' % strval(node.whenFalse)
-    print '    </answer>'  
+      print('      <tag>%s</tag>' % strval(node.tag))
+    print('      <whenRight><![CDATA[%s]]></whenRight>' % strval(node.whenTrue))
+    print('      <whenWrong><![CDATA[%s]]></whenWrong>' % strval(node.whenFalse))
+    print('    </answer>'  )
   
   def forItem(self,node):
-    print '    <item expect="%s">' % node.expect
-    print '      <text><![CDATA[%s]]></text>' % strval(node.answer)
+    print('    <item expect="%s">' % node.expect)
+    print('      <text><![CDATA[%s]]></text>' % strval(node.answer))
     if node.response:
-      print '      <response><![CDATA[%s]]></response>' % strval(node.response)
-    print '    </item>'
+      print('      <response><![CDATA[%s]]></response>' % strval(node.response))
+    print('    </item>')
 

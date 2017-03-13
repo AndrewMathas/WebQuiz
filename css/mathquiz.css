@@ -1,83 +1,134 @@
-span.nav {
-  font-size: 90%; color: #999999 }
-th a.tha {
-  text-decoration: none; color: #ffffcc;}
-th a:hover.tha {
-  text-decoration: underline; color: #ffffcc;}
-th a:visited.tha {
-  color: #ffffcc;}
-div.footer a:hover.global {
-  text-decoration: underline;}
-td a:hover.global {
-  text-decoration: underline;}
-#quiz tr {
-  vertical-align: top; }
-#menu table.controls { 
-  font-size:120%;
+/* container for the full quiz page */
+div.quizpage {
+  display: block;
+  max-width: 1000px;
+  margin: 0 auto !important;
+  float: none !important;
 }
-#menu table.controls td.header{ 
-  color:#ce1126; 
-  padding:10px 0px 7px 0px; 
-  font-weight:bold;
+
+/* side menu with question buttons and copyright message */
+div.side_menu h2 {
+  text-align: left;
+  color: #ce1126;
+  font: bold 1.1em Arial,Helvetica,sans-serif;
+  font-size: 14px;
+  letter-spacing: normal;
+  text-transform: uppercase;
 }
-#menu table.controls td {
-  padding:0px 0px 2px 20px;
+div.question_label {
+  color: #cb4335;
+  font-size: 12px;
+  letter-spacing: normal;
+  font-weight: 600;
+  font-variant: small-caps;
+  text-align: left;
 }
-#menu li.discussion{
-  margin-left:20px;
+div.side_menu {
+  float: left;
+  width: 110px;
+  margin: 20px 10px 20px 20px;
+  text-align: center;
+  font-size: 10px;
 }
-#menu div.controls { 
-  padding-top:10px;
-}
-#copy {
+div.copyright {
   font-family: sans-serif, verdana, helvetica;
-  font-size:110%;
+  font-size: small;
   width: 100%;
   padding:20px 0px 20px 0px;
   margin: 0px 0px 600px 0px;
 }
-#copy A{
-	    text-decoration: none;
+div.copyright A{
+  text-decoration: none;
 }
-.QuizList {
-  color: #3333AC;
+/* container for the quiz questions, answers and responses */
+div.quiz_questions{
+  margin: 20px 10px 20px 20px;
+  float: left;
+  width: 70%;
+}
+div.quiz_header {
+  text-align: left;
+}
+div.quiz_header h1 {
+  text-align: center;
+  color: #3333FF;
+  font-weight: bold;
+  font-size: 36px;
+  letter-spacing: normal;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+div.quiz_title {
+  font-size: 1.5em;
+  text-align: left;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  color: #ce1126;
+  font-weight: bold;
+  margin-bottom: 0.8ex;
+}
+div.arrows {
+  float: right;
+  color: #cb4335;
+}
+div.arrows div {
+  float: right;
+  position:relative;
+}
+div.arrows span {
+  float: right;
+  position:relative;
+}
+div.arrows span:hover {
+  color: #CC3333;
+}
+#quiz tr {
+  vertical-align: top; 
+}
+div.QuizList {
+  color: #ce1126;;
   font-family: Arial, Helvetica, sans-serif;
   text-decoration: none;
   text-align: left;
-  }
-li.QuizList {
-  list-style-image: url('"""+Images+"""arrow.gif'); }
-li.QuizList:hover {
-  list-style-image: url('"""+Images+"""red_arrow.gif');
+}
+d.QuizList li:before {
+  content: '\u027A3';
+  color: #c0392b;
+}
+div.QuizList li:hover {
   background-color: #FFFCF0;
-  text-decoration: none;
-  }
-.brown    {
-  color: #cc3300; }
+  color: #c0392b;
+}
 .red      {
-  color: red; }
-.QText    {
+  color: red; 
+}
+div.question_text    {
   text-align: left;
-   padding-top:20px;}
-.RText    {
+  padding-top:20px;}
+div.response_text    {
   color: black;
   text-align: left;
-  }
-.QChoices {
+}
+div.QChoices {
   text-align: left;
   padding-left:10px;
-  padding-right:15px;}
-.question_choices td{padding-top:7px;}
+  padding-right:15px;
+}
+table.question_choices td {
+  padding-top:7px;
+}
+td.brown {
+  color: #cc3300; 
+}
 span.ArrowQuestion img {
   vertical-align: top;
 }
 div.ArrowQuestion:hover {
-  color: #990000; 
+  color: #990000;
   background-color:#f9cf66;
   border-color:#CC9900;
 }
 div.ArrowQuestion {
-  position: relative; 
+  position: relative;
   z-index:20;
   color: #333333;
   font-size: 15px;
@@ -86,9 +137,123 @@ div.ArrowQuestion {
   border: 1px solid #0099CC;
   padding:5px 0px 5px 0px;
   float:right;
-  margin:15px -23px 0px 0px;
 }
 h1.quiz_title {
   white-space:nowrap;
   margin:0;
 }
+/* specifications for the divs containing questions, answers and responses */
+div.question {
+  z-index: 0;
+  margin: 0;
+  padding: 0ex 0ex 20ex 0ex;
+  max-width: 100%;
+  display: none;
+  float:left;
+}
+div.question h2 {
+  color: #FF0000;;
+  font-size: 1em;
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: left;
+  text-transform: uppercase;
+}
+div.answer{
+  position: relative;
+}
+div.response{
+  padding: 1ex;
+  border: solid #F2BB66 2px;
+  background-color: #FFF8DC;
+  border-radius: 5px;
+  display: none;
+  width: 100%;
+}
+/* question buttons */
+div.buttons {
+  width: 120px;
+  height: 100%;
+}
+div.buttons h2 {
+  color: #ce1126;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1em;
+  text-align: left;
+  color: #FF0000;
+}
+div.button {
+  width:      36px;
+  height:     36px;
+  min-width:  36px;
+  min-height: 36px;
+  background-color: #FFF8DC;
+  border-radius: 5px;
+  border: solid #F2BB66 2px;
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+  float: left;
+  line-height: 36px; /* needed so that float does not break vertical alignment */
+  margin-left: 5px;
+  margin-top: 5px;
+  position: relative;
+}
+/* javascript cannot access the css of pseudo elements, so we put the button
+ * content inside a span coloured black. It theory it would be easier to
+ * make the button label equal to the content and the marker the innerHTML
+ * for the div but I could not figure out how to align everything properly
+ * this way.
+ */
+div.button span {
+  color: black;
+}
+div.button-selected {
+  border: solid  #943126  2px;
+}
+div.button:hover {
+  border: solid #5b2c6f 2px;
+}
+div.button:after {
+  width: 100%;
+  height: 100%;
+  content: attr(content);
+  position: absolute;
+  bottom: -35%;
+  right: -35%;
+}
+/* warning messages - for the noscript error */
+div.warning {
+  background-color: #ec7063;
+  border: 2px solid #5b2c6f;
+  color: yellow;
+}
+/* tooltips, or mouseovers, that should be inside a span */
+.tooltip {
+  display: none;
+  padding: 0px;
+}
+span:hover .tooltip {
+  background: #FFF8DC;
+  border-radius: 3px;
+  width: auto;
+  color: black;
+  display: inline;
+  left: 0;
+  font-size: x-small;
+  position: absolute;
+  overflow: visible;
+  bottom:-40px;
+  border: 1px solid #F2BB66;
+  padding: 2px;
+}
+span:hover .tooltip::before {
+  display: block;
+  content: "";
+  position: absolute;
+  top: -5px;
+  height: 0; 
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 5px solid #F2BB66;
+}
+

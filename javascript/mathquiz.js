@@ -6,157 +6,97 @@
 //                  http://www.gnu.org/licenses/
 //
 // This file is part of the MathQuiz system.
-// 
+//
 // Copyright (C) 2004-2010 by the School of Mathematics and Statistics
 // <Andrew.Mathas@sydney.edu.au>
 // <Donald.Taylor@sydney.edu.au>
 //*****************************************************************************
 
-// 27 Jan 03
-// At the moment this is a mix of old code that works
-// for NN4 and IE4+ together with new code for browsers
-// such as NN6+ that support the Document Object Model.
-// It may be possible to improve the code somewhat by
-// removing some of the 'eval's.
-// Note.  getObject() is only called when isDOM is true.
-// - it should be possible to use it for other browser
-// types.
+// March 2017:
+//   - removed legacy code for pre-2010 browsers
+//   - removed images for the question buttons and replaced with css
 
-var isDOM = false;
-var layerRef, styleRef;
-var currentQ, totalQ;
-var currentRLayer;
+var currentQ, totalQ, currentQuiz;
+var currentResponse;
 var wrongAnswers = new Array();
 var correct  = new Array();
 
+// QuizSpecifications will be an array of the expected responses for each question
+var QuizSpecifications = new Array();
+
 // image arrays
-//var Images      = "/u/MOW/MathQuiz/Images/";
+var Images      = "/MathQuiz/Images/";
 var currentImage = new Array();
 var untouched    = new Array();
 var ticked       = new Array();
 var starred      = new Array();
 var crossed      = new Array();
 
-// QList will be an array of the expected responses for each question
-var QList = new Array();
+// specification for the question buttons
+blank = {'marker': '',       'color': 'black',  'bg': '#FFF8DC' }
+cross = {'marker': '\u2718', 'color': 'red',    'bg': 'linear-gradient(to bottom right, white,  grey)' }
+star  = {'marker': '\u272D', 'color': 'yellow', 'bg': 'linear-gradient(to bottom right, yellow, green)' }
+tick  = {'marker': '\u2714', 'color': 'green',  'bg': 'linear-gradient(to bottom right, red, yellow)' }
 
-function getObject(str) {
-  retval = null;
-  if (document.getElementById) {
-    retval = document.getElementById(str).style;
-  }
-  else if (document.layers) {
-    retval = document.layers[str];
-  }
-  else if (document.all) {
-    retval = document.all(str).style;
-  }
-  return retval;
-}
-
-function MathQuizInit(num) {
+function MathQuizInit(num, quiz) {
   if (navigator.appName=="Netscape" && parseFloat(navigator.appVersion)<5) {
-    alert("Your browser version is " + navigator.appVersion +
-     ".\nThis quiz is unlikely to work unless your browser version is at least 5.");
+    alert("Your browser version is " + navigator.appVersion + ".\n" +
+          "This quiz is unlikely to work unless your browser version is at least 5.");
   }
-  // distinguish between various object models
-  if (document.getElementById) {
-    layerRef = "";
-    styleRef = ".style";
-    isDOM = true;
-  }
-  else {
-    if (document.layers) {  // e.g. NN4
-      layerRef = "document.layers";
-      styleRef = "";
-    }
-    else {
-      if (document.all) { // e.g. IE4+
-        layerRef = "document.all";
-        styleRef = ".style";
-      } 
-      else {
-        alert('Cannot determine object model.  Perhaps the browser version is too old');
-      }
-    }
-  }
+
+  // totalQ is the nunber of questions in the quiz
   totalQ = num;
-  currentRLayer = null; // Points to the current response layer
+  currentQ = 1
+  currentQuiz = quiz
+  currentResponse = null; // Points to the current response layer
+
+  // read in the question specifications
+  var read_ql = document.createElement('script');
+  var head = document.getElementsByTagName('head')[0];
+  read_ql.type = "text/javascript";
+  read_ql.src = currentQuiz+'/quiz_list';
+  head.appendChild(read_ql);
 
   var i;
   for ( i = 0; i < num; i++ ) {
-    wrongAnswers[i] = 0;     // the number of times the question has been attempted
-    correct[i] = false;  // whether or not the supplied answer is correct
+      wrongAnswers[i] = 0; // the number of times the question has been attempted
+      correct[i] = false;  // whether or not the supplied answer is correct
   }
 
-  // preload the images
-  for ( i = 1; i <= num; i++ ) {
-    currentImage[i-1] = new Image(31,31);
-    currentImage[i-1].src = Images+"border"+i+".gif";
-    untouched[i-1] = new Image(31,31);
-    untouched[i-1].src = Images+"clear"+i+".gif";
-    ticked[i-1] = new Image(31,31);
-    ticked[i-1].src = Images+"tick"+i+".gif";
-    starred[i-1] = new Image(31,31);
-    starred[i-1].src = Images+"star"+i+".gif";
-    crossed[i-1] = new Image(31,31);
-    crossed[i-1].src = Images+"cross"+i+".gif";
-  }
-  document['nextpage']=new Image()
-  document['prevpage']=new Image()
   window.status="Finished loading";
-}
-// for hysterical reasons
-function init(num) {
-  MathQuizInit(num) 
 }
 
 // Code to hide/show questions
 
-function showQLayer(newQ) { // newQ is an integer
-  hideRLayer();
-  if (isDOM) {
-    getObject('question'+currentQ).display = 'none';
-    currentQ = newQ;
-    getObject('question'+currentQ).display = 'block';
-  }
-  else {
-    eval(layerRef + "['question" + currentQ + "']" + styleRef + ".display = 'none'");
-    currentQ = newQ;
-    eval(layerRef + "['question" + currentQ + "']" + styleRef + ".display = 'block'");
-  }
+function showQuestion(newQ) { // newQ is an integer
+  hideResponse();
+  document.getElementById('question'+currentQ).style.display = 'none';
+  document.getElementById('button'+currentQ).classList.remove('button-selected');
+  document.getElementById('question'+newQ).style.display = 'block';
+  document.getElementById('button'+newQ).classList.add('button-selected');
+  currentQ=newQ;
 }
 
 // Code to hide/show responses
 
-function hideRLayer() {
-  if (currentRLayer != null) {
-    if (isDOM)
-      currentRLayer.display = 'none';
-    else
-      eval(currentRLayer + styleRef + ".display = 'none'");
+function hideResponse() {
+  if (currentResponse != null) {
+      currentResponse.style.display = 'none';
   }
 }
 
-function showRLayer(tag) {
-  hideRLayer()
-  if (isDOM) {
-    currentRLayer = getObject(tag);
-    currentRLayer.display = 'block';
-  } 
-  else {
-    currentRLayer = layerRef+"['question"+currentQ+"']."+layerRef+"['answer"+currentQ+"']."
-      +layerRef+"['"+tag+"']";
-    eval(currentRLayer + styleRef + ".display = 'block'");
-  }
+function showResponse(tag) {
+  hideResponse()
+  currentResponse = document.getElementById(tag);
+  currentResponse.style.display = 'block';
 }
 
-// if increment==+1 we find the next questions which has not 
-// been wrongAnswers correctly; if increment==-1 we find the last 
+// if increment==+1 we find the next questions which has not
+// been wrongAnswers correctly; if increment==-1 we find the last
 // such question
 function nextQuestion (increment) {
   if ( currentQ<0 ) {
-    if ( increment==1 ) gotoQuestion(1); 
+    if ( increment==1 ) gotoQuestion(1);
     else gotoQuestion(totalQ);
   }
   var q = currentQ ;
@@ -165,7 +105,7 @@ function nextQuestion (increment) {
     if (q==0) q=totalQ;
     else if (q>totalQ) q=1;
   } while (q!=currentQ && correct[q-1] );
-  if (q==currentQ) 
+  if (q==currentQ)
     alert("There are no more unanswered questions");
   else {
     if ( increment==1 ) {
@@ -177,101 +117,64 @@ function nextQuestion (increment) {
   }
 }
 
-// nextQuestion + calls to navOver and navOut
-function NextQuestion(increment) {
-  var q=currentQ+increment;
-  if (increment==1) { image='nextpage'; msg='Next unanswered question';
-  } else { image ='prevpage'; msg='Last unanswered question' ;
-  }
-  navOut(image);
-  nextQuestion(increment);
-  setTimeout("navOver(image,msg);", 5);
-}
-    
-function showProgress() {
+function updateQuestionMarker() {
   var qnum = currentQ - 1 ;
   if (currentQ<0) return true; // nothing to change in this case
-  if (isDOM) {
-    var imageref = document.images['progress'+currentQ];
-    if (correct[qnum]) {
-      if (wrongAnswers[qnum] == 0) {
-        imageref.src = starred[currentQ-1].src;
-      } else {
-        imageref.src = ticked[currentQ-1].src;
-      }
+  var button = document.getElementById('button' + currentQ);
+  if (correct[qnum]) {
+    if (wrongAnswers[qnum] == 0) {
+        marker = star;
     } else {
-      if (wrongAnswers[qnum] == 0) {
-        imageref.src = untouched[currentQ-1].src;
-      } else {
-        imageref.src = crossed[currentQ-1].src;
-      } 
-    } 
-  }
-  else {
-    var stem = layerRef+"['progress'].document.progress"+currentQ;
+        marker = tick;
+    }
+  } else {
     if (wrongAnswers[qnum] > 0) {
-      if (correct[qnum]) {
-        if (wrongAnswers[qnum] == 0) {
-          eval(stem+".src='"+Images+"star"+currentQ+".gif'");
-        } else {
-          eval(stem+".src='"+Images+"tick"+currentQ+".gif'");
-        }
-      }
-      else {
-        if (wrongAnswers[qnum] == 0) {
-          eval(stem+".src='"+Images+"cross"+currentQ+".gif'");
-        } else {
-          eval(stem+".src='"+Images+"clear"+currentQ+".gif'");
-        }
-      }
+        marker = cross
+    } else {
+        marker = blank
     }
   }
+  button.style.background = marker.bg;
+  button.style.color      = marker.color
+  button.setAttribute('content', marker.marker)
 }
 
 function gotoQuestion(qnum) {
-  var oldcurrentQ=currentQ;
-  showProgress();
-  showQLayer(qnum);
-  if ( oldcurrentQ<0 ) return true;
-  if (isDOM)
-    document.images['progress'+currentQ].src = currentImage[currentQ-1].src;
-  else
-    eval(layerRef+"['progress'].document.progress"+currentQ+".src='"+Images+"border"+currentQ+".gif'");
+  updateQuestionMarker();
+  showQuestion(qnum);
 }
 
-function checkAnswer() { 
+// check to see whether the answer is correct and update the markers accordingly
+function checkAnswer() {
   var qnum = currentQ - 1;
-  var responsePattern = QList[qnum];
-  if (isDOM)
-    var formObject = document.forms["Q"+currentQ+"Form"];
-  else
-    var formObject = eval(layerRef + "['question"+currentQ+"'].document.Q" + currentQ + "Form");
+  var question = QuizSpecifications[qnum];
+  var formObject = document.forms["Q"+currentQ+"Form"];
 
-  if (responsePattern.type == "input") {
-    if (responsePattern.value == parseFloat(formObject.elements[0].value)) {
+  if (question.type == "input") {
+    if (question.value == parseFloat(formObject.elements[0].value)) {
       correct[qnum] = true;
-      showRLayer(eval("'q'+currentQ+'true';"));
+      showResponse('q'+currentQ+'true');
     }
     else {
       correct[qnum] = false;
-      showRLayer(eval("'q'+currentQ+'false';"));
+      showResponse('q'+currentQ+'false');
     }
   }
-  else if (responsePattern.type == "single") {
+  else if (question.type == "single") {
     var checkedAnswer = 0;
-    for  (var i = 0; i < responsePattern.length; i++ ) {
+    for  (var i = 0; i < question.length; i++ ) {
       if (formObject.elements[i].checked) {
-        correct[qnum] = responsePattern[i];
+        correct[qnum] = question[i];
         checkedAnswer = i+1;
         break;
       }
     }
-    showRLayer(eval("'q'+currentQ+'response'+checkedAnswer;"));
+    showResponse('q'+currentQ+'response'+checkedAnswer);
   }
   else { // type is "multiple"
     var badAnswer = 0;
-    for  (var i = 0; i < responsePattern.length; i++ ) {
-      if (formObject.elements[i].checked != responsePattern[i]) {
+    for  (var i = 0; i < question.length; i++ ) {
+      if (formObject.elements[i].checked != question[i]) {
         badAnswer = i+1;
         break;
       }
@@ -279,41 +182,14 @@ function checkAnswer() {
     //    correct[qnum] = (badAnswer == 0)
     if (badAnswer > 0) {
       correct[qnum] = false;
-      showRLayer(eval("'q'+currentQ+'response'+badAnswer;"));
+      showResponse('q'+currentQ+'response'+badAnswer);
     }
     else {
       correct[qnum] = true;
-      showRLayer(eval("'q'+currentQ+'response0';"));
+      showResponse('q'+currentQ+'response0');
     }
   }
-  // 
+  //
   if ( !correct[qnum] ) { wrongAnswers[qnum] += 1; }
-  showProgress();
+  updateQuestionMarker();
 }
-
-function navOver(name, descr) {
-	var highlight_img = Images+"h-"+name+".gif";
-	document[name].src = highlight_img;
-	self.status = descr;
-	return true;
-}
-
-function navOut(name) {
-	var normal_img = Images+"nn-"+name+".gif";
-	document[name].src = normal_img;
-	self.status = "";
-	return true;
-}
-function menuOver(quiznum, descr) {
-	document['quiztitle'+quiznum].src = Images+"red_arrow.gif";
-	self.status = descr;
-	return true;
-}
-
-function menuOut(quiznum) {
-	document['quiztitle'+quiznum].src = Images+"arrow.gif";
-	self.status = "";
-	return true;
-}
-    
-
