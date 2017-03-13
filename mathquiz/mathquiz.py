@@ -230,12 +230,12 @@ discuss = r'       <li class="discussion" onClick="gotoQuestion(-{b}">{title}</l
 side_menu = r'''   <h2>MathQuiz</h2>{discussionList}
        <div class="buttons"><div class="question_label">&nbsp;Questions&nbsp;</div><br>{buttons}
        </div>
-       <p>
-       <div style="width:100%; clear:left; padding-top:2em;">
-          <span style="color: yellow;">&starf;</span> right first attempt<br>
-          <span style="color: green;">&check;</span> right<br>
-          <span style="color: red;">&cross;</span> wrong
-       </div>
+       <div style="clear:left; height: 1em;"></div>
+       <table class="marking_key">
+          <tr><td style="color: #FFCC00; font-size:small;">&starf;</td><td>right first<br>attempt</td></tr>
+          <tr><td style="color: green; font-size:medium;">&check;</td><td>right</td></tr>
+          <tr><td style="color: red; font-size:medium;">&cross;</td><td>wrong</td></tr>
+       </table>
        <div class="copyright">
           <a href="http://www.maths.usyd.edu.au/u/MOW/MathQuiz/doc/credits.html">
              <b>MathQuiz {version}</b>
@@ -249,18 +249,19 @@ side_menu = r'''   <h2>MathQuiz</h2>{discussionList}
 
 # quiz title and navigation arrows
 quiz_title='''  <div id="quiz_header">
-        <div class="quiz_title">{title}</div>{arrows}
+        <div class="quiz_title">{title}</div><div style="clear:both;"</div>{arrows}
       </div>
 '''
-navigation_arrows='''
+navigation_arrows=''' 
+        <div id="question_number" class="question_label">Question 1</div>
         <div class="arrows">
-          <span onClick="nextQuestion(1);"><span class="tooltip">Next unanswered question</span>&#9654;</span>
+          <span onClick="nextQuestion(1);"><span class="tooltip">Next unanswered question</span>&#x25ba;</span>
           <div class="question_label">Questions</div>
-          <span onClick="nextQuestion(-1);"><span class="tooltip">Previous unanswered question</span>&#9664;</span>
+          <span onClick="nextQuestion(-1);"><span class="tooltip">Previous unanswered question</span>&#x25c4;<span>
         </div>'''
 
 # discussion item
-discussion='''     <div id="question-{dnum}"><h2>{discussion.headind}</h2>
+discussion='''     <div id="question-{dnum}"><h2>{discussion.heading}</h2>
         <p>{discussion.discussion}</p>{input_button}
       </div>
 '''
@@ -280,15 +281,14 @@ question_wrapper='''      <div id="question{qnum}" class="question" {display}>
       {response}
       </div>
 '''
-question_text='''  <div class="question_label">Question {qnum}</div>
-      <div class="question_text">
+question_text='''  <div class="question_text">
         {question}
       </div>
       <form id="Q{qnum}Form" action="" onsubmit="return false;">
         {questionOptions}
         <p><input type="button" value="Check Answer" name="answer" onclick="checkAnswer();"/>
         <span style="width:40px;">&nbsp;</span>
-        <input type="button" value="Next Question" name="next" onclick="nextQuestion(1);"/></p>
+        <input type="button" value="Next Question" title="Next unanswered question" name="next" onclick="nextQuestion(1);"/></p>
       </form>
 '''
 input_answer='<input type="text"  onchange="checkanswer();" size="5"/>{tag}'
@@ -416,7 +416,7 @@ class html(dict):
       for d in doc.discussionList:
         dnum+=1
         self.page_body+=discussion.format(dnum=dnum, discussion=d,
-                           input_button=inputButton if len(doc.questionList)>0 and dnum==len(doc.discussionList) else '')
+                           input_button=input_button if len(doc.questionList)>0 and dnum==len(doc.discussionList) else '')
 
     # index for quiz
     if len(doc.quiz_list)>0:
@@ -442,7 +442,7 @@ class html(dict):
 
   def printQuestion(self,Q,n):
     if isinstance(Q.answer,mathquizXml.Answer):
-      options=input_answer(tag='<span class="question_text">' + Q.answer.tag +'</span>' if Q.answer.tag else '')
+      options=input_answer.format(tag='<span class="question_text">' + Q.answer.tag +'</span>' if Q.answer.tag else '')
     else:
       options=choice_answer.format(choices='\n'.join(self.printItem(opt, n, optnum) for (optnum, opt) in enumerate(Q.answer.itemList)),
                                   hidden=hidden_choice.format(qnum=n) if Q.answer.type=="single" else '')

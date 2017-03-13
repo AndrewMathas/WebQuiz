@@ -55,14 +55,10 @@ setup(name             = 'MathQuiz',
 
       packages=find_packages(),
       include_package_data=True,
-      #package_data     = {'webfiles' : '/'}
+      package_data     = {'webfiles' : '/'},
 
       cmdclass         = {'install': MathQuizInstall},
-      entry_points={
-            'console_scripts': [
-                'mathquiz=magthquiz-wrapper:main',
-            ],
-      },
+      entry_points     = { 'console_scripts': [ 'mathquiz=mathquiz.mathquiz:main' ], },
 
       license          = 'GNU General Public License, Version 3, 29 June 2007',
       classifiers      = [

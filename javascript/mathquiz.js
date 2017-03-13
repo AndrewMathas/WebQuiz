@@ -74,6 +74,7 @@ function showQuestion(newQ) { // newQ is an integer
   document.getElementById('button'+currentQ).classList.remove('button-selected');
   document.getElementById('question'+newQ).style.display = 'block';
   document.getElementById('button'+newQ).classList.add('button-selected');
+  document.getElementById('question_number').innerHTML = 'Question '+newQ;
   currentQ=newQ;
 }
 
