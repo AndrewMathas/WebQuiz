@@ -105,6 +105,8 @@ class MakeMathQuiz(dict):
          xml file for the quiz that has all LaTeS markup converted to html.
       2. Read in the xml file version of the quiz
       3. Spit out the html version
+
+    The HTMl is contructed using the template strings in mathquiz_templates
     """
     # attributes that will form part of the generated web page
     header=''      # everything printed in the page header: meta data, includes, javascript, CSS, ...
