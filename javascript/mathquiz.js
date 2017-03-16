@@ -16,7 +16,7 @@
 //   - removed legacy code for pre-2010 browsers
 //   - removed images for the question buttons and replaced with css
 
-var currentQ, totalQ, currentQuiz;
+var currentQ, qTotal, currentQuiz;
 var currentResponse;
 var wrongAnswers = new Array();
 var correct  = new Array();
@@ -38,19 +38,23 @@ cross = {'marker': '\u2718', 'color': 'red',    'bg': 'linear-gradient(to bottom
 star  = {'marker': '\u272D', 'color': 'yellow', 'bg': 'linear-gradient(to bottom right, yellow, green)' }
 tick  = {'marker': '\u2714', 'color': 'green',  'bg': 'linear-gradient(to bottom right, red, yellow)' }
 
-function MathQuizInit(num, quiz) {
+function MathQuizInit(quizzes, discussion, quiz_name) {
   if (navigator.appName=="Netscape" && parseFloat(navigator.appVersion)<5) {
     alert("Your browser version is " + navigator.appVersion + ".\n" +
           "This quiz is unlikely to work unless your browser version is at least 5.");
   }
 
-  // totalQ is the nunber of questions in the quiz
-  totalQ = num;
-  currentQ = 1
-  currentQuiz = quiz
+  // qTotal is the nunber of questions in the quiz
+  qTotal = quizzes;     // number of quizzes
+  dTotal = discussion;  // number of discusson items
+
+  currentQ = (dTotal>0) ? -1 : 1
+
+  currentQuiz = quiz_name;
   currentResponse = null; // Points to the current response layer
 
-  // read in the question specifications
+  // read the question specifications for the quiz from
+  // the file quiz_name/quiz_list.js
   var read_ql = document.createElement('script');
   var head = document.getElementsByTagName('head')[0];
   read_ql.type = "text/javascript";
@@ -62,8 +66,6 @@ function MathQuizInit(num, quiz) {
       wrongAnswers[i] = 0; // the number of times the question has been attempted
       correct[i] = false;  // whether or not the supplied answer is correct
   }
-
-  window.status="Finished loading";
 }
 
 // Code to hide/show questions
@@ -71,10 +73,16 @@ function MathQuizInit(num, quiz) {
 function showQuestion(newQ) { // newQ is an integer
   hideResponse();
   document.getElementById('question'+currentQ).style.display = 'none';
-  document.getElementById('button'+currentQ).classList.remove('button-selected');
+  if (currentQ>0) {
+    document.getElementById('button'+currentQ).classList.remove('button-selected');
+  }
   document.getElementById('question'+newQ).style.display = 'block';
-  document.getElementById('button'+newQ).classList.add('button-selected');
-  document.getElementById('question_number').innerHTML = 'Question '+newQ;
+  if (newQ>0) {
+    document.getElementById('button'+newQ).classList.add('button-selected');
+    document.getElementById('question_number').innerHTML = 'Question '+newQ;
+  } else {
+    document.getElementById('question_number').innerHTML = 'Dicussion'
+  }
   currentQ=newQ;
 }
 
@@ -98,13 +106,13 @@ function showResponse(tag) {
 function nextQuestion (increment) {
   if ( currentQ<0 ) {
     if ( increment==1 ) gotoQuestion(1);
-    else gotoQuestion(totalQ);
+    else gotoQuestion(qTotal);
   }
   var q = currentQ ;
   do {
     q=q+increment;
-    if (q==0) q=totalQ;
-    else if (q>totalQ) q=1;
+    if (q==0) q=qTotal;
+    else if (q>qTotal) q=1;
   } while (q!=currentQ && correct[q-1] );
   if (q==currentQ)
     alert("There are no more unanswered questions");

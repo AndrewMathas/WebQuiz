@@ -58,17 +58,30 @@ You will be prompted for each of these directories in turn.
 
 '''
 
-tex_local_message='''Please enter the directory, or folder name, where the
-MathQuiz LaTeX class should go. This should be a directory that is
-automatically searched by (pdf)latex such as
+tex_local_message=''' Please enter the directory, or folder name, where the MathQuiz LaTeX class
+should go. This should be a directory that is automatically searched by
+(pdf)latex such as
     /usr/local/texlive//texmf-local/tex/latex/mathquiz
 or a directory listed in the TEXINPUTS environment variable on unix systems.
 
 Latex directory [{tex_local}]: '''
 
-web_directory_message='''MathQuiz needs to install a javascript file on the
-web sever. Please type in the 
-'''
+web_directory_message='''MathQuiz needs to install javascript and css files on the web sever. You can put these
+files into your own web directory or in a system directory. Possible system directories
+include:
+     /Library/WebServer/Documents/MathQuiz     (for mac os x)
+     /usr/local/httpd/MathQuiz                 (SuSE unix)
+     /var/www/MathQuiz                         (other flavours of unix)
+     /usr/local/apache2/MathQuiz               (some apache configurations)
+     c:\inetpub\wwwroot\MathQuiz               (windows?)
+It is recommended that you have a separate directory for MathQuiz files.
+
+MathQuiz web directory [{web_dir}]: '''
+
+web_url_message='''Finally, pleaswe give the *relative* URL for the MathQuiz web directory.
+In all of the examples above the root would be /MathQuiz
+
+MathQuiz relative URL [{MathQuizURL}]: '''
 
 class MathQuizConfigure(object):
     r'''

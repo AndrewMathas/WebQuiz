@@ -43,11 +43,9 @@ def strval(ustr):
 
 # -----------------------------------------------------
 def main():
-  global printQuizPage, MathQuizURL
+  # read settings from the mathquizrc file
 
-  # ------------------------------
   # parse the command line options
-  # ------------------------------
   parser = argparse.ArgumentParser(description='Generate web quiz from a LaTeX file')
   parser.add_argument('quiz_files', nargs='+',type=str, default=None, help='file1 [file2 ...]')
 
@@ -185,7 +183,8 @@ class MakeMathQuiz(dict):
     def add_side_menu(self):
       """ construct the left hand quiz menu """
       if len(self.quiz.discussionList)>0: # links for discussion items
-          discussionList = '\n        <ul>'+'        \n'.join(discuss.format(b=q, title=d.heading) for (q,d) in enumerate(self.quiz.discussionList))+'</ul>'
+          discussionList = '\n       <ul>\n   {}\n       </ul>'.format(
+                '\n   '.join(discuss.format(b=q+1, title=d.heading) for (q,d) in enumerate(self.quiz.discussionList)))
       else:
           discussionList = ''
 
@@ -210,7 +209,7 @@ class MakeMathQuiz(dict):
               quiz_specs +='QuizSpecifications[%d].value="%s";\n' % (i,a.value)
               quiz_specs += 'QuizSpecifications[%d].type="input";\n' % i
             else:
-              quiz_specs += 'QuizSpecifications[%d].type="%s";' % (i,a.type)
+              quiz_specs += 'QuizSpecifications[%d].type="%s";\n' % (i,a.type)
               quiz_specs += '\n'.join('QuizSpecifications[%d][%d]=%s;' % (i,j,s.expect) for (j,s) in enumerate(a.itemList))
             quiz_specs+='\n\n'
 
@@ -225,11 +224,14 @@ class MakeMathQuiz(dict):
       self.javascript += questions_javascript.format(MathQuizURL = self.MathQuizURL,
                                                    currentQ = currentQ,
                                                    qTotal = self.qTotal,
+                                                   dTotal = len(self.quiz.discussionList),
                                                    quiz = self.quiz_file)
 
     def add_page_body(self):
       """ Write the page body! """
-      self.page_body=quiz_title.format(title=self.quiz.title, arrows='' if len(self.quiz.questionList)==0 else navigation_arrows)
+      self.page_body=quiz_title.format(title=self.quiz.title,
+                                        arrows='' if len(self.quiz.questionList)==0
+                                            else navigation_arrows.format(subheading='Question 1' if len(self.quiz.discussionList)==0 else 'Discussion'))
       # now comes the main page text
       # discussion(s) masquerade as negative questions
       if len(self.quiz.discussionList)>0:
@@ -237,13 +239,14 @@ class MakeMathQuiz(dict):
         for d in self.quiz.discussionList:
           dnum+=1
           self.page_body+=discussion.format(dnum=dnum, discussion=d,
+                             display='style="display: block;"' if dnum==1 else '',
                              input_button=input_button if len(self.quiz.questionList)>0 and dnum==len(self.quiz.discussionList) else '')
 
       # index for quiz
       if len(self.quiz.quiz_list)>0:
         # add index to the web page
         self.page_body+=quiz_list.format(course=self.quiz.course[0]['name'],
-                                         quizindex='\n          '.join(quiz_list_item.format(url=q['url'], title=q['title']) for q in self.quiz.quiz_list)
+                                         quiz_index='\n          '.join(quiz_list_item.format(url=q['url'], title=q['title']) for q in self.quiz.quiz_list)
         )
         # write a javascript file for displaying the menu
         # quizmenu = the index file for the quizzes in this directory
@@ -255,7 +258,7 @@ class MakeMathQuiz(dict):
       # finally we print the quesions
       if len(self.quiz.questionList)>0:
         self.page_body+=''.join(question_wrapper.format(qnum=qnum+1,
-                                              display='style="display: block;"' if qnum==0 else '',
+                                              display='style="display: block;"' if qnum==0 and len(self.quiz.discussionList)==0 else '',
                                               question=self.printQuestion(q,qnum+1),
                                               response=self.printResponse(q,qnum+1))
                               for (qnum,q) in enumerate(self.quiz.questionList)
