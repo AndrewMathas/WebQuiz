@@ -1,9 +1,9 @@
-r"""  mathquizLocal.py | 2016 Version 4.7 | Andrew Mathas and Donald Taylor
+r"""  mathquizLocal.py | 2017 Version 5.0 | Andrew Mathas and Donald Taylor
 
      Specifies default printing of mathquiz web pages.
 
 #*****************************************************************************
-#       Copyright (C) 2004-2016 Andrew Mathas and Donald Taylor
+#       Copyright (C) 2004-2017 Andrew Mathas and Donald Taylor
 #                          University of Sydney
 #
 #  Distributed under the terms of the GNU General Public License (GPL)
@@ -17,15 +17,15 @@ r"""  mathquizLocal.py | 2016 Version 4.7 | Andrew Mathas and Donald Taylor
 #*****************************************************************************
 """
 
-def printQuizPage(html, doc):
+def printQuizPage(quiz):
     breadCrumb='<a href="%s">%s</a> / <a href="%s">Quizzes</a> / %s' % (
-                html.course['url'],html.course['code'],html.course['url']+'Quizzes', doc.title)
+                quiz.course['url'], quiz.course['code'], quiz.course['url']+'Quizzes', quiz.title)
     return QuizPage.format(
-            title = doc.title,                               # page title
-            includes = html.header+html.javascript+html.css, # header material
+            title = quiz.title,                              # page title
+            includes = quiz.header+quiz.javascript+quiz.css, # header material
             breadcrumb = breadCrumb,                         # bread crumb constructed above
-            side_menu = html.side_menu,                      # navigation menu for quiz
-            quiz_questions = html.page_body                  # html for quiz
+            side_menu = quiz.side_menu,                      # navigation menu for quiz
+            quiz_questions = quiz.page_body                  # html for quiz
     )
 
 QuizPage = r'''<!DOCTYPE HTML>
