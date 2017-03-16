@@ -93,10 +93,10 @@ def main():
           sys.exit(1)
 
       # the file exists and is readable so make the quiz
-      MakeQuiz(quiz_file, options)
+      MakeMathQuiz(quiz_file, options)
 
 #################################################################################
-class MakeQuiz(dict):
+class MakeMathQuiz(dict):
     """
     Convert a mathquiz latex file to an on-line quiz.
 

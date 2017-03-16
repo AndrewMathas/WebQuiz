@@ -1,4 +1,4 @@
-:root{
+:root {
     var-Heading:  #ce1126;
 }
 /* container for the full quiz page */
@@ -18,7 +18,7 @@ div.side_menu {
   font-size: 10px;
 }
 div.side_menu h2 {
-  text-align: left;
+  float: left;
   color: var(Heading);
   font: bold 1.1em Arial,Helvetica,sans-serif;
   font-size: 14px;

@@ -1,12 +1,12 @@
 ## -*- encoding: utf-8 -*-
 
 """
-This package implements a way of writing on-line quizzes using latex.
+MathQuiz implements a way of writing on-line quizzes using latex.
 """
 
 #################################################################################
 #
-# (c) Copyright 2016 Andrew Mathas
+# (c) Copyright 2017 Andrew Mathas
 #
 #  This file is part of the MathQuiz package.
 #
@@ -25,22 +25,79 @@ This package implements a way of writing on-line quizzes using latex.
 #
 #################################################################################
 
-import os
-import sys
+# To update run
+# python setup.py sdist upload -r pypi
+
+import os, sys
 from setuptools import setup, find_packages
+from setuptools.command.develop import develop
 from setuptools.command.install import install
 from setuptools.command.test import test as TestCommand
 from codecs import open
 
-here = os.path.abspath(os.path.dirname(__file__))
+install_introduction='''
+
+--------------------------------------------------------------------------
+MathQuiz is a system for writing interactive web quizzes. particularly, for
+mathematics. The idea is to separate writing the content of the quizzes from
+constructing the more complicated web pages. This is achieved by writing the
+quizzes in LaTeX. MathQuiz then converts the LaTeX file to a web page for an
+interactive quiz. Under the hood, the quizzes use javascript.
+
+To use MathQuiz you will need to have the following installed on your systems:
+  o latex, tex4ht and make4ht (available using texlive, for example)
+  o python3
+  o javascript
+  o an up to date web server
+
+In order for MathQuiz to work the program needs:
+  o A (system) directory, searched by LaTeX, in which to install LaTeX class files.
+  o A directory on your local file system that is visible from your web server
+  o A relative URL to the web directory above.
+You will be prompted for each of these directories in turn.
+
+'''
+
+tex_local_message='''Please enter the directory, or folder name, where the
+MathQuiz LaTeX class should go. This should be a directory that is
+automatically searched by (pdf)latex such as
+    /usr/local/texlive//texmf-local/tex/latex/mathquiz
+or a directory listed in the TEXINPUTS environment variable on unix systems.
+
+Latex directory [{tex_local}]: '''
+
+web_directory_message='''MathQuiz needs to install a javascript file on the
+web sever. Please type in the 
+'''
+
+class MathQuizConfigure(object):
+    r'''
+    Prompt for the local configuration settings and install system files
+    '''
+    def __init__(self, dry_run):
+        self.read_defaults()
+        sys.stdout.write(install_introduction)
+        tex_local = input(tex_local_message)
 
 class MathQuizInstall(install):
     r"""
-    We custom install class in order to be able to dynamically set the 
-    location of the web directory.
+    We customise the install class in order to be able to determine the
+    location of the system files and then copy everything to tyhe right 
+    place.
     """
     def run(self):
         install.run(self)
+        MathQuizConfigure(self.dry_run)
+
+class MathQuizDevelop(develop):
+    r"""
+    We customise the install class in order to be able to determine the
+    location of the system files and then copy everything to tyhe right 
+    place.
+    """
+    def run(self):
+        install.run(self)
+        MathQuizConfigure(self.dry_run)
 
 
 setup(name             = 'MathQuiz',
@@ -57,7 +114,9 @@ setup(name             = 'MathQuiz',
       include_package_data=True,
       package_data     = {'webfiles' : '/'},
 
-      cmdclass         = {'install': MathQuizInstall},
+      cmdclass         = {'install': MathQuizInstall,
+                          'develop': MathQuizDevelop },
+
       entry_points     = { 'console_scripts': [ 'mathquiz=mathquiz.mathquiz:main' ], },
 
       license          = 'GNU General Public License, Version 3, 29 June 2007',
@@ -68,6 +127,3 @@ setup(name             = 'MathQuiz',
         'Programming Language :: Python :: 3',
       ]
 )
-
-# To update run
-# python setup.py sdist upload -r pypi
