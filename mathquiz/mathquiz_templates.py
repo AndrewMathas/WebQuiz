@@ -13,6 +13,8 @@ r"""  MathQuiz.py | 2017 Version 5.0 | html template file
 #*****************************************************************************
 """
 
+## The quiz web pages are built using the following "template" strings
+
 # Questions and responses:
 #   question_css.format(<question number>, <display mode>)
 #   answer_css.format(<answer number>)

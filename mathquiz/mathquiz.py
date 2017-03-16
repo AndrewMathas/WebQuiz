@@ -57,12 +57,13 @@ def main():
   parser.add_argument('-l','--local', action='store', type=str, dest='localXML', default="mathquizLocal",
       help='local python for generating web page '
   )
-  parser.add_argument('-q', '--quiet', action='store', type=str, default='',
-      help='quiet mode')
 
   # options suppressed from the help message
   parser.add_argument('--version', action = 'version', version = '%(prog)s {}'.format(__version__), help = argparse.SUPPRESS)
   parser.add_argument('--debugging', action = 'store_true', default = False, help = argparse.SUPPRESS)
+
+  # not yet available
+  parser.add_argument('-q', '--quiet', action='store_true', default=False, help= argparse.SUPPRESS)
 
   # parse the options
   options = parser.parse_args()
@@ -147,9 +148,10 @@ class MakeMathQuiz(dict):
       try:
           from subprocess import call
           os.system('make4ht --utf8 {quiet} --config {config} --output-dir {quiz_file}/ --build-file {build} {quiz_file}.tex'.format(
-                  config='/Users/andrew/Code/MathQuiz/latex/mathquiz.cfg',
-                  quiz_file=self.quiz_file,
-                  build='/Users/andrew/Code/MathQuiz/latex/svgpng.mk4')
+                  config    = '/Users/andrew/Code/MathQuiz/latex/mathquiz.cfg',
+                  quiz_file = self.quiz_file,
+                  quiet     = '--quiet' if self.options.quiet else '',
+                  build     = '/Users/andrew/Code/MathQuiz/latex/svgpng.mk4')
           )
           # htlatex generates an html file, so we rename this as an xml file
           os.rename(self.quiz_file+'.html', self.quiz_file+'.xml')
@@ -271,9 +273,9 @@ class MakeMathQuiz(dict):
       item='<tr>' if opt.parent.cols==1 or (optnum % opt.parent.cols)==0 else '<td>&nbsp;</td>'
       item+= '<td class="brown" >%s)</td>' % alphabet[optnum]
       if opt.parent.type == 'single':
-        item+='<td><input type="radio" name="Q{qnum}option"/></td><td><div class="QChoices">{answer}</div></td>'.format(qnum=qnum, answer=opt.answer)
+        item+='<td><input type="radio" name="Q{qnum}option"/></td><td><div class="question_choices">{answer}</div></td>'.format(qnum=qnum, answer=opt.answer)
       elif opt.parent.type == 'multiple':
-        item+='<td><input type="checkbox" name="Q{qnum}option{optnum}"/></td><td><div class="QChoices">{answer}</div></td>'.format(
+        item+='<td><input type="checkbox" name="Q{qnum}option{optnum}"/></td><td><div class="question_choices">{answer}</div></td>'.format(
                      qnum=qnum, optnum=optnum, answer=opt.answer)
       else:
         item+= '<!-- internal error: %s -->\n' % opt.parent.type
