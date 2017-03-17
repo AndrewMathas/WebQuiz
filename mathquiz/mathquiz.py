@@ -30,10 +30,13 @@ __version__ =  "5.0"
 alphabet = "abcdefghijklmnopqrstuvwxyz"
 
 # -----------------------------------------------------
+from pkg_resources import resource_filename
 import argparse
-import mathquizXml
 import os
+import subprocess
 import sys
+
+import mathquizXml
 from mathquiz_templates import *
 
 # this should no lopnger be necessary as we have switched to python 3
@@ -43,46 +46,57 @@ def strval(ustr):
 
 # -----------------------------------------------------
 def main():
-  # read settings from the mathquizrc file
+    # read settings from the mathquizrc file
+    mathquizrc = {}
+    try:
+        with open(resource_filename('mathquiz','mathquizrc'),'r') as rcfile:
+            for line in rcfile:
+                key,val = line.split('=')
+                if len(key.strip())>0:
+                    mathquizrc[key.strip().lower()] = val.strip()
+    except Exception as err:
+      sys.stderr.write('There was an error reading the mathquizrc file\n  {}'.format(err))
+      sys.exit(1)
 
-  # parse the command line options
-  parser = argparse.ArgumentParser(description='Generate web quiz from a LaTeX file')
-  parser.add_argument('quiz_files', nargs='+',type=str, default=None, help='file1 [file2 ...]')
+    # parse the command line options
+    parser = argparse.ArgumentParser(description='Generate web quiz from a LaTeX file')
+    parser.add_argument('quiz_files', nargs='+',type=str, default=None, help='file1 [file2 ...]')
 
-  parser.add_argument('-u','--url', action='store', type=str, dest='MathQuizURL', default="/MathQuiz/",
-      help='relative URL for MathQuiz web files '
-  )
-  parser.add_argument('-l','--local', action='store', type=str, dest='localXML', default="mathquizLocal",
-      help='local python for generating web page '
-  )
+    parser.add_argument('-u','--url', action='store', type=str, dest='MathQuizURL', 
+                        default=mathquizrc['mathquiz_url']
+                        help='relative URL for MathQuiz web files '
+    )
+    parser.add_argument('-l','--local', action='store', type=str, dest='localXML', 
+                        default=mathquizrc['mathquizLocal'], help='local python for generating web page '
+    )
 
-  # options suppressed from the help message
-  parser.add_argument('--version', action = 'version', version = '%(prog)s {}'.format(__version__), help = argparse.SUPPRESS)
-  parser.add_argument('--debugging', action = 'store_true', default = False, help = argparse.SUPPRESS)
+    # not yet available
+    parser.add_argument('-q', '--quiet', action='store_true', default=False, help='suppress most tex4ht messages')
 
-  # not yet available
-  parser.add_argument('-q', '--quiet', action='store_true', default=False, help= argparse.SUPPRESS)
+    # options suppressed from the help message
+    parser.add_argument('--version', action = 'version', version = '%(prog)s {}'.format(__version__), help = argparse.SUPPRESS)
+    parser.add_argument('--debugging', action = 'store_true', default = False, help = argparse.SUPPRESS)
 
-  # parse the options
-  options = parser.parse_args()
-  options.prog=parser.prog
+    # parse the options
+    options      = parser.parse_args()
+    options.prog = parser.prog
 
-  # if no filename then exit
-  if options.quiz_files==[]:
+    # if no filename then exit
+    if options.quiz_files==[]:
     print(options.usage)
     sys.exit(1)
 
-  # make sure that MathQuizURL ends with / and not //
-  if options.MathQuizURL[-1] !='/':
+    # make sure that MathQuizURL ends with / and not //
+    if options.MathQuizURL[-1] !='/':
       options.MathQuizURL+='/'
-  elif options.MathQuizURL[-2:]=='//':
+    elif options.MathQuizURL[-2:]=='//':
       options.MathQuizURL=options.MathQuizURL[:len(options.MathQuizURL)-1]
 
-  # import the local page formatter
-  options.ConstructorPage = __import__(options.localXML).printQuizPage
+    # import the local page formatter
+    options.ConstructorPage = __import__(options.localXML).printQuizPage
 
-  # run through the list of quizzes and make them
-  for quiz_file in options.quiz_files:
+    # run through the list of quizzes and make them
+    for quiz_file in options.quiz_files:
        # quiz_file is assumed to be a tex file if no extension is given
       if not '.' in quiz_file:
           quiz_file += '.tex'
@@ -144,7 +158,6 @@ class MakeMathQuiz(dict):
       '''
       # run htlatex only if quiz_file has a .tex textension
       try:
-          from subprocess import call
           os.system('make4ht --utf8 {quiet} --config {config} --output-dir {quiz_file}/ --build-file {build} {quiz_file}.tex'.format(
                   config    = '/Users/andrew/Code/MathQuiz/latex/mathquiz.cfg',
                   quiz_file = self.quiz_file,

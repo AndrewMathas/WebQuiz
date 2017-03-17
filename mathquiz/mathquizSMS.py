@@ -125,7 +125,6 @@ def printQuizPage(html, doc):
   page['UNIT_OF_STUDY,menuname']=sms_menu_name
   page['UNIT_OF_STUDY,pagetitle']=doc.title
   page['UNIT_OF_STUDY,title']= ''
-  page['UNIT_OF_STUDY,doctype']= 'mathml'
   page['meta_string']=html.header
   page['head_data_string']= html.javascript+initialise_SMS_Menus(doc.src,html.course)+html.css
   page['breadcrumbs_string']=SMS_breadcrumbs(doc, html.course)

@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /* MathQuiz version 5.0 css specifications
  *
  *  Copyright (C) 2004-2017 Andrew Mathas, University of Sydney
@@ -23,7 +24,8 @@ div.side_menu {
   margin: 20px 10px 20px 20px;
   text-align: center;
   font-size: 10px;
-  position: fixed; }
+  position: fixed;
+  overflow: auto; }
   div.side_menu h2 {
     float: left;
     color: #CE1126;
@@ -42,7 +44,7 @@ div.side_menu {
       white-space: nowrap;
       text-align: left; }
     div.side_menu ul li:before {
-      content: '\027A3';
+      content: "➣";
       color: #CE1126;
       padding-left: 0;
       padding-right: 1ex; }
@@ -68,7 +70,7 @@ div.copyright A {
 
 /* container for the quiz questions, answers and responses */
 div.quiz_questions {
-  margin: 20px 10px 20px 20px;
+  margin: 20px 10px 20px 120px;
   float: left;
   width: 70%; }
 
@@ -125,9 +127,14 @@ div.quiz_list {
   text-decoration: none;
   text-align: left; }
 
+div.quiz_list ul {
+  list-style: none; }
+
 div.quiz_list li:before {
-  content: '\u027A3';
-  color: #CE1126; }
+  content: "➣";
+  color: #CE1126;
+  padding-left: 0;
+  padding-right: 1ex; }
 
 div.quiz_list li:hover {
   color: #FF0000; }
