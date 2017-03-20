@@ -225,12 +225,13 @@ class MathQuizCtan(build_py):
 
             # now add the files
             for (src, target) in [ ('README.rst', ''),
-                                   ('latex/mathquiz.c*', 'tex/latex/mathquiz'),
+                                   ('latex/mathquiz.*', 'tex/latex/mathquiz'),
                                    ('doc/mathquiz.{tex,pdf}', 'doc'),
                                    ('mathquiz/mathquiz*.py', 'scripts/mathquiz'),
                                    ('javascript/mathquiz.js', 'scripts/www'),
                                    ('css/mathquiz.css', 'scripts/www'),
                                    ('doc/mathquiz-manual.tex', 'scripts/mathquiz/www/doc'),
+                                   ('LICENCE', 'scripts'),
                                   ]:
                 for file in glob.glob(src):
                     zfile.write(file, os.path.join('mathquiz', target, file.split('/')[-1]))

@@ -259,7 +259,8 @@ table.marking_key {
 div.warning {
   background-color: #EC7063;
   border: 2px solid #5B2C6F;
-  color: #FFCC00; }
+  color: #FFCC00; 
+}
 
 /* tooltips, or mouseovers, that should be inside a span */
 .tooltip {

@@ -1,20 +1,18 @@
 %*****************************************************************************
-%       Copyright (C) 2004-2016 Andrew Mathas and Donald Taylor
-%                          University of Sydney
+%  Copyright (C) 2004-2017 Andrew Mathas, University of Sydney
 %
 %  Distributed under the terms of the GNU General Public License (GPL)
 %                  http://www.gnu.org/licenses/
 %
 % This file is part of the MathQuiz system.
 %
-% Copyright (C) 2004-2016 by the School of Mathematics and Statistics
+% Copyright (C) 2004-2017 by the School of Mathematics and Statistics
 % <Andrew.Mathas@sydney.edu.au>
-% <Donald.Taylor@sydney.edu.au>
 %*****************************************************************************
 
 \NeedsTeXFormat{LaTeX2e}[1996/12/01]
 \ProvidesClass{mathquiz}
-  [2004/12/02 v4.1
+  [2017/03/21 v5.0
   MathQuiz LaTeX document class (based on article.cls)]
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
 \PassOptionsToClass{a4paper}{article}

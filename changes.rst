@@ -2,9 +2,16 @@
 Changes
 =======
 
-Version 4.7:
+Version 5.0:
 ------------
-    - Integrated two diverging branches of the code and upgraded to use MathJax
+    - images for buttons etc replaced by css
+    - python and javascript streamlined and largely rewritten
+    - bash script wrapper replaced with python, making it more portable and more flexible
+    - now using make4ht
+    - program packaged for uploading to ctan and texlive
+    - better installation support
+    - mathquizrc configuration file added
+    - integrated diverging branches of the code and upgraded to use MathJax
 
 Version 4.6:
 ------------
@@ -29,7 +36,7 @@ Version 3:
 Versions 1 and 2:
 -----------------
     - initial prototype by Don Taylor
-    
+
 =====
 To do
 =====

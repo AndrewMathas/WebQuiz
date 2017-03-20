@@ -1,2 +1,0 @@
-
-MathQuizURL = '/~andrew/mathquiz/'

@@ -47,10 +47,14 @@ side_menu = r'''   <h2>MathQuiz</h2>{discussionList}
        </div>'''
 
 # quiz title and navigation arrows
-quiz_title='''  <div id="quiz_header">
+quiz_title='''  <div id="quiz_header">{initialise_warning}
         <div class="quiz_title">{title}</div><div style="clear:both;"</div>{arrows}
       </div>
 '''
+
+initialise_warning='''
+<div class="warning">
+</div>'''
 navigation_arrows='''
         <div id="question_number" class="question_label">{subheading}</div>
         <div class="arrows">
@@ -128,9 +132,6 @@ To do this mathquiz needs:
   o A directory on your local file system that is visible from your web server
   o A relative URL to the web directory above.
 
-Since MathQuiz has to copy files into the directory that you specify, you may
-need to run this command from an administrator account.
-
 WARNING: any files of the form mathquiz.* in these directories will be deleted.
 '''
 
@@ -140,7 +141,6 @@ files into your own web directory or in a system directory. Possible system dire
 include:
      /Library/WebServer/Documents/MathQuiz     (for mac os x)
      /usr/local/httpd/MathQuiz                 (SuSE unix)
-     /var/www/MathQuiz                         (other flavours of unix)
      /usr/local/apache2/MathQuiz               (some apache configurations)
      c:\inetpub\wwwroot\MathQuiz               (windows?)
 It is recommended that you have a separate directory for MathQuiz files.
@@ -159,3 +159,25 @@ to the directory
     {web_dir}
 and typing
     mathquiz mathquiz-manual
+'''
+
+sms_http = 'http://www.maths.usyd.edu.au/u/MOW/MathQuiz/'
+
+mathquiz_url_warning = '''
+MathQuiz has not yet been initialised so the quiz pages will be slower than
+they need to be. Please use
+    mathquiz --initialise
+to better configure MathQuiz.
+'''
+initialise_warning='''<div class="warning">
+MathQuiz has not yet been initialised so the quiz pages will be slower than
+they need to be. Please use
+    <h4>mathquiz --initialise</h4>
+to better configure MathQuiz.
+</div>'''
+
+permission_error='''
+You do not have permission to write to the directory {}.
+To install MathQuiz files into this directory you probably need to run this
+command using an administrator account, or sudo on linux/macosx.
+'''
