@@ -183,6 +183,9 @@ class MathQuizDevelop(develop):
 class MathQuizCtan(build_py):
     r"""
     Create TDS zip file for submission to ctan/texlive.
+
+    It is necessary to subclass setuptools.command but, in fact, we do not use
+    anything from setuptools.
     """
     ctanupload_data = {
         'contribution' : 'mathquiz',
@@ -195,7 +198,7 @@ class MathQuizCtan(build_py):
                'notes' : 'TDS zipfile. See README file in tex/latex/mathquiz',
              'license' : 'free',
          'freeversion' : 'gpl',
-                'file' : 'mathquiz.tds.zip',
+                'file' : 'mathquiz.zip',
     }
     # (source target) pairs for directories to be copied
     def run(self):
@@ -218,15 +221,7 @@ class MathQuizCtan(build_py):
             os.remove('mathquiz.zip')
 
         # save the files as a TDS (Tex directory standard) zip file
-        with zipfile.ZipFile('mathquiz.tds.zip', 'w', zipfile.ZIP_DEFLATED) as zfile:
-
-            # create TDS directory structure
-            #for dir in ['tex', 'tex/latex', 'tex/latex/mathquiz',
-            #            'doc', 'doc/latex', 'doc/latex/mathquiz',
-            #            'scripts', 'scripts/mathquiz', 'scripts/mathquiz/www',
-            #            'scripts/mathquiz/www/doc',
-            #            ]:
-            #    zfile.writestr(zipfile.ZipInfo(dir+'/'), '')
+        with zipfile.ZipFile('mathquiz.zip', 'w', zipfile.ZIP_DEFLATED) as zfile:
 
             # now add the files
             for (src, target) in [ ('README.rst', ''),
