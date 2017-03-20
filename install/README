@@ -1,0 +1,121 @@
+%*****************************************************************************
+%       Copyright (C) 2010 Andrew Mathas and Donald Taylor
+%                          University of Sydney
+%
+%  Distributed under the terms of the GNU General Public License (GPL)
+%                  http://www.gnu.org/licenses/
+%*****************************************************************************
+
+MathQuiz is a system for writing interactive web based quizzes which
+involve use mathematics. The quizzes are first written in LaTeX and
+then converted into HTML files using MathQuiz, which is a python program which uses
+tex4ht to convert from latex to html.
+
+To use the system you will need to have all of the following programs installed:
+    - latex, 
+    - tex4ht (available with latest distribution of texlive, for example)
+    - python (with xml.sax libraries -- now standard?)
+    - gawk   (used in mathquiz shell script -- can be replaced by nawk?)
+The main script which drives MathQuiz is a Unix shell script, so currently MathQuiz
+will only run under Unix/linux.
+
+Once the system is installed, MathQuiz is used directly from the command
+line.  A sample quiz sample_quiz.tex is included with the distribution. To
+test or MathQuiz installation try:
+  o  latex sample_quiz       produces a "readable" dvi file for the quiz
+  o  mathquiz sample_quiz    creates the web page quiz1.html
+If you run into problems then first test to see that tex4ht is correctly
+installed on your system by running htlatex direcly from the command line:
+  o  htlatex sample_quiz     
+You should also text mathquiz on the manual which can be found in the web/doc
+directory of the package.
+
+
+INSTALLATION:
+MathQuiz has several different components which need to be installed into quite
+different places. First, decide where you want to put the source files for MathQuiz.
+This will either be in somewhere in your home directory, or something like
+/usr/local/src if you want to install the system for general use. This directory
+should NOT be accessible from your web server. 
+
+Change to this directory and unpack the tar file mathquiz.tgz using 
+    tar zxf mathquiz.tgz
+This will create a directory called mathquiz in your current directory which contains
+the files:
+    README    -  this file
+    latex/    -  the latex class file for running mathquiz
+    mathquiz  -  the shell script that runs mathquiz
+    src/      -  contains the python scripts for writing the web pages
+    web/      -  contains the java script, css and image files needed by MathQuiz
+    sample_quiz.tex - a sample quiz file containing two questions
+
+To complete the installation of MathQuiz on your system you need to:
+1. Copy, or move, the web directory into the directories used by your web server. You can 
+   put this directory where ever you like -- for example, in your own web directories or 
+   in the "system" web directories -- so long as these files are accessible from your 
+   web server. For example, you could do something like
+       cp -R web /<path to top of web server>/MathQuiz
+   In particular, I recommend renaming this directory MathQuiz when you copy it and
+   not calling it web!
+
+2. Copy, or move, the file latex/mathquiz.cls into the directories searched by latex.
+   Again this can be in your own directories (in Unix you can tell tex which
+   directories to search using the TEXINPUTS environment variable). If mathquiz.cls is 
+   installed in a system directory then everyone will be able to use MathQuiz. 
+
+3. Edit the script mathquiz. At the top of the script you will find two variables:
+    o MathQuizSRC = directory where you unpacked mathquiz.tgz
+    o MathQuizURL = relative URL for the MathQuiz on your web server. This is the 
+          URL pointing to the files in the directory web/ above. Note that this is a
+          relative URL and not the full path to a directory. To access these files 
+          from your browser you would go to
+            http://your.web.server/<MathQuizURL>/
+
+4. Move the script mathquiz to somewhere in your path like /usr/local/bin.
+
+MathQuiz should now be ready to use. To test it change to the directory on your web
+server which contains the files in the directory web/ above. This directory contains
+a doc directory and inside this directory you will find the file mathquiz-manual.tex
+which is the documentation for using MathQuiz. You should now be able to:
+    o latex mathquiz-manual     - produce a dvi version of the manual for printing
+    o mathquiz mathquiz-manual  - create the web pages for the online version of the
+        manual which you will be able to access by going to 
+          http://your.web.server/<MathQuizURL>/doc/mathquiz-manual.html
+As remarked above, you can also text the installation using the supplied
+sample_quiz.tex file.
+
+CHANGING THE APPEARANCE OF THE QUIZZES
+The "style" of the online quizzes is controlled by the file src/mathquizLocal.py. If you want to
+change this format of the quiz pages then the easiest way to do this is to make a copy of 
+mathquizLocal.py, say to mathquizMyStyle.py, and then edit this file directly. To see what the 
+new style looks like you can run the mathquiz script with an optional argument which tells
+mathquiz to use your style instead:
+    mathquiz -l mathquizMyStyle quizfile.tex
+Using mathquiz to regenerate the html files is quite time consuming, so while you are editting this
+file you will find it easier if you ask mathquiz not to delete the intermediate files that it
+creates each time. To do this first run mathquiz with the -x option and thereafter use -f:
+    mathquiz -l mathquizMyStyle -x quizfile.tex    # tells MathQuiz not to delete intermediate files
+    mathquiz -l mathquizMyStyle -f quizfile.tex    # "fast" option when intermediate files exist
+Once the new page format is finalized it can be made the default by setting
+    MathQuizOptions="--local=mathquizMyStyle"
+at the top of the mathquiz shell script.
+
+The easiest way to change mathquizLocal.py is simply to edit the "decorating" html that this file puts
+around the quiz page. You may also need to change the CSS style sheet for mathquiz which is the file
+web/mathquiz.css. More sophisticated versions of mathquizLocal.py where you change the underlying
+python code are of course possible. For example, at the Unviersity of Sydney our version of this file
+calls our content management system directly and uses this to create the web page for the quiz.
+
+INSTALLATION UNDER MICROSOFT WINDOWS
+Although I have not tried it, in principle, MathQuiz should still work under windows provided that you
+have python, latex etc installed on your system. The main problem is that the mathquiz shell script
+will not run under windows. It is possible to call mathquiz.py directly, however, it would
+be better to write a replacement script in order to get MathQuiz to work under windows. It should be
+possible, for example, to write this using python. If there were enough people interested in this I
+could write this, although I don't have access to a computer running microsoft so it would be difficult
+for me to test it -- and it will also difficult for me to find the time to write the script!
+
+Andrew Mathas 
+andrew.mathas@sydney.edu.au
+University of Sydney
+August 2010
