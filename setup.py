@@ -1,7 +1,7 @@
 ## -*- encoding: utf-8 -*-
 
 """
-MathQuiz implements a way of writing on-line quizzes using latex.
+MathQuiz: write on-line quizzes using LaTeX
 """
 
 #################################################################################
@@ -26,64 +26,28 @@ MathQuiz implements a way of writing on-line quizzes using latex.
 #################################################################################
 
 # Update distribution on pypi: python setup.py sdist upload -r pypi
+
 # Install: python setup.py develop
 # Develop mode : python setup.py develop
 # Create build : python setup.py build
 
-import os, shutil, sys
+import os, glob, shutil, sys
 from setuptools import setup, find_packages
+from setuptools.command.build_py import build_py
 from setuptools.command.develop import develop
 from setuptools.command.install import install
-from setuptools.command.test import test as TestCommand
-from codecs import open
-
-install_introduction='''
---------------------------------------------------------------------------
-MathQuiz is a system for writing interactive web quizzes. particularly, for
-mathematics. The idea is to separate writing the content of the quizzes from
-constructing the more complicated web pages. This is achieved by writing the
-quizzes in LaTeX. MathQuiz then converts the LaTeX file to a web page for an
-interactive quiz. Under the hood, the quizzes use javascript.
-
-To use MathQuiz you will need to have the following installed on your systems:
-  o latex, tex4ht and make4ht (available using texlive, for example)
-  o python3
-  o javascript
-  o an up to date web server
-
-In order for MathQuiz to work the program needs:
-  o A (system) directory, searched by LaTeX, in which to install LaTeX class files.
-  o A directory on your local file system that is visible from your web server
-  o A relative URL to the web directory above.
-You will be prompted for each of these directories in turn.
-'''
-
-latex_directory_message='''Please enter the directory, or folder name, where the MathQuiz LaTeX class
-should go. This should be a directory that is automatically searched by
-(pdf)latex such as
-    /usr/local/texlive/texmf-local/tex/latex/mathquiz
-or a directory listed in the TEXINPUTS environment variable on unix systems.
-
-Latex directory [{}]: '''
-
-web_directory_message='''MathQuiz needs to install javascript and css files on the web sever. You can put these
-files into your own web directory or in a system directory. Possible system directories
-include:
-     /Library/WebServer/Documents/MathQuiz     (for mac os x)
-     /usr/local/httpd/MathQuiz                 (SuSE unix)
-     /var/www/MathQuiz                         (other flavours of unix)
-     /usr/local/apache2/MathQuiz               (some apache configurations)
-     c:\inetpub\wwwroot\MathQuiz               (windows?)
-It is recommended that you have a separate directory for MathQuiz files.
-
-MathQuiz web directory [{}]: '''
-
-mathquiz_url_message='''Finally, pleaswe give the *relative* URL for the MathQuiz web directory.
-In all of the examples above the root would be /MathQuiz
-
-MathQuiz relative URL [{}]: '''
+import subprocess
+import zipfile
+#from codecs import open
 
 class MathQuizConfigure(object):
+    '''
+    This class, which is now largely redundant, was written to streamline the
+    uploading of mathquiz to pypi. Rather than using this, the class
+    MathQuizCtan defined below can be used to upload mathquiz to ctan, which
+    is a better place to host mathquiz because latex and friends are an
+    essential dependency.
+    '''
 
     # list of directories that need to be copied/linked
     directories = {
@@ -101,7 +65,7 @@ class MathQuizConfigure(object):
         self.dry_run = dry_run
 
         # read in the settings
-        self.read_mathquiz_rc()
+        self.read_mathquizrc()
 
         print(install_introduction)
         self.copy_or_link_directories(linking = action=='develop')
@@ -109,10 +73,23 @@ class MathQuizConfigure(object):
         # overkill as there is currently only one!
         for var in self.variables:
             message = globals()[var+'_message']
-            self.mathquiz_rc[var] = input(message.format(self.mathquiz_rc[var]))
+            self.mathquizrc[var] = self.read_input(var, message)
 
         if not self.dry_run:
-            self.write_mathquiz_rc()
+            self.write_mathquizrc()
+
+    def dry_command(self, command, message):
+        r'''
+        Print `message` and execute `command` unless self.dry_run is true.
+        '''
+        print(message)
+        if not self.dry_run:
+            command
+
+    def read_input(self, var, message):
+        va = input(message.format(self.mathquizrc[var]))
+        print('{} --> |{}|: {}'.format(var, va,len(va)))
+        return va.strip() if len(va)>0 else self.mathquizrc[var]
 
     def copy_or_link_directories(self, linking):
         r'''
@@ -123,22 +100,24 @@ class MathQuizConfigure(object):
         Finally, return the target directory name.
         '''
         for dir in self.directories:
-            files_copied = self.dry_run
+            files_copied = False
             message = globals()[dir+'_message']
-            target_dir = input(message.format(self.mathquiz_rc[dir]))
+            target_dir = self.read_input(dir, message)
             while not files_copied:
                 try:
-                    # first delete existinbg directory or link if it exists
+                    # first delete existing directory or link if it exists
                     if os.path.isdir(target_dir):
                         shutil.rmtree(target_dir)
                     if os.path.islink(target_dir):
                         os.unlink(target_dir)
                     # now copy or link
-                    if len(directories[dir]) == 1:
+                    if len(self.directories[dir]) == 1:
                         if linking:
-                            os.symlink(dir, target_dir)
+                            self.dry_command(os.symlink(dir, target_dir),
+                                             'Linking: {} -> {}'.format(target_dir, dir))
                         else:
-                            shutil.copytree(dir, target_dir)
+                            self.dry_command(shutil.copytree(dir, target_dir),
+                                             'Copying: {} -> {}'.format(dir, target_dir))
                     else:
                         if linking:
                             os.symlink(os.path.curdir, target_dir)
@@ -146,34 +125,35 @@ class MathQuizConfigure(object):
                             os.mkdir(target)
                             for d in self.directories[dir]:
                                 shutil.copytree(dir, os.path.join(target_dir, d))
+                    files_copied = True
                 except Exception as err:
-                    sys.stderr.write('There was a problem copying files to {}.  Please give a new directory.'.format(target_dir))
+                    sys.stderr.write('There was a problem copying files to {}.\n  Please give a new directory.\n[Error: {}]\n'.format(target_dir, err))
                     message = message.split('\n')[-1]  # truncate the message to the request for the directory
-                    target_dir = input(message.format(self.mathquiz_rc[dir]))
-            self.mathquiz_rc[dir] = target_dir
+                    target_dir = self.read_input(dir, message)
+            self.mathquizrc[dir] = target_dir
 
-    def read_mathquiz_rc(self):
+    def read_mathquizrc(self):
         r'''
-        Read the settings in the mathquiz_rc file into `self.mathquiz_rc`.
+        Read the settings in the mathquizrc file into `self.mathquizrc`.
         '''
-        self.mathquiz_rc = {}
+        self.mathquizrc = {}
         try:
             with open('mathquizrc','r') as mathquizrc:
                 for line in mathquizrc:
                     key,val = line.split('=')
                     if len(key.strip())>0:
-                        self.mathquiz_rc[key.strip().lower()] = val.strip()
+                        self.mathquizrc[key.strip().lower()] = val.strip()
         except Exception as err:
             sys.stderr.write('There was an error reading the mathquizrc file\n  {}'.format(err))
             sys.exit(1)
 
-    def write_mathquiz_rc(self):
+    def write_mathquizrc(self):
         r'''
-        Write the settings in self.mathquiz_rc to the mathquiz_rc file.
+        Write the settings in self.mathquizrc to the mathquizrc file.
         '''
         try:
             with open('mathquizrc','w') as mathquizrc:
-                mathquiz_rc.write('\n'.join('{:<14} = {}'.format(key, val) for (key, val) in self.mathquiz_rc))
+                mathquizrc.write('\n'.join('{:<14} = {}'.format(key, val) for (key, val) in self.mathquizrc))
         except Exception as err:
             sys.stderr.write('There was an error reading the mathquizrc file\n  {}'.format(err))
             sys.exit(1)
@@ -200,6 +180,67 @@ class MathQuizDevelop(develop):
         MathQuizConfigure('develop', self.dry_run)
 
 
+class MathQuizCtan(build_py):
+    r"""
+    Create TDS zip file for submission to ctan/texlive.
+    """
+    ctanupload_data = {
+        'contribution' : 'mathquiz',
+             'version' : '5.0',
+                'name' : 'Andrew Mathas',
+               'email' : 'andrew.mathas@sydney.edu.au',
+             'summary' : 'Write on-line quizzes using latex',
+           'directory' : '/scripts/mathquiz, tex/latex/mathquiz and doc/latex/mathquiz',
+            'announce' : 'A latex system for writing on-line quizzes',
+               'notes' : 'TDS zipfile. See README file in tex/latex/mathquiz',
+             'license' : 'free',
+         'freeversion' : 'gpl',
+                'file' : 'mathquiz.tds.zip',
+    }
+    # (source target) pairs for directories to be copied
+    def run(self):
+        # write the zip file for uploading to ctan
+        self.write_zip_file()
+
+        # upload the zip file to ctan using ctanupload
+        subprocess.call('ctanupload -v {options}'.format(
+             options = ' '.join('--{}="{}"'.format(key, val) for (key, val) in self.ctanupload_data.items())
+        ), shell = True)
+
+    def write_zip_file(self):
+        r'''
+        Create a  TDS (Tex directory standard) zip file for mathquiz.
+        For this we use the zipfile module to write the zopfile with all files
+        in their expected places.
+        '''
+        # if the ctan directory already exists then delete it
+        if os.path.isfile('mathquiz.zip'):
+            os.remove('mathquiz.zip')
+
+        # save the files as a TDS (Tex directory standard) zip file
+        with zipfile.ZipFile('mathquiz.tds.zip', 'w', zipfile.ZIP_DEFLATED) as zfile:
+
+            # create TDS directory structure
+            #for dir in ['tex', 'tex/latex', 'tex/latex/mathquiz',
+            #            'doc', 'doc/latex', 'doc/latex/mathquiz',
+            #            'scripts', 'scripts/mathquiz', 'scripts/mathquiz/www',
+            #            'scripts/mathquiz/www/doc',
+            #            ]:
+            #    zfile.writestr(zipfile.ZipInfo(dir+'/'), '')
+
+            # now add the files
+            for (src, target) in [ ('README.rst', ''),
+                                   ('latex/mathquiz.c*', 'tex/latex/mathquiz'),
+                                   ('doc/mathquiz.{tex,pdf}', 'doc'),
+                                   ('mathquiz/mathquiz*.py', 'scripts/mathquiz'),
+                                   ('javascript/mathquiz.js', 'scripts/www'),
+                                   ('css/mathquiz.css', 'scripts/www'),
+                                   ('doc/mathquiz-manual.tex', 'scripts/mathquiz/www/doc'),
+                                  ]:
+                for file in glob.glob(src):
+                    zfile.write(file, os.path.join('mathquiz', target, file.split('/')[-1]))
+
+
 setup(name             = 'MathQuiz',
       version          = '5.0',
       description      = 'Writing online quizzes using latex',
@@ -215,7 +256,9 @@ setup(name             = 'MathQuiz',
       package_data     = {'webfiles' : '/'},
 
       cmdclass         = {'install': MathQuizInstall,
-                          'develop': MathQuizDevelop },
+                          'develop': MathQuizDevelop,
+                          'ctan'   : MathQuizCtan
+                         },
 
       entry_points     = { 'console_scripts': [ 'mathquiz=mathquiz.mathquiz:main' ], },
 

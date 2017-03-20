@@ -102,7 +102,7 @@ html_meta = r"""<meta name="generator" content="MathQuiz {version} (http://www.m
   <meta name="description" content="Interative quiz generated using MathQuiz from latex using TeX4ht ">
   <meta name="authors" content="{authors}">
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <link href="{MathQuizURL}mathquiz.css" type="text/css" rel="stylesheet">
+  <link href="{MathQuizURL}/css/mathquiz.css" type="text/css" rel="stylesheet">
   <link href="{quiz_file}.css" type="text/css" rel="stylesheet">
 """
 
@@ -111,8 +111,51 @@ html_meta = r"""<meta name="generator" content="MathQuiz {version} (http://www.m
 # but this case rendering errors
 
 # javascript for setting up the questions
-questions_javascript = r"""  <script src="{MathQuizURL}mathquiz.js" type="text/javascript"></script>
+questions_javascript = r"""  <script src="{MathQuizURL}/javascript/mathquiz.js" type="text/javascript"></script>
   <script src="quiz_titles.js" type="text/javascript"></script>
   <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" ></script>
   <style type="text/css"> .MathJax_MathML {{text-indent: 0;}}</style>
-  <script type="text/javascript">window.onLoad=MathQuizInit({qTotal},{dTotal},'{quiz}');</script>"""
+  <script type="text/javascript">window.onLoad=MathQuizInit({qTotal},{dTotal},'{quiz}');</script>
+"""
+
+# the remaining templates are used to prompt the user when initialising mathquiz
+
+initialise_introduction='''
+The on-line quizzes that MathQuiz constructs use javascript and casading style
+sheets and these files need to be placed on your webserver.
+
+To do this mathquiz needs:
+  o A directory on your local file system that is visible from your web server
+  o A relative URL to the web directory above.
+
+Since MathQuiz has to copy files into the directory that you specify, you may
+need to run this command from an administrator account.
+
+WARNING: any files of the form mathquiz.* in these directories will be deleted.
+'''
+
+web_directory_message='''
+MathQuiz needs to install javascript and css files on the web sever. You can put these
+files into your own web directory or in a system directory. Possible system directories
+include:
+     /Library/WebServer/Documents/MathQuiz     (for mac os x)
+     /usr/local/httpd/MathQuiz                 (SuSE unix)
+     /var/www/MathQuiz                         (other flavours of unix)
+     /usr/local/apache2/MathQuiz               (some apache configurations)
+     c:\inetpub\wwwroot\MathQuiz               (windows?)
+It is recommended that you have a separate directory for MathQuiz files.
+
+MathQuiz web directory [{}]: '''
+
+mathquiz_url_message='''Please give the *relative* URL for the MathQuiz web directory.
+In all of the examples above the root would be /MathQuiz
+
+MathQuiz relative URL [{}]: '''
+
+initialise_ending ='''
+You should now be able to build web pages using mathquiz! As an initial test
+you can try to build the on-line version of the mathquiz manual pages by going
+to the directory
+    {web_dir}
+and typing
+    mathquiz mathquiz-manual

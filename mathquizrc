@@ -1,0 +1,3 @@
+web_directory = /Library/WebServer/Documents/MathQuiz
+mathquiz_url  = /MathQuiz
+mathquizLocal = mathquizLocal
