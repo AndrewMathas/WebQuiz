@@ -89,9 +89,9 @@ question_text='''  <div class="question_text">
       </div>
       <form id="Q{qnum}Form" action="" onSubmit="return false;">
         {questionOptions}
-        <p><input type="button" value="Check Answer" name="answer" onClick="checkAnswer();"/>
+        <p><input type="button" value="Check Answer" name="answer" class="input_button" onClick="checkAnswer();"/>
         <span style="width:40px;">&nbsp;</span>
-        <input type="button" value="Next Question" title="Next unanswered question" name="next" onClick="nextQuestion(1);"/></p>
+        <input type="button" value="Next Question" class="input_button" title="Next unanswered question" name="next" onClick="nextQuestion(1);"/></p>
       </form>
 '''
 input_answer='<input type="text"  onChange="checkanswer();" size="5"/>{tag}'

@@ -150,7 +150,6 @@ function checkAnswer() {
   var qnum = currentQ - 1;
   var question = QuizSpecifications[qnum];
   var formObject = document.forms["Q"+currentQ+"Form"];
-  alert('Question ' + currentQ + ' of type '+question.type+' with answers '+question);
 
   if (question.type == "input") {
     if (question.value == parseFloat(formObject.elements[0].value)) {
@@ -182,7 +181,6 @@ function checkAnswer() {
       }
     }
     // fully correct only if badAnswer === 0 
-    alert('Bad response = '+badAnswer+': q'+currentQ+'response'+badAnswer)
     if (badAnswer > 0) {
       correct[qnum] = false;
       showResponse('q'+currentQ+'response'+badAnswer);
