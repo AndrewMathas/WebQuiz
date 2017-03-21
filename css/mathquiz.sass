@@ -1,0 +1,327 @@
+/* MathQuiz version 5.0 css specifications
+ *
+ *  Copyright (C) 2004-2017 Andrew Mathas, University of Sydney
+ *
+ *  Distributed under the terms of the GNU General Public License (GPL)
+ *  http://www.gnu.org/licenses/
+ *
+ * This file is part of the MathQuiz system.
+ *
+ * <Andrew.Mathas@sydney.edu.au>
+ */
+
+// sass variables for the colours used in the quizzes
+  $ArrowHover:     #990033;
+  $ButtonBG:       #FFF8DC;
+  $ButtonBorder:   #F2BB66;
+  $Black   :       #000000;
+  $ButtonHover:    #5B2C6F;
+  $ButtonSelected: #B33C00;
+  $Discussion:     #FF9900;
+  $Heading:        #CE1126;
+  $ResponseBG:     #E(E)D8;
+  $ResponseBorder: #C9A798;
+  $QuestionPart:   #CC3300;
+  $Subheading:     #FF0000;
+  $WarningBG:      #EC7063;
+  $WarningBorder:  #5B2C6F;
+  $WarningFG:      #FFCC00;
+
+  $ListMarker:    '\027A3';
+
+/* container for the full quiz page */
+div.quizpage {
+  display: block;
+  max-width: 800px;
+  margin: 0 auto !important;
+  float: none !important;
+}
+
+/* side menu with question buttons and copyright message */
+div.side_menu {
+  float: left;
+  width: 100px;
+  margin: 20px 10px 20px 20px;
+  text-align: center;
+  font-size: 10px;
+  position: fixed;
+  overflow: auto;
+
+  h2 {
+      float: left;
+      color: $Heading;
+      font: bold 1.1em Arial,Helvetica,sans-serif;
+      font-size: 14px;
+      letter-spacing: normal;
+      text-transform: uppercase;
+  }
+
+  ul {
+      float: left;
+      list-style: none;
+      padding-left: 0;
+
+      li {
+        font-size: 14px;
+        letter-spacing: normal;
+        color: $Black;
+        white-space: nowrap;
+        text-align: left;
+      }
+
+      li:before {
+        content: $ListMarker;
+        color: $Heading;
+        padding-left: 0;
+        padding-right: 1ex;
+      }
+  }
+}
+
+div.question_label {
+  color: $Subheading;
+  font-size: 12px;
+  letter-spacing: normal;
+  font-weight: 600;
+  font-variant: small-caps;
+  float: left;
+  text-align: left;
+}
+div.copyright {
+  font-family: sans-serif, verdana, helvetica;
+  font-size: x-small;
+  width: 100%;
+  padding:20px 0px 20px 0px;
+  margin: 0px 0px 600px 0px;
+}
+div.copyright A{
+  text-decoration: none;
+}
+/* container for the quiz questions, answers and responses */
+div.quiz_questions{
+  margin: 20px 10px 20px 120px;
+  float: left;
+  width: 70%;
+}
+div.quiz_header {
+  display: flex;
+  justify-content: space-between;
+}
+div.quiz_header h1 {
+  text-align: center;
+  color: $Heading;
+  font-weight: bold;
+  font-size: 36px;
+  letter-spacing: normal;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+div.quiz_title {
+  display: inline-block;
+  font-size: 1.5em;
+  text-align: left;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  color: $Heading;
+  font-weight: bold;
+  margin-bottom: 0.8ex;
+}
+div.arrows {
+  color: $Subheading;
+}
+div.arrows div {
+  float: right;
+  position:relative;
+}
+div.arrows span {
+  float: right;
+  position: relative;
+  font-size: 12px;
+  padding-left: 2px;
+  padding-right: 2px;
+}
+div.arrows span:hover {
+  color: $ArrowHover;
+}
+#question_number div {
+  display: inline-block;
+  vertical-align: baseline; 
+  float: left;
+}
+#quiz tr {
+  vertical-align: top; 
+}
+div.quiz_list {
+  color: $Heading;
+  font-family: Arial, Helvetica, sans-serif;
+  text-decoration: none;
+  text-align: left;
+}
+div.quiz_list ul {
+  list-style: none;
+}
+div.quiz_list li:before {
+  content: $ListMarker;
+  color: $Heading;
+  padding-left: 0;
+  padding-right: 1ex;
+}
+div.quiz_list li:hover {
+  color: $Subheading;
+}
+.red      {
+  color: red; 
+}
+div.question_text {
+  text-align: left;
+  padding-top:20px;
+}
+div.response_text    {
+  color: black;
+  text-align: left;
+}
+div.question_choices {
+  text-align: left;
+  padding-left:10px;
+  padding-right:15px;
+}
+table.question_choices td {
+  padding-top:7px;
+}
+td.brown {
+  color: $QuestionPart; 
+}
+span.ArrowQuestion img {
+  vertical-align: top;
+}
+div.ArrowQuestion:hover {
+  color: $ArrowHover;
+}
+div.ArrowQuestion {
+  position: relative;
+  z-index:20;
+  color: $Subheading;
+  font-size: 15px;
+  font-weight:bold;
+  padding:5px 0px 5px 0px;
+  float:right;
+}
+/* specifications for the divs containing questions, answers and responses */
+div.question {
+  z-index: 0;
+  margin: 0;
+  padding: 0ex 0ex 20ex 0ex;
+  min-width: 100%;
+  max-width: 100%;
+  display: none;
+  float:left;
+}
+div.question h2 {
+  color: $Discussion;
+  font-size: 1em;
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: left;
+  text-transform: uppercase;
+}
+div.answer{
+  position: relative;
+}
+div.response{
+  padding: 1ex;
+  border: solid $ResponseBorder 2px;
+  background-color: $ResponseBG;
+  border-radius: 5px;
+  display: none;
+  width: 100%;
+}
+/* question buttons */
+div.buttons {
+  width: 100%;
+  height: 100%;
+  margin-bottom: 1em;
+}
+div.button {
+  width:      30px;
+  height:     30px;
+  min-width:  30px;
+  min-height: 30px;
+  background-color: $ButtonBG;
+  border-radius: 5px;
+  border: solid $ButtonBorder 2px;
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+  float: left;
+  line-height: 30px; /* needed so that float does not break vertical alignment */
+  margin-left: 5px;
+  margin-top: 5px;
+  position: relative;
+  font-size: medium;
+}
+/* javascript cannot access the css of pseudo elements, so we put the button
+ * content inside a span coloured black. It theory it would be easier to
+ * make the button label equal to the content and the marker the innerHTML
+ * for the div but I could not figure out how to align everything properly
+ * this way.
+ */
+div.button span {
+  color: $Black;
+}
+div.button-selected {
+  border: solid $ButtonSelected 2px;
+}
+div.button:hover {
+  border: solid $ButtonHover 2px;
+}
+div.button:after {
+  width: 100%;
+  height: 100%;
+  content: attr(content);
+  position: absolute;
+  bottom: -35%;
+  right: -35%;
+}
+input.input_button {
+  background-color: $ButtonBG;
+  border-radius: 5px;
+  border: solid $ButtonBorder 2px;
+}
+table.marking_key {
+  margin-left: 12px;
+}
+/* warning messages - for the noscript error */
+div.warning {
+  background-color: $WarningBG;
+  border: 2px solid $WarningBorder;
+  color: $WarningFG;
+}
+/* tooltips, or mouseovers, that should be inside a span */
+.tooltip {
+  display: none;
+  padding: 1px;
+  height: 0;
+}
+span:hover .tooltip {
+  background: $ButtonBG;
+  border-radius: 3px;
+  width: auto;
+  height: auto;
+  color: black;
+  display: inline;
+  left: 0;
+  font-size: x-small;
+  position: absolute;
+  overflow: visible;
+  bottom:-50px;
+  border: 1.5px solid $ButtonBorder;
+  padding: 2px;
+}
+span:hover .tooltip::after {
+  display: block;
+  content: "";
+  position: absolute;
+  top: -5px;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 5px solid $ButtonBorder;
+}
