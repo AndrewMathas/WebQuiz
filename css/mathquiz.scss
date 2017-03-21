@@ -19,6 +19,8 @@
   $ButtonSelected: #B33C00;
   $Discussion:     #FF9900;
   $Heading:        #CE1126;
+  $ResponseBG:     #E9E0D8;
+  $ResponseBorder: #C9A798;
   $QuestionPart:   #CC3300;
   $Subheading:     #FF0000;
   $WarningBG:      #EC7063;
@@ -225,8 +227,8 @@ div.answer{
 }
 div.response{
   padding: 1ex;
-  border: solid $ButtonBorder 2px;
-  background-color: $ButtonBG;
+  border: solid $ResponseBorder 2px;
+  background-color: $ResponseBG;
   border-radius: 5px;
   display: none;
   width: 100%;

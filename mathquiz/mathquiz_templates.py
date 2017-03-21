@@ -94,9 +94,12 @@ question_text='''  <div class="question_text">
         <input type="button" value="Next Question" class="input_button" title="Next unanswered question" name="next" onClick="nextQuestion(1);"/></p>
       </form>
 '''
-input_answer='<input type="text"  onChange="checkanswer();" size="5"/>{tag}'
+input_answer='<input type="text"  onChange="checkanswer();" size="5"/><span class="question_text">{tag}</span>'
 choice_answer='<table class="question_choices">{choices}</table>{hidden}'
 hidden_choice='\n<input type="hidden" checked="checked" name="Q{qnum}hidden"/>'
+
+single_item='<td><input type="radio" name="Q{qnum}option"/></td><td><div class="question_choices">{answer}</div></td>'
+multiple_item='<td><input type="checkbox" name="Q{qnum}option{optnum}"/></td><td><div class="question_choices">{answer}</div></td>'
 
 # html meta statements
 html_meta = r"""<meta name="generator" content="MathQuiz {version} (http://www.maths.usyd.edu.au/u/MOW/MathQuiz/doc/mathquiz-manual.html)">

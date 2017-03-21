@@ -38,7 +38,19 @@ from setuptools.command.develop import develop
 from setuptools.command.install import install
 import subprocess
 import zipfile
-#from codecs import open
+
+class MetaData(dict):
+    r"""
+    A dummy class for reading and storing key-value pairs that are read from a file
+    """
+    def __init__(self, filename):
+        with open(filename,'r') as meta:
+            for line in meta:
+                key, val = line.split('=')
+                if len(key.strip())>0:
+                    setattr(self, key.strip().lower(), val.strip())
+
+settings = MetaData('mathquiz/mathquiz.cfg')
 
 class MathQuizConfigure(object):
     '''
@@ -188,11 +200,11 @@ class MathQuizCtan(build_py):
     anything from setuptools.
     """
     ctanupload_data = {
-        'contribution' : 'mathquiz',
-             'version' : '5.0',
-                'name' : 'Andrew Mathas',
-               'email' : 'andrew.mathas@sydney.edu.au',
-             'summary' : 'Write on-line quizzes using latex',
+        'contribution' : settings.program,
+             'version' : settings.version,
+                'name' : settings.author,
+               'email' : settins.author_email,
+             'summary' : settings.description,
            'directory' : '/scripts/mathquiz, tex/latex/mathquiz and doc/latex/mathquiz',
             'announce' : 'A latex system for writing on-line quizzes',
                'notes' : 'TDS zipfile. See README file in tex/latex/mathquiz',
@@ -212,9 +224,9 @@ class MathQuizCtan(build_py):
 
     def write_zip_file(self):
         r'''
-        Create a  TDS (Tex directory standard) zip file for mathquiz.
-        For this we use the zipfile module to write the zopfile with all files
-        in their expected places.
+        Create a zip file for mathquiz that can be uploaded to ctan. To do
+        this we use the zipfile module to write the zopfile with all files in
+        their expected places.
         '''
         # if the ctan directory already exists then delete it
         if os.path.isfile('mathquiz.zip'):
@@ -228,8 +240,8 @@ class MathQuizCtan(build_py):
                                    ('latex/mathquiz.*', 'tex/latex/mathquiz'),
                                    ('doc/mathquiz.{tex,pdf}', 'doc'),
                                    ('mathquiz/mathquiz*.py', 'scripts/mathquiz'),
-                                   ('javascript/mathquiz.js', 'scripts/www'),
-                                   ('css/mathquiz.css', 'scripts/www'),
+                                   ('javascript/mathquiz.js', 'scripts/mathquiz/www'),
+                                   ('css/mathquiz.css', 'scripts/mathquiz/www'),
                                    ('doc/mathquiz-manual.tex', 'scripts/mathquiz/www/doc'),
                                    ('LICENCE', 'scripts'),
                                   ]:
@@ -237,13 +249,13 @@ class MathQuizCtan(build_py):
                     zfile.write(file, os.path.join('mathquiz', target, file.split('/')[-1]))
 
 
-setup(name             = 'MathQuiz',
-      version          = '5.0',
-      description      = 'Writing online quizzes using latex',
+setup(name             = settings.program,
+      version          = settings.version,
+      description      = settings.description,
       long_description = open('README.rst').read(),
-      url              = 'http://www.maths.usyd.edu.au/u/MOW/MathQuiz/doc/mathquiz-manual.html',
-      author           = 'Andrew Mathas',
-      author_email     = 'andrew.mathas@sydney.edu.au',
+      url              = settings.url,
+      author           = settings.author,
+      author_email     = settings.author_email,
 
       keywords         = 'web quizzes, latex, mathematics',
 
@@ -258,7 +270,7 @@ setup(name             = 'MathQuiz',
 
       entry_points     = { 'console_scripts': [ 'mathquiz=mathquiz.mathquiz:main' ], },
 
-      license          = 'GNU General Public License, Version 3, 29 June 2007',
+      license          = settings.licence,
       classifiers      = [
         'Development Status :: 5 - Alpha',
         'Intended Audience :: Science/Research',

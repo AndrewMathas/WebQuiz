@@ -21,14 +21,6 @@ r"""  MathQuiz.py | 2001-03-21       | Don Taylor
 #*****************************************************************************
 """
 
-# ----------------------------------------------------
-__authors__  = "Andrew Mathas (and Don Taylor)"
-__author_email__ = 'andrew.mathas@sydney.edu.au'
-__date__    = "April 2017"
-__version__ =  "5.0"
-
-alphabet = "abcdefghijklmnopqrstuvwxyz"
-
 # -----------------------------------------------------
 import argparse
 import glob
@@ -39,6 +31,28 @@ import sys
 
 import mathquiz_xml
 from mathquiz_templates import *
+
+# ----------------------------------------------------
+# a quick function returning the full path for a file in the mathquiz directory
+mathquiz_file = lambda file: os.path.join(os.path.dirname(os.path.realpath(__file__)),file)
+
+# ----------------------------------------------------
+class MetaData(dict):
+    r"""
+    A dummy class for reading and storing key-value pairs that are read from a file
+    """
+    def __init__(self, filename):
+        with open(filename,'r') as meta:
+            for line in meta:
+                if '=' in line:
+                    key, val = line.strip().split('=')
+                    if len(key.strip())>0:
+                        setattr(self, key.strip().lower(), val.strip())
+
+# read in basic meta data such as author, version, ...
+metadata = MetaData(mathquiz_file('mathquiz.cfg'))
+
+alphabet = "abcdefghijklmnopqrstuvwxyz"
 
 # this should no lopnger be necessary as we have switched to python 3
 def strval(ustr):
@@ -67,7 +81,7 @@ def main():
     parser.add_argument('-q', '--quiet', action='store_true', default=False, help='suppress most tex4ht messages')
 
     # options suppressed from the help message
-    parser.add_argument('--version', action = 'version', version = '%(prog)s {}'.format(__version__), help = argparse.SUPPRESS)
+    parser.add_argument('--version', action = 'version', version = '%(prog)s {}'.format(metadata.version), help = argparse.SUPPRESS)
     parser.add_argument('--debugging', action = 'store_true', default = False, help = argparse.SUPPRESS)
 
     # parse the options
@@ -125,9 +139,7 @@ class MathQuizSettings(object):
         '''
         If the mathquizrc file exists then read it.
         '''
-        self.mq_dir = os.path.dirname(os.path.realpath(__file__))    # directory containing source files
-        self.mq_file = lambda file: os.path.join(self.mq_dir, file)  # shorthand for files in mq_dir
-        if os.path.isfile(self.mq_file('mathquizrc')):
+        if os.path.isfile(mathquiz_file('mathquizrc')):
             self.read_mathquizrc()
 
     def read_mathquizrc(self):
@@ -138,7 +150,7 @@ class MathQuizSettings(object):
         '''
         try:
             print
-            with open(self.mq_file('mathquizrc'),'r') as mathquizrc:
+            with open(mathquiz_file('mathquizrc'),'r') as mathquizrc:
                 for line in mathquizrc:
                     if '%' in line:  # remove comments
                         line = line[:line.index('%')]
@@ -161,14 +173,14 @@ class MathQuizSettings(object):
         Write the settings to the mathquizrc file.
         '''
         try:
-            with open(self.mq_file('mathquizrc'),'w') as rc_file:
+            with open(mathquiz_file('mathquizrc'),'w') as rc_file:
                 for setting in ['mathquiz_web', 'mathquiz_url', 'mathquiz_local']:
                     s=getattr(self, setting)
                     rc_file.write('%% {}\n{:<14} = {}\n'.format(s['help'], setting, s['val']))
 
         except PermissionError:
                 print('There was an error writing the mathquizrc file\n  {}'.format(err))
-                print(permission_error.format(self.mq_file('mathquirc')))
+                print(permission_error.format(mathquiz_file('mathquirc')))
                 sys.exit(1)
 
         except Exception as err:
@@ -204,7 +216,8 @@ class MathQuizSettings(object):
                     # first delete files of the form mathquiz.* files in web_dir
                     for file in glob.glob(os.path.join(web_dir, 'mathquiz.*')):
                             os.remove(file)
-                    if os.path.isdir(self.mq_file('www')):
+                    shutil.rmtree(web_dir, 'doc')
+                    if os.path.isdir(mathquiz_file('www')):
                         # if the www directory exists then copy it to web_dir
                         shutil.copytree('www', web_dir)
                     else:
@@ -216,11 +229,9 @@ class MathQuizSettings(object):
                             shutil.rmtree(os.path.join(web_dir,'doc'))
                         elif os.path.isfile(os.path.join(web_dir,'doc')):
                             os.remove(os.path.join(web_dir,'doc'))
-                        src = os.path.dirname(self.mq_dir)
-                        os.symlink(os.path.join(src, 'javascript/mathquiz.js'), os.path.join(web_dir, 'mathquiz.js'))
-                        os.symlink(os.path.join(src, 'css/mathquiz.css'), os.path.join(web_dir, 'mathquiz.css'))
-                        if not os.path.exists(os.path.join(web_dir, 'doc')):
-                            os.symlink(os.path.join(src, 'doc'), os.path.join(web_dir, 'doc'))
+                        os.symlink(mathquiz_file('javascript/mathquiz.js'), os.path.join(web_dir, 'mathquiz.js'))
+                        os.symlink(mathquiz_file('css/mathquiz.css'), os.path.join(web_dir, 'mathquiz.css'))
+                        os.symlink(os.path.join(src, 'doc'), os.path.join(web_dir, 'doc'))
 
                     self.mathquiz_web['val'] = web_dir
                     files_copied = True
@@ -326,7 +337,7 @@ class MakeMathQuiz(object):
     def add_meta_data(self):
       """ add the meta data for the web page to self.header """
       # meta tags`
-      self.header += html_meta.format(version=__version__, authors=__authors__, MathQuizURL=self.MathQuizURL, quiz_file=self.quiz_file)
+      self.header += html_meta.format(version=metadata.version, authors=metadata.author, MathQuizURL=self.MathQuizURL, quiz_file=self.quiz_file)
       print('{}'.format('\n'.join('{}'.format(m) for m in self.quiz.metaList)))
       for met in self.quiz.metaList:
           self.header+= '  <meta {}/>\n'.format(' '.join('%s="%s"' %(k, met[k]) for k in met))
@@ -345,7 +356,7 @@ class MakeMathQuiz(object):
       buttons = '\n'+'\n'.join(button.format(b=q, cls=' button-selected' if len(self.quiz.discussionList)==0 and q==1 else '')
                                  for q in range(1, self.qTotal+1))
       # end of progress buttons, now for the credits
-      self.side_menu = side_menu.format(discussionList=discussionList, buttons=buttons, version=__version__)
+      self.side_menu = side_menu.format(discussionList=discussionList, buttons=buttons, version=metadata.version)
 
     def add_question_javascript(self):
       """ add the javascript for the questions to self """
