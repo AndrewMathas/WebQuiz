@@ -1,0 +1,108 @@
+%*****************************************************************************
+%  Copyright (C) 2004-2017 Andrew Mathas, University of Sydney
+%
+%  Distributed under the terms of the GNU General Public License (GPL)
+%                  http://www.gnu.org/licenses/
+%
+% This file is part of the MathQuiz system.
+%
+% Copyright (C) 2004-2017 by the School of Mathematics and Statistics
+% <Andrew.Mathas@sydney.edu.au>
+%*****************************************************************************
+
+\ProvidesPackage{smsquiz}
+  [2017/03/21 v5.0
+  MathQuiz configuration file for SMS]
+\def\smsquiz@error{\PackageError{smsquiz}}
+\@ifundefined{MQ@error}{\smsquiz@error{WARNING: The smsquiz package can
+    only be used with the mathquiz document class}}
+\newcounter{mq@year}
+\def\MQ@courseYear#1#2#3#4#5#6.{\def\MQ@year{#5}}
+\def\MQ@year{\ifcase\MQ@year \or JM\or IM\or SM\or HM\fi}
+\def\MQ@DefineCourse{\ifx\MQ@unitCode\@empty\else\ifx\MQ@unitUrl\@empty
+  \expandafter\MQ@courseYear\MQ@unitCode.
+  \UnitURL{/u/UG/\MQ@year /\MQ@unitCode/}
+  \else\relax\fi\fi}
+\AtBeginDocument{\MQ@DefineCourse}
+\DeclareOption{MATH1001}{
+  \UnitCode{MATH1001}
+  \UnitName{Differential Calculus}
+}
+\DeclareOption{MATH1002}{
+  \UnitCode{MATH1002}
+  \UnitName{Linear Algebra}
+}
+\DeclareOption{MATH1003}{
+  \UnitCode{MATH1003}
+  \UnitName{Integral Calculus and Modelling}
+}
+\DeclareOption{MATH1004}{
+  \UnitCode{MATH1004}
+  \UnitName{Discrete Mathematics}
+}
+\DeclareOption{MATH1005}{
+  \UnitCode{MATH1005}
+  \UnitName{Junior Statistics}
+}
+\DeclareOption{MATH1011}{
+  \UnitCode{MATH1011}
+  \UnitName{Life Sciences Calculus}
+}
+\DeclareOption{MATH1012}{
+  \UnitCode{MATH1012}
+  \UnitName{Life Sciences Algebra}
+}
+\DeclareOption{MATH1013}{
+  \UnitCode{MATH1013}
+  \UnitName{Life Sciences Difference and Differential Equations}
+}
+\DeclareOption{MATH1014}{
+  \UnitCode{MATH1014}
+  \UnitName{Introduction to Linear Algebra}
+}
+\DeclareOption{MATH1015}{
+  \UnitCode{MATH1015}
+  \UnitName{Biostatistics}
+}
+\DeclareOption{MATH1111}{
+  \UnitCode{MATH1111}
+  \UnitName{Introduction to Calculus}
+}
+\DeclareOption{STAT1021}{
+  \UnitCode{STAT1021}
+  \UnitName{General Statistical Methods 1}
+}
+\DeclareOption{STAT1022}{
+  \UnitCode{STAT1022}
+  \UnitName{General Statistical Methods 2}
+}
+\DeclareOption{MATH1606}{
+  \UnitCode{MATH1606}
+  \UnitName{Calculus and Statistics for Pharmacy}
+}
+\DeclareOption{MATH1901}{
+  \UnitCode{MATH1901}
+  \UnitName{Differential Calculus (Advanced)}
+}
+\DeclareOption{MATH1902}{
+  \UnitCode{MATH1902}
+  \UnitName{Linear Algebra (Advanced)}
+}
+\DeclareOption{MATH1903}{
+  \UnitCode{MATH1903}
+  \UnitName{Integral Calculus and Modelling (Advanced)}
+}
+\DeclareOption{MATH1904}{
+  \UnitCode{MATH1904}
+  \UnitName{Discrete Mathematics (Advanced)}
+}
+\DeclareOption{MATH1905}{
+  \UnitCode{MATH1905}
+  \UnitName{Statistics (Advanced)}
+}
+\ProcessOptions
+
+
+\endinput
+%%
+%% End of file `smsquiz.sty'.
