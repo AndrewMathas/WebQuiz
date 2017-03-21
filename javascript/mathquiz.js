@@ -24,14 +24,6 @@ var correct  = new Array();
 // QuizSpecifications will be an array of the expected responses for each question
 var QuizSpecifications = new Array();
 
-// image arrays
-var Images      = "/MathQuiz/Images/";
-var currentImage = new Array();
-var untouched    = new Array();
-var ticked       = new Array();
-var starred      = new Array();
-var crossed      = new Array();
-
 // specification for the question buttons
 blank = {'marker': '',       'color': 'black',  'bg': '#FFF8DC' }
 cross = {'marker': '\u2718', 'color': 'red',    'bg': 'linear-gradient(to bottom right, white,  grey)' }
@@ -62,7 +54,7 @@ function MathQuizInit(quizzes, discussion, quiz_name) {
   head.appendChild(read_ql);
 
   var i;
-  for ( i = 0; i < num; i++ ) {
+  for ( i = 0; i < qTotal; i++ ) {
       wrongAnswers[i] = 0; // the number of times the question has been attempted
       correct[i] = false;  // whether or not the supplied answer is correct
   }
@@ -158,6 +150,7 @@ function checkAnswer() {
   var qnum = currentQ - 1;
   var question = QuizSpecifications[qnum];
   var formObject = document.forms["Q"+currentQ+"Form"];
+  alert('Question ' + currentQ + ' of type '+question.type+' with answers '+question);
 
   if (question.type == "input") {
     if (question.value == parseFloat(formObject.elements[0].value)) {
@@ -188,7 +181,8 @@ function checkAnswer() {
         break;
       }
     }
-    //    correct[qnum] = (badAnswer == 0)
+    // fully correct only if badAnswer === 0 
+    alert('Bad response = '+badAnswer+': q'+currentQ+'response'+badAnswer)
     if (badAnswer > 0) {
       correct[qnum] = false;
       showResponse('q'+currentQ+'response'+badAnswer);

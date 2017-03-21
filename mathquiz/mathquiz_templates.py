@@ -106,7 +106,7 @@ html_meta = r"""<meta name="generator" content="MathQuiz {version} (http://www.m
   <meta name="description" content="Interative quiz generated using MathQuiz from latex using TeX4ht ">
   <meta name="authors" content="{authors}">
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <link href="{MathQuizURL}/css/mathquiz.css" type="text/css" rel="stylesheet">
+  <link href="{MathQuizURL}/mathquiz.css" type="text/css" rel="stylesheet">
   <link href="{quiz_file}.css" type="text/css" rel="stylesheet">
 """
 
@@ -115,7 +115,7 @@ html_meta = r"""<meta name="generator" content="MathQuiz {version} (http://www.m
 # but this case rendering errors
 
 # javascript for setting up the questions
-questions_javascript = r"""  <script src="{MathQuizURL}/javascript/mathquiz.js" type="text/javascript"></script>
+questions_javascript = r"""  <script src="{MathQuizURL}/mathquiz.js" type="text/javascript"></script>
   <script src="quiz_titles.js" type="text/javascript"></script>
   <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" ></script>
   <style type="text/css"> .MathJax_MathML {{text-indent: 0;}}</style>

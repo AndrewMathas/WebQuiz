@@ -84,11 +84,9 @@ def main():
         print(options.usage)
         sys.exit(1)
 
-    # make sure that MathQuizURL ends with / and not //
-    if options.MathQuizURL[-1] !='/':
-        options.MathQuizURL+='/'
-    elif options.MathQuizURL[-2:]=='//':
-        options.MathQuizURL=options.MathQuizURL[:len(options.MathQuizURL)-1]
+    # make sure that MathQuizURL dioes not end with a slash
+    while options.MathQuizURL[-1] == '/':
+        options.MathQuizURL = options.MathQuizURL[:len(options.MathQuizURL)]
 
     # import the local page formatter
     options.ConstructorPage = __import__(options.localXML).printQuizPage
@@ -134,7 +132,9 @@ class MathQuizSettings(object):
 
     def read_mathquizrc(self):
         r'''
-        Read the settings in the mathquizrc file
+        Read the settings in the mathquizrc file.
+
+        By default, there is no mathquiz initialisation file.
         '''
         try:
             print
@@ -240,6 +240,9 @@ class MathQuizSettings(object):
                 if not wed_dir.ends_with(mq_url):
                     print('Error! {} does not end with {}'.format(web_dir, mq_url))
                     sys.exit(1)
+                # removing trailing slashes from mq_url
+                while mq_url[-1] == '/':
+                    mq_url = mu_url[:len(mq_url)-1]
                 self.mathquizrc['mathquiz_url'] = mq_url
 
         # save the settings and exit
@@ -457,7 +460,7 @@ class MakeMathQuiz(object):
           snum+= 1
           response+= '  <div id="q%dresponse%d" class="response">\n<em>Correct!</em>' % (n,snum)
           if s.expect != "true":
-            response+= '    Choice (%s) is <span class="red">%s</span>.\n' % (alphabet[snum], s.expect)
+            response+= '    Choice (%s) is <span class="red">%s</span>.\n' % (alphabet[snum-1], s.expect)
           if s.response:
             response+= '  <div class="response_text">%s</div>\n' % strval(s.response)
           response+= '  </div>\n'
@@ -466,7 +469,7 @@ class MakeMathQuiz(object):
           snum+= 1
           response+= '\n<div id="q%dresponse%d"  class="response">\n' % (n,snum)
           response+= '<em>There is at least one mistake.</em><br/>\n'
-          response+= 'For example, choice <span class="brown">(%s)</span>\n' % alphabet[snum]
+          response+= 'For example, choice <span class="brown">(%s)</span>\n' % alphabet[snum-1]
           response+= 'should be <span class="red">%s</span>.\n' % s.expect
           if s.response:
             response+= '<div class="response_text">%s</div>\n' % strval(s.response)
