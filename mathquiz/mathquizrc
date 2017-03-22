@@ -1,6 +1,6 @@
-%% system directory containing mathquiz web files
-mathquiz_web   = /Library/WebServer/Documents/MathQuiz
-%% relative URL to mathquiz code
+## relative URL to mathquiz code
 mathquiz_url   = /MathQuiz
-%% python module that determines the quiz web page layout
+## python module that determines the quiz web page layout
 mathquiz_local = mathquiz_local
+## system directory containing mathquiz web files
+mathquiz_web   = /Library/WebServer/Documents/MathQuiz

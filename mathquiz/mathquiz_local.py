@@ -18,8 +18,9 @@ r"""  mathquizLocal.py | 2017 Version 5.0 | Andrew Mathas and Donald Taylor
 """
 
 def printQuizPage(quiz):
-    breadCrumb='<a href="%s">%s</a> / <a href="%s">Quizzes</a> / %s' % (
-                quiz.course['url'], quiz.course['code'], quiz.course['url']+'Quizzes', quiz.title)
+    breadCrumb='<a href="{}">{}</a> / <a href="{}">Quizzes</a> / {}'.format(
+                quiz.course['url'], quiz.course['code'], quiz.course['url']+'Quizzes', quiz.title
+    )
     return QuizPage.format(
             title = quiz.title,                              # page title
             includes = quiz.header+quiz.javascript+quiz.css, # header material
@@ -37,7 +38,7 @@ QuizPage = r'''<!DOCTYPE HTML>
 
 <body>
   <div class="quizpage">
-    <div class="breadcrumb" style="display:block;margin:0;padding:.3em 0 .3em 0;border-bottom:1px solid #ccc;font-size:10px;">
+    <div class="breadcrumbs">
          {breadcrumb}
     </div>
     <noscript>

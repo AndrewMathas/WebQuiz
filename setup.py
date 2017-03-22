@@ -50,7 +50,7 @@ class MetaData(dict):
                 if len(key.strip())>0:
                     setattr(self, key.strip().lower(), val.strip())
 
-settings = MetaData('mathquiz/mathquiz.cfg')
+settings = MetaData('mathquiz/mathquiz.ini')
 
 class MathQuizConfigure(object):
     '''
@@ -240,6 +240,7 @@ class MathQuizCtan(build_py):
                                    ('latex/mathquiz.*', 'tex/latex/mathquiz'),
                                    ('doc/mathquiz.{tex,pdf}', 'doc'),
                                    ('mathquiz/mathquiz*.py', 'scripts/mathquiz'),
+                                   ('mathquiz/mathquiz.ini', 'scripts/mathquiz'),
                                    ('javascript/mathquiz.js', 'scripts/mathquiz/www'),
                                    ('css/mathquiz.css', 'scripts/mathquiz/www'),
                                    ('doc/mathquiz-manual.tex', 'scripts/mathquiz/www/doc'),

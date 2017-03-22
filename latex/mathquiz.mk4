@@ -2,7 +2,7 @@
 -- Use png for image processing except for pstricks, which will use svg
 
 Make:image("svg$",
-  "dvisvgm -n -o ${output} --libgs=/usr/local/Cellar/ghostscript/9.20/lib/libgs.dylib -p ${page} ${source}")
+  "dvisvgm -n -o ${output}  -p ${page} ${source}")
 
 Make:image("png$",function(opt)
   local dvips = "dvips -E -q -Ppdf -f  -pp ${page} ${source} -o zz${input}.ps" % opt

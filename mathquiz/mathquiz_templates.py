@@ -87,19 +87,42 @@ question_wrapper='''      <div id="question{qnum}" class="question" {display}>
 question_text='''  <div class="question_text">
         {question}
       </div>
-      <form id="Q{qnum}Form" action="" onSubmit="return false;">
+      <form id="Q{qnum}Form" action="" onSubmit="return false;" class="question">
         {questionOptions}
-        <p><input type="button" value="Check Answer" name="answer" class="input_button" onClick="checkAnswer();"/>
-        <span style="width:40px;">&nbsp;</span>
-        <input type="button" value="Next Question" class="input_button" title="Next unanswered question" name="next" onClick="nextQuestion(1);"/></p>
+        <p>
+          <input type="button" value="Check Answer" name="answer" class="input_button" onClick="checkAnswer();"/>
+          <input type="button" value="Next Question" class="input_button" title="Next unanswered question" name="next" onClick="nextQuestion(1);"/>
+        </p>
       </form>
 '''
-input_answer='<input type="text"  onChange="checkanswer();" size="5"/><span class="question_text">{tag}</span>'
+input_answer='<input type="text"  onChange="checkanswer();" size="5"/> {tag}'
 choice_answer='<table class="question_choices">{choices}</table>{hidden}'
 hidden_choice='\n<input type="hidden" checked="checked" name="Q{qnum}hidden"/>'
 
 single_item='<td><input type="radio" name="Q{qnum}option"/></td><td><div class="question_choices">{answer}</div></td>'
 multiple_item='<td><input type="checkbox" name="Q{qnum}option{optnum}"/></td><td><div class="question_choices">{answer}</div></td>'
+
+tf_response_text='''        <div id="q{choice}{response}" class="response"><em>{answer}</em>
+           <div>{text}</div>
+        </div>'''
+single_response='''        <div id="q{qnum}response{part}" class="response">
+          <em>Choice ({alpha}) is <span class="dazzle">{answer}</span></em><div>{response}</div>
+        </div>'''
+smiley='&#9786;'
+frowny='&#9785;'
+
+multiple_response='''        <div id="q{qnum}response{part}" class="response">
+            <em>There is at least one mistake.</em><br/>For example, choice <span class="brown">({alpha})</span> should be <span class="dazzle">{answer}</span>.
+            <div>{response}</div>
+        </div>'''
+multiple_response_correct='''
+        <div id="q{qnum}response0" class="response"><em class="dazzle">Correct!</em>
+            <ol>
+{responses}
+            </ol>
+        </div>'''
+multiple_response_answer='              <li><em>{answer}</em> {reason}</li>'
+
 
 # html meta statements
 html_meta = r"""<meta name="generator" content="MathQuiz {version} (http://www.maths.usyd.edu.au/u/MOW/MathQuiz/doc/mathquiz-manual.html)">
@@ -122,8 +145,7 @@ questions_javascript = r"""  <script src="{MathQuizURL}/mathquiz.js" type="text/
   <script src="quiz_titles.js" type="text/javascript"></script>
   <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" ></script>
   <style type="text/css"> .MathJax_MathML {{text-indent: 0;}}</style>
-  <script type="text/javascript">window.onLoad=MathQuizInit({qTotal},{dTotal},'{quiz}');</script>
-"""
+  <script type="text/javascript">window.onLoad=MathQuizInit({qTotal},{dTotal},'{quiz}');</script>"""
 
 # the remaining templates are used to prompt the user when initialising mathquiz
 

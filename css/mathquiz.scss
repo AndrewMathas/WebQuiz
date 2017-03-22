@@ -14,20 +14,23 @@
   $ArrowHover:     #990033;
   $ButtonBG:       #FFF8DC;
   $ButtonBorder:   #F2BB66;
-  $Black   :       #000000;
   $ButtonHover:    #5B2C6F;
   $ButtonSelected: #B33C00;
+  $Dazzle:         #FF9900;
   $Discussion:     #FF9900;
   $Heading:        #CE1126;
+  $QuestionPart:   #CC3300;
   $ResponseBG:     #E9E0D8;
   $ResponseBorder: #C9A798;
-  $QuestionPart:   #CC3300;
   $Subheading:     #FF0000;
+  $Text:           #000000;
   $WarningBG:      #EC7063;
   $WarningBorder:  #5B2C6F;
   $WarningFG:      #FFCC00;
 
   $ListMarker:    '\027A3';
+
+  $HeadingFont: Verdana, Arial, Helvetica, sans-serif;
 
 /* container for the full quiz page */
 div.quizpage {
@@ -41,7 +44,9 @@ div.quizpage {
 div.side_menu {
   float: left;
   width: 100px;
-  margin: 20px 10px 20px 20px;
+  padding-top: 4px;
+  padding-left:5px;
+  margin-right: 20px;
   text-align: center;
   font-size: 10px;
   position: fixed;
@@ -50,10 +55,9 @@ div.side_menu {
   h2 {
       float: left;
       color: $Heading;
-      font: bold 1.1em Arial,Helvetica,sans-serif;
+      font: $HeadingFont;
       font-size: 14px;
       letter-spacing: normal;
-      text-transform: uppercase;
   }
 
   ul {
@@ -64,7 +68,7 @@ div.side_menu {
       li {
         font-size: 14px;
         letter-spacing: normal;
-        color: $Black;
+        color: $Text;
         white-space: nowrap;
         text-align: left;
       }
@@ -99,9 +103,10 @@ div.copyright A{
 }
 /* container for the quiz questions, answers and responses */
 div.quiz_questions{
-  margin: 20px 10px 20px 120px;
+  padding-top: 8px;
+  margin-left: 120px;
   float: left;
-  width: 70%;
+  width: 670px;
 }
 div.quiz_header {
   display: flex;
@@ -118,9 +123,9 @@ div.quiz_header h1 {
 }
 div.quiz_title {
   display: inline-block;
-  font-size: 1.5em;
+  font-size: 1.1em;
   text-align: left;
-  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-family: $HeadingFont;
   color: $Heading;
   font-weight: bold;
   margin-bottom: 0.8ex;
@@ -168,16 +173,12 @@ div.quiz_list li:before {
 div.quiz_list li:hover {
   color: $Subheading;
 }
-.red      {
-  color: red; 
+.dazzle      {
+  color: $Dazzle; 
 }
 div.question_text {
   text-align: left;
   padding-top:20px;
-}
-div.response_text    {
-  color: black;
-  text-align: left;
 }
 div.question_choices {
   text-align: left;
@@ -215,6 +216,11 @@ div.question {
   display: none;
   float:left;
 }
+form.question {
+  text-align: left;
+  padding-top:20px;
+}
+
 div.question h2 {
   color: $Discussion;
   font-size: 1em;
@@ -232,6 +238,33 @@ div.response{
   border-radius: 5px;
   display: none;
   width: 100%;
+
+  div {
+    text-align: left;
+    color: $Text;
+  }
+
+  ol {
+
+    counter-reset: list;
+    list-style-type: none;
+
+    li:before {
+      content: counter(list, lower-latin) ")";
+      counter-increment: list;
+      color: $QuestionPart;
+      padding-right: 1ex;
+    }
+
+    li {
+      text-align: left;
+      color: $Text;
+
+      em {
+          color: $Dazzle;
+      }
+    }
+  }
 }
 /* question buttons */
 div.buttons {
@@ -264,7 +297,7 @@ div.button {
  * this way.
  */
 div.button span {
-  color: $Black;
+  color: $Text;
 }
 div.button-selected {
   border: solid $ButtonSelected 2px;
@@ -284,6 +317,9 @@ input.input_button {
   background-color: $ButtonBG;
   border-radius: 5px;
   border: solid $ButtonBorder 2px;
+  padding-left: 4px;
+  padding-right: 4px;
+  margin-right: 40px;
 }
 table.marking_key {
   margin-left: 12px;
@@ -305,7 +341,7 @@ span:hover .tooltip {
   border-radius: 3px;
   width: auto;
   height: auto;
-  color: black;
+  color: $Text;
   display: inline;
   left: 0;
   font-size: x-small;
@@ -324,4 +360,14 @@ span:hover .tooltip::after {
   border-left: 5px solid transparent;
   border-right: 5px solid transparent;
   border-bottom: 5px solid $ButtonBorder;
+}
+
+/* breadcrumbs at the top of the page */
+div.breadcrumbs {
+  display: block;
+  margin: 0;
+  padding: .3em 0 .3em 0;
+  border-bottom: 1px solid $ButtonBorder;
+  font-size: x-small;
+  
 }
