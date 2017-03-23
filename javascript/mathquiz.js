@@ -11,10 +11,6 @@
 // <Donald.Taylor@sydney.edu.au>
 //*****************************************************************************
 
-// March 2017:
-//   - removed legacy code for pre-2010 browsers
-//   - removed images for the question buttons and replaced with css
-
 var currentQ, qTotal, currentQuiz;
 var currentResponse;
 var wrongAnswers = new Array();

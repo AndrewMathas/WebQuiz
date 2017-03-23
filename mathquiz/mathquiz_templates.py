@@ -13,6 +13,8 @@ r"""  MathQuiz.py | 2017 Version 5.0 | html template file
 #*****************************************************************************
 """
 
+# -*- encoding: utf-8 -*-
+
 ## The quiz web pages are built using the following "template" strings
 
 # Questions and responses:
@@ -26,8 +28,10 @@ response_css = '    #q{}response{}{{padding: 0ex; border: solid black 2px; displ
 # question buttons
 button  = r'       <div id="button{b}" class="button{cls}" content="" onClick="gotoQuestion({b})">{b}</div>'
 discuss = r'       <li class="discussion" onClick="gotoQuestion(-{b})">{title}</li>'
-side_menu = r'''   <h2>MathQuiz</h2>{discussionList}
-       <div class="buttons"><div class="question_label">&nbsp;Questions&nbsp;</div><br>{buttons}
+side_menu = r''' <h2>MathQuiz</h2>{discussion_list}
+       <div class="buttons">
+         <div class="question_label">&nbsp;Questions&nbsp;</div>
+         <br>{buttons}
        </div>
        <div style="clear:left; height: 1em;"></div>
        <table class="marking_key">
@@ -47,20 +51,21 @@ side_menu = r'''   <h2>MathQuiz</h2>{discussionList}
        </div>'''
 
 # quiz title and navigation arrows
-quiz_title='''  <div id="quiz_header">{initialise_warning}
-        <div class="quiz_title">{title}</div><div style="clear:both;"</div>{arrows}
+quiz_title='''<div id="quiz_header">{initialise_warning}
+        <div class="quiz_title">{title}</div>
+        <div style="clear:both;"></div>
+        {arrows}
       </div>
 '''
 
 initialise_warning='''
 <div class="warning">
 </div>'''
-navigation_arrows='''
-        <div id="question_number" class="question_label">{subheading}</div>
+navigation_arrows='''<div id="question_number" class="question_label">{subheading}</div>
         <div class="arrows">
           <span onClick="nextQuestion(1);"><span class="tooltip">Next unanswered question</span>&#x25ba;</span>
           <div class="question_label">Questions</div>
-          <span onClick="nextQuestion(-1);"><span class="tooltip">Previous unanswered question</span>&#x25c4;<span>
+          <span onClick="nextQuestion(-1);"><span class="tooltip">Previous unanswered question</span>&#x25c4;</span>
         </div>'''
 
 # discussion item
@@ -87,7 +92,7 @@ question_wrapper='''      <div id="question{qnum}" class="question" {display}>
 question_text='''  <div class="question_text">
         {question}
       </div>
-      <form id="Q{qnum}Form" action="" onSubmit="return false;" class="question">
+      <form id="Q{qnum}Form" onSubmit="return false;" class="question">
         {questionOptions}
         <p>
           <input type="button" value="Check Answer" name="answer" class="input_button" onClick="checkAnswer();"/>
@@ -97,7 +102,7 @@ question_text='''  <div class="question_text">
 '''
 input_answer='<input type="text"  onChange="checkanswer();" size="5"/> {tag}'
 choice_answer='<table class="question_choices">{choices}</table>{hidden}'
-hidden_choice='\n<input type="hidden" checked="checked" name="Q{qnum}hidden"/>'
+input_single='\n<input type="hidden" name="Q{qnum}hidden"/>'
 
 single_item='<td><input type="radio" name="Q{qnum}option"/></td><td><div class="question_choices">{answer}</div></td>'
 multiple_item='<td><input type="checkbox" name="Q{qnum}option{optnum}"/></td><td><div class="question_choices">{answer}</div></td>'
@@ -112,7 +117,7 @@ smiley='&#9786;'
 frowny='&#9785;'
 
 multiple_response='''        <div id="q{qnum}response{part}" class="response">
-            <em>There is at least one mistake.</em><br/>For example, choice <span class="brown">({alpha})</span> should be <span class="dazzle">{answer}</span>.
+            <em>There is at least one mistake.</em><br>For example, choice <span class="brown">({alpha})</span> should be <span class="dazzle">{answer}</span>.
             <div>{response}</div>
         </div>'''
 multiple_response_correct='''
@@ -133,7 +138,7 @@ html_meta = r"""<meta name="generator" content="MathQuiz {version} (http://www.m
   <meta name="authors" content="{authors}">
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <link href="{MathQuizURL}/mathquiz.css" type="text/css" rel="stylesheet">
-  <link href="{quiz_file}.css" type="text/css" rel="stylesheet">
+  <link href="{quiz_file}/{quiz_file}.css" type="text/css" rel="stylesheet">
 """
 
 # Previously used
@@ -206,3 +211,13 @@ You do not have permission to write to the directory {}.
 To install MathQuiz files into this directory you probably need to run this
 command using an administrator account, or sudo on linux/macosx.
 '''
+
+# no script error when javascript is not enabled
+no_script='''<noscript>
+      <div class="warning">
+        If you are reading this message either your browser does not support
+        JavaScript or because JavaScript is not enabled. You will need to enable
+        JavaScript and then reload this page in order to use this quiz.
+       </div>
+    </noscript>'''
+

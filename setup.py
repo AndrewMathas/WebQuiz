@@ -1,4 +1,4 @@
-## -*- encoding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 
 """
 MathQuiz: write on-line quizzes using LaTeX
@@ -203,7 +203,7 @@ class MathQuizCtan(build_py):
         'contribution' : settings.program,
              'version' : settings.version,
                 'name' : settings.author,
-               'email' : settins.author_email,
+               'email' : settings.author_email,
              'summary' : settings.description,
            'directory' : '/scripts/mathquiz, tex/latex/mathquiz and doc/latex/mathquiz',
             'announce' : 'A latex system for writing on-line quizzes',

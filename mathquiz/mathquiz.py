@@ -78,12 +78,13 @@ def main():
     parser.add_argument('-l','--local', action='store', type=str, dest='local_page',
                         default=settings['mathquiz_local'], help='local python code for generating the quiz web page '
     )
+    parser.add_argument('-d', '--dirty', action='store_false', dest='clean', default=True, help='do not delete log files after creating the page web')
     parser.add_argument('--initialise', action='store_true', default=False, help='initialise the web directory for mathquiz')
     parser.add_argument('--build', action='store', type=str, dest='mathquiz_mk4', default=settings['mathquiz_mk4'],
                         help='override default build file for make4ht')
 
     # not yet available
-    parser.add_argument('-q', '--quiet', action='count', help='suppress tex4ht messages')
+    parser.add_argument('-q', '--quiet', action='count', default=0, help='suppress tex4ht messages (also -qq etc)')
 
     # options suppressed from the help message
     parser.add_argument('--version', action = 'version', version = '%(prog)s {}'.format(metadata.version), help = argparse.SUPPRESS)
@@ -108,22 +109,44 @@ def main():
         options.MathQuizURL = options.MathQuizURL[:len(options.MathQuizURL)]
 
     # import the local page formatter
-    options.ConstructorPage = __import__(options.local_page).printQuizPage
+    options.write_web_page = __import__(options.local_page).write_web_page
 
     options.initialise_warning = (settings['mathquiz_url'] == sms_http)
 
     # run through the list of quizzes and make them
     for quiz_file in options.quiz_file:
+        if len(options.quiz_file)>1 and options.quiet<3:
+            print('Making web page for {}'.format(quiz_file))
         # quiz_file is assumed to be a tex file if no extension is given
         if not '.' in quiz_file:
             quiz_file += '.tex'
 
         if not os.path.isfile(quiz_file):
-            print('Error: cannot read file {}'.format(quiz_file))
-            sys.exit(1)
+            print('MathQuiz error: cannot read file {}'.format(quiz_file))
 
-        # the file exists and is readable so make the quiz
-        MakeMathQuiz(quiz_file, options)
+        else:
+            # the file exists and is readable so make the quiz
+            MakeMathQuiz(quiz_file, options)
+
+            quiz_file = quiz_file[:quiz_file.index('.')]  # remove the extension
+
+            # move the css file into the directory for the quiz
+            css_file = os.path.join(quiz_file, quiz_file+'.css')
+            if os.path.isfile(quiz_file +'.css'):
+                if os.path.isfile(css_file):
+                    os.remove(css_file)
+                shutil.move(quiz_file+'.css', css_file)
+
+            # now clean up
+            if options.clean:
+                for ext in [ '4ct', '4tc', 'dvi', 'idv', 'lg', 'log', 'ps', 'pdf', 'tmp', 'xref']:
+                    if os.path.isfile(quiz_file +'.' +ext):
+                        os.remove(quiz_file +'.' +ext)
+
+                # delete any svg file that also exists in the quiz_file subdirecory
+                #for svg in glob.glob('{}[0-9]*x.svg'.format(quiz_file)):
+                #        if os.path.isfile(os.path.join(quiz_file, svg)):
+                #            os.remove(svg)
 
     if options.initialise_warning:
         print(mathquiz_url_warning)
@@ -144,12 +167,12 @@ class MathQuizSettings(object):
 
     # default of settings for the mathquizrc file - a dictionart of dictionaries
     # the 'descr' field is for printing descriptions in the mathquizrc file
-    settings = {
-        'mathquiz_local' : {'val' : 'mathquiz_local', 'descr' : '(local) python module that writes the HTML quiz web' },
-        'mathquiz_url'   : {'val' : '/MathQuiz',      'descr' : 'relative URL to mathquiz code' },
-        'mathquiz_web'   : {'val' : '',               'descr' : 'system directory that contains the mathquiz web files'},
-        'mathquiz_mk4'   : {'val' : '',               'descr' : 'make4ht build file'}
-    }
+    settings = dict(
+        mathquiz_local = dict(val = 'mathquiz_local', descr = '(local) python module that writes the HTML quiz web' ),
+        mathquiz_url   = dict(val = '/MathQuiz',      descr = 'relative URL to mathquiz code' ),
+        mathquiz_web   = dict(val = '',               descr = 'system directory that contains the mathquiz web files'),
+        mathquiz_mk4   = dict(val = '',               descr = 'make4ht build file')
+    )
 
     def __init__(self):
         '''
@@ -167,7 +190,7 @@ class MathQuizSettings(object):
         if key in self.settings:
             return self.settings[key]['val']
 
-        print('Error: unknown setting {} in mathquizrc.'.format(key))
+        print('MathQuiz error: unknown setting {} in mathquizrc.'.format(key))
         sys.exit(1)
 
     def __setitem__(self, key, val):
@@ -179,7 +202,7 @@ class MathQuizSettings(object):
         if key in self.settings:
             self.settings[key]['val'] = val
         else:
-            print('Unknown setting {} in mathquizrc'.format(key))
+            print('MathQuiz error: unknown setting {} in mathquizrc'.format(key))
             sys.exit(1)
 
     def read_mathquizrc(self):
@@ -189,7 +212,6 @@ class MathQuizSettings(object):
         By default, there is no mathquiz initialisation file.
         '''
         try:
-            print
             with open(mathquiz_file('mathquizrc'),'r') as mathquizrc:
                 for line in mathquizrc:
                     if '%' in line:  # remove comments
@@ -201,16 +223,18 @@ class MathQuizSettings(object):
                         if key in self.settings:
                             self[key] = val
                         elif len(key)>0:
-                            print('Unknown setting {} in mathquizrc'.format(key))
+                            print('MathQuiz error: unknown setting {} in mathquizrc'.format(key))
                             sys.exit(1)
 
         except Exception as err:
-            sys.stderr.write('Error: there was an error reading the mathquizrc file\n  {}'.format(err))
+            sys.stderr.write('MathQuiz error: there was an error reading the mathquizrc file\n  {}'.format(err))
             sys.exit(1)
 
     def write_mathquizrc(self):
         r'''
-        Write the settings to the mathquizrc file.
+        Write the settings to the mathquizrc file. This method is only called
+        from initialise_mathquiz, which should only be called when MathQuiz
+        is being set up initially.
         '''
         try:
             with open(mathquiz_file('mathquizrc'),'w') as rc_file:
@@ -228,6 +252,11 @@ class MathQuizSettings(object):
             sys.exit(1)
 
     def initialise_mathquiz(self):
+        r'''
+        Set the root for the MathQuiz web directory and copy the www files
+        into this directory. Once this is done savegthe settings to
+        mathquizrc.
+        '''
         print(initialise_introduction)
 
         # prompt for directory and copy files - are these reasonable defaults
@@ -257,9 +286,7 @@ class MathQuizSettings(object):
                     for file in glob.glob(os.path.join(web_dir, 'mathquiz.*')):
                         os.remove(file)
                     # ... now remove the doc directory
-                    print('webdir = {}, full path = {}, isdir = {}.'.format(web_dir, os.path.join(web_dir, 'doc'), os.path.isdir(os.path.join(web_dir, 'doc'))))
                     web_doc = os.path.join(web_dir, 'doc')
-
                     if os.path.isfile(web_doc) or os.path.islink(web_doc):
                         os.remove(web_doc)
                     elif os.path.isdir(web_doc):
@@ -295,7 +322,7 @@ class MathQuizSettings(object):
             mq_url = input(mathquiz_url_message.format(self['mathquiz_url']))
             if mq_url != '':
                 if not web_dir.ends_with(mq_url):
-                    print('Error: {} does not end with {}.'.format(web_dir, mq_url))
+                    print('MathQuiz error: {} does not end with {}.'.format(web_dir, mq_url))
                     sys.exit(1)
                 # removing trailing slashes from mq_url
                 while mq_url[-1] == '/':
@@ -340,7 +367,7 @@ class MakeMathQuiz(object):
       self.read_xml_file()
 
       # generate the variuous components ofthe web page
-      self.course = self.quiz.course[0]
+      self.course = self.quiz.course
       self.title = self.quiz.title
       self.add_meta_data()
       self.add_question_javascript()
@@ -350,7 +377,7 @@ class MakeMathQuiz(object):
       # now write the quiz to the html file
       with open(self.quiz_file+'.html', 'w') as file:
             # write the quiz in the specified format
-            file.write( self.options.ConstructorPage(self) )
+            file.write( self.options.write_web_page(self) )
 
     def htlatex_quiz_file(self):
       r'''
@@ -358,7 +385,7 @@ class MakeMathQuiz(object):
       with markup specifying the different elements of the quiz page.
       '''
       # run htlatex only if quiz_file has a .tex textension
-      if self.options.quiet<2:
+      if self.options.quiet < 2:
           print('Processing {}.tex with TeX4ht'.format(self.quiz_file))
 
       try:
@@ -368,7 +395,7 @@ class MakeMathQuiz(object):
                           build     = '--build-file {} '.format(self.options.mathquiz_mk4) if self.options.mathquiz_mk4 !='' else ''
           ).split(' ')
           if self.options.quiet == 0:
-             subprocess.call(cmd)
+             process = subprocess.call(cmd)
           elif self.options.quiet == 1:
              process = subprocess.call(cmd, stdout=open(os.devnull, 'wb'))
           else:
@@ -396,36 +423,35 @@ class MakeMathQuiz(object):
       """ add the meta data for the web page to self.header """
       # meta tags`
       self.header += html_meta.format(version=metadata.version, authors=metadata.author, MathQuizURL=self.MathQuizURL, quiz_file=self.quiz_file)
-      print('{}'.format('\n'.join('{}'.format(m) for m in self.quiz.metaList)))
-      for met in self.quiz.metaList:
+      for met in self.quiz.meta_list:
           self.header+= '  <meta {}/>\n'.format(' '.join('%s="%s"' %(k, met[k]) for k in met))
       # links
-      for link in self.quiz.linkList:
+      for link in self.quiz.link_list:
           self.header+= '  <link {}/>\n'.format(' '.join('%s="%s"' %(k, link[k]) for k in link))
 
     def add_side_menu(self):
       """ construct the left hand quiz menu """
-      if len(self.quiz.discussionList)>0: # links for discussion items
-          discussionList = '\n       <ul>\n   {}\n       </ul>'.format(
-                '\n   '.join(discuss.format(b=q+1, title=d.heading) for (q,d) in enumerate(self.quiz.discussionList)))
+      if len(self.quiz.discussion_list)>0: # links for discussion items
+          discussion_list = '\n       <ul>\n   {}\n       </ul>'.format(
+                '\n   '.join(discuss.format(b=q+1, title=d.heading) for (q,d) in enumerate(self.quiz.discussion_list)))
       else:
-          discussionList = ''
+          discussion_list = ''
 
-      buttons = '\n'+'\n'.join(button.format(b=q, cls=' button-selected' if len(self.quiz.discussionList)==0 and q==1 else '')
+      buttons = '\n'+'\n'.join(button.format(b=q, cls=' button-selected' if len(self.quiz.discussion_list)==0 and q==1 else '')
                                  for q in range(1, self.qTotal+1))
       # end of progress buttons, now for the credits
-      self.side_menu = side_menu.format(discussionList=discussionList, buttons=buttons, version=metadata.version)
+      self.side_menu = side_menu.format(discussion_list=discussion_list, buttons=buttons, version=metadata.version)
 
     def add_question_javascript(self):
       """ add the javascript for the questions to self """
-      self.qTotal = len(self.quiz.questionList)
-      if len(self.quiz.discussionList)==0: currentQ='1'
+      self.qTotal = len(self.quiz.question_list)
+      if len(self.quiz.discussion_list)==0: currentQ='1'
       else: currentQ='-1     // start showing discussion'
 
       if self.qTotal >0:
           i=0
           quiz_specs=''
-          for (i,q) in enumerate(self.quiz.questionList):
+          for (i,q) in enumerate(self.quiz.question_list):
             quiz_specs += 'QuizSpecifications[%d]=new Array();\n' % i
             a = q.answer
             if isinstance(a,mathquiz_xml.Answer):
@@ -433,7 +459,7 @@ class MakeMathQuiz(object):
               quiz_specs += 'QuizSpecifications[%d].type="input";\n' % i
             else:
               quiz_specs += 'QuizSpecifications[%d].type="%s";\n' % (i,a.type)
-              quiz_specs += '\n'.join('QuizSpecifications[%d][%d]=%s;' % (i,j,s.expect) for (j,s) in enumerate(a.itemList))
+              quiz_specs += '\n'.join('QuizSpecifications[%d][%d]=%s;' % (i,j,s.expect) for (j,s) in enumerate(a.item_list))
             quiz_specs+='\n\n'
 
           try:
@@ -447,91 +473,104 @@ class MakeMathQuiz(object):
       self.javascript += questions_javascript.format(MathQuizURL = self.MathQuizURL,
                                                    currentQ = currentQ,
                                                    qTotal = self.qTotal,
-                                                   dTotal = len(self.quiz.discussionList),
+                                                   dTotal = len(self.quiz.discussion_list),
                                                    quiz = self.quiz_file)
 
     def add_page_body(self):
       """ Write the page body! """
       self.page_body=quiz_title.format(title=self.quiz.title,
               initialise_warning=initialise_warning if self.options.initialise_warning else '',
-              arrows='' if len(self.quiz.questionList)==0
-                        else navigation_arrows.format(subheading='Question 1' if len(self.quiz.discussionList)==0 else 'Discussion'))
+              arrows='' if len(self.quiz.question_list)==0
+                        else navigation_arrows.format(subheading='Question 1' if len(self.quiz.discussion_list)==0 else 'Discussion'))
       # now comes the main page text
       # discussion(s) masquerade as negative questions
-      if len(self.quiz.discussionList)>0:
+      if len(self.quiz.discussion_list)>0:
         dnum = 0
-        for d in self.quiz.discussionList:
+        for d in self.quiz.discussion_list:
           dnum+=1
           self.page_body+=discussion.format(dnum=dnum, discussion=d,
                              display='style="display: block;"' if dnum==1 else '',
-                             input_button=input_button if len(self.quiz.questionList)>0 and dnum==len(self.quiz.discussionList) else '')
+                             input_button=input_button if len(self.quiz.question_list)>0 and dnum==len(self.quiz.discussion_list) else '')
 
       # index for quiz
       if len(self.quiz.quiz_list)>0:
         # add index to the web page
-        self.page_body+=quiz_list.format(course=self.quiz.course[0]['name'],
+        self.page_body+=quiz_list.format(course=self.quiz.course['name'],
                                          quiz_index='\n          '.join(quiz_list_item.format(url=q['url'], title=q['title']) for q in self.quiz.quiz_list)
         )
         # write a javascript file for displaying the menu
         # quizmenu = the index file for the quizzes in this directory
         with open('quiztitles.js','w') as quizmenu:
            quizmenu.write('var QuizTitles = [\n{titles}\n];\n'.format(
-              titles = ',\n'.join("  ['{}', '{}Quizzes/{}']".format(q['title'],self.quiz.course[0]['url'],q['url']) for q in self.quiz.quiz_list)
+              titles = ',\n'.join("  ['{}', '{}Quizzes/{}']".format(q['title'],self.quiz.course['url'],q['url']) for q in self.quiz.quiz_list)
            ))
 
       # finally we print the quesions
-      if len(self.quiz.questionList)>0:
+      if len(self.quiz.question_list)>0:
         self.page_body+=''.join(question_wrapper.format(qnum=qnum+1,
-                                              display='style="display: block;"' if qnum==0 and len(self.quiz.discussionList)==0 else '',
-                                              question=self.printQuestion(q,qnum+1),
-                                              response=self.printResponse(q,qnum+1))
-                              for (qnum,q) in enumerate(self.quiz.questionList)
+                                              display='style="display: block;"' if qnum==0 and len(self.quiz.discussion_list)==0 else '',
+                                              question=self.print_question(q,qnum+1),
+                                              response=self.print_response(q,qnum+1))
+                              for (qnum,q) in enumerate(self.quiz.question_list)
         )
 
-    def printQuestion(self,Q,n):
-      if isinstance(Q.answer,mathquiz_xml.Answer):
-        options=input_answer.format(tag=Q.answer.tag if Q.answer.tag else '')
-      else:
-        options=choice_answer.format(choices='\n'.join(self.printItem(opt, n, optnum) for (optnum, opt) in enumerate(Q.answer.itemList)),
-                                    hidden=hidden_choice.format(qnum=n) if Q.answer.type=="single" else '')
-      return question_text.format(qnum=n, question=Q.question, questionOptions=options)
+    def print_question(self, Q, Qnum):
+        r'''Here:
+            - Q is a class containing the question
+            - Qnum is the number of the question
+        '''
+        if isinstance(Q.answer,mathquiz_xml.Answer):
+            options=input_answer.format(tag=Q.answer.tag if Q.answer.tag else '')
+        else:
+            options=choice_answer.format(choices='\n'.join(self.print_choices(Qnum, Q.answer.item_list, choice) for choice in range(len(Q.answer.item_list))),
+                                         hidden=input_single.format(qnum=Qnum) if Q.answer.type=="single" else '')
+        return question_text.format(qnum=Qnum, question=Q.question, questionOptions=options)
 
-    def printItem(self,opt,qnum,optnum):
-      item='<tr>' if opt.parent.cols==1 or (optnum % opt.parent.cols)==0 else '<td>&nbsp;</td>'
-      item+= '<td class="brown" >%s)</td>' % alphabet[optnum]
-      if opt.parent.type == 'single':
-          item+=single_item.format(qnum=qnum, answer=opt.answer)
-      elif opt.parent.type == 'multiple':
-          item+=multiple_item.format(qnum=qnum, optnum=optnum, answer=opt.answer)
-      else:
-          item+= '<!-- internal error: %s -->\n' % opt.parent.type
-          sys.stderr.write('Unknown question type encountered: {}'.format(opt.parent.type))
-      if (optnum % opt.parent.cols)==1 or (optnum+1) % opt.parent.cols==0:
-          item+= '   </tr>\n'
-      return item
+    def print_choices(self, qnum, answers, choice):
+        r'''
+        Here:
+            - qnum     = question number
+            - answers = listr of answers to this question
+            - choice  = number of the option we need to process.
+        We put the parts into ans.parent.cols multicolumn format, so we have
+        to add '<tr>' and '</tr>' tags depending on choice.
+        '''
+        ans = answers[choice]
+        item='<tr>' if ans.parent.cols==1 or (choice % ans.parent.cols)==0 else '<td>&nbsp;</td>'
+        item+= '<td class="brown" >%s)</td>' % alphabet[choice]
+        if ans.parent.type == 'single':
+            item+=single_item.format(qnum=qnum, answer=ans.answer)
+        elif ans.parent.type == 'multiple':
+            item+=multiple_item.format(qnum=qnum, optnum=choice, answer=ans.answer)
+        else:
+            item+= '<!-- internal error: %s -->\n' % ans.parent.type
+            sys.stderr.write('Unknown question type encountered: {}'.format(ans.parent.type))
+        if (choice % ans.parent.cols) == 1 or (choice+1) % ans.parent.cols == 0 or choice == len(answers)-1:
+            item+= '   </tr>\n'
+        return item
 
-    def printResponse(self,question,qnum):
+    def print_response(self,question,qnum):
         r'''
         Generate the HTML for displaying the response help text when the user
         answers a question.
         '''
         if isinstance(question.answer,mathquiz_xml.Answer):
             s = question.answer
-            response=tf_response_text.format(choice=qnum, response='true', answer='Correct!', text=s.whenTrue if s.whenTrue else '')
-            response+=tf_response_text.format(choice=qnum, response='false', answer='Incorrect. Please try again.', text=s.whenFalse if s.whenFalse else '')
+            response=tf_response_text.format(choice=qnum, response='true', answer='Correct!', text=s.when_true if s.when_true else '')
+            response+=tf_response_text.format(choice=qnum, response='false', answer='Incorrect. Please try again.', text=s.when_false if s.when_false else '')
         elif question.answer.type == "single":
             response='\n'+'\n'.join(single_response.format(qnum=qnum, part=snum+1,
                                                       answer='correct! ' if s.expect=='true' else 'incorrect ',
                                                       alpha=alphabet[snum],
                                                       response=s.response)
-                                for (snum, s) in enumerate(question.answer.itemList)
+                                for (snum, s) in enumerate(question.answer.item_list)
             )
         else: # question.answer.type == "multiple":
             response='\n'+'\n'.join(multiple_response.format(qnum=qnum, part=snum+1,alpha=alphabet[snum], answer=s.expect.capitalize(), response=s.response)
-                                for (snum, s) in enumerate(question.answer.itemList)
+                                for (snum, s) in enumerate(question.answer.item_list)
             )
             response+=multiple_response_correct.format(qnum=qnum,
-                responses='\n'.join(multiple_response_answer.format(answer=s.expect.capitalize(), reason=s.response) for s in question.answer.itemList)
+                responses='\n'.join(multiple_response_answer.format(answer=s.expect.capitalize(), reason=s.response) for s in question.answer.item_list)
             )
         return '<div class="answer">'+response+'</div>'
 

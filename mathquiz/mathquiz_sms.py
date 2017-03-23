@@ -18,13 +18,12 @@ r"""  mathquizSMS.py | Version 5.0 | Andrew Mathas
 #*****************************************************************************
 """
 
+# -*- encoding: utf-8 -*-
+
+from mathquiz_templates import no_script
 import writepagenew, string
 
 # -----------------------------------------------------
-
-# A relative URL which specifies the location of mathquizzes
-# system files on the web server.
-MathQuizURL="/u/MOW/MathQuiz/"
 
 NoScript = """   <noscript>
       <div class="warning"><b>
@@ -112,7 +111,7 @@ def SMS_menu(doc,course):
       menu += '[@@ URLplus=[^^~currentmenu^^] @@]\n'
   return menuname, menu
 
-def printQuizPage(html, doc):
+def write_web_page(html, doc):
   page={}
   page['UNIT_OF_STUDY,CODE']='QUIZ'
   pagename=doc.src+'.html'

@@ -55,9 +55,12 @@ div.side_menu {
   h2 {
       float: left;
       color: $Heading;
-      font: $HeadingFont;
+      font-family: $HeadingFont;
       font-size: 14px;
       letter-spacing: normal;
+      width: 100%;
+      clear: right;
+      text-align: left;
   }
 
   ul {
@@ -232,11 +235,11 @@ div.answer{
   position: relative;
 }
 div.response{
-  padding: 1ex;
-  border: solid $ResponseBorder 2px;
   background-color: $ResponseBG;
+  border: solid $ResponseBorder 2px;
   border-radius: 5px;
   display: none;
+  padding: 1ex;
   width: 100%;
 
   div {
@@ -266,6 +269,7 @@ div.response{
     }
   }
 }
+
 /* question buttons */
 div.buttons {
   width: 100%;
@@ -273,22 +277,25 @@ div.buttons {
   margin-bottom: 1em;
 }
 div.button {
-  width:      30px;
-  height:     30px;
-  min-width:  30px;
-  min-height: 30px;
   background-color: $ButtonBG;
-  border-radius: 5px;
   border: solid $ButtonBorder 2px;
+  border-radius: 5px;
   display: table-cell;
-  vertical-align: middle;
-  text-align: center;
   float: left;
+  font-size: medium;
+  height:     30px;
   line-height: 30px; /* needed so that float does not break vertical alignment */
   margin-left: 5px;
   margin-top: 5px;
+  min-height: 30px;
+  min-width:  30px;
   position: relative;
-  font-size: medium;
+  text-align: center;
+  vertical-align: middle;
+  width:      30px;
+}
+div.button:nth-child(2n+1){
+    clear:left
 }
 /* javascript cannot access the css of pseudo elements, so we put the button
  * content inside a span coloured black. It theory it would be easier to
@@ -313,13 +320,14 @@ div.button:after {
   bottom: -35%;
   right: -35%;
 }
+
 input.input_button {
   background-color: $ButtonBG;
-  border-radius: 5px;
   border: solid $ButtonBorder 2px;
+  border-radius: 5px;
+  margin-right: 40px;
   padding-left: 4px;
   padding-right: 4px;
-  margin-right: 40px;
 }
 table.marking_key {
   margin-left: 12px;
