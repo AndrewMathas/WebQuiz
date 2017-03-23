@@ -1,12 +1,11 @@
 %*****************************************************************************
-%  Copyright (C) 2004-2017 Andrew Mathas, University of Sydney
+% Copyright (C) 2004-2017 Andrew Mathas, University of Sydney
 %
-%  Distributed under the terms of the GNU General Public License (GPL)
+% Distributed under the terms of the GNU General Public License (GPL)
 %                  http://www.gnu.org/licenses/
 %
 % This file is part of the MathQuiz system.
 %
-% Copyright (C) 2004-2017 by the School of Mathematics and Statistics
 % <Andrew.Mathas@sydney.edu.au>
 %*****************************************************************************
 
