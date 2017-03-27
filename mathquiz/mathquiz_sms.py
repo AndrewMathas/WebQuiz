@@ -22,10 +22,7 @@ r"""  mathquizSMS.py | Version 5.0 | Andrew Mathas
 
 # -----------------------------------------------------
 from mathquiz_templates import no_script
-import sys
-
-sys.path.insert(0,'/users/misc/httpd/ub/bobh/loc/teaching/') 
-import wp
+from wp import processtemplate as sms_write_page
 
 sms_javascript=''' <link rel="stylesheet" href="/u/SMS/web2015/styles/SMS-mq.css" type="text/css">
   <script type="text/javascript">var QuizURI="{}Quizzes";var QuizContents="{}";</script>
@@ -35,8 +32,8 @@ index_javascript ="""  <script type="text/javascript" src="/u/SMS/web2010/js/Res
 """
 # -----------------------------------------------------
 # stuff to go in the <head> ... </head> section of the page
-def initialise_SMS_Menus(quiz,course):
-  if course['code'] in ["MATH1001", "MAGTH1002", "MATH1005"]:
+def initialise_SMS_Menus(quiz):
+  if quiz.course['code'] in ["MATH1001", "MAGTH1002", "MATH1005"]:
     content="MATH100{0}/190{0}<br/>Quizzes".format(quiz.course['code'][-1])
   else:
     content="%s Quizzes" % quiz.course['code']
@@ -127,4 +124,4 @@ def write_web_page(quiz):
   page['menu_string']=sms_menu+quiz.side_menu
   page['page_body_string']=quiz.page_body
   page['nopreview'] = ''
-  return wp.processtemplate(page,{},courseurl[3:],pagename)[0]
+  return sms_write_page(page,{},courseurl[3:],pagename)[0]
