@@ -1,0 +1,328 @@
+@charset "UTF-8";
+/* MathQuiz version 5.0 css specifications
+ *
+ *  Copyright (C) 2004-2017 Andrew Mathas, University of Sydney
+ *
+ *  Distributed under the terms of the GNU General Public License (GPL)
+ *  http://www.gnu.org/licenses/
+ *
+ * This file is part of the MathQuiz system.
+ *
+ * <Andrew.Mathas@sydney.edu.au>
+ */
+.dazzle {
+  color: #FF9900; }
+
+/* container for the full quiz page */
+div.quizpage {
+  display: block;
+  max-width: 94%;
+  margin: 0 auto !important;
+  float: none !important; }
+
+/* side menu with question buttons and copyright message */
+div.side_menu {
+  float: left;
+  width: 100px;
+  padding-top: 16px;
+  padding-left: 1%;
+  margin-right: 20px;
+  text-align: center;
+  font-size: 10px;
+  position: fixed;
+  overflow: auto; }
+  div.side_menu > div {
+    clear: right;
+    color: #CE1126;
+    float: left;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 0.8ex; }
+  div.side_menu ul {
+    float: left;
+    list-style: none;
+    padding-left: 0; }
+    div.side_menu ul li {
+      font-size: 14px;
+      color: #000000;
+      white-space: nowrap;
+      text-align: left; }
+    div.side_menu ul li:before {
+      content: "➣";
+      color: #CE1126;
+      padding-left: 0;
+      padding-right: 1ex; }
+
+div.question_label {
+  color: #FF0000;
+  float: left;
+  font-size: 12px;
+  font-variant: small-caps;
+  font-weight: 600;
+  margin-bottom: 10px;
+  text-align: left; }
+
+div.copyright {
+  font-family: sans-serif, verdana, helvetica;
+  font-size: x-small;
+  width: 100%;
+  padding: 20px 0px 20px 0px;
+  margin: 0px 0px 600px 0px; }
+
+div.copyright A {
+  text-decoration: none; }
+
+/* container for the quiz questions, answers and responses */
+div.quiz_questions {
+  padding-top: 8px;
+  margin-left: 130px;
+  float: left;
+  width: 670px; }
+
+div.quiz_header {
+  padding-left: 130px;
+  padding-top: 12px;
+  padding-right: 1%; }
+  div.quiz_header h1 {
+    text-align: center;
+    color: #CE1126;
+    font-weight: bold;
+    font-size: 36px;
+    font-weight: 600;
+    text-transform: uppercase; }
+  div.quiz_header div.quiz_title {
+    display: inline-block;
+    text-align: left;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    color: #CE1126;
+    font-weight: bold;
+    margin-bottom: 0.8ex; }
+  div.quiz_header div.arrows {
+    color: #FF0000;
+    float: right; }
+    div.quiz_header div.arrows > div:first-child {
+      float: left;
+      font-size: 12px;
+      padding-right: 6px;
+      right: 8em; }
+    div.quiz_header div.arrows > div:last-child {
+      float: right;
+      font-size: 12px;
+      padding-left: 6px;
+      position: relative;
+      right: 0em; }
+    div.quiz_header div.arrows div:nth-child(2n+1):hover {
+      color: #990033; }
+
+/* tooltips, or mouseovers, that should be inside a span */
+span.tooltip {
+  display: none;
+  position: relative; }
+
+span.tooltip:hover {
+  display: block;
+  top: 6mm;
+  right: -1mm;
+  background: #FFF8DC;
+  border-radius: 3px;
+  color: #000000;
+  display: inline;
+  position: relative;
+  overflow: visible;
+  border: 1.5px solid #F2BB66;
+  font-size: x-small;
+  padding: 2px;
+  height: 0;
+  width: 0; }
+
+span.tooltip:hover:after {
+  display: block;
+  top: -8px;
+  right: 0mm;
+  background: #FFF8DC;
+  border-bottom: 5px solid #F2BB66;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  content: "";
+  display: block;
+  position: absolute;
+  z-index: 10;
+  height: 0;
+  width: 0; }
+
+#question_number div {
+  display: inline-block;
+  vertical-align: baseline;
+  float: left; }
+
+#quiz tr {
+  vertical-align: top; }
+
+div.quiz_list {
+  color: #CE1126;
+  font-family: Arial, Helvetica, sans-serif;
+  text-decoration: none;
+  text-align: left; }
+  div.quiz_list ul {
+    list-style: none; }
+  div.quiz_list div li:before {
+    content: "➣";
+    color: #CE1126;
+    padding-left: 0;
+    padding-right: 1ex; }
+  div.quiz_list div li:hover {
+    color: #FF0000; }
+
+div.question_choices {
+  text-align: left;
+  padding-left: 10px;
+  padding-right: 15px; }
+
+table.question_choices td {
+  padding-top: 7px; }
+
+td.brown {
+  color: #CC3300; }
+
+span.ArrowQuestion img {
+  vertical-align: top; }
+
+div.ArrowQuestion:hover {
+  color: #990033; }
+
+div.ArrowQuestion {
+  position: relative;
+  z-index: 20;
+  color: #FF0000;
+  font-size: 15px;
+  font-weight: bold;
+  padding: 5px 0px 5px 0px;
+  float: right; }
+
+/* specifications for the divs containing questions, answers and responses */
+div.question {
+  z-index: 0;
+  margin: 0;
+  padding: 0ex 0ex 20ex 0ex;
+  min-width: 100%;
+  max-width: 100%;
+  display: none;
+  float: left; }
+
+form.question {
+  text-align: left;
+  padding-top: 20px; }
+
+div.question h2 {
+  color: #FF9900;
+  font-size: 1em;
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: left;
+  text-transform: uppercase; }
+
+div.answer {
+  position: relative; }
+
+div.response {
+  background-color: #E9E0D8;
+  border: solid #C9A798 2px;
+  border-radius: 5px;
+  display: none;
+  padding: 1ex;
+  width: 100%; }
+  div.response div {
+    text-align: left;
+    color: #000000; }
+  div.response ol {
+    counter-reset: list;
+    list-style-type: none; }
+    div.response ol li:before {
+      content: counter(list,lower-latin) ")";
+      counter-increment: list;
+      color: #CC3300;
+      padding-right: 1ex; }
+    div.response ol li {
+      text-align: left;
+      color: #000000; }
+      div.response ol li em {
+        color: #FF9900; }
+
+/* question buttons */
+div.buttons {
+  width: 100%;
+  height: 100%;
+  margin-bottom: 1em; }
+
+div.button {
+  background-color: #FFF8DC;
+  border: solid #F2BB66 2px;
+  border-radius: 5px;
+  display: table-cell;
+  float: left;
+  font-size: 12px;
+  font-weight: normal;
+  height: 30px;
+  line-height: 30px;
+  /* needed so that float does not break vertical alignment */
+  margin-left: 5px;
+  margin-top: 5px;
+  min-height: 30px;
+  min-width: 30px;
+  position: relative;
+  text-align: center;
+  vertical-align: middle;
+  width: 30px; }
+
+div.button:nth-child(2n+1) {
+  clear: left; }
+
+/* javascript cannot access the css of pseudo elements, so we put the button
+ * content inside a span coloured black. It theory it would be easier to
+ * make the button label equal to the content and the marker the innerHTML
+ * for the div but I could not figure out how to align everything properly
+ * this way.
+ */
+div.button span {
+  color: #000000; }
+
+div.button-selected {
+  border: solid #B33C00 2px; }
+
+div.button:hover {
+  border: solid #5B2C6F 2px; }
+
+div.button:after {
+  width: 100%;
+  height: 100%;
+  content: attr(content);
+  position: absolute;
+  bottom: -35%;
+  right: -35%; }
+
+input.input_button {
+  background-color: #FFF8DC;
+  border: solid #F2BB66 2px;
+  border-radius: 5px;
+  margin-right: 40px;
+  padding-left: 4px;
+  padding-right: 4px; }
+
+table.marking_key {
+  margin-left: 12px; }
+
+/* warning messages - for the noscript error */
+div.warning {
+  background-color: #EC7063;
+  border: 2px solid #5B2C6F;
+  color: #FFCC00; }
+
+/* breadcrumbs at the top of the page */
+div.breadcrumbs {
+  display: block;
+  margin: 0;
+  padding: .3em 0 .3em 0;
+  border-bottom: 1px solid #F2BB66;
+  font-size: x-small; }
+
+/*# sourceMappingURL=mathquiz.css.map */

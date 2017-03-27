@@ -481,8 +481,8 @@ class MakeMathQuiz(object):
 
       if len(self.quiz.question_list) == 0:
           arrows = ''
-        else
-         arrows = navigation_arrows.format(subheading='Question 1' if len(self.quiz.discussion_list)==0 else 'Discussion')
+      else:
+          arrows = navigation_arrows.format(subheading='Question 1' if len(self.quiz.discussion_list)==0 else 'Discussion')
 
       # specify the quiz header - this will be wrapped in <div class="question_header>...</div>
       self.quiz_header=quiz_header.format(title=self.title,
