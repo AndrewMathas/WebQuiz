@@ -30,6 +30,14 @@ sms_javascript=''' <link rel="stylesheet" href="/u/SMS/web2015/styles/SMS-mq.css
 index_javascript ="""  <script type="text/javascript" src="/u/SMS/web2010/js/ResearchSubmenu.js"></script>
   <script type="text/javascript" src="/u/SMS/web2010/js/QSubmenu.js"></script>
 """
+
+nav_menu = r"""  <ul class="navmenu">
+    <li>
+      <div class="dropdownroot" id="{menu}"></div>
+      <script type="text/javascript"> domMenu_activate('{menu}'); </script>
+    </li>{heading}
+  </ul>
+"""
 # -----------------------------------------------------
 # stuff to go in the <head> ... </head> section of the page
 def initialise_SMS_Menus(quiz):
@@ -85,43 +93,32 @@ def SMS_breadcrumbs(quiz):
 def SMS_menu(quiz):
   menu = ''
   if len(quiz.course['name'])>0:
-    menuname = 'MATHQUIZ'
-    if len(quiz.quiz.quiz_list)==0:  # not on a quiz index page
-      if  quiz.quiz_file in ["mathquiz-manual","credits"]: type="QSubmenu"
-      else: type="CourseQSubmenu"
-      menu += """  <ul class="navmenu">
-    <li>
-      <div class="dropdownroot" id="%s"></div>
-      <script type="text/javascript"> domMenu_activate('%s'); </script>
-    </li>
-""" % (type,type)
-      if quiz.quiz_file == "mathquiz-manual":
-        menu+='    <li class="heading"> Manual Contents: </li>'
-      elif len(quiz.quiz.discussion_list)>0:
-        menu+= '<li class="heading"> Discussion: </li>'
-      menu+='  </ul>\n'
-    else:
-      menuname = "Current Students"
+      menu_name = 'MathQuiz'
+      if len(quiz.quiz.quiz_list)==0:  # not on a quiz index page
+          if  quiz.quiz_file in ["mathquiz-manual","credits"]: 
+              type="QSubmenu"
+          else: 
+              type="CourseQSubmenu"
+          heading = 'Manual contents' if quiz.quiz_file=='mathquiz-manual' else 
+                    'Discussion' if len(quiz.quiz.discussion_list)>0 else ''
+          menu += nav_menu.format(menu=type, heading='' if heading=='' else '<li>{}</li>'.format(heading))
+  else:
+      menu_name = "Current Students"
       menu += '[@@ URLplus=[^^~currentmenu^^] @@]\n'
-  return menuname, menu
+  return menu_name, menu
 
 def write_web_page(quiz):
-  page={}
-  page['UNIT_OF_STUDY,CODE']='QUIZ'
-  pagename=quiz.quiz_file+'.html'
-  courseurl=quiz.course['url']+'Quizzes'
   sms_menu_name, sms_menu=SMS_menu(quiz)
-  if pagename in [ 'mathquiz-manual.html','credits.html']:
-    page['UNIT_OF_STUDY,tablevel']='internal'
-  else:
-    page['UNIT_OF_STUDY,tablevel']='current'
-  page['UNIT_OF_STUDY,menuname']=sms_menu_name
-  page['UNIT_OF_STUDY,pagetitle']=quiz.title
-  page['UNIT_OF_STUDY,title']= ''
-  page['meta_string']=quiz.header
-  page['head_data_string']= quiz.javascript+initialise_SMS_Menus(quiz)+quiz.css
-  page['breadcrumbs_string']=SMS_breadcrumbs(quiz)
-  page['menu_string']=sms_menu+quiz.side_menu
-  page['page_body_string']=quiz.page_body
-  page['nopreview'] = ''
-  return sms_write_page(page,{},courseurl[3:],pagename)[0]
+  page=dict(
+      meta_string = quiz.header,
+      head_data_string =  quiz.javascript+initialise_SMS_Menus(quiz)+quiz.css,
+      breadcrumbs_string = SMS_breadcrumbs(quiz),
+      menu_string = sms_menu+quiz.side_menu,
+      page_body_string = quiz.page_body,
+      nopreview = ''
+  )
+  for (key, value) = [('CODE','QUIZ'), ('menuname', sms_menu_name),
+                      ('pagetitle', page.title), ('title',''),
+                      ('tablevel', 'internal' if self.quiz_file in ['mathquiz-manual','credits'])]:
+      page['UNIT_OF_STUDY,CODE,'+key] = value
+  return sms_write_page(page, {}, quiz.course['url;'], quiz.quiz_file+'.html;')[0]
