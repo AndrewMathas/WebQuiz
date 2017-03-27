@@ -99,7 +99,7 @@ def SMS_menu(quiz):
               type="QSubmenu"
           else: 
               type="CourseQSubmenu"
-          heading = 'Manual contents' if quiz.quiz_file=='mathquiz-manual' else 
+          heading = 'Manual contents' if quiz.quiz_file=='mathquiz-manual' else \
                     'Discussion' if len(quiz.quiz.discussion_list)>0 else ''
           menu += nav_menu.format(menu=type, heading='' if heading=='' else '<li>{}</li>'.format(heading))
   else:
@@ -117,8 +117,8 @@ def write_web_page(quiz):
       page_body_string = quiz.page_body,
       nopreview = ''
   )
-  for (key, value) = [('CODE','QUIZ'), ('menuname', sms_menu_name),
-                      ('pagetitle', page.title), ('title',''),
-                      ('tablevel', 'internal' if self.quiz_file in ['mathquiz-manual','credits'])]:
-      page['UNIT_OF_STUDY,CODE,'+key] = value
-  return sms_write_page(page, {}, quiz.course['url;'], quiz.quiz_file+'.html;')[0]
+  for (key, value) in [('CODE','QUIZ'), ('menuname', sms_menu_name),
+                      ('pagetitle', quiz.title), ('title',''),
+                      ('tablevel', 'internal' if quiz.quiz_file in ['mathquiz-manual','credits'] else '')]:
+      page['UNIT_OF_STUDY,'+key] = value
+  return sms_write_page(page, {}, quiz.course['url'], quiz.quiz_file+'.html;')[0]
