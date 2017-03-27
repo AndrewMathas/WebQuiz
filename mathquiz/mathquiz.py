@@ -417,17 +417,15 @@ class MakeMathQuiz(object):
             self.quiz = mathquiz_xml.ReadXMLTree(self.quiz_file+'.xml')
         except Exception as err:
             print('Error reading the xml generated for {}. Please check your latex source.\n  {}'.format(self.quiz_file, err))
+            raise
             sys.exit(1)
 
     def add_meta_data(self):
       """ add the meta data for the web page to self.header """
       # meta tags`
       self.header += html_meta.format(version=metadata.version, authors=metadata.author, MathQuizURL=self.MathQuizURL, quiz_file=self.quiz_file)
-      for met in self.quiz.meta_list:
-          self.header+= '  <meta {}/>\n'.format(' '.join('%s="%s"' %(k, met[k]) for k in met))
-      # links
-      for link in self.quiz.link_list:
-          self.header+= '  <link {}/>\n'.format(' '.join('%s="%s"' %(k, link[k]) for k in link))
+      self.header += ''.join('  <meta {}>\n'.format(' '.join('{}="{}"'.format(k,meta[k]) for k in meta)) for meta in self.quiz.meta_list)
+      self.header += ''.join('  <link {}>\n'.format(' '.join('{}="{}"'.format(k,link[k]) for k in link)) for link in self.quiz.link_list)
 
     def add_side_menu(self):
       """ construct the left hand quiz menu """
@@ -477,11 +475,19 @@ class MakeMathQuiz(object):
                                                    quiz = self.quiz_file)
 
     def add_page_body(self):
-      """ Write the page body! """
-      self.page_body=quiz_title.format(title=self.quiz.title,
-              initialise_warning=initialise_warning if self.options.initialise_warning else '',
-              arrows='' if len(self.quiz.question_list)==0
-                        else navigation_arrows.format(subheading='Question 1' if len(self.quiz.discussion_list)==0 else 'Discussion'))
+      r'''
+      Write the quiz head and the main body of the quiz.
+      '''
+
+      # specify the quiz header - this will be wrapped in <div class="question_header>...</div>
+      self.quiz_header=quiz_header.format(title=self.title,
+                                    initialise_warning=initialise_warning if self.options.initialise_warning else '',
+                                    question_number='Discussion' if len(self.quiz.discussion_list)>0 else
+                                                    'Question 1' if len(self.quiz.question_list)>0 else ''
+      )
+      if len(self.quiz.question_list)>0:
+          self.quiz_header += navigation_arrows.format(subheading='Question 1' if len(self.quiz.discussion_list)==0 else 'Discussion')
+
       # now comes the main page text
       # discussion(s) masquerade as negative questions
       if len(self.quiz.discussion_list)>0:

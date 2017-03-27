@@ -32,10 +32,15 @@
 
   $HeadingFont: Verdana, Arial, Helvetica, sans-serif;
 
+
+.dazzle      {
+  color: $Dazzle;
+}
+
 /* container for the full quiz page */
 div.quizpage {
   display: block;
-  max-width: 800px;
+  max-width: 94%;
   margin: 0 auto !important;
   float: none !important;
 }
@@ -44,23 +49,22 @@ div.quizpage {
 div.side_menu {
   float: left;
   width: 100px;
-  padding-top: 4px;
-  padding-left:5px;
+  padding-top: 16px;
+  padding-left: 1%;
   margin-right: 20px;
   text-align: center;
   font-size: 10px;
   position: fixed;
   overflow: auto;
 
-  h2 {
-      float: left;
-      color: $Heading;
-      font-family: $HeadingFont;
-      font-size: 14px;
-      letter-spacing: normal;
-      width: 100%;
-      clear: right;
-      text-align: left;
+  > div {
+    clear: right;
+    color: $Heading;
+    float: left;
+    font-family: $HeadingFont;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 0.8ex;
   }
 
   ul {
@@ -70,7 +74,6 @@ div.side_menu {
 
       li {
         font-size: 14px;
-        letter-spacing: normal;
         color: $Text;
         white-space: nowrap;
         text-align: left;
@@ -87,11 +90,11 @@ div.side_menu {
 
 div.question_label {
   color: $Subheading;
-  font-size: 12px;
-  letter-spacing: normal;
-  font-weight: 600;
-  font-variant: small-caps;
   float: left;
+  font-size: 12px;
+  font-variant: small-caps;
+  font-weight: 600;
+  margin-bottom: 10px;
   text-align: left;
 }
 div.copyright {
@@ -107,82 +110,125 @@ div.copyright A{
 /* container for the quiz questions, answers and responses */
 div.quiz_questions{
   padding-top: 8px;
-  margin-left: 120px;
+  margin-left: 130px;
   float: left;
   width: 670px;
 }
 div.quiz_header {
-  display: flex;
-  justify-content: space-between;
+  padding-left: 130px;
+  padding-top: 12px;
+  padding-right: 1%;
+
+  h1 {
+    text-align: center;
+    color: $Heading;
+    font-weight: bold;
+    font-size: 36px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  div.quiz_title {
+    display: inline-block;
+    text-align: left;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    color: $Heading;
+    font-weight: bold;
+    margin-bottom: 0.8ex;
+  }
+
+  div.arrows {
+    color: $Subheading;
+    float: right;
+
+    > div:first-child {
+      float:left;
+      font-size: 12px;
+      padding-right: 6px;
+      right:8em;
+    }
+    > div:last-child {
+      float: right;
+      font-size: 12px;
+      padding-left: 6px;
+      position: relative;
+      right:0em;
+    }
+
+    div:nth-child(2n+1):hover {
+      color: $ArrowHover;
+    }
+  }
 }
-div.quiz_header h1 {
-  text-align: center;
-  color: $Heading;
-  font-weight: bold;
-  font-size: 36px;
-  letter-spacing: normal;
-  font-weight: 600;
-  text-transform: uppercase;
-}
-div.quiz_title {
-  display: inline-block;
-  font-size: 1.1em;
-  text-align: left;
-  font-family: $HeadingFont;
-  color: $Heading;
-  font-weight: bold;
-  margin-bottom: 0.8ex;
-}
-div.arrows {
-  color: $Subheading;
-}
-div.arrows div {
-  float: right;
-  position:relative;
-}
-div.arrows span {
-  float: right;
+
+/* tooltips, or mouseovers, that should be inside a span */
+span.tooltip {
+  display: none;
   position: relative;
-  font-size: 12px;
-  padding-left: 2px;
-  padding-right: 2px;
 }
-div.arrows span:hover {
-  color: $ArrowHover;
+span.tooltip:hover {
+    display: block;
+    top: 6mm;
+    right: -1mm;
+    background: $ButtonBG;
+    border-radius: 3px;
+    color: $Text;
+    display: inline;
+    position: relative;
+    overflow: visible;
+    border: 1.5px solid $ButtonBorder;
+    font-size: x-small;
+    padding: 2px;
+    height: 0;
+    width: 0;
 }
+span.tooltip:hover:after {
+    display: block;
+    top: -8px;
+    right:0mm;
+    background: $ButtonBG;
+    border-bottom: 5px solid $ButtonBorder;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    content: "";
+    display: block;
+    position: absolute;
+    z-index:10;
+    height: 0;
+    width: 0;
+}
+
 #question_number div {
   display: inline-block;
-  vertical-align: baseline; 
+  vertical-align: baseline;
   float: left;
 }
+
 #quiz tr {
-  vertical-align: top; 
+  vertical-align: top;
 }
+
 div.quiz_list {
   color: $Heading;
   font-family: Arial, Helvetica, sans-serif;
   text-decoration: none;
   text-align: left;
+
+  ul {
+      list-style: none;
+  }
+
+  div li:before {
+    content: $ListMarker;
+    color: $Heading;
+    padding-left: 0;
+    padding-right: 1ex;
+  }
+  div li:hover {
+      color: $Subheading;
+  }
 }
-div.quiz_list ul {
-  list-style: none;
-}
-div.quiz_list li:before {
-  content: $ListMarker;
-  color: $Heading;
-  padding-left: 0;
-  padding-right: 1ex;
-}
-div.quiz_list li:hover {
-  color: $Subheading;
-}
-.dazzle      {
-  color: $Dazzle; 
-}
-div.question_text {
-  text-align: left;
-  padding-top:20px;
-}
+
 div.question_choices {
   text-align: left;
   padding-left:10px;
@@ -192,7 +238,7 @@ table.question_choices td {
   padding-top:7px;
 }
 td.brown {
-  color: $QuestionPart; 
+  color: $QuestionPart;
 }
 span.ArrowQuestion img {
   vertical-align: top;
@@ -282,7 +328,8 @@ div.button {
   border-radius: 5px;
   display: table-cell;
   float: left;
-  font-size: medium;
+  font-size: 12px;
+  font-weight: normal;
   height:     30px;
   line-height: 30px; /* needed so that float does not break vertical alignment */
   margin-left: 5px;
@@ -338,37 +385,6 @@ div.warning {
   border: 2px solid $WarningBorder;
   color: $WarningFG;
 }
-/* tooltips, or mouseovers, that should be inside a span */
-.tooltip {
-  display: none;
-  padding: 1px;
-  height: 0;
-}
-span:hover .tooltip {
-  background: $ButtonBG;
-  border-radius: 3px;
-  width: auto;
-  height: auto;
-  color: $Text;
-  display: inline;
-  left: 0;
-  font-size: x-small;
-  position: absolute;
-  overflow: visible;
-  bottom:-50px;
-  border: 1.5px solid $ButtonBorder;
-  padding: 2px;
-}
-span:hover .tooltip::after {
-  display: block;
-  content: "";
-  position: absolute;
-  top: -5px;
-  height: 0;
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  border-bottom: 5px solid $ButtonBorder;
-}
 
 /* breadcrumbs at the top of the page */
 div.breadcrumbs {
@@ -377,5 +393,5 @@ div.breadcrumbs {
   padding: .3em 0 .3em 0;
   border-bottom: 1px solid $ButtonBorder;
   font-size: x-small;
-  
+
 }

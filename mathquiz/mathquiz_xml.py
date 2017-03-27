@@ -116,23 +116,31 @@ class QuizHandler(xml.sax.ContentHandler):
     raise e
 
   def quiz_start( self, attrs ):
-    self.root = Quiz()
-    self.position = self.root
-    self.position.title=attrs.get('title','default')
-    self.position.bread_crumb=attrs.get('bread_crumb','default')
-    self.position.src=attrs.get('src','default')
+        self.root = Quiz()
+        self.position = self.root
+        self.position.title=attrs.get('title','default')
+        self.position.bread_crumb=attrs.get('bread_crumb','default')
+        self.position.src=attrs.get('src','default')
 
   def meta_start( self, attrs ):
-    self.position.meta_list.append(attrs)
-    Debugging("META start %s\n" % attrs)
+      r'''
+      Convert attrs to a normal dictionary and append to meta_list
+      '''
+      self.position.meta_list.append({ meta : attrs.get(meta, '') for meta in attrs.keys()})
 
   def link_start( self, attrs ):
-    self.position.link_list.append(attrs)
+      r'''
+      Convert attrs to a normal dictionary and append to link_list
+      '''
+      self.position.link_list.append({ link : attrs.get(link, '') for link in attrs.keys()})
 
   def quizlistitem_start( self, attrs ):
     self.position.quiz_list.append(attrs)
 
   def course_start( self, attrs ):
+    r'''
+    There should only be one course field.
+    '''
     self.position.course=attrs
 
   def question_start( self, attrs ):
@@ -370,100 +378,4 @@ class Item(Node):
     if self.response:
       s += '\n_response: ' + self.response
     return s
-
-
-# =====================================================
-# Visitor classes
-# =====================================================
-
-class node_visitor:
-  """In the methods of this class, 'node' refers to the
-  instance of the class calling the 'accept' method.  The
-  general form of 'accept' is
-  
-         def accept(self,visitor):
-           visitor.forXXX(self)
-   
-  In the method 'forXXX' of the visitor class, 'node' will
-  refer to an instance of 'XXX'.
-  """
-
-  def for_quiz(self,node):
-    node.broadcast(self)
-
-  def for_discussion(self,node):
-    node.broadcast(self)
-
-  def for_question(self,node):
-    node.broadcast(self)
-
-  def for_choice(self,node):
-    node.broadcast(self)
-
-  def for_answer(self,node):
-    pass
-
-  def for_item(self,node):
-    pass
-
-# -----------------------------------------------------
-class xml_writer(node_visitor):
-
-#@-- Not presently used
-  def element(self,node,tag):
-    print(' <%s>'  % tag)
-    node.broadcast(self)
-    print(' </%s>' % tag)
-
-  def for_quiz(self,node):
-    print('<?xml version="1.0" encoding="iso-8859-1"?>')
-    print('<!DOCTYPE quiz SYSTEM "mathquiz.dtd">' )
-    print('<quiz>')
-    for p in node.meta_list:
-      s = '<meta'
-      for q in p.keys():
-        s += ' %s="%s"' % (q, p[q])
-      s += '/>'
-      print(s)
-    for p in node.course:
-      s = '<course'
-      for q in p.keys():
-        s += ' %s="%s"' % (q, p[q])
-      s += '/>'
-      print(s)
-    for p in node.link_list:
-      s = '<link'
-      for q in p.keys():
-        s += ' %s="%s"' % (q, p[q])
-      s += '/>'
-      print(s)
-    print('<title>%s</title>' % node.title)
-    node.broadcast(self)
-    print('</quiz>')
-
-  def for_question(self,node):
-    print('<question>')
-    print('<text><![CDATA[%s]]></text>' % strval(node.question))
-    node.broadcast(self)
-    print('</question>')
-
-  def for_choice(self,node):
-    print('  <choice type="%s" cols="%s">' % (node.type, node.cols))
-    node.broadcast(self)
-    print('  </choice>')
-
-  def for_answer(self,node):
-    print('    <answer value="%s">' % node.value)
-    if node.tag:
-      print('      <tag>%s</tag>' % strval(node.tag))
-    print('      <when_right><![CDATA[%s]]></when_right>' % strval(node.when_true))
-    print('      <when_wrong><![CDATA[%s]]></when_wrong>' % strval(node.when_false))
-    print('    </answer>'  )
-  
-  def for_item(self,node):
-    print('    <item expect="%s">' % node.expect)
-    print('      <text><![CDATA[%s]]></text>' % strval(node.answer))
-    if node.response:
-      print('      <response><![CDATA[%s]]></response>' % strval(node.response))
-    print('    </item>')
 

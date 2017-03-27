@@ -27,33 +27,34 @@
 \University{The University of Sydney}
 \Department{School of Mathematics and Statistics}
 \CopyrightNotice{\the\year{} \MQ@university}
-\newcommand*{\UnitCode}[1]{\def\MQ@unitCode{#1}}
-\newcommand*{\UnitName}[1]{\def\MQ@unitName{#1}}
-\newcommand*{\UnitURL}[1]{\def\MQ@unitUrl{#1}}
+% the names of the next three macros are chosen so as to be compatible with sms-uos.sty
+\newcommand*{\UnitCode}[1]{\def\uos@code{#1}}
+\newcommand*{\UnitName}[1]{\def\uos@name{#1}}
+\newcommand*{\UnitURL}[1]{\def\uos@url{#1}}
 \newcommand*{\QuizzesURL}[1]{\def\MQ@quizzesUrl{#1}}
 \newcommand*{\BreadCrumb}[1]{\def\MQ@breadCrumb{#1}}
 \def\MQ@SetBreadCrumb#1:#2!{\def\MQ@breadCrumb{#1}}
 \def\title#1{\def\@title{#1}\MQ@SetBreadCrumb#1:!}
-\UnitCode{}
-\UnitName{MathQuiz file}
-\UnitURL{}
-\QuizzesURL{}
+\UnitCode{Unit code???}
+\UnitName{Unit name???}
+\UnitURL{Unit URL???}
+\QuizzesURL{Quizzes URL???}
 \def\@title{No title}
 \def\ps@quiz{\ps@empty
   \def\@oddhead{\hbox to\textwidth{%
-      \MQ@unitCode\hss\textsc{\@title}\hss Page \thepage}}%
+      \uos@code\hss\textsc{\@title}\hss Page \thepage}}%
   \let\@evenhead=\@oddhead
 }
 \def\ps@firstpage{\ps@empty
   \def\@oddhead{{\hbox to\textwidth{\tiny
         \begin{tabular}{rl}
-          Course code &\MQ@unitCode \\
-          Course URL  &\MQ@unitUrl
+          Course code &\uos@code \\
+          Course URL  &\uos@url
         \end{tabular}
         \hfill
         \begin{tabular}{rl}
-          Course name &\MQ@unitName \\
-          Quiz URL    &\MQ@quizzesUrl
+          Course name &\uos@name \\
+          Quizzes URL    &\MQ@quizzesUrl
         \end{tabular}
       }}
   }
@@ -68,7 +69,7 @@
   \MQ@error{\@backslashchar title can only be used in the preamble}%
   \@ehc}
 }
-\ifx\MQ@quizzesUrl\@empty\QuizzesURL{\MQ@unitUrl Quizzes/}\else\relax\fi%
+\ifx\MQ@quizzesUrl\@empty\QuizzesURL{\uos@url/Quizzes/}\else\relax\fi%
 \AtBeginDocument{\maketitle}
 \newcounter{quiz}
 \newcommand{\quiz}[2][\relax]{\refstepcounter{quiz}%

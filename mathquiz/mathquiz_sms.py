@@ -21,18 +21,8 @@ r"""  mathquizSMS.py | Version 5.0 | Andrew Mathas
 # -*- encoding: utf-8 -*-
 
 from mathquiz_templates import no_script
-import writepagenew, string
-
-# -----------------------------------------------------
-
-NoScript = """   <noscript>
-      <div class="warning"><b>
-        If you are reading this message either your browser does not support
-        JavaScript or else JavaScript is not enabled.  You will need to enable
-        JavaScript and then reload this page before you can use this quiz.</b>
-       </div>
-    </noscript>
-"""
+sys.path.insert(0,'/users/misc/httpd/ub/bobh/teaching/loc')
+import wp
 
 
 # -----------------------------------------------------
@@ -85,7 +75,7 @@ def SMS_breadcrumbs(doc, course):
       bc += """             <a href="%s">Quizzes</a> / %s
 """ % (course['quizzes'],doc.breadCrumb)
   bc += "</div>"
-  return bc+NoScript
+  return bc+no_script
 
 # the left side menu
 def SMS_menu(doc,course):
@@ -130,4 +120,4 @@ def write_web_page(html, doc):
   page['menu_string']=sms_menu+html.side_menu
   page['page_body_string']=html.pagebody
   page['nopreview'] = ''
-  return writepagenew.processtemplate(page,{},courseurl[3:],pagename)[0]
+  return wp.processtemplate(page,{},courseurl[3:],pagename)[0]
