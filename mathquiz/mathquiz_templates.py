@@ -1,4 +1,4 @@
-r"""  MathQuiz.py | 2017 Version 5.0 | html template file
+r'''  MathQuiz.py | 2017 Version 5.0 | html template file
 
 #*****************************************************************************
 # Copyright (C) 2017 Andrew Mathas, University of Sydney
@@ -11,7 +11,7 @@ r"""  MathQuiz.py | 2017 Version 5.0 | html template file
 # Copyright (C) 2004-2017 by the School of Mathematics and Statistics
 # <Andrew.Mathas@sydney.edu.au>
 #*****************************************************************************
-"""
+'''
 
 # -*- encoding: utf-8 -*-
 
@@ -127,7 +127,7 @@ multiple_response_answer='              <li><em>{answer}</em> {reason}</li>'
 
 
 # html meta statements
-html_meta = r"""<meta name="generator" content="MathQuiz {version} (http://www.maths.usyd.edu.au/u/MOW/MathQuiz/doc/mathquiz-manual.html)">
+html_meta = r'''<meta name="generator" content="MathQuiz {version} (http://www.maths.usyd.edu.au/u/MOW/MathQuiz/doc/mathquiz-manual.html)">
   <meta name="organization" content="School of Mathematics and Statistics, University of Sydney">
   <meta name="Copyright" content="University of Sydney 2004-2017">
   <meta name="keywords" content="mathquiz, TeX4ht, make4ht, latex, python, quiz, mathematics">
@@ -137,14 +137,19 @@ html_meta = r"""<meta name="generator" content="MathQuiz {version} (http://www.m
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <link href="{MathQuizURL}/mathquiz.css" type="text/css" rel="stylesheet">
   <link href="{quiz_file}/{quiz_file}.css" type="text/css" rel="stylesheet">
-"""
+'''
 
 # javascript for setting up the questions
-questions_javascript = r"""  <script src="{MathQuizURL}/mathquiz.js" type="text/javascript"></script>
+questions_javascript = r'''  <script src="{MathQuizURL}/mathquiz.js" type="text/javascript"></script>
   <script src="quiztitles.js" type="text/javascript"></script>
   <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=MML_CHTML"></script>
   <style type="text/css"> .MathJax_MathML {{text-indent: 0;}}</style>
-  <script type="text/javascript">window.onLoad=MathQuizInit({qTotal},{dTotal},'{quiz}');</script>"""
+  <script type="text/javascript">
+     document.addEventListener("DOMContentLoaded", function(event) {{
+       MathQuizInit({qTotal},{dTotal},'{quiz}');
+     }});
+  </script>
+'''
 
 # the remaining templates are used to prompt the user when initialising mathquiz
 
