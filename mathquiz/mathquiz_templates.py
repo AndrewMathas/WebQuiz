@@ -51,9 +51,11 @@ side_menu = r''' <div>MathQuiz</div>{discussion_list}
        </div>'''
 
 # quiz title and navigation arrows
-quiz_header='''{initialise_warning}<div class="quiz_title">{title}</div>
+quiz_header='''{initialise_warning}<div class="quiz_header">
+      <div class="quiz_title">{title}</div>
         <div style="clear:both;"></div>
         <div id="question_number" class="question_label">{question_number}</div>
+      </div>
 '''
 navigation_arrows='''        <div class="arrows">
           <div onClick="nextQuestion(-1);"><div class="tooltip">Previous unanswered question</div>&#x25c4;</div>

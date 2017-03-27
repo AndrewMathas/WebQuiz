@@ -51,9 +51,7 @@ quiz_page = r'''<!DOCTYPE HTML>
     <div class="side_menu">
       {side_menu}
     </div>
-    <div class="quiz_header">
-      {quiz_header}
-    </div>
+    {quiz_header}
     <div class="quiz_questions">
       {quiz_questions}
     </div>
