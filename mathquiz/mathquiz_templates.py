@@ -52,12 +52,13 @@ side_menu = r''' <div>MathQuiz</div>{discussion_list}
 
 # quiz title and navigation arrows
 quiz_header='''{initialise_warning}<div class="quiz_header">
-      <div class="quiz_title">{title}</div>
+        <div class="quiz_title">{title}</div>
         <div style="clear:both;"></div>
         <div id="question_number" class="question_label">{question_number}</div>
+        {arrows}
       </div>
 '''
-navigation_arrows='''        <div class="arrows">
+navigation_arrows='''<div class="arrows">
           <div onClick="nextQuestion(-1);"><div class="tooltip">Previous unanswered question</div>&#x25c4;</div>
           <div class="question_label">Questions</div>
           <div onClick="nextQuestion(1);"><div class="tooltip">Next unanswered question</div>&#x25ba;</div>
@@ -140,7 +141,7 @@ html_meta = r"""<meta name="generator" content="MathQuiz {version} (http://www.m
 
 # javascript for setting up the questions
 questions_javascript = r"""  <script src="{MathQuizURL}/mathquiz.js" type="text/javascript"></script>
-  <script src="quiz_titles.js" type="text/javascript"></script>
+  <script src="quiztitles.js" type="text/javascript"></script>
   <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=MML_CHTML"></script>
   <style type="text/css"> .MathJax_MathML {{text-indent: 0;}}</style>
   <script type="text/javascript">window.onLoad=MathQuizInit({qTotal},{dTotal},'{quiz}');</script>"""

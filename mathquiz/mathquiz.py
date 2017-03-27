@@ -479,14 +479,18 @@ class MakeMathQuiz(object):
       Write the quiz head and the main body of the quiz.
       '''
 
+      if len(self.quiz.question_list) == 0:
+          arrows = ''
+        else
+         arrows = navigation_arrows.format(subheading='Question 1' if len(self.quiz.discussion_list)==0 else 'Discussion')
+
       # specify the quiz header - this will be wrapped in <div class="question_header>...</div>
       self.quiz_header=quiz_header.format(title=self.title,
                                     initialise_warning=initialise_warning if self.options.initialise_warning else '',
                                     question_number='Discussion' if len(self.quiz.discussion_list)>0 else
-                                                    'Question 1' if len(self.quiz.question_list)>0 else ''
+                                                    'Question 1' if len(self.quiz.question_list)>0 else '',
+                                    arrows = arrows
       )
-      if len(self.quiz.question_list)>0:
-          self.quiz_header += navigation_arrows.format(subheading='Question 1' if len(self.quiz.discussion_list)==0 else 'Discussion')
 
       # now comes the main page text
       # discussion(s) masquerade as negative questions
