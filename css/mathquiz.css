@@ -14,7 +14,7 @@
   color: #FF9900; }
 
 /* container for the full quiz page */
-div.quizpage {
+div.quiz_page {
   display: block;
   max-width: 94%;
   margin: 0 auto !important;

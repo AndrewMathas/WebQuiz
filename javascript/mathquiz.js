@@ -31,6 +31,7 @@ function MathQuizInit(quizzes, discussion, quiz_name) {
           "This quiz is unlikely to work unless your browser version is at least 5.");
   }
 
+alert('Initialising with '+quizzes+' '+discussion+' for '+quiz_name)
   // qTotal is the nunber of questions in the quiz
   qTotal = quizzes;     // number of quizzes
   dTotal = discussion;  // number of discusson items
@@ -45,7 +46,7 @@ function MathQuizInit(quizzes, discussion, quiz_name) {
   var read_ql = document.createElement('script');
   var head = document.getElementsByTagName('head')[0];
   read_ql.type = "text/javascript";
-  read_ql.src = currentQuiz+'/quiz_list';
+  read_ql.src = currentQuiz+'/quiz_list.js';
   head.appendChild(read_ql);
 
   var i;

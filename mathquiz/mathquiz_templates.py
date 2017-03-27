@@ -1,4 +1,4 @@
-r"""  MathQuiz.py | 2017 Version 5.0 | html template file
+r'''  MathQuiz.py | 2017 Version 5.0 | html template file
 
 #*****************************************************************************
 # Copyright (C) 2017 Andrew Mathas, University of Sydney
@@ -11,7 +11,7 @@ r"""  MathQuiz.py | 2017 Version 5.0 | html template file
 # Copyright (C) 2004-2017 by the School of Mathematics and Statistics
 # <Andrew.Mathas@sydney.edu.au>
 #*****************************************************************************
-"""
+'''
 
 # -*- encoding: utf-8 -*-
 
@@ -28,27 +28,33 @@ response_css = '    #q{}response{}{{padding: 0ex; border: solid black 2px; displ
 # question buttons
 button  = r'       <div id="button{b}" class="button{cls}" content="" onClick="gotoQuestion({b})">{b}</div>'
 discuss = r'       <li class="discussion" onClick="gotoQuestion(-{b})">{title}</li>'
-side_menu = r''' <div>MathQuiz</div>{discussion_list}
-       <div class="buttons">
-         <div class="question_label">&nbsp;Questions&nbsp;</div>
-         <br>{buttons}
-       </div>
-       <div style="clear:left; height: 1em;"></div>
-       <table class="marking_key">
-          <tr><td style="color: #FFCC00; font-size:small;">&starf;</td><td>right first<br>attempt</td></tr>
-          <tr><td style="color: green; font-size:medium;">&check;</td><td>right</td></tr>
-          <tr><td style="color: red; font-size:medium;">&cross;</td><td>wrong</td></tr>
-       </table>
-       <div class="copyright">
-          <a href="http://www.maths.usyd.edu.au/u/MOW/MathQuiz/doc/credits.html">
-             <b>MathQuiz {version}</b>
-          </a>
-          <p><a href="http://www.maths.usyd.edu.au">
-                 School of Mathematics<br> and Statistics</a>
-          <br><a href="http://www.usyd.edu.au">University of Sydney</a>
-          <br>&copy; Copyright 2004-2017
-          </p>
-       </div>'''
+side_menu = r'''    <div class="side_menu">
+      <div>MathQuiz</div>{discussion_list}
+      <div class="buttons">
+        <div class="question_label">&nbsp;Questions&nbsp;</div>
+        <br>{buttons}
+      </div>
+      <div style="clear:left; height: 1em;"></div>
+      <table class="marking_key">
+         <tr><td style="color: #FFCC00; font-size:small;">&starf;</td><td>right first<br>attempt</td></tr>
+         <tr><td style="color: green; font-size:medium;">&check;</td><td>right</td></tr>
+         <tr><td style="color: red; font-size:medium;">&cross;</td><td>wrong</td></tr>
+      </table>
+      <div class="copyright">
+         <a href="http://www.maths.usyd.edu.au/u/MOW/MathQuiz/doc/credits.html">
+            <b>MathQuiz {version}</b>
+         </a>
+         <p><a href="http://www.maths.usyd.edu.au">
+                School of Mathematics<br> and Statistics</a>
+         <br><a href="http://www.usyd.edu.au">University of Sydney</a>
+         <br>&copy; Copyright 2004-2017
+         </p>
+      </div>
+    </div>'''
+
+bread_crumbs = r'''    <div class="breadcrumbs">
+      <a href="{url}">{code}</a> / <a href="{url}">Quizzes</a> / {title}
+    </div>'''
 
 # quiz title and navigation arrows
 quiz_header='''{initialise_warning}<div class="quiz_header">
@@ -73,7 +79,8 @@ discussion='''     <div id="question-{dnum}" class="question" {display}><h2>{dis
 input_button='<input type="button" name="next" value="Start quiz" onClick="return gotoQuestion(1);"/>\n'
 
 #quiz index
-quiz_list='''     <div class="quiz_list"><h2>{course} Quizzes</h2>
+quiz_list='''     <div class="quiz_list">
+        <h2>{course} Quizzes</h2>
         <ul>
           {quiz_index}
         </ul>
@@ -127,7 +134,7 @@ multiple_response_answer='              <li><em>{answer}</em> {reason}</li>'
 
 
 # html meta statements
-html_meta = r"""<meta name="generator" content="MathQuiz {version} (http://www.maths.usyd.edu.au/u/MOW/MathQuiz/doc/mathquiz-manual.html)">
+html_meta = r'''<meta name="generator" content="MathQuiz {version} (http://www.maths.usyd.edu.au/u/MOW/MathQuiz/doc/mathquiz-manual.html)">
   <meta name="organization" content="School of Mathematics and Statistics, University of Sydney">
   <meta name="Copyright" content="University of Sydney 2004-2017">
   <meta name="keywords" content="mathquiz, TeX4ht, make4ht, latex, python, quiz, mathematics">
@@ -137,14 +144,16 @@ html_meta = r"""<meta name="generator" content="MathQuiz {version} (http://www.m
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <link href="{MathQuizURL}/mathquiz.css" type="text/css" rel="stylesheet">
   <link href="{quiz_file}/{quiz_file}.css" type="text/css" rel="stylesheet">
-"""
+'''
 
 # javascript for setting up the questions
-questions_javascript = r"""  <script src="{MathQuizURL}/mathquiz.js" type="text/javascript"></script>
+questions_javascript = r'''  <script src="{MathQuizURL}/mathquiz.js" type="text/javascript"></script>
   <script src="quiztitles.js" type="text/javascript"></script>
   <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=MML_CHTML"></script>
   <style type="text/css"> .MathJax_MathML {{text-indent: 0;}}</style>
-  <script type="text/javascript">window.onLoad=MathQuizInit({qTotal},{dTotal},'{quiz}');</script>"""
+'''
+
+on_load = '''onload="MathQuizInit({qTotal}, {dTotal}, '{quiz}');"'''
 
 # the remaining templates are used to prompt the user when initialising mathquiz
 

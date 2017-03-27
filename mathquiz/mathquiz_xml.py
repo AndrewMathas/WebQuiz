@@ -139,9 +139,10 @@ class QuizHandler(xml.sax.ContentHandler):
 
   def course_start( self, attrs ):
     r'''
-    There should only be one course field.
+    There should only be one course field. We replace `attrs` with a dictionary
+    of the course attributes.
     '''
-    self.position.course=attrs
+    self.position.course={ k: attrs.get(k) for k in attrs.keys() }
 
   def question_start( self, attrs ):
     q = Question(self.position)
