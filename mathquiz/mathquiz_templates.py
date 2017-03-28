@@ -151,10 +151,7 @@ questions_javascript = r'''  <script src="{MathQuizURL}/mathquiz.js" type="text/
   <script src="quiztitles.js" type="text/javascript"></script>
   <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=MML_CHTML"></script>
   <style type="text/css"> .MathJax_MathML {{text-indent: 0;}}</style>
-'''
-
-on_load = '''onload="MathQuizInit({qTotal}, {dTotal}, '{quiz}');"'''
-
+  <script type="text/javascript">window.on_load = {on_load}</script>'''
 # the remaining templates are used to prompt the user when initialising mathquiz
 
 initialise_introduction='''
