@@ -140,14 +140,21 @@ def main():
 
             # now clean up
             if options.clean:
-                for ext in [ '4ct', '4tc', 'dvi', 'idv', 'lg', 'log', 'ps', 'pdf', 'tmp', 'xref']:
+                for ext in [ '4ct', '4tc', 'dvi', 'idv', 'lg', 'log', 'ps', 'pdf', 'tmp', 'xml', 'xref']:
                     if os.path.isfile(quiz_file +'.' +ext):
                         os.remove(quiz_file +'.' +ext)
 
-                # delete any svg file that also exists in the quiz_file subdirecory
-                #for svg in glob.glob('{}[0-9]*x.svg'.format(quiz_file)):
-                #        if os.path.isfile(os.path.join(quiz_file, svg)):
-                #            os.remove(svg)
+                # files created when using pst2pdf
+                if options.pst2pdf:
+                    for file in glob.glob(quiz_file+'pdf.*'):
+                        os.remove(file)
+                    for file in glob.glob(quiz_file+'-pdf.*'):
+                        os.remove(file)
+                    for extra in ['.preamble', '.plog', '-tmp.tex', '-pst.tex', '-fig.tex']:
+                        if os.path.isfile(quiz_file+extra):
+                            os.remove(quiz_file+extra)
+                    if os.path.isdir(os.path.join(quiz_file,quiz_file)):
+                        shutil.rmtree(os.path.join(quiz_file,quiz_file))
 
     if options.initialise_warning:
         print(mathquiz_url_warning)
@@ -229,7 +236,7 @@ class MathQuizSettings(object):
 
         except Exception as err:
             sys.stderr.write('MathQuiz error: there was an error reading the mathquizrc file\n  {}'.format(err))
-            sys.exit(1)
+            sys.exit(err.errno)
 
     def write_mathquizrc(self):
         r'''
@@ -243,14 +250,14 @@ class MathQuizSettings(object):
                     if self[key] != '':
                         rc_file.write('## {}\n{:<14} = {}\n'.format(self.settings[key]['descr'], key, self[key]))
 
-        except PermissionError:
+        except PermissionError as err:
                 print('There was an error writing the mathquizrc file\n  {}'.format(err))
                 print(permission_error.format(mathquiz_file('mathquirc')))
-                sys.exit(1)
+                sys.exit(err.errno)
 
         except Exception as err:
             print('There was an error writing the mathquizrc file\n  {}'.format(err))
-            sys.exit(1)
+            sys.exit(err.errno)
 
     def initialise_mathquiz(self):
         r'''
@@ -311,9 +318,9 @@ class MathQuizSettings(object):
                     self['mathquiz_web'] = web_dir
                     files_copied = True
 
-                except PermissionError:
+                except PermissionError as err:
                     print(permission_error.format(web_dir))
-                    sys.exit(1)
+                    sys.exit(err.errno)
 
                 except Exception as err:
                     print('There was a problem copying files to {}.\n  Please give a different directory.\n[Error: {}]\n'.format(web_dir, err))
@@ -355,94 +362,101 @@ class MakeMathQuiz(object):
     side_menu=''   # the left hand quiz menu
 
     def __init__(self, quiz_file, options):
-      self.options = options
-      self.quiz_file, extension = quiz_file.split('.')
-      self.MathQuizURL = options.MathQuizURL
+        self.options = options
+        self.quiz_file, extension = quiz_file.split('.')
+        self.MathQuizURL = options.MathQuizURL
 
-      # run htlatex only if quiz_file has a .tex textension
-      if extension == 'tex':
-          self.htlatex_quiz_file()
+        # run htlatex only if quiz_file has a .tex textension
+        if extension == 'tex':
+            self.htlatex_quiz_file()
 
-      if self.options.quiet<2:
-          print('MathQuiz generating web page for {}'.format(self.quiz_file))
+        if self.options.quiet<2:
+            print('MathQuiz generating web page for {}'.format(self.quiz_file))
 
-      self.read_xml_file()
+        self.read_xml_file()
 
-      # generate the variuous components ofthe web page
-      self.course = self.quiz.course
-      self.title = self.quiz.title
-      self.add_meta_data()
-      self.add_question_javascript()
-      self.add_side_menu()
-      self.add_page_body()
+        # generate the variuous components ofthe web page
+        self.course = self.quiz.course
+        self.title = self.quiz.title
+        self.add_meta_data()
+        self.add_question_javascript()
+        self.add_side_menu()
+        self.add_page_body()
 
-      self.on_load = on_load.format(quiz = self.quiz_file, qTotal = self.qTotal, dTotal = len(self.quiz.discussion_list))
-      self.bread_crumbs = bread_crumbs.format(title=self.title, **self.course)
+        self.bread_crumbs = bread_crumbs.format(title=self.title, **self.course)
 
-      # now write the quiz to the html file
-      with open(self.quiz_file+'.html', 'w') as file:
+        # now write the quiz to the html file
+        with open(self.quiz_file+'.html', 'w') as file:
             # write the quiz in the specified format
             file.write( self.options.write_web_page(self) )
 
     def htlatex_quiz_file(self):
-      r'''
-      Process the file using htlatex/make4ht. This converts the quiz to an xml
-      with markup specifying the different elements of the quiz page.
-      '''
-      # run() is a shorthand for executing system commands depending on the quietness
-      # talk() is a shorthand for letting the user know what is happending
-      if self.options.quiet == 0:
-          run  = lambda cmd: subprocess.call(cmd)
-          talk = lambda msg: print(msg)
-      elif self.options.quiet == 1:
-          run  = lambda cmd: subprocess.call(cmd, stdout=open(os.devnull, 'wb'))
-          talk = lambda msg: print(msg)
-      else:
-          run  = lambda cmd: subprocess.call(cmd, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
-          talk = lambda msg: pass
+        r'''
+        Process the file using htlatex/make4ht. This converts the quiz to an xml
+        with markup specifying the different elements of the quiz page.
+        '''
+        # run() is a shorthand for executing system commands depending on the quietness
+        #       we need to use shell=True because otherwise pst2pdf gives an error
+        # talk() is a shorthand for letting the user know what is happening
+        if self.options.quiet == 0:
+            run  = lambda cmd: subprocess.call(cmd, shell=True)
+            talk = lambda msg: print(msg)
+        elif self.options.quiet == 1:
+            run  = lambda cmd: subprocess.call(cmd, shell=True, stdout=open(os.devnull, 'wb'))
+            talk = lambda msg: print(msg)
+        else:
+            run  = lambda cmd: subprocess.call(cmd, shell=True, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
+            talk = lambda msg: None
 
-      # as we may need to preprocess quiz_file with pst2pdf we allow ourselves to change it name
-      quiz_file = self.quiz_file
+        # as we may need to preprocess quiz_file with pst2pdf we allow ourselves to change it name
+        q_file = self.quiz_file
 
-      # preprocess the latex file with pst2pdf if requested
-      if self.options.pst2pdf:
-          try:
-              # this converts pspicture environments to svg images and make a
-              # new latex file quiz_file+'-pdf' that includes these
-              run('pst2pdf --svg --imgdir="{quiz_file}" {quiz_file}.tex'.format(quiz_file=quiz_file)
-          except OSError as err:
-              if err.errno == os.errno.ENOENT:
-                  print('Errro: pst2pdf not found. You need to install pst2pdf to use the --pst2pdf option')
-                  sys.exit(1)
-              else:
-                  print('Error running pst2pdf on {}\n  {}.\n'.format(quiz_file, err))
-                  sys.exit(1)
+        # preprocess the latex file with pst2pdf if requested
+        if self.options.pst2pdf:
+            talk('Preprocessing {} with pst2pdsf'.format(q_file))
+            try:
+                # this converts pspicture environments to svg images and make a
+                # new latex file q_file+'-pdf' that includes these
+                cmd='pst2pdf --svg --imgdir={q_file} {q_file}.tex'.format(q_file=q_file)
+                run(cmd)
+            except OSError as err:
+                if err.errno == os.errno.ENOENT:
+                    print('Errro: pst2pdf not found. You need to install pst2pdf to use the --pst2pdf option')
+                    sys.exit(err.errno)
+                else:
+                    print('Error running pst2pdf on {}\n  {}.\n'.format(q_file, err))
+                    sys.exit(err.errno)
 
-          import re
-          fix_svg = re.compile(r'\\includegraphics[scale=1]{{({file}-fig-[0-9]*)}}'.format(file=quiz_file))
-          # the svg images are in the quiz_file subdirectory but latex can't
-          # find them so we update the tex file to look in the right place
-          with open(quiz_file+'-pdf.tex','r') as pst_file:
-              with open(quiz_file+'pdf.tex'_ as pst_fixed:
-                  for line in qfile:
-                      pst_fixed.write(re.sub(line
+            import re
+            fix_svg = re.compile(r'(\\includegraphics\[scale=1\])\{('+ q_file+r'-fig-[0-9]*)\}')
+            # the svg images are in the q_file subdirectory but latex can't
+            # find them so we update the tex file to look in the right place
+            try:
+                with open(q_file+'-pdf.tex','r') as pst_file:
+                    with open(q_file+'pdf.tex', 'w') as pst_fixed:
+                        for line in pst_file:
+                            pst_fixed.write(fix_svg.sub(r'\1{\2.svg}', line))
+            except IOError as err:
+                print('There was an error concerting the output from pst2pdf for {}\n  {}.\n'.format(q_file, err))
 
-      if self.options.quiet < 2:
-          print('Processing {}.tex with TeX4ht'.format(quiz_file))
+            q_file = q_file + 'pdf'
 
-      try:
-          cmd='make4ht --utf8 --config {config} --output-dir {quiz_file} {build}{quiz_file}.tex'.format(
-                          config    = 'mathquiz.cfg',
-                          quiz_file = quiz_file,
-                          build     = '--build-file {} '.format(self.options.mathquiz_mk4) if self.options.mathquiz_mk4 !='' else ''
-          ).split(' ')
-          run(cmd)
+        talk('Processing {}.tex with TeX4ht'.format(q_file))
 
-          # htlatex generates an html file, so we rename this as an xml file
-          os.rename(self.quiz_file+'.html', self.quiz_file+'.xml')
-      except Exception as err:
-          print('Error running htlatex on {}\n  {}.\n'.format(self.quiz_file, err))
-          sys.exit(1)
+        try:
+            cmd='make4ht --utf8 --config {config} --output-dir {quiz_file} {build}{q_file}.tex'.format(
+                            config    = 'mathquiz.cfg',
+                            quiz_file = self.quiz_file,
+                            q_file = q_file,
+                            build     = '--build-file {} '.format(self.options.mathquiz_mk4) if self.options.mathquiz_mk4 !='' else ''
+            )
+            run(cmd)
+
+            # htlatex generates an html file, so we rename this as an xml file
+            os.rename(q_file+'.html', self.quiz_file+'.xml')
+        except Exception as err:
+            print('Error running htlatex on {}\n  {}.\n'.format(self.quiz_file, err))
+            sys.exit(err.errno)
 
     def read_xml_file(self):
         r'''
@@ -455,111 +469,120 @@ class MakeMathQuiz(object):
         except Exception as err:
             print('Error reading the xml generated for {}. Please check your latex source.\n  {}'.format(self.quiz_file, err))
             raise
-            sys.exit(1)
+            sys.exit(err.errno)
 
     def add_meta_data(self):
-      """ add the meta data for the web page to self.header """
-      # meta tags`
-      self.header += html_meta.format(version=metadata.version, authors=metadata.author, MathQuizURL=self.MathQuizURL, quiz_file=self.quiz_file)
-      self.header += ''.join('  <meta {}>\n'.format(' '.join('{}="{}"'.format(k,meta[k]) for k in meta)) for meta in self.quiz.meta_list)
-      self.header += ''.join('  <link {}>\n'.format(' '.join('{}="{}"'.format(k,link[k]) for k in link)) for link in self.quiz.link_list)
+        """ add the meta data for the web page to self.header """
+        # meta tags`
+        self.header += html_meta.format(version=metadata.version, authors=metadata.author, MathQuizURL=self.MathQuizURL, quiz_file=self.quiz_file)
+        self.header += ''.join('  <meta {}>\n'.format(' '.join('{}="{}"'.format(k,meta[k]) for k in meta)) for meta in self.quiz.meta_list)
+        self.header += ''.join('  <link {}>\n'.format(' '.join('{}="{}"'.format(k,link[k]) for k in link)) for link in self.quiz.link_list)
 
     def add_side_menu(self):
-      """ construct the left hand quiz menu """
-      if len(self.quiz.discussion_list)>0: # links for discussion items
-          discussion_list = '\n       <ul>\n   {}\n       </ul>'.format(
-                '\n   '.join(discuss.format(b=q+1, title=d.heading) for (q,d) in enumerate(self.quiz.discussion_list)))
-      else:
-          discussion_list = ''
+        """ construct the left hand quiz menu """
+        if len(self.quiz.discussion_list)>0: # links for discussion items
+            discussion_list = '\n       <ul>\n   {}\n       </ul>'.format(
+                  '\n   '.join(discuss.format(b=q+1, title=d.heading) for (q,d) in enumerate(self.quiz.discussion_list)))
+        else:
+            discussion_list = ''
 
-      buttons = '\n'+'\n'.join(button.format(b=q, cls=' button-selected' if len(self.quiz.discussion_list)==0 and q==1 else '')
-                                 for q in range(1, self.qTotal+1))
-      # end of progress buttons, now for the credits
-      self.side_menu = side_menu.format(discussion_list=discussion_list, buttons=buttons, version=metadata.version)
+        buttons = '\n'+'\n'.join(button.format(b=q, cls=' button-selected' if len(self.quiz.discussion_list)==0 and q==1 else '')
+                                   for q in range(1, self.qTotal+1))
+        # end of progress buttons, now for the credits
+        self.side_menu = side_menu.format(discussion_list=discussion_list, buttons=buttons, version=metadata.version)
 
     def add_question_javascript(self):
-      """ add the javascript for the questions to self """
-      self.qTotal = len(self.quiz.question_list)
-      if len(self.quiz.discussion_list)==0: currentQ='1'
-      else: currentQ='-1     // start showing discussion'
+        """ add the javascript for the questions to self """
+        self.qTotal = len(self.quiz.question_list)
+        if len(self.quiz.discussion_list)==0: currentQ='1'
+        else: currentQ='-1     // start showing discussion'
 
-      if self.qTotal >0:
-          i=0
-          quiz_specs=''
-          for (i,q) in enumerate(self.quiz.question_list):
-            quiz_specs += 'QuizSpecifications[%d]=new Array();\n' % i
-            a = q.answer
-            if isinstance(a,mathquiz_xml.Answer):
-              quiz_specs +='QuizSpecifications[%d].value="%s";\n' % (i,a.value)
-              quiz_specs += 'QuizSpecifications[%d].type="input";\n' % i
-            else:
-              quiz_specs += 'QuizSpecifications[%d].type="%s";\n' % (i,a.type)
-              quiz_specs += '\n'.join('QuizSpecifications[%d][%d]=%s;' % (i,j,s.expect) for (j,s) in enumerate(a.item_list))
-            quiz_specs+='\n\n'
+        if self.qTotal >0:
+            i=0
+            quiz_specs=''
+            for (i,q) in enumerate(self.quiz.question_list):
+              quiz_specs += 'QuizSpecifications[%d]=new Array();\n' % i
+              a = q.answer
+              if isinstance(a,mathquiz_xml.Answer):
+                quiz_specs +='QuizSpecifications[%d].value="%s";\n' % (i,a.value)
+                quiz_specs += 'QuizSpecifications[%d].type="input";\n' % i
+              else:
+                quiz_specs += 'QuizSpecifications[%d].type="%s";\n' % (i,a.type)
+                quiz_specs += '\n'.join('QuizSpecifications[%d][%d]=%s;' % (i,j,s.expect) for (j,s) in enumerate(a.item_list))
+              quiz_specs+='\n\n'
 
-          try:
-              os.makedirs(self.quiz_file, exist_ok=True)
-              with open(os.path.join(self.quiz_file,'quiz_list.js'), 'w') as quiz_list:
-                  quiz_list.write(quiz_specs)
-          except Exception as err:
-              print('Error writing quiz specifications:\n {}.'.format(err))
-              sys.exit(1)
+            try:
+                os.makedirs(self.quiz_file, exist_ok=True)
+                with open(os.path.join(self.quiz_file,'quiz_list.js'), 'w') as quiz_list:
+                    quiz_list.write(quiz_specs)
+            except Exception as err:
+                print('Error writing quiz specifications:\n {}.'.format(err))
+                sys.exit(err.errno)
 
-      self.javascript += questions_javascript.format(MathQuizURL = self.MathQuizURL,
+        # add quiz initialisation codxe
+        self.on_load = '''MathQuizInit({qTotal}, {dTotal}, '{quiz}');'''.format(
+                                  quiz = self.quiz_file,
+                                  qTotal = self.qTotal,
+                                  dTotal = len(self.quiz.discussion_list)
+        )
+
+        self.javascript += questions_javascript.format(MathQuizURL = self.MathQuizURL,
                                                    currentQ = currentQ,
                                                    qTotal = self.qTotal,
                                                    dTotal = len(self.quiz.discussion_list),
-                                                   quiz = self.quiz_file)
+                                                   quiz = self.quiz_file,
+                                                   on_load = self.on_load
+        )
 
     def add_page_body(self):
-      r'''
-      Write the quiz head and the main body of the quiz.
-      '''
+        r'''
+        Write the quiz head and the main body of the quiz.
+        '''
 
-      if len(self.quiz.question_list) == 0:
-          arrows = ''
-      else:
-          arrows = navigation_arrows.format(subheading='Question 1' if len(self.quiz.discussion_list)==0 else 'Discussion')
+        if len(self.quiz.question_list) == 0:
+            arrows = ''
+        else:
+            arrows = navigation_arrows.format(subheading='Question 1' if len(self.quiz.discussion_list)==0 else 'Discussion')
 
-      # specify the quiz header - this will be wrapped in <div class="question_header>...</div>
-      self.quiz_header=quiz_header.format(title=self.title,
-                                    initialise_warning=initialise_warning if self.options.initialise_warning else '',
-                                    question_number='Discussion' if len(self.quiz.discussion_list)>0 else
-                                                    'Question 1' if len(self.quiz.question_list)>0 else '',
-                                    arrows = arrows
-      )
-
-      # now comes the main page text
-      # discussion(s) masquerade as negative questions
-      if len(self.quiz.discussion_list)>0:
-        dnum = 0
-        for d in self.quiz.discussion_list:
-          dnum+=1
-          self.page_body+=discussion.format(dnum=dnum, discussion=d,
-                             display='style="display: block;"' if dnum==1 else '',
-                             input_button=input_button if len(self.quiz.question_list)>0 and dnum==len(self.quiz.discussion_list) else '')
-
-      # index for quiz
-      if len(self.quiz.quiz_list)>0:
-        # add index to the web page
-        self.page_body+=quiz_list.format(course=self.course['name'],
-                                         quiz_index='\n          '.join(quiz_list_item.format(url=q['url'], title=q['title']) for q in self.quiz.quiz_list)
+        # specify the quiz header - this will be wrapped in <div class="question_header>...</div>
+        self.quiz_header=quiz_header.format(title=self.title,
+                                      initialise_warning=initialise_warning if self.options.initialise_warning else '',
+                                      question_number='Discussion' if len(self.quiz.discussion_list)>0 else
+                                                      'Question 1' if len(self.quiz.question_list)>0 else '',
+                                      arrows = arrows
         )
-        # write a javascript file for displaying the menu
-        # quizmenu = the index file for the quizzes in this directory
-        with open('quiztitles.js','w') as quizmenu:
-           quizmenu.write('var QuizTitles = [\n{titles}\n];\n'.format(
-              titles = ',\n'.join("  ['{}', '{}Quizzes/{}']".format(q['title'],self.course['url'],q['url']) for q in self.quiz.quiz_list)
-           ))
 
-      # finally we print the quesions
-      if len(self.quiz.question_list)>0:
-        self.page_body+=''.join(question_wrapper.format(qnum=qnum+1,
-                                              display='style="display: block;"' if qnum==0 and len(self.quiz.discussion_list)==0 else '',
-                                              question=self.print_question(q,qnum+1),
-                                              response=self.print_responses(q,qnum+1))
-                              for (qnum,q) in enumerate(self.quiz.question_list)
-        )
+        # now comes the main page text
+        # discussion(s) masquerade as negative questions
+        if len(self.quiz.discussion_list)>0:
+          dnum = 0
+          for d in self.quiz.discussion_list:
+            dnum+=1
+            self.page_body+=discussion.format(dnum=dnum, discussion=d,
+                               display='style="display: block;"' if dnum==1 else '',
+                               input_button=input_button if len(self.quiz.question_list)>0 and dnum==len(self.quiz.discussion_list) else '')
+
+        # index for quiz
+        if len(self.quiz.quiz_list)>0:
+          # add index to the web page
+          self.page_body+=quiz_list.format(course=self.course['name'],
+                                           quiz_index='\n          '.join(quiz_list_item.format(url=q['url'], title=q['title']) for q in self.quiz.quiz_list)
+          )
+          # write a javascript file for displaying the menu
+          # quizmenu = the index file for the quizzes in this directory
+          with open('quiztitles.js','w') as quizmenu:
+             quizmenu.write('var QuizTitles = [\n{titles}\n];\n'.format(
+                titles = ',\n'.join("  ['{}', '{}Quizzes/{}']".format(q['title'],self.course['url'],q['url']) for q in self.quiz.quiz_list)
+             ))
+
+        # finally we print the quesions
+        if len(self.quiz.question_list)>0:
+          self.page_body+=''.join(question_wrapper.format(qnum=qnum+1,
+                                                display='style="display: block;"' if qnum==0 and len(self.quiz.discussion_list)==0 else '',
+                                                question=self.print_question(q,qnum+1),
+                                                response=self.print_responses(q,qnum+1))
+                                for (qnum,q) in enumerate(self.quiz.question_list)
+          )
 
     def print_question(self, Q, Qnum):
         r'''Here:

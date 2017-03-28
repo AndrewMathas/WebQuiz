@@ -42,7 +42,7 @@ quiz_page = r'''<!DOCTYPE HTML>
   {include}
 </head>
 
-<body onload="MathQuizInit({qTotal}, {qTotal}, '{quiz}'">
+<body>
   <div class="quizpage">
     <div class="breadcrumbs">
        {breadcrumb}

@@ -152,8 +152,8 @@ questions_javascript = r'''  <script src="{MathQuizURL}/mathquiz.js" type="text/
   <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=MML_CHTML"></script>
   <style type="text/css"> .MathJax_MathML {{text-indent: 0;}}</style>
   <script type="text/javascript">window.on_load = {on_load}</script>'''
-# the remaining templates are used to prompt the user when initialising mathquiz
 
+# the remaining templates are used to prompt the user when initialising mathquiz
 initialise_introduction='''
 The on-line quizzes that MathQuiz constructs use javascript and casading style
 sheets and these files need to be placed on your webserver.
