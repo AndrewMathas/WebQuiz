@@ -15,6 +15,7 @@ To use the system you will need to have all of the following programs installed:
 Once the system is installed, MathQuiz is used directly from the
 command line. For example, if quiz1.tex is a latex file for a quiz then:
     * latex quiz1         produces a "readable" dvi file for the quiz
+    * pdflatex quiz1      produces a "readable" pdf file for the quiz
     * mathquiz quiz1      creates the web page quiz1.html
 
 

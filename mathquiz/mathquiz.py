@@ -140,7 +140,7 @@ def main():
 
             # now clean up
             if options.clean:
-                for ext in [ '4ct', '4tc', 'dvi', 'idv', 'lg', 'log', 'ps', 'pdf', 'tmp', 'xml', 'xref']:
+                for ext in [ '4ct', '4tc', 'dvi', 'idv', 'lg', 'log', 'ps', 'pdf', 'tmp', 'xref']:
                     if os.path.isfile(quiz_file +'.' +ext):
                         os.remove(quiz_file +'.' +ext)
 
@@ -474,7 +474,11 @@ class MakeMathQuiz(object):
     def add_meta_data(self):
         """ add the meta data for the web page to self.header """
         # meta tags`
-        self.header += html_meta.format(version=metadata.version, authors=metadata.author, MathQuizURL=self.MathQuizURL, quiz_file=self.quiz_file)
+        self.header += html_meta.format(version=metadata.version,
+                                        authors=metadata.authors,
+                                        MathQuizURL=self.MathQuizURL,
+                                        description=metadata.description,
+                                        quiz_file=self.quiz_file)
         self.header += ''.join('  <meta {}>\n'.format(' '.join('{}="{}"'.format(k,meta[k]) for k in meta)) for meta in self.quiz.meta_list)
         self.header += ''.join('  <link {}>\n'.format(' '.join('{}="{}"'.format(k,link[k]) for k in link)) for link in self.quiz.link_list)
 

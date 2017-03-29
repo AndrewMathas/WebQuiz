@@ -16,7 +16,7 @@
 /* container for the full quiz page */
 div.quiz_page {
   display: block;
-  max-width: 94%;
+  max-width: 800px;
   margin: 0 auto !important;
   float: none !important; }
 
@@ -26,10 +26,10 @@ div.side_menu {
   width: 100px;
   padding-top: 16px;
   padding-left: 1%;
-  margin-right: 20px;
   text-align: center;
   font-size: 10px;
-  position: fixed;
+  font-weight: normal;
+  position: absolute;
   overflow: auto; }
   div.side_menu > div {
     clear: right;
@@ -53,6 +53,15 @@ div.side_menu {
       color: #CE1126;
       padding-left: 0;
       padding-right: 1ex; }
+  div.side_menu div.copyright {
+    font-family: sans-serif, verdana, helvetica;
+    font-weight: normal;
+    font-size: x-small;
+    width: 100%;
+    padding: 20px 0px 20px 0px;
+    margin: 0px 0px 600px 0px; }
+    div.side_menu div.copyright A {
+      text-decoration: none; }
 
 div.question_label {
   color: #FF0000;
@@ -63,27 +72,15 @@ div.question_label {
   margin-bottom: 10px;
   text-align: left; }
 
-div.copyright {
-  font-family: sans-serif, verdana, helvetica;
-  font-size: x-small;
-  width: 100%;
-  padding: 20px 0px 20px 0px;
-  margin: 0px 0px 600px 0px; }
-
-div.copyright A {
-  text-decoration: none; }
-
 /* container for the quiz questions, answers and responses */
 div.quiz_questions {
-  padding-top: 8px;
-  margin-left: 130px;
-  float: left;
-  width: 670px; }
+  padding-left: 130px; }
 
 div.quiz_header {
   padding-left: 130px;
   padding-top: 12px;
-  padding-right: 1%; }
+  padding-right: 1%;
+  padding-bottom: 20px; }
   div.quiz_header h1 {
     text-align: center;
     color: #CE1126;
@@ -122,13 +119,11 @@ span.tooltip {
 
 span.tooltip:hover {
   display: block;
-  top: 6mm;
-  right: -1mm;
   background: #FFF8DC;
   border-radius: 3px;
   color: #000000;
   display: inline;
-  position: relative;
+  position: absolute;
   overflow: visible;
   border: 1.5px solid #F2BB66;
   font-size: x-small;
@@ -136,10 +131,8 @@ span.tooltip:hover {
   height: 0;
   width: 0; }
 
-span.tooltip:hover:after {
+span.tooltip:hover:before {
   display: block;
-  top: -8px;
-  right: 0mm;
   background: #FFF8DC;
   border-bottom: 5px solid #F2BB66;
   border-left: 5px solid transparent;
@@ -204,15 +197,8 @@ div.ArrowQuestion {
 div.question {
   z-index: 0;
   margin: 0;
-  padding: 0ex 0ex 20ex 0ex;
-  min-width: 100%;
-  max-width: 100%;
   display: none;
   float: left; }
-
-form.question {
-  text-align: left;
-  padding-top: 20px; }
 
 div.question h2 {
   color: #FF9900;
@@ -229,8 +215,7 @@ div.response {
   border: solid #C9A798 2px;
   border-radius: 5px;
   display: none;
-  padding: 1ex;
-  width: 100%; }
+  padding: 1ex; }
   div.response div {
     text-align: left;
     color: #000000; }
@@ -321,7 +306,7 @@ div.warning {
 div.breadcrumbs {
   display: block;
   margin: 0;
-  padding: .3em 0 .3em 0;
+  padding: 10px 0 4px 0;
   border-bottom: 1px solid #F2BB66;
   font-size: x-small; }
 

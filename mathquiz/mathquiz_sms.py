@@ -120,7 +120,7 @@ def write_web_page(quiz):
   for (key, value) in [('CODE','QUIZ'),
                        ('menuname', sms_menu_name),
                        ('pagetitle', quiz.title), ('title',''),
-                       ('no-compMenu', 'y'),
+                       ('no-compmenu', 'y'),
                        ('bodyonload', quiz.on_load),
                        ('tablevel', 'internal' if quiz.quiz_file in ['mathquiz-manual','credits'] else '')]:
       page['UNIT_OF_STUDY,'+key] = value

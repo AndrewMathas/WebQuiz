@@ -40,7 +40,7 @@
 /* container for the full quiz page */
 div.quiz_page {
   display: block;
-  max-width: 94%;
+  max-width:800px;
   margin: 0 auto !important;
   float: none !important;
 }
@@ -51,10 +51,10 @@ div.side_menu {
   width: 100px;
   padding-top: 16px;
   padding-left: 1%;
-  margin-right: 20px;
   text-align: center;
   font-size: 10px;
-  position: fixed;
+  font-weight: normal;
+  position: absolute;
   overflow: auto;
 
   > div {
@@ -86,6 +86,19 @@ div.side_menu {
         padding-right: 1ex;
       }
   }
+
+  div.copyright {
+    font-family: sans-serif, verdana, helvetica;
+    font-weight: normal;
+    font-size: x-small;
+    width: 100%;
+    padding:20px 0px 20px 0px;
+    margin: 0px 0px 600px 0px;
+
+    A {
+      text-decoration: none;
+    }
+  }
 }
 
 div.question_label {
@@ -97,27 +110,15 @@ div.question_label {
   margin-bottom: 10px;
   text-align: left;
 }
-div.copyright {
-  font-family: sans-serif, verdana, helvetica;
-  font-size: x-small;
-  width: 100%;
-  padding:20px 0px 20px 0px;
-  margin: 0px 0px 600px 0px;
-}
-div.copyright A{
-  text-decoration: none;
-}
 /* container for the quiz questions, answers and responses */
 div.quiz_questions{
-  padding-top: 8px;
-  margin-left: 130px;
-  float: left;
-  width: 670px;
+  padding-left: 130px;
 }
 div.quiz_header {
   padding-left: 130px;
   padding-top: 12px;
   padding-right: 1%;
+  padding-bottom: 20px;
 
   h1 {
     text-align: center;
@@ -168,13 +169,13 @@ span.tooltip {
 }
 span.tooltip:hover {
     display: block;
-    top: 6mm;
-    right: -1mm;
+    //top: 6mm;
+    //right: -1mm;
     background: $ButtonBG;
     border-radius: 3px;
     color: $Text;
     display: inline;
-    position: relative;
+    position: absolute;
     overflow: visible;
     border: 1.5px solid $ButtonBorder;
     font-size: x-small;
@@ -182,10 +183,10 @@ span.tooltip:hover {
     height: 0;
     width: 0;
 }
-span.tooltip:hover:after {
+span.tooltip:hover:before {
     display: block;
-    top: -8px;
-    right:0mm;
+    //top: -8px;
+    //right:0mm;
     background: $ButtonBG;
     border-bottom: 5px solid $ButtonBorder;
     border-left: 5px solid transparent;
@@ -259,15 +260,10 @@ div.ArrowQuestion {
 div.question {
   z-index: 0;
   margin: 0;
-  padding: 0ex 0ex 20ex 0ex;
-  min-width: 100%;
-  max-width: 100%;
   display: none;
   float:left;
 }
 form.question {
-  text-align: left;
-  padding-top:20px;
 }
 
 div.question h2 {
@@ -286,7 +282,6 @@ div.response{
   border-radius: 5px;
   display: none;
   padding: 1ex;
-  width: 100%;
 
   div {
     text-align: left;
@@ -294,7 +289,6 @@ div.response{
   }
 
   ol {
-
     counter-reset: list;
     list-style-type: none;
 
@@ -390,7 +384,7 @@ div.warning {
 div.breadcrumbs {
   display: block;
   margin: 0;
-  padding: .3em 0 .3em 0;
+  padding: 10px 0 4px 0;
   border-bottom: 1px solid $ButtonBorder;
   font-size: x-small;
 

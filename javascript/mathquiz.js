@@ -31,7 +31,6 @@ function MathQuizInit(quizzes, discussion, quiz_name) {
           "This quiz is unlikely to work unless your browser version is at least 5.");
   }
 
-alert('Initialising with '+quizzes+' '+discussion+' for '+quiz_name)
   // qTotal is the nunber of questions in the quiz
   qTotal = quizzes;     // number of quizzes
   dTotal = discussion;  // number of discusson items

@@ -202,7 +202,7 @@ class MathQuizCtan(build_py):
     ctanupload_data = {
         'contribution' : settings.program,
              'version' : settings.version,
-                'name' : settings.author,
+                'name' : settings.authors,
                'email' : settings.author_email,
              'summary' : settings.description,
            'directory' : '/scripts/mathquiz, tex/latex/mathquiz and doc/latex/mathquiz',

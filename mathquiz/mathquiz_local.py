@@ -43,7 +43,7 @@ quiz_page = r'''<!DOCTYPE HTML>
 </head>
 
 <body>
-  <div class="quizpage">
+  <div class="quiz_page">
     <div class="breadcrumbs">
        {breadcrumb}
     </div>
