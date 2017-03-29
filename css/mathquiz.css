@@ -93,12 +93,14 @@ div.quiz_header {
     font-weight: bold;
     margin-bottom: 0.8ex;
     text-align: left; }
-  div.quiz_header span.question_label {
-    width: 50%; }
   div.quiz_header span.arrows {
     color: #FF0000;
     float: right;
+    font-size: 12px;
     margin-right: 20px; }
+  div.quiz_header span.arrows A {
+    color: #FF0000;
+    font-size: 12px; }
   div.quiz_header span.arrows A:hover {
     color: #990033; }
 
