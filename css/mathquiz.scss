@@ -39,126 +39,116 @@
 
 /* container for the full quiz page */
 div.quiz_page {
-  max-width: 94%;
-  margin: 0 auto !important;
   float: none !important;
-  position: relative;
+  margin: 0 auto !important;
+  max-width: 90%;
+  min-width:620px;
 }
 
 /* side menu with question buttons and copyright message */
 div.side_menu {
   float: left;
-  width: 100px;
-  padding-top: 16px;
-  padding-left: 1%;
-  margin-right: 20px;
-  text-align: center;
   font-size: 10px;
-  position: absolute;
+  font-weight: normal;
+  margin-right: 20px;
   overflow: auto;
+  padding-left: 1%;
+  padding-top: 16px;
+  width: 100px;
 
   > div {
-    clear: right;
     color: $Heading;
-    float: left;
     font-family: $HeadingFont;
     font-size: 12px;
     font-weight: bold;
     margin-bottom: 0.8ex;
+    text-align: initial;
   }
 
   ul {
-      float: left;
       list-style: none;
       padding-left: 0;
 
       li {
-        font-size: 14px;
         color: $Text;
-        white-space: nowrap;
+        font-size: 14px;
         text-align: left;
+        white-space: nowrap;
       }
 
       li:before {
-        content: $ListMarker;
         color: $Heading;
+        content: $ListMarker;
         padding-left: 0;
         padding-right: 1ex;
       }
   }
+
+  div.copyright {
+    font-family: sans-serif, verdana, helvetica;
+    font-size: x-small;
+    font-weight: normal;
+    padding:20px 0px 20px 0px;
+    width: 100%;
+  }
+  div.copyright A{
+    text-decoration: none;
+  }
+  
+  table.marking_key {
+    padding-top: 10px;
+    margin-left: 12px;
+  }
+
 }
 
-div.question_label {
+span.question_label {
   color: $Subheading;
-  float: left;
   font-size: 12px;
   font-variant: small-caps;
-  font-weight: 600;
+  font-weight: normal;
   margin-bottom: 10px;
   text-align: left;
 }
-div.copyright {
-  font-family: sans-serif, verdana, helvetica;
-  font-size: x-small;
-  width: 100%;
-  padding:20px 0px 20px 0px;
-  margin: 0px 0px 600px 0px;
-}
-div.copyright A{
-  text-decoration: none;
-}
+
 /* container for the quiz questions, answers and responses */
 div.quiz_questions{
   padding-top: 8px;
-  float: left;
-  clear: left;
-  position: relative;
 }
 div.quiz_header {
-  padding-left: 130px;
   padding-top: 12px;
   padding-right: 1%;
-  width: 100%;
 
   h1 {
-    text-align: center;
     color: $Heading;
-    font-weight: bold;
     font-size: 36px;
     font-weight: 600;
+    font-weight: bold;
+    position: static;
+    text-align: center;
     text-transform: uppercase;
   }
 
   div.quiz_title {
-    display: inline-block;
-    text-align: left;
-    font-family: Verdana, Arial, Helvetica, sans-serif;
     color: $Heading;
+    display: inline-block;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
     font-weight: bold;
     margin-bottom: 0.8ex;
+    text-align: left;
   }
 
-  div.arrows {
+  span.question_label {
+    width: 50%;
+  }
+  span.arrows {
     color: $Subheading;
     float: right;
+    margin-right: 20px;
+  }
 
-    > div:first-child {
-      float:left;
-      font-size: 12px;
-      padding-right: 6px;
-      right:8em;
-    }
-    > div:last-child {
-      float: right;
-      font-size: 12px;
-      padding-left: 6px;
-      position: relative;
-      right:0em;
-    }
-
-    div:nth-child(2n+1):hover {
+  span.arrows A:hover {
       color: $ArrowHover;
-    }
   }
 }
 
@@ -199,16 +189,6 @@ span.tooltip:hover:after {
     width: 0;
 }
 
-#question_number div {
-  display: inline-block;
-  vertical-align: baseline;
-  float: left;
-}
-
-#quiz tr {
-  vertical-align: top;
-}
-
 div.quiz_list {
   color: $Heading;
   font-family: Arial, Helvetica, sans-serif;
@@ -231,9 +211,9 @@ div.quiz_list {
 }
 
 div.question_choices {
-  text-align: left;
   padding-left:10px;
   padding-right:15px;
+  text-align: left;
 }
 table.question_choices td {
   padding-top:7px;
@@ -241,33 +221,14 @@ table.question_choices td {
 td.brown {
   color: $QuestionPart;
 }
-span.ArrowQuestion img {
-  vertical-align: top;
-}
-div.ArrowQuestion:hover {
-  color: $ArrowHover;
-}
-div.ArrowQuestion {
-  position: relative;
-  z-index:20;
-  color: $Subheading;
-  font-size: 15px;
-  font-weight:bold;
-  padding:5px 0px 5px 0px;
-  float:right;
-}
 /* specifications for the divs containing questions, answers and responses */
 div.question {
-  z-index: 0;
+  display: none;
   margin: 0;
   padding: 0ex 0ex 20ex 0ex;
-  min-width: 100%;
-  max-width: 100%;
-  display: none;
-  float:left;
+  z-index: 0;
 }
 form.question {
-  text-align: left;
   padding-top:20px;
 }
 
@@ -279,15 +240,13 @@ div.question h2 {
   text-transform: uppercase;
 }
 div.answer{
-  position: relative;
 }
-div.response{
+div.response {
   background-color: $ResponseBG;
   border: solid $ResponseBorder 2px;
   border-radius: 5px;
   display: none;
   padding: 1ex;
-  width: 100%;
 
   div {
     text-align: left;
@@ -300,9 +259,9 @@ div.response{
     list-style-type: none;
 
     li:before {
+      color: $QuestionPart;
       content: counter(list, lower-latin) ")";
       counter-increment: list;
-      color: $QuestionPart;
       padding-right: 1ex;
     }
 
@@ -321,29 +280,27 @@ div.response{
 div.buttons {
   width: 100%;
   height: 100%;
-  margin-bottom: 1em;
-}
-div.button {
-  background-color: $ButtonBG;
-  border: solid $ButtonBorder 2px;
-  border-radius: 5px;
-  display: table-cell;
-  float: left;
-  font-size: 12px;
-  font-weight: normal;
-  height:     30px;
-  line-height: 30px; /* needed so that float does not break vertical alignment */
-  margin-left: 5px;
-  margin-top: 5px;
-  min-height: 30px;
-  min-width:  30px;
-  position: relative;
-  text-align: center;
-  vertical-align: middle;
-  width:      30px;
-}
-div.button:nth-child(2n+1){
-    clear:left
+  margin-bottom: 6px;
+
+  div.button {
+    background-color: $ButtonBG;
+    border-radius: 5px;
+    border: solid $ButtonBorder 2px;
+    display: table-cell;
+    float: left;
+    font-size: 12px;
+    font-weight: normal;
+    height:     30px;
+    line-height: 30px; /* needed so that float does not break vertical alignment */
+    margin-left: 5px;
+    margin-top: 5px;
+    min-height: 30px;
+    min-width:  30px;
+    position: relative;
+    text-align: center;
+    vertical-align: middle;
+    width:      30px;
+  }
 }
 /* javascript cannot access the css of pseudo elements, so we put the button
  * content inside a span coloured black. It theory it would be easier to
@@ -361,11 +318,11 @@ div.button:hover {
   border: solid $ButtonHover 2px;
 }
 div.button:after {
-  width: 100%;
-  height: 100%;
-  content: attr(content);
-  position: absolute;
   bottom: -35%;
+  content: attr(content);
+  height: 100%;
+  position: absolute;
+  width: 100%;
   right: -35%;
 }
 
@@ -377,9 +334,6 @@ input.input_button {
   padding-left: 4px;
   padding-right: 4px;
 }
-table.marking_key {
-  margin-left: 12px;
-}
 /* warning messages - for the noscript error */
 div.warning {
   background-color: $WarningBG;
@@ -387,12 +341,12 @@ div.warning {
   color: $WarningFG;
 }
 
-/* breadcrumbs at the top of the page */
-div.breadcrumbs {
-  display: block;
-  margin: 0;
-  padding: .3em 0 .3em 0;
+/* bread crumbs at the top of the page */
+div.bread_crumbs {
   border-bottom: 1px solid $ButtonBorder;
+  display: block;
   font-size: x-small;
-
+  margin: 0 auto;
+  width: 90%;
+  padding: .3em 0 .3em 0;
 }

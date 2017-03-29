@@ -25,7 +25,7 @@ def write_web_page(quiz):
     return quiz_page.format(
                title          = quiz.title,                           # page title
                include        = quiz.header+quiz.javascript+quiz.css, # header material
-               breadcrumb     = quiz.bread_crumbs,                    # bread crumb constructed above
+               breadcrumbs    = quiz.bread_crumbs,                    # bread crumb constructed above
                side_menu      = quiz.side_menu,                       # navigation menu for quiz
                quiz_header    = quiz.quiz_header,                     # quiz title + navigation arrows
                quiz_questions = quiz.page_body,                       # html for quiz
@@ -41,7 +41,7 @@ quiz_page = r'''<!DOCTYPE HTML>
 </head>
 
 <body onload="{on_load}">
-  {breadcrumb}
+  {breadcrumbs}
   {no_script}
   <div class="quiz_page">
     {side_menu}

@@ -17,13 +17,27 @@ r'''  MathQuiz.py | 2017 Version 5.0 | html template file
 
 ## The quiz web pages are built using the following "template" strings
 
-# Questions and responses:
-#   question_css.format(<question number>, <display mode>)
-#   answer_css.format(<answer number>)
-#   response_css.format(<qnswer number>, <response number>)
-question_css = '    #question{}{{z-index: 0; margin: 2ex 0ex 0ex 0ex; padding: 0ex 0ex 0ex 0ex; display: {};}}\n'
-answer_css   = '    #answer{}{{position: relative; display: block;}}\n'
-response_css = '    #q{}response{}{{padding: 0ex; border: solid black 2px; display: none;}}\n'
+# html meta statements
+html_meta = r'''<meta name="generator" content="MathQuiz {version} (http://www.maths.usyd.edu.au/u/MOW/MathQuiz/doc/mathquiz-manual.html)">
+  <meta name="organization" content="School of Mathematics and Statistics, University of Sydney">
+  <meta name="Copyright" content="University of Sydney 2004-2017">
+  <meta name="keywords" content="mathquiz, TeX4ht, make4ht, latex, python, quiz, mathematics">
+  <meta name="description" content="{description}">
+  <meta name="authors" content="{authors}">
+  <meta name="viewport" content="width=device-width">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <link href="{MathQuizURL}/mathquiz.css" type="text/css" rel="stylesheet">
+  <link href="{quiz_file}/{quiz_file}.css" type="text/css" rel="stylesheet">
+'''
+
+# javascript for setting up the questions
+questions_javascript = r'''  <script src="{MathQuizURL}/mathquiz.js" type="text/javascript"></script>
+  <script src="quiztitles.js" type="text/javascript"></script>
+  <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=MML_CHTML"></script>'''
+
+bread_crumbs = r'''<div class="bread_crumbs">
+    <a href="{url}">{code}</a> / <a href="{url}">Quizzes</a> / {title}
+  </div>'''
 
 # question buttons
 button  = r'        <div id="button{b}" class="button{cls}" content="" onClick="gotoQuestion({b})">{b}</div>'
@@ -31,7 +45,7 @@ discuss = r'        <li class="discussion" onClick="gotoQuestion(-{b})">{title}<
 side_menu = r'''<div class="side_menu">
       <div>MathQuiz</div>{discussion_list}
       <div class="buttons">
-        <div class="question_label">&nbsp;Questions&nbsp;</div>
+        <span class="question_label">&nbsp;Questions&nbsp;</span>
         <br>{buttons}
       </div>
       <table class="marking_key">
@@ -50,23 +64,19 @@ side_menu = r'''<div class="side_menu">
       </div>
     </div>'''
 
-bread_crumbs = r'''<div class="breadcrumbs">
-    <a href="{url}">{code}</a> / <a href="{url}">Quizzes</a> / {title}
-  </div>'''
-
 # quiz title and navigation arrows
 quiz_header='''{initialise_warning}<div class="quiz_header">
       <div class="quiz_title">{title}</div>
-      <div style="clear:both;"></div>
-      <div id="question_number" class="question_label">{question_number}</div>
+      <div style="clear:right"></div>
+      <span id="question_number" class="question_label">{question_number}</span>
       {arrows}
     </div>
 '''
-navigation_arrows='''<div class="arrows">
-        <div onClick="nextQuestion(-1);"><span class="tooltip">Previous unanswered question</span>&#x25c4;</div>
-        <div class="question_label">Questions</div>
-        <div onClick="nextQuestion(1);"><span class="tooltip">Next unanswered question</span>&#x25ba;</div>
-      </div>'''
+navigation_arrows='''<span class="arrows">
+        <a onClick="nextQuestion(-1);" class="tooltip" title="Previous unanswered question">&#x25c4;</a>
+        <span class="question_label">Questions</span>
+        <a onClick="nextQuestion(1);" class="tooltip" title="Next unanswered question">&#x25ba;</a>
+      </span>'''
 
 # discussion item
 discussion='''     <div id="question-{dnum}" class="question" {display}><h2>{discussion.heading}</h2>
@@ -99,6 +109,15 @@ question_text='''  {question}
         </p>
       </form>
 '''
+
+# Questions and responses:
+#   question_css.format(<question number>, <display mode>)
+#   answer_css.format(<answer number>)
+#   response_css.format(<qnswer number>, <response number>)
+question_css = '    #question{}{{z-index: 0; margin: 2ex 0ex 0ex 0ex; padding: 0ex 0ex 0ex 0ex; display: {};}}\n'
+answer_css   = '    #answer{}{{position: relative; display: block;}}\n'
+response_css = '    #q{}response{}{{padding: 0ex; border: solid black 2px; display: none;}}\n'
+
 input_answer='<input type="text"  onChange="checkanswer();" size="5"/> {tag}'
 choice_answer='<table class="question_choices">{choices}</table>{hidden}'
 input_single='\n<input type="hidden" name="Q{qnum}hidden"/>'
@@ -126,25 +145,6 @@ multiple_response_correct='''
             </ol>
         </div>'''
 multiple_response_answer='              <li><em>{answer}</em> {reason}</li>'
-
-
-# html meta statements
-html_meta = r'''<meta name="generator" content="MathQuiz {version} (http://www.maths.usyd.edu.au/u/MOW/MathQuiz/doc/mathquiz-manual.html)">
-  <meta name="organization" content="School of Mathematics and Statistics, University of Sydney">
-  <meta name="Copyright" content="University of Sydney 2004-2017">
-  <meta name="keywords" content="mathquiz, TeX4ht, make4ht, latex, python, quiz, mathematics">
-  <meta name="description" content="{description}">
-  <meta name="authors" content="{authors}">
-  <meta name="viewport" content="width=device-width">
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <link href="{MathQuizURL}/mathquiz.css" type="text/css" rel="stylesheet">
-  <link href="{quiz_file}/{quiz_file}.css" type="text/css" rel="stylesheet">
-'''
-
-# javascript for setting up the questions
-questions_javascript = r'''  <script src="{MathQuizURL}/mathquiz.js" type="text/javascript"></script>
-  <script src="quiztitles.js" type="text/javascript"></script>
-  <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=MML_CHTML"></script>'''
 
 # the remaining templates are used to prompt the user when initialising mathquiz
 initialise_introduction='''

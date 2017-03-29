@@ -63,7 +63,7 @@ function showQuestion(newQ) { // newQ is an integer
   if (currentQ>0) {
     document.getElementById('button'+currentQ).classList.remove('button-selected');
   }
-  document.getElementById('question'+newQ).style.display = 'block';
+  document.getElementById('question'+newQ).style.display = 'table';
   if (newQ>0) {
     document.getElementById('button'+newQ).classList.add('button-selected');
     document.getElementById('question_number').innerHTML = 'Question '+newQ;
@@ -84,7 +84,7 @@ function hideResponse() {
 function showResponse(tag) {
   hideResponse()
   currentResponse = document.getElementById(tag);
-  currentResponse.style.display = 'block';
+  currentResponse.style.display = 'table';
 }
 
 // if increment==+1 we find the next questions which has not
