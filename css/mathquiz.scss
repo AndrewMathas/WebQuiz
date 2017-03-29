@@ -85,11 +85,12 @@ div.side_menu {
   }
 
   div.copyright {
-    font-family: sans-serif, verdana, helvetica;
+    font-family: arial, verdana, helvetica;
     font-size: x-small;
     font-weight: normal;
     padding:20px 0px 20px 0px;
     width: 100%;
+    text-align: center;
   }
   div.copyright A{
     text-decoration: none;
@@ -97,7 +98,7 @@ div.side_menu {
   
   table.marking_key {
     padding-top: 10px;
-    margin-left: 12px;
+    margin-left: 6px;
   }
 
 }
@@ -150,43 +151,6 @@ div.quiz_header {
   span.arrows A:hover {
       color: $ArrowHover;
   }
-}
-
-/* tooltips, or mouseovers, that should be inside a span */
-span.tooltip {
-  display: none;
-  position: relative;
-}
-span.tooltip:hover {
-    display: block;
-    top: 6mm;
-    right: -1mm;
-    background: $ButtonBG;
-    border-radius: 3px;
-    color: $Text;
-    display: inline;
-    position: relative;
-    overflow: visible;
-    border: 1.5px solid $ButtonBorder;
-    font-size: x-small;
-    padding: 2px;
-    height: 0;
-    width: 0;
-}
-span.tooltip:hover:after {
-    display: block;
-    top: -8px;
-    right:0mm;
-    background: $ButtonBG;
-    border-bottom: 5px solid $ButtonBorder;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    content: "";
-    display: block;
-    position: absolute;
-    z-index:10;
-    height: 0;
-    width: 0;
 }
 
 div.quiz_list {

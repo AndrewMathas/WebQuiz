@@ -66,16 +66,15 @@ side_menu = r'''<div class="side_menu">
 
 # quiz title and navigation arrows
 quiz_header='''{initialise_warning}<div class="quiz_header">
-      <div class="quiz_title">{title}</div>
-      <div style="clear:right"></div>
+      <div class="quiz_title">{title}</div><div></div>
       <span id="question_number" class="question_label">{question_number}</span>
       {arrows}
     </div>
 '''
 navigation_arrows='''<span class="arrows">
-        <a onClick="nextQuestion(-1);" class="tooltip" title="Previous unanswered question">&#x25c4;</a>
+        <a onClick="nextQuestion(-1);" title="Previous unanswered question">&#x25c4;</a>
         <span class="question_label">Questions</span>
-        <a onClick="nextQuestion(1);" class="tooltip" title="Next unanswered question">&#x25ba;</a>
+        <a onClick="nextQuestion(1);"  title="Next unanswered question">&#x25ba;</a>
       </span>'''
 
 # discussion item
