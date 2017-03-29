@@ -22,17 +22,15 @@ r"""  mathquizLocal.py | 2017 Verion 5.0 | Andrew Mathas and Donald Taylor
 from mathquiz_templates import no_script
 
 def write_web_page(quiz):
-    bread_crumb='<a href="{}">{}</a> / <a href="{}">Quizzes</a> / {}'.format(
-                quiz.course['url'], quiz.course['code'], quiz.course['url']+'Quizzes', quiz.title
-    )
     return quiz_page.format(
-               title = quiz.title,                             # page title
-               include = quiz.header+quiz.javascript+quiz.css, # header material
-               breadcrumb = bread_crumb,                       # bread crumb constructed above
-               side_menu = quiz.side_menu,                     # navigation menu for quiz
-               quiz_header = quiz.quiz_header,                 # quiz title + navigation arrows
-               quiz_questions = quiz.page_body,                # html for quiz
-               no_script = no_script                           # error when javascript is not enabled
+               title          = quiz.title,                           # page title
+               include        = quiz.header+quiz.javascript+quiz.css, # header material
+               breadcrumb     = quiz.bread_crumbs,                    # bread crumb constructed above
+               side_menu      = quiz.side_menu,                       # navigation menu for quiz
+               quiz_header    = quiz.quiz_header,                     # quiz title + navigation arrows
+               quiz_questions = quiz.page_body,                       # html for quiz
+               no_script      = no_script,                            # error when javascript is not enabled
+               on_load        = quiz.on_load                          # MathQuizInit() call
     )
 
 quiz_page = r'''<!DOCTYPE HTML>
@@ -42,12 +40,10 @@ quiz_page = r'''<!DOCTYPE HTML>
   {include}
 </head>
 
-<body>
+<body onload="{on_load}">
+  {breadcrumb}
+  {no_script}
   <div class="quiz_page">
-    <div class="breadcrumbs">
-       {breadcrumb}
-    </div>
-    {no_script}
     {side_menu}
     {quiz_header}
     <div class="quiz_questions">

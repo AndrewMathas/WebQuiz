@@ -50,9 +50,9 @@ side_menu = r'''<div class="side_menu">
       </div>
     </div>'''
 
-bread_crumbs = r'''    <div class="breadcrumbs">
-      <a href="{url}">{code}</a> / <a href="{url}">Quizzes</a> / {title}
-    </div>'''
+bread_crumbs = r'''<div class="breadcrumbs">
+    <a href="{url}">{code}</a> / <a href="{url}">Quizzes</a> / {title}
+  </div>'''
 
 # quiz title and navigation arrows
 quiz_header='''{initialise_warning}<div class="quiz_header">
@@ -144,8 +144,7 @@ html_meta = r'''<meta name="generator" content="MathQuiz {version} (http://www.m
 # javascript for setting up the questions
 questions_javascript = r'''  <script src="{MathQuizURL}/mathquiz.js" type="text/javascript"></script>
   <script src="quiztitles.js" type="text/javascript"></script>
-  <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=MML_CHTML"></script>
-  <script type="text/javascript">window.on_load = {on_load}</script>'''
+  <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=MML_CHTML"></script>'''
 
 # the remaining templates are used to prompt the user when initialising mathquiz
 initialise_introduction='''
