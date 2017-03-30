@@ -121,7 +121,7 @@ def write_web_page(quiz):
                        ('menuname', sms_menu_name),
                        ('pagetitle', quiz.title), ('title',''),
                        ('no-compmenu', 'y'),
-                       ('bodyonload', '''onload="{}";'''.format(quiz.on_load)),
+                       ('bodyonload', 'onload="showQuestion({})"'.format(quiz.load_question)),
                        ('tablevel', 'internal' if quiz.quiz_file in ['mathquiz-manual','credits'] else '')]:
       page['UNIT_OF_STUDY,'+key] = value
   return sms_write_page(page, {}, quiz.course['url'], quiz.quiz_file+'.html;')[0]

@@ -95,7 +95,7 @@ div.side_menu {
   div.copyright A{
     text-decoration: none;
   }
-  
+
   table.marking_key {
     padding-top: 10px;
     margin-left: 6px;
@@ -156,24 +156,24 @@ div.quiz_header {
 }
 
 div.quiz_list {
-  color: $Heading;
-  font-family: Arial, Helvetica, sans-serif;
-  text-decoration: none;
-  text-align: left;
-
-  ul {
-      list-style: none;
-  }
-
-  div li:before {
-    content: $ListMarker;
     color: $Heading;
-    padding-left: 0;
-    padding-right: 1ex;
-  }
-  div li:hover {
-      color: $Subheading;
-  }
+    font-family: Arial, Helvetica, sans-serif;
+    text-decoration: none;
+    text-align: left;
+
+    ul {
+        list-style: none !important;
+
+        li:before {
+            content: $ListMarker;
+            color: $Heading;
+            padding-left: 0;
+            padding-right: 1ex;
+        }
+        li:hover {
+            color: $Subheading;
+        }
+    }
 }
 
 div.question_choices {
@@ -277,6 +277,7 @@ div.buttons {
  */
 div.button span {
   color: $Text;
+  text-decoration: none;
 }
 div.button-selected {
   border: solid $ButtonSelected 2px;
@@ -284,6 +285,7 @@ div.button-selected {
 }
 div.button:hover {
   border: solid $ButtonHover 2px;
+  text-decoration: underline;
 }
 div.button:after {
   bottom: -35%;

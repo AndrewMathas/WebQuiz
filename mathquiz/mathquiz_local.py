@@ -30,6 +30,7 @@ def write_web_page(quiz):
                quiz_header    = quiz.quiz_header,                     # quiz title + navigation arrows
                quiz_questions = quiz.page_body,                       # html for quiz
                no_script      = no_script,                            # error when javascript is not enabled
+               load_question  = quiz.load_question                    # question to load
     )
 
 quiz_page = r'''<!DOCTYPE HTML>
@@ -39,7 +40,7 @@ quiz_page = r'''<!DOCTYPE HTML>
   {include}
 </head>
 
-<body>
+<body onload="showQuestion({load_question})">
   {breadcrumbs}
   {no_script}
   <div class="quiz_page">

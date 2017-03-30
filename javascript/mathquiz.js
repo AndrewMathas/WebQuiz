@@ -11,8 +11,9 @@
 // <Donald.Taylor@sydney.edu.au>
 //*****************************************************************************
 
-var currentQ, qTotal, currentQuiz;
-var currentResponse;
+// global varaibles
+var currentQ, qTotal, dTotal, currentQuiz, currentResponse;
+var QuizSpecifications = new Array();
 var wrongAnswers = new Array();
 var correct  = new Array();
 
@@ -35,21 +36,20 @@ function MathQuizInit(quizzes, discussion, quiz_name) {
   qTotal = quizzes;     // number of quizzes
   dTotal = discussion;  // number of discusson items
 
-  currentQ = (dTotal>0) ? -1 : 1
-
+  // currentQ will be set onload
   currentQuiz = quiz_name;
   currentResponse = null; // Points to the current response layer
 
   // read the question specifications for the quiz from
   // the file quiz_name/quiz_list.js
-  var read_ql = document.createElement('script');
-  var head = document.getElementsByTagName('head')[0];
-  read_ql.type = "text/javascript";
-  read_ql.src = currentQuiz+'/quiz_list.js';
-  head.appendChild(read_ql);
-
+  if (qTotal>0) {
+      var quizlist = document.createElement('script');
+      quizlist.setAtrribute('type', "text/javascript");
+      quizlist.setAtrribute('src', currentQuiz+'/quiz_list.js');
+      document.getElementsByTagName('head')[0].appendChild(quizlist);
+  }
   var i;
-  for ( i = 0; i < qTotal; i++ ) {
+  for (i = 0; i < qTotal; i++ ) {
       wrongAnswers[i] = 0; // the number of times the question has been attempted
       correct[i] = false;  // whether or not the supplied answer is correct
   }
@@ -59,9 +59,12 @@ function MathQuizInit(quizzes, discussion, quiz_name) {
 // Code to hide/show questions
 
 function showQuestion(newQ) { // newQ is an integer
-  alert('Showing question '+newQ)
+  alert('newQ = '+newQ+', qTotal = ',qTotal, ', qTotal = '+dTotal+', currentQ = '+currentQ, +'.')
+  if ( newQ==0 || newQ>qTotal || newQ<-dTotal ) { // if 0, too big or too small return
+      return false;
+  }
   hideResponse();
-  if (currentQ != newQ) {
+  if (currentQ) {
       document.getElementById('question'+currentQ).style.display = 'none';
       if (currentQ>0) {
         document.getElementById('button'+currentQ).classList.remove('button-selected');
@@ -72,7 +75,7 @@ function showQuestion(newQ) { // newQ is an integer
     document.getElementById('button'+newQ).classList.add('button-selected');
     document.getElementById('question_number').innerHTML = 'Question '+newQ;
   } else {
-    document.getElementById('question_number').innerHTML = 'Dicussion'
+    document.getElementById('question_number').innerHTML = 'Discussion'
   }
   currentQ=newQ;
 }
