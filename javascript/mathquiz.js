@@ -12,7 +12,7 @@
 //*****************************************************************************
 
 // global varaibles
-var currentQ, qTotal, dTotal, currentQuiz, currentResponse;
+var currentQ, qTotal, dTotal, currentQuiz, currentResponse=null;
 var QuizSpecifications = new Array();
 var wrongAnswers = new Array();
 var correct  = new Array();
@@ -26,51 +26,46 @@ cross = {'marker': '\u2718', 'color': 'red',    'bg': 'linear-gradient(to bottom
 star  = {'marker': '\u272D', 'color': 'yellow', 'bg': 'linear-gradient(to bottom right, yellow, green)' }
 tick  = {'marker': '\u2714', 'color': 'green',  'bg': 'linear-gradient(to bottom right, red, yellow)' }
 
-function MathQuizInit(quizzes, discussion, quiz_name) {
+
+var WaitForQuizSpecifications = function(){
+  if (QuizSpecifications.length==0) {
+    setTimeout(WaitForQuizSpecifications, 15)
+  }
+}
+
+function MathQuizInit(questions, discussions, quizfile) {
   if (navigator.appName=="Netscape" && parseFloat(navigator.appVersion)<5) {
     alert("Your browser version is " + navigator.appVersion + ".\n" +
           "This quiz is unlikely to work unless your browser version is at least 5.");
   }
+  qTotal = questions
+  dTotal = discussions
+  currentQuiz = quizfile
+  currentQ = (dTotal>0) ? -1 : 1
 
-  // qTotal is the nunber of questions in the quiz
-  qTotal = quizzes;     // number of quizzes
-  dTotal = discussion;  // number of discusson items
+  // read the question specifications for the quiz from <currentQuiz>/quiz_list.js
+  document.head.appendChild(document.createElement("script")).src=currentQuiz+'/quiz_list.js';
+  WaitForQuizSpecifications();
 
-  // currentQ will be set onload
-  currentQuiz = quiz_name;
-  currentResponse = null; // Points to the current response layer
-
-  // read the question specifications for the quiz from
-  // the file quiz_name/quiz_list.js
-  if (qTotal>0) {
-      var quizlist = document.createElement('script');
-      quizlist.setAtrribute('type', "text/javascript");
-      quizlist.setAtrribute('src', currentQuiz+'/quiz_list.js');
-      document.getElementsByTagName('head')[0].appendChild(quizlist);
-  }
+  // set up arrays for tracking how many times that questions have been attempted
   var i;
   for (i = 0; i < qTotal; i++ ) {
       wrongAnswers[i] = 0; // the number of times the question has been attempted
       correct[i] = false;  // whether or not the supplied answer is correct
   }
-  showQuestion(currentQ)
 }
 
 // Code to hide/show questions
 
-function showQuestion(newQ) { // newQ is an integer
-  alert('newQ = '+newQ+', qTotal = ',qTotal, ', qTotal = '+dTotal+', currentQ = '+currentQ, +'.')
-  if ( newQ==0 || newQ>qTotal || newQ<-dTotal ) { // if 0, too big or too small return
-      return false;
-  }
+function showQuestion(newQ) { // newQ is an integer which is always in the correct range
   hideResponse();
-  if (currentQ) {
-      document.getElementById('question'+currentQ).style.display = 'none';
-      if (currentQ>0) {
-        document.getElementById('button'+currentQ).classList.remove('button-selected');
-      }
+  // hide the current question
+  document.getElementById('question'+currentQ).style.display = 'none';
+  if (currentQ>0) {
+    document.getElementById('button'+currentQ).classList.remove('button-selected');
   }
-  document.getElementById('question'+newQ).style.display = 'block';
+  // display the new question and then set currentQ = new Q
+  document.getElementById('question'+newQ).style.display = 'table';
   if (newQ>0) {
     document.getElementById('button'+newQ).classList.add('button-selected');
     document.getElementById('question_number').innerHTML = 'Question '+newQ;
@@ -91,7 +86,7 @@ function hideResponse() {
 function showResponse(tag) {
   hideResponse()
   currentResponse = document.getElementById(tag);
-  currentResponse.style.display = 'block';
+  currentResponse.style.display = 'grid';
 }
 
 // if increment==+1 we find the next questions which has not

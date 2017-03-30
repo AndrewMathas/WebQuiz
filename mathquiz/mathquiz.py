@@ -388,6 +388,9 @@ class MakeMathQuiz(object):
 
         self.read_xml_file()
 
+        self.dTotal = len(self.quiz.discussion_list)
+        self.qTotal = len(self.quiz.question_list)
+
         # generate the variuous components ofthe web page
         self.course = self.quiz.course
         self.title = self.quiz.title
@@ -459,9 +462,10 @@ class MakeMathQuiz(object):
         talk('Processing {}.tex with TeX4ht'.format(q_file))
 
         try:
-            cmd='make4ht --utf8 --config mathquiz.cfg {build} {q_file}.tex'.format(
-                  q_file    = q_file,
-                  build     = '--build-file {} '.format(self.options.mathquiz_mk4) if self.options.mathquiz_mk4 !='' else ''
+            cmd='make4ht --utf8 --config mathquiz.cfg --output-dir {quiz_file} {build} {q_file}.tex'.format(
+                            quiz_file = self.quiz_file,
+                            q_file    = q_file,
+                            build     = '--build-file {} '.format(self.options.mathquiz_mk4) if self.options.mathquiz_mk4 !='' else ''
             )
             talk('Executing: '+cmd)
             run(cmd)
@@ -511,8 +515,6 @@ class MakeMathQuiz(object):
 
     def add_question_javascript(self):
         """ add the javascript for the questions to self """
-        self.dTotal = len(self.quiz.discussion_list)
-        self.qTotal = len(self.quiz.question_list)
         if len(self.quiz.discussion_list)==0: currentQ='1'
         else: currentQ='-1     // start showing discussion'
 
@@ -534,24 +536,25 @@ class MakeMathQuiz(object):
                 os.makedirs(self.quiz_file, exist_ok=True)
                 with open(os.path.join(self.quiz_file,'quiz_list.js'), 'w') as quiz_list:
                     quiz_list.write(quiz_specs)
+                    quiz_list.write('MathQuizInit({},{});'.format(self.qTotal, self.dTotal))
             except Exception as err:
                 print('Error writing quiz specifications:\n {}.'.format(err))
                 sys.exit(err.errno)
 
         self.load_question = 1 if self.dTotal==0 else self.qTotal
         self.javascript += questions_javascript.format(
-                MathQuizURL = self.MathQuizURL,
-                qTotal = self.qTotal,
-                dTotal = self.dTotal,
-                quiz_file = self.quiz_file
+                                MathQuizURL = self.MathQuizURL,
+                                qTotal = self.qTotal,
+                                dTotal = self.dTotal,
+                                quiz_file = self.quiz_file,
+                                currentQ = currentQ
         )
 
     def add_page_body(self):
         r'''
         Write the quiz head and the main body of the quiz.
         '''
-
-        if self.dTotal == 0:
+        if self.qTotal == 0:
             arrows = ''
         else:
             arrows = navigation_arrows.format(subheading='Question 1' if self.dTotal==0 else 'Discussion')
@@ -559,6 +562,8 @@ class MakeMathQuiz(object):
         # specify the quiz header - this will be wrapped in <div class="question_header>...</div>
         self.quiz_header=quiz_header.format(title=self.title,
                                       initialise_warning=initialise_warning if self.options.initialise_warning else '',
+                                      question_number='Discussion' if len(self.quiz.discussion_list)>0 else
+                                                      'Question 1' if len(self.quiz.question_list)>0 else '',
                                       arrows = arrows
         )
 

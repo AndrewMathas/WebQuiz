@@ -50,6 +50,7 @@ div.side_menu {
   float: left;
   font-size: 10px;
   font-weight: normal;
+  height: 100%;
   margin-right: 20px;
   overflow: auto;
   padding-left: 1%;
@@ -62,7 +63,6 @@ div.side_menu {
     font-size: 12px;
     font-weight: bold;
     margin-bottom: 0.8ex;
-    text-align: initial;
   }
 
   ul {
@@ -89,7 +89,6 @@ div.side_menu {
     font-size: x-small;
     font-weight: normal;
     padding:20px 0px 20px 0px;
-    width: 100%;
     text-align: center;
   }
   div.copyright A{
@@ -132,11 +131,9 @@ div.quiz_header {
 
   div.quiz_title {
     color: $Heading;
-    display: inline-block;
     font-family: Verdana, Arial, Helvetica, sans-serif;
     font-weight: bold;
     margin-bottom: 0.8ex;
-    text-align: left;
   }
 
   span.arrows {
@@ -251,7 +248,7 @@ div.buttons {
   div.button {
     background-color: $ButtonBG;
     border-radius: 5px;
-    color: $Subheading;
+    color: $Text;
     border: solid $ButtonBorder 2px;
     display: table-cell;
     float: left;
@@ -261,11 +258,8 @@ div.buttons {
     line-height: 30px; /* needed so that float does not break vertical alignment */
     margin-left: 5px;
     margin-top: 5px;
-    min-height: 30px;
-    min-width:  30px;
     position: relative;
     text-align: center;
-    vertical-align: middle;
     width:      30px;
   }
 }
@@ -280,12 +274,12 @@ div.button span {
   text-decoration: none;
 }
 div.button-selected {
-  border: solid $ButtonSelected 2px;
-  color: blue;
+  border: solid $ButtonSelected 2px !important;
+  color: $Heading !important;
 }
 div.button:hover {
-  border: solid $ButtonHover 2px;
-  text-decoration: underline;
+  border: solid $ButtonHover 2px !important;
+  text-decoration: underline !important;
 }
 div.button:after {
   bottom: -35%;

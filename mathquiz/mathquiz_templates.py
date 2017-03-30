@@ -34,14 +34,14 @@ html_meta = r'''<meta name="generator" content="MathQuiz {version} (http://www.m
 questions_javascript = r'''  <script type="text/javascript" src="{MathQuizURL}/mathquiz.js"></script>
   <script type="text/javascript" src="quiztitles.js"></script>
   <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=MML_CHTML"></script>
-  <script type="text/javascript">MathQuizInit({qTotal},{dTotal},'{quiz_file}');</script>'''
+  <script type="text/javascript">MathQuizInit({qTotal}, {dTotal}, '{quiz_file}');</script>'''
 
 bread_crumbs = r'''<div class="bread_crumbs">
     <a href="{url}">{code}</a> / <a href="{url}">Quizzes</a> / {title}
   </div>'''
 
 # question buttons
-button  = r'        <div id="button{b}" class="button" content="" onClick="gotoQuestion({b});">{b}</div>'
+button  = r'        <div id="button{b}" class="button{cls}" content="" onClick="gotoQuestion({b})">{b}</div>'
 discuss = r'        <li class="discussion" onClick="gotoQuestion(-{b})">{title}</li>'
 side_menu = r'''<div class="side_menu">
       <div>MathQuiz</div>{discussion_list}
@@ -68,7 +68,7 @@ side_menu = r'''<div class="side_menu">
 # quiz title and navigation arrows
 quiz_header='''{initialise_warning}<div class="quiz_header">
       <div class="quiz_title">{title}</div><div></div>
-      <span id="question_number" class="question_label"></span>
+      <span id="question_number" class="question_label">{question_number}</span>
       {arrows}
     </div>
 '''
@@ -79,7 +79,7 @@ navigation_arrows='''<span class="arrows">
       </span>'''
 
 # discussion item
-discussion='''     <div id="question-{dnum}" class="question"><h2>{discussion.heading}</h2>
+discussion='''     <div id="question-{dnum}" class="question" {display}><h2>{discussion.heading}</h2>
         <p>{discussion.discussion}</p>{input_button}
       </div>
 '''
@@ -95,7 +95,7 @@ quiz_list='''     <div class="quiz_list">
 quiz_list_item='''<li><a href={url}>{title}</a></li>'''
 
 # now we come to the question wrappers
-question_wrapper='''      <div id="question{qnum}" class="question">
+question_wrapper='''      <div id="question{qnum}" class="question" {display}>
       {question}
       {response}
       </div>
