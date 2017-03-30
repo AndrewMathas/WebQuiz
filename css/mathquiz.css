@@ -110,14 +110,14 @@ div.quiz_list {
   text-decoration: none;
   text-align: left; }
   div.quiz_list ul {
-    list-style: none; }
-  div.quiz_list div li:before {
-    content: "➣";
-    color: #CE1126;
-    padding-left: 0;
-    padding-right: 1ex; }
-  div.quiz_list div li:hover {
-    color: #FF0000; }
+    list-style: none !important; }
+    div.quiz_list ul li:before {
+      content: "➣";
+      color: #CE1126;
+      padding-left: 0;
+      padding-right: 1ex; }
+    div.quiz_list ul li:hover {
+      color: #FF0000; }
 
 div.question_choices {
   padding-left: 10px;
@@ -202,13 +202,15 @@ div.buttons {
  * this way.
  */
 div.button span {
-  color: #000000; }
+  color: #000000;
+  text-decoration: none; }
 
 div.button-selected {
   border: solid #B33C00 2px; }
 
 div.button:hover {
-  border: solid #5B2C6F 2px; }
+  border: solid #5B2C6F 2px;
+  text-decoration: underline; }
 
 div.button:after {
   bottom: -35%;

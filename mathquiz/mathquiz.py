@@ -509,6 +509,7 @@ class MakeMathQuiz(object):
 
     def add_question_javascript(self):
         """ add the javascript for the questions to self """
+        self.dTotal = len(self.quiz.discussion_list)
         self.qTotal = len(self.quiz.question_list)
         if len(self.quiz.discussion_list)==0: currentQ='1'
         else: currentQ='-1     // start showing discussion'
@@ -535,19 +536,12 @@ class MakeMathQuiz(object):
                 print('Error writing quiz specifications:\n {}.'.format(err))
                 sys.exit(err.errno)
 
-        # add quiz initialisation codxe
-        self.on_load = '''MathQuizInit({qTotal}, {dTotal}, '{quiz}');'''.format(
-                                  quiz = self.quiz_file,
-                                  qTotal = self.qTotal,
-                                  dTotal = len(self.quiz.discussion_list)
-        )
-
-        self.javascript += questions_javascript.format(MathQuizURL = self.MathQuizURL,
-                                                   currentQ = currentQ,
-                                                   qTotal = self.qTotal,
-                                                   dTotal = len(self.quiz.discussion_list),
-                                                   quiz = self.quiz_file,
-                                                   on_load = self.on_load
+        self.load_question = 1 if self.dTotal==0 else self.qTotal
+        self.javascript += questions_javascript.format(
+                MathQuizURL = self.MathQuizURL,
+                qTotal = self.qTotal,
+                dTotal = self.dTotal,
+                quiz_file = self.quiz_file
         )
 
     def add_page_body(self):
@@ -555,16 +549,14 @@ class MakeMathQuiz(object):
         Write the quiz head and the main body of the quiz.
         '''
 
-        if len(self.quiz.question_list) == 0:
+        if self.dTotal == 0:
             arrows = ''
         else:
-            arrows = navigation_arrows.format(subheading='Question 1' if len(self.quiz.discussion_list)==0 else 'Discussion')
+            arrows = navigation_arrows.format(subheading='Question 1' if self.dTotal==0 else 'Discussion')
 
         # specify the quiz header - this will be wrapped in <div class="question_header>...</div>
         self.quiz_header=quiz_header.format(title=self.title,
                                       initialise_warning=initialise_warning if self.options.initialise_warning else '',
-                                      question_number='Discussion' if len(self.quiz.discussion_list)>0 else
-                                                      'Question 1' if len(self.quiz.question_list)>0 else '',
                                       arrows = arrows
         )
 
@@ -588,7 +580,7 @@ class MakeMathQuiz(object):
           # quizmenu = the index file for the quizzes in this directory
           with open('quiztitles.js','w') as quizmenu:
              quizmenu.write('var QuizTitles = [\n{titles}\n];\n'.format(
-                titles = ',\n'.join("  ['{}', '{}Quizzes/{}']".format(q['title'],self.course['url'],q['url']) for q in self.quiz.quiz_list)
+                 titles = ',\n'.join("  ['{:<60}', '{}/Quizzes/{}']".format(q['title'],self.course['url'],q['url']) for q in self.quiz.quiz_list)
              ))
 
         # finally we print the quesions

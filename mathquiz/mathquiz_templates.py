@@ -31,9 +31,10 @@ html_meta = r'''<meta name="generator" content="MathQuiz {version} (http://www.m
 '''
 
 # javascript for setting up the questions
-questions_javascript = r'''  <script src="{MathQuizURL}/mathquiz.js" type="text/javascript"></script>
-  <script src="quiztitles.js" type="text/javascript"></script>
-  <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=MML_CHTML"></script>'''
+questions_javascript = r'''  <script type="text/javascript" src="{MathQuizURL}/mathquiz.js"></script>
+  <script type="text/javascript" src="quiztitles.js"></script>
+  <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=MML_CHTML"></script>
+  <script type="text/javascript">MathQuizInit({qTotal},{dTotal},'{quiz_file}');</script>'''
 
 bread_crumbs = r'''<div class="bread_crumbs">
     <a href="{url}">{code}</a> / <a href="{url}">Quizzes</a> / {title}
@@ -67,7 +68,7 @@ side_menu = r'''<div class="side_menu">
 # quiz title and navigation arrows
 quiz_header='''{initialise_warning}<div class="quiz_header">
       <div class="quiz_title">{title}</div><div></div>
-      <span id="question_number" class="question_label">{question_number}</span>
+      <span id="question_number" class="question_label"></span>
       {arrows}
     </div>
 '''
