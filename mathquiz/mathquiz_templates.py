@@ -19,11 +19,11 @@ r'''  MathQuiz.py | 2017 Version 5.0 | html template file
 
 # html meta statements
 html_meta = r'''<meta name="generator" content="MathQuiz {version} (http://www.maths.usyd.edu.au/u/MOW/MathQuiz/doc/mathquiz-manual.html)">
+  <meta name="description" content="{description}">
+  <meta name="authors" content="{authors}">
   <meta name="organization" content="School of Mathematics and Statistics, University of Sydney">
   <meta name="Copyright" content="University of Sydney 2004-2017">
   <meta name="keywords" content="mathquiz, TeX4ht, make4ht, latex, python, quiz, mathematics">
-  <meta name="description" content="{description}">
-  <meta name="authors" content="{authors}">
   <meta name="viewport" content="width=device-width">
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <link href="{MathQuizURL}/mathquiz.css" type="text/css" rel="stylesheet">
@@ -33,6 +33,7 @@ html_meta = r'''<meta name="generator" content="MathQuiz {version} (http://www.m
 # javascript for setting up the questions
 questions_javascript = r'''  <script src="{MathQuizURL}/mathquiz.js" type="text/javascript"></script>
   <script src="quiztitles.js" type="text/javascript"></script>
+  <script type="text/javascript">window.onload={on_load}</script>
   <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=MML_CHTML"></script>'''
 
 bread_crumbs = r'''<div class="bread_crumbs">
@@ -40,7 +41,7 @@ bread_crumbs = r'''<div class="bread_crumbs">
   </div>'''
 
 # question buttons
-button  = r'        <div id="button{b}" class="button{cls}" content="" onClick="gotoQuestion({b})">{b}</div>'
+button  = r'        <div id="button{b}" class="button" content="" onClick="gotoQuestion({b});">{b}</div>'
 discuss = r'        <li class="discussion" onClick="gotoQuestion(-{b})">{title}</li>'
 side_menu = r'''<div class="side_menu">
       <div>MathQuiz</div>{discussion_list}
@@ -67,7 +68,7 @@ side_menu = r'''<div class="side_menu">
 # quiz title and navigation arrows
 quiz_header='''{initialise_warning}<div class="quiz_header">
       <div class="quiz_title">{title}</div><div></div>
-      <span id="question_number" class="question_label">{question_number}</span>
+      <span id="question_number" class="question_label"></span>
       {arrows}
     </div>
 '''
@@ -78,7 +79,7 @@ navigation_arrows='''<span class="arrows">
       </span>'''
 
 # discussion item
-discussion='''     <div id="question-{dnum}" class="question" {display}><h2>{discussion.heading}</h2>
+discussion='''     <div id="question-{dnum}" class="question"><h2>{discussion.heading}</h2>
         <p>{discussion.discussion}</p>{input_button}
       </div>
 '''
@@ -94,7 +95,7 @@ quiz_list='''     <div class="quiz_list">
 quiz_list_item='''<li><a href={url}>{title}</a></li>'''
 
 # now we come to the question wrappers
-question_wrapper='''      <div id="question{qnum}" class="question" {display}>
+question_wrapper='''      <div id="question{qnum}" class="question">
       {question}
       {response}
       </div>
@@ -110,13 +111,6 @@ question_text='''  {question}
 '''
 
 # Questions and responses:
-#   question_css.format(<question number>, <display mode>)
-#   answer_css.format(<answer number>)
-#   response_css.format(<qnswer number>, <response number>)
-question_css = '    #question{}{{z-index: 0; margin: 2ex 0ex 0ex 0ex; padding: 0ex 0ex 0ex 0ex; display: {};}}\n'
-answer_css   = '    #answer{}{{position: relative; display: block;}}\n'
-response_css = '    #q{}response{}{{padding: 0ex; border: solid black 2px; display: none;}}\n'
-
 input_answer='<input type="text"  onChange="checkanswer();" size="5"/> {tag}'
 choice_answer='<table class="question_choices">{choices}</table>{hidden}'
 input_single='\n<input type="hidden" name="Q{qnum}hidden"/>'

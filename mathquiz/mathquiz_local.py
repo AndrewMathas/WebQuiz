@@ -30,7 +30,6 @@ def write_web_page(quiz):
                quiz_header    = quiz.quiz_header,                     # quiz title + navigation arrows
                quiz_questions = quiz.page_body,                       # html for quiz
                no_script      = no_script,                            # error when javascript is not enabled
-               on_load        = quiz.on_load                          # MathQuizInit() call
     )
 
 quiz_page = r'''<!DOCTYPE HTML>
@@ -40,7 +39,7 @@ quiz_page = r'''<!DOCTYPE HTML>
   {include}
 </head>
 
-<body onload="{on_load}">
+<body>
   {breadcrumbs}
   {no_script}
   <div class="quiz_page">

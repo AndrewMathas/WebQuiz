@@ -117,7 +117,6 @@ def write_web_page(quiz):
       page_body_string = quiz.quiz_header+quiz.page_body,
       nopreview = ''
   )
-  print('Onload = '+quiz.on_load)
   for (key, value) in [('CODE','QUIZ'),
                        ('menuname', sms_menu_name),
                        ('pagetitle', quiz.title), ('title',''),

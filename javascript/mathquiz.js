@@ -53,17 +53,21 @@ function MathQuizInit(quizzes, discussion, quiz_name) {
       wrongAnswers[i] = 0; // the number of times the question has been attempted
       correct[i] = false;  // whether or not the supplied answer is correct
   }
+  showQuestion(currentQ)
 }
 
 // Code to hide/show questions
 
 function showQuestion(newQ) { // newQ is an integer
+  alert('Showing question '+newQ)
   hideResponse();
-  document.getElementById('question'+currentQ).style.display = 'none';
-  if (currentQ>0) {
-    document.getElementById('button'+currentQ).classList.remove('button-selected');
+  if (currentQ != newQ) {
+      document.getElementById('question'+currentQ).style.display = 'none';
+      if (currentQ>0) {
+        document.getElementById('button'+currentQ).classList.remove('button-selected');
+      }
   }
-  document.getElementById('question'+newQ).style.display = 'table';
+  document.getElementById('question'+newQ).style.display = 'block';
   if (newQ>0) {
     document.getElementById('button'+newQ).classList.add('button-selected');
     document.getElementById('question_number').innerHTML = 'Question '+newQ;
@@ -84,7 +88,7 @@ function hideResponse() {
 function showResponse(tag) {
   hideResponse()
   currentResponse = document.getElementById(tag);
-  currentResponse.style.display = 'table';
+  currentResponse.style.display = 'block';
 }
 
 // if increment==+1 we find the next questions which has not

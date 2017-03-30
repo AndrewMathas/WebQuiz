@@ -251,6 +251,7 @@ div.buttons {
   div.button {
     background-color: $ButtonBG;
     border-radius: 5px;
+    color: $Subheading;
     border: solid $ButtonBorder 2px;
     display: table-cell;
     float: left;
@@ -279,6 +280,7 @@ div.button span {
 }
 div.button-selected {
   border: solid $ButtonSelected 2px;
+  color: blue;
 }
 div.button:hover {
   border: solid $ButtonHover 2px;

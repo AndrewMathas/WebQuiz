@@ -178,6 +178,7 @@ div.buttons {
   div.buttons div.button {
     background-color: #FFF8DC;
     border-radius: 5px;
+    color: #FF0000;
     border: solid #F2BB66 2px;
     display: table-cell;
     float: left;
@@ -205,7 +206,8 @@ div.button span {
   color: #000000; }
 
 div.button-selected {
-  border: solid #B33C00 2px; }
+  border: solid #B33C00 2px;
+  color: blue; }
 
 div.button:hover {
   border: solid #5B2C6F 2px; }

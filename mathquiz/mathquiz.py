@@ -152,9 +152,9 @@ def main():
 
                 # files created when using pst2pdf
                 if options.pst2pdf:
-                    for file in glob.glob(quiz_file+'pdf.*'):
-                        os.remove(file)
                     for file in glob.glob(quiz_file+'-pdf.*'):
+                        os.remove(file)
+                    for file in glob.glob(quiz_file+'-pdf-fixed.*'):
                         os.remove(file)
                     for extra in ['.preamble', '.plog', '-tmp.tex', '-pst.tex', '-fig.tex']:
                         if os.path.isfile(quiz_file+extra):
@@ -186,12 +186,13 @@ class MathQuizSettings(object):
         mathquiz_url   = dict(val = '/MathQuiz',      descr = 'Relative URL to mathquiz web directory' ),
         mathquiz_dir   = dict(val = '',               descr = 'Full path to MathQuiz web directory'),
         mathquiz_mk4   = dict(val = '',               descr = 'Build file for make4ht'),
-        mathquiz_cfg   = dict(val = '',               descr = 'Configuration file for TeX4ht'),
     )
 
     def __init__(self):
         '''
-        If the mathquizrc file exists then read it.
+        If the mathquizrc file exists, which it may not, then read it.
+
+        TODO? Allow per user configuration ???
         '''
         if os.path.isfile(mathquiz_file('mathquizrc')):
             self.read_mathquizrc()
@@ -445,21 +446,22 @@ class MakeMathQuiz(object):
             # find them so we update the tex file to look in the right place
             try:
                 with open(q_file+'-pdf.tex','r') as pst_file:
-                    with open(q_file+'pdf.tex', 'w') as pst_fixed:
+                    with open(q_file+'-pdf-fixed.tex', 'w') as pst_fixed:
+                        # tell pst_fixed where it came from
+                        pst_fixed.write(r'\makeatletter\def\MQ@quizfile{%s.tex}\makeatother' % self.quiz_file)
                         for line in pst_file:
                             pst_fixed.write(fix_svg.sub(r'\1{%s/\2.svg}'%self.quiz_file, line))
             except IOError as err:
                 print('There was an error concerting the output from pst2pdf for {}\n  {}.\n'.format(q_file, err))
 
-            q_file = q_file + 'pdf'
+            q_file = q_file + '-pdf-fixed'
 
         talk('Processing {}.tex with TeX4ht'.format(q_file))
 
         try:
-            cmd='make4ht --utf8 --config mathquiz.cfg --output-dir {quiz_file} {build} {q_file}.tex'.format(
-                            quiz_file = self.quiz_file,
-                            q_file    = q_file,
-                            build     = '--build-file {} '.format(self.options.mathquiz_mk4) if self.options.mathquiz_mk4 !='' else ''
+            cmd='make4ht --utf8 --config mathquiz.cfg {build} {q_file}.tex'.format(
+                  q_file    = q_file,
+                  build     = '--build-file {} '.format(self.options.mathquiz_mk4) if self.options.mathquiz_mk4 !='' else ''
             )
             talk('Executing: '+cmd)
             run(cmd)

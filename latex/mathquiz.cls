@@ -27,6 +27,10 @@
 \University{The University of Sydney}
 \Department{School of Mathematics and Statistics}
 \CopyrightNotice{\the\year{} \MQ@university}
+
+% set the quiz filename for use below -- can set by mathquiz
+\ifdefined\MQ@quizfile\relax\else\xdef\MQ@quizfile{\jobname.tex}\fi
+
 % the names of the next three macros are chosen so as to be compatible with sms-uos.sty
 \newcommand*{\UnitCode}[1]{\def\uos@code{#1}}
 \newcommand*{\UnitName}[1]{\def\uos@name{#1}}
