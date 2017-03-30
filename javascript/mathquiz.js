@@ -22,7 +22,7 @@ var QuizSpecifications = new Array();
 
 // specification for the question buttons
 blank = {'marker': '',       'color': 'black',  'bg': '#FFF8DC' }
-cross = {'marker': '\u2718', 'color': 'red',    'bg': 'linear-gradient(to bottom right, white,  grey)' }
+cross = {'marker': '\u2718', 'color': 'red',    'bg': 'linear-gradient(to bottom right, white,  darkblue)' }
 star  = {'marker': '\u272D', 'color': 'yellow', 'bg': 'linear-gradient(to bottom right, yellow, green)' }
 tick  = {'marker': '\u2714', 'color': 'green',  'bg': 'linear-gradient(to bottom right, red, yellow)' }
 
@@ -65,7 +65,7 @@ function showQuestion(newQ) { // newQ is an integer which is always in the corre
     document.getElementById('button'+currentQ).classList.remove('button-selected');
   }
   // display the new question and then set currentQ = new Q
-  document.getElementById('question'+newQ).style.display = 'table';
+  document.getElementById('question'+newQ).style.display = 'block';
   if (newQ>0) {
     document.getElementById('button'+newQ).classList.add('button-selected');
     document.getElementById('question_number').innerHTML = 'Question '+newQ;
@@ -86,7 +86,7 @@ function hideResponse() {
 function showResponse(tag) {
   hideResponse()
   currentResponse = document.getElementById(tag);
-  currentResponse.style.display = 'grid';
+  currentResponse.style.display = 'block';
 }
 
 // if increment==+1 we find the next questions which has not

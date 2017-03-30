@@ -62,6 +62,19 @@ def strval(ustr):
     return ustr
     return ustr.encode('ascii','xmlcharrefreplace')
 
+def MathQuizError(msg, err=None):
+    r'''
+    Consistent handling of errors in magthquiz: print the message `msg` and
+    exist with error code `err.errno` if it is available.abs
+    '''
+    if err is None:
+        print('MathQuiz error: {}'.format(msg))
+    else:
+        print('MathQuiz error: {}\n  {}'.format(msg, err))
+    if hasattr(err, errno):
+        sys.exit(err.errno)
+    sys.exit(1)
+
 # -----------------------------------------------------
 def main():
     # read settings from the mathquizrc file
@@ -206,8 +219,7 @@ class MathQuizSettings(object):
         if key in self.settings:
             return self.settings[key]['val']
 
-        print('MathQuiz error: unknown setting {} in mathquizrc.'.format(key))
-        sys.exit(1)
+        MathQuizError('unknown setting {} in mathquizrc.'.format(key))
 
     def __setitem__(self, key, val):
         r'''
@@ -218,8 +230,7 @@ class MathQuizSettings(object):
         if key in self.settings:
             self.settings[key]['val'] = val
         else:
-            print('MathQuiz error: unknown setting {} in mathquizrc'.format(key))
-            sys.exit(1)
+            MathQuizError('unknown setting {} in mathquizrc'.format(key))
 
     def read_mathquizrc(self):
         r'''
@@ -239,12 +250,10 @@ class MathQuizSettings(object):
                         if key in self.settings:
                             self[key] = val
                         elif len(key)>0:
-                            print('MathQuiz error: unknown setting {} in mathquizrc'.format(key))
-                            sys.exit(1)
+                            MathQuizError('unknown setting {} in mathquizrc'.format(key))
 
         except Exception as err:
-            sys.stderr.write('MathQuiz error: there was an error reading the mathquizrc file\n  {}'.format(err))
-            sys.exit(err.errno)
+            MathQuizError('there was an error reading the mathquizrc file,', err)
 
     def write_mathquizrc(self):
         r'''
@@ -259,13 +268,10 @@ class MathQuizSettings(object):
                         rc_file.write('## {}\n{:<14} = {}\n'.format(self.settings[key]['descr'], key, self[key]))
 
         except PermissionError as err:
-                print('There was an error writing the mathquizrc file\n  {}'.format(err))
-                print(permission_error.format(mathquiz_file('mathquirc')))
-                sys.exit(err.errno)
+                MathQuizError(permission_error.format('mathquirc'), err)
 
         except Exception as err:
-            print('There was an error writing the mathquizrc file\n  {}'.format(err))
-            sys.exit(err.errno)
+            MathQuizError('there was an error writing the mathquizrc file,', err)
 
     def initialise_mathquiz(self, full_initialisation=False):
         r'''
@@ -327,8 +333,7 @@ class MathQuizSettings(object):
                     files_copied = True
 
                 except PermissionError as err:
-                    print(permission_error.format(web_dir))
-                    sys.exit(err.errno)
+                    MathQuizError(permission_error.format(web_dir), err)
 
                 except Exception as err:
                     print('There was a problem copying files to {}.\n  Please give a different directory.\n[Error: {}]\n'.format(web_dir, err))
@@ -338,8 +343,8 @@ class MathQuizSettings(object):
             mq_url = input(mathquiz_url_message.format(self['mathquiz_url']))
             if mq_url != '':
                 if not web_dir.ends_with(mq_url):
-                    print('MathQuiz error: {} does not end with {}.'.format(web_dir, mq_url))
-                    sys.exit(1)
+                    MathQuizError('{} does not end with {}.'.format(web_dir, mq_url))
+
                 # removing trailing slashes from mq_url
                 while mq_url[-1] == '/':
                     mq_url = mu_url[:len(mq_url)-1]
@@ -431,17 +436,18 @@ class MakeMathQuiz(object):
         if self.options.pst2pdf:
             talk('Preprocessing {} with pst2pdsf'.format(q_file))
             try:
-                # this converts pspicture environments to svg images and make a
+                # pst23pdf creates directories with bad permissions that os.chmod might not fix on windows?
+                if not os.path.exists(q_file):
+                    os.makedirs(q_file)
+                # pst2pdf converts pspicture environments to svg images and makes a
                 # new latex file q_file+'-pdf' that includes these
                 cmd='pst2pdf --svg --imgdir={q_file} {q_file}.tex'.format(q_file=q_file)
                 run(cmd)
             except OSError as err:
                 if err.errno == os.errno.ENOENT:
-                    print('Errro: pst2pdf not found. You need to install pst2pdf to use the --pst2pdf option')
-                    sys.exit(err.errno)
+                    MathQuizError('pst2pdf not found. You need to install pst2pdf to use the --pst2pdf option', err)
                 else:
-                    print('Error running pst2pdf on {}\n  {}.\n'.format(q_file, err))
-                    sys.exit(err.errno)
+                    MathQuizError('error running pst2pdf on {}'.format(q_file), err)
 
             import re
             fix_svg = re.compile(r'(\\includegraphics\[scale=1\])\{('+ q_file+r'-fig-[0-9]*)\}')
@@ -462,8 +468,7 @@ class MakeMathQuiz(object):
         talk('Processing {}.tex with TeX4ht'.format(q_file))
 
         try:
-            cmd='make4ht --utf8 --config mathquiz.cfg --output-dir {quiz_file} {build} {q_file}.tex'.format(
-                            quiz_file = self.quiz_file,
+            cmd='make4ht --utf8 --config mathquiz.cfg {build} {q_file}.tex'.format(
                             q_file    = q_file,
                             build     = '--build-file {} '.format(self.options.mathquiz_mk4) if self.options.mathquiz_mk4 !='' else ''
             )
@@ -472,9 +477,10 @@ class MakeMathQuiz(object):
 
             # htlatex generates an html file, so we rename this as an xml file
             os.rename(q_file+'.html', self.quiz_file+'.xml')
+            os.rename(q_file+'.css', os.path.join(self.quiz_file, self.quiz_file+'.css'))
+
         except Exception as err:
-            print('Error running htlatex on {}\n  {}.\n'.format(self.quiz_file, err))
-            sys.exit(err.errno)
+            MathQuizError('error running htlatex on {}'.format(self.quiz_file), err)
 
     def read_xml_file(self):
         r'''
@@ -485,9 +491,7 @@ class MakeMathQuiz(object):
             # read in the xml version of the quiz
             self.quiz = mathquiz_xml.ReadXMLTree(self.quiz_file+'.xml')
         except Exception as err:
-            print('Error reading the xml generated for {}. Please check your latex source.\n  {}'.format(self.quiz_file, err))
-            raise
-            sys.exit(err.errno)
+            MathQuizError('error reading the xml generated for {}. Please check your latex source.'.format(self.quiz_file), err)
 
     def add_meta_data(self):
         """ add the meta data for the web page to self.header """
@@ -497,8 +501,9 @@ class MakeMathQuiz(object):
                                         MathQuizURL=self.MathQuizURL,
                                         description=metadata.description,
                                         quiz_file=self.quiz_file)
-        self.header += ''.join('  <meta {}>\n'.format(' '.join('{}="{}"'.format(k,meta[k]) for k in meta)) for meta in self.quiz.meta_list)
-        self.header += ''.join('  <link {}>\n'.format(' '.join('{}="{}"'.format(k,link[k]) for k in link)) for link in self.quiz.link_list)
+        # we don't need any of the links or metas from the latex file
+        # self.header += ''.join('  <meta {}>\n'.format(' '.join('{}="{}"'.format(k,meta[k]) for k in meta)) for meta in self.quiz.meta_list)
+        # self.header += ''.join('  <link {}>\n'.format(' '.join('{}="{}"'.format(k,link[k]) for k in link)) for link in self.quiz.link_list)
 
     def add_side_menu(self):
         """ construct the left hand quiz menu """
@@ -538,8 +543,7 @@ class MakeMathQuiz(object):
                     quiz_list.write(quiz_specs)
                     quiz_list.write('MathQuizInit({},{});'.format(self.qTotal, self.dTotal))
             except Exception as err:
-                print('Error writing quiz specifications:\n {}.'.format(err))
-                sys.exit(err.errno)
+                MathQuizError('error writing quiz specifications', err)
 
         self.load_question = 1 if self.dTotal==0 else self.qTotal
         self.javascript += questions_javascript.format(

@@ -114,6 +114,7 @@ span.question_label {
 /* container for the quiz questions, answers and responses */
 div.quiz_questions{
   padding-top: 8px;
+  display: table;
 }
 div.quiz_header {
   padding-top: 12px;
@@ -138,7 +139,8 @@ div.quiz_header {
 
   span.arrows {
     color: $Subheading;
-    float: right;
+    position: fixed;
+    right: 5%;
     font-size: 12px;
     margin-right: 20px;
   }
@@ -275,7 +277,6 @@ div.button span {
 }
 div.button-selected {
   border: solid $ButtonSelected 2px !important;
-  color: $Heading !important;
 }
 div.button:hover {
   border: solid $ButtonHover 2px !important;
