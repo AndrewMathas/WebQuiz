@@ -18,7 +18,7 @@ r'''
 # -*- encoding: utf-8 -*-
 
 import sys, getopt
-import xml.sax 
+import xml.sax
 
 DEBUG = False
 if DEBUG:
@@ -251,7 +251,7 @@ class Quiz(Node):
 
   def broadcast(self,visitor):
     for node in self.question_list:
-      node.accept(visitor)  
+      node.accept(visitor)
 
   def __str__(self):
     s = 'Quiz: %s\n' % self.title
@@ -273,7 +273,7 @@ class Discussion(Node):
 
   def broadcast(self,visitor):
     for node in self.question_list:
-      node.accept(visitor)  
+      node.accept(visitor)
 
   def set_text(self,text):
     self.discussion=text.strip()
@@ -307,7 +307,7 @@ class Question(Node):
 class Choice(Node):
   """<!ELEMENT choice (item*)>
      <!ATTLIST choice type (single|multiple) #REQUIRED
-                           cols #CDATA       #REQUIRED 
+                           cols #CDATA       #REQUIRED
      >
   """
   def __init__(self,parent,type,cols):

@@ -26,7 +26,7 @@ var QuizSpecifications = new Array();
 
 // specification for the question buttons
 blank = {'marker': '',       'color': 'black',  'bg': '#FFF8DC' }
-cross = {'marker': '\u2718', 'color': 'red',    'bg': 'linear-gradient(to bottom right, white,  darkblue)' }
+cross = {'marker': '\u2718', 'color': 'red',    'bg': 'linear-gradient(to bottom right, white,  slateblue)' }
 star  = {'marker': '\u272D', 'color': 'yellow', 'bg': 'linear-gradient(to bottom right, yellow, green)' }
 tick  = {'marker': '\u2714', 'color': 'green',  'bg': 'linear-gradient(to bottom right, red, yellow)' }
 

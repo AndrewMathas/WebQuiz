@@ -111,14 +111,14 @@ def write_web_page(quiz):
       head_data_string =  quiz.javascript+initialise_SMS_Menus(quiz)+quiz.css,
       breadcrumbs_string = SMS_breadcrumbs(quiz),
       menu_string = sms_menu+quiz.side_menu,
-      page_body_string = quiz.quiz_header+quiz.page_body+'</div></div>,
+      page_body_string = quiz.quiz_header+quiz.page_body,
       nopreview = ''
   )
   for (key, value) in [('CODE','QUIZ'),
                        ('menuname', sms_menu_name),
                        ('pagetitle', quiz.title), ('title',''),
                        ('no-compmenu', 'y'),
-                       ('bodyonload', 'onload=""',
+                       ('bodyonload', 'onload=""'),
                        ('tablevel', 'internal' if quiz.quiz_file in ['mathquiz-manual','credits'] else '')]:
       page['UNIT_OF_STUDY,'+key] = value
   return sms_write_page(page, {}, quiz.course['url'], quiz.quiz_file+'.html;')[0]
