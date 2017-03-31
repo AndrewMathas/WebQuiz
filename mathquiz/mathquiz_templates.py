@@ -1,16 +1,18 @@
-r'''  MathQuiz.py | 2017 Version 5.0 | html template file
+r'''
+-----------------------------------------------------------------------
+    mathquiz_templates | html template file
+-----------------------------------------------------------------------
 
-#*****************************************************************************
-# Copyright (C) 2017 Andrew Mathas, University of Sydney
-#
-# Distributed under the terms of the GNU General Public License (GPL)
-#                  http://www.gnu.org/licenses/
-#
-# This file is part of the MathQuiz system.
-#
-# Copyright (C) 2004-2017 by the School of Mathematics and Statistics
-# <Andrew.Mathas@sydney.edu.au>
-#*****************************************************************************
+    Copyright (C) Andrew Mathas and Donald Taylor, University of Sydney
+
+    Distributed under the terms of the GNU General Public License (GPL)
+              http://www.gnu.org/licenses/
+
+    This file is part of the Math_quiz system.
+
+    <Andrew.Mathas@sydney.edu.au>
+    <Donald.Taylor@sydney.edu.au>
+----------------------------------------------------------------------
 '''
 
 # -*- encoding: utf-8 -*-
@@ -22,7 +24,7 @@ html_meta = r'''<meta name="generator" content="MathQuiz {version} (http://www.m
   <meta name="description" content="{description}">
   <meta name="authors" content="{authors}">
   <meta name="organization" content="School of Mathematics and Statistics, University of Sydney">
-  <meta name="Copyright" content="University of Sydney 2004-2017">
+  <meta name="Copyright" content="{copyright}">
   <meta name="keywords" content="mathquiz, TeX4ht, make4ht, latex, python, quiz, mathematics">
   <meta name="viewport" content="width=device-width">
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -205,4 +207,9 @@ no_script='''<noscript>
         JavaScript and then reload this page in order to use this quiz.
        </div>
     </noscript>'''
+
+# and now for the mathquiz help message
+mathquiz_help_message=r'''
+Mathquiz provides a way of writing on-line quizzes starting from a latex file.
+'''
 

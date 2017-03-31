@@ -1,27 +1,22 @@
 #!/usr/bin/env python3
 
-r"""  MathQuiz.py | 2001-03-21       | Don Taylor
-                    2004 Version 3   | Andrew Mathas
-                    2010 Version 4.5 | Updated and streamlined in many respects
-                    2012 Version 4.6 | Updated to use MathML
-                    2017 Version 5.0 | Updated to use MathJax
+r'''
+-----------------------------------------------------------------------------------------
+    mathquiz | Interactive on-line quizzes generated from LaTeX using python and TeX4ht
+-----------------------------------------------------------------------------------------
+    Copyright (C) Andrew Mathas and Donald Taylor, University of Sydney
 
-#*****************************************************************************
-# Copyright (C) 2004-2017 Andrew Mathas and Donald Taylor
-#                          University of Sydney
-#
-# Distributed under the terms of the GNU General Public License (GPL)
-#                  http://www.gnu.org/licenses/
-#
-# This file is part of the MathQuiz system.
-#
-# Copyright (C) 2004-2017 by the School of Mathematics and Statistics
-# <Andrew.Mathas@sydney.edu.au>
-# <Donald.Taylor@sydney.edu.au>
-#*****************************************************************************
-"""
+    Distributed under the terms of the GNU General Public License (GPL)
+                  http://www.gnu.org/licenses/
 
-# -----------------------------------------------------
+    This file is part of the Math_quiz system.
+
+    <Andrew.Mathas@sydney.edu.au>
+    <Donald.Taylor@sydney.edu.au>
+-----------------------------------------------------------------------------------------
+'''
+
+# ---------------------------------------------------------------------------------------
 import argparse
 import glob
 import shutil
@@ -32,11 +27,11 @@ import sys
 import mathquiz_xml
 from mathquiz_templates import *
 
-# ----------------------------------------------------
+# ---------------------------------------------------------------------------------------
 # Return the full path for a file in the mathquiz directory
 mathquiz_file = lambda file: os.path.join(os.path.dirname(os.path.realpath(__file__)),file)
 
-# ----------------------------------------------------
+# ---------------------------------------------------------------------------------------
 class MetaData(dict):
     r"""
     A dummy class for reading, accessing and storing key-value pairs from a file
@@ -75,13 +70,15 @@ def MathQuizError(msg, err=None):
         sys.exit(err.errno)
     sys.exit(1)
 
-# -----------------------------------------------------
+# ---------------------------------------------------------------------------------------
 def main():
     # read settings from the mathquizrc file
     settings = MathQuizSettings()
 
     # parse the command line options
-    parser = argparse.ArgumentParser(description=metadata.description)
+    parser = argparse.ArgumentParser(description = metadata.description,
+                                     epilog      = mathquiz_help_message
+    )
     parser.add_argument('quiz_file', nargs='*',type=str, default=None, help='latex quiz files')
 
     parser.add_argument('-u','--url', action='store', type=str, dest='MathQuizURL',
@@ -496,11 +493,13 @@ class MakeMathQuiz(object):
     def add_meta_data(self):
         """ add the meta data for the web page to self.header """
         # meta tags`
-        self.header += html_meta.format(version=metadata.version,
-                                        authors=metadata.authors,
-                                        MathQuizURL=self.MathQuizURL,
-                                        description=metadata.description,
-                                        quiz_file=self.quiz_file)
+        self.header += html_meta.format(version     = metadata.version,
+                                        authors     = metadata.authors,
+                                        MathQuizURL = self.MathQuizURL,
+                                        description = metadata.description,
+                                        copyright   = metadata.copyright,
+                                        quiz_file   = self.quiz_file)
+
         # we don't need any of the links or metas from the latex file
         # self.header += ''.join('  <meta {}>\n'.format(' '.join('{}="{}"'.format(k,meta[k]) for k in meta)) for meta in self.quiz.meta_list)
         # self.header += ''.join('  <link {}>\n'.format(' '.join('{}="{}"'.format(k,link[k]) for k in link)) for link in self.quiz.link_list)

@@ -1,22 +1,19 @@
-r"""  mathquizSMS.py | Version 5.0 | Andrew Mathas
-      2010 made "update" compatible by Bob Howlett
+r'''
+----------------------------------------------------------------------
+    mathquiz_sms | sms layout of mathquiz web pages.
+----------------------------------------------------------------------
 
-     Python configuration file for the mathquiz system. This
-     file controls the local components of the quiz page.
+    Copyright (C) Andrew Mathas and Donald Taylor, University of Sydney
 
-#*****************************************************************************
-#  Copyright (C) 2004-2017 Andrew Mathas
-#  University of Sydney
-#
-#  Distributed under the terms of the GNU General Public License (GPL)
-#                  http://www.gnu.org/licenses/
-#
-#  This file is part of the MathQuiz system.
-#
-#  Copyright (C) 2004-2017 by the School of Mathematics and Statistics
-#  <Andrew.Mathas@sydney.edu.au>
-#*****************************************************************************
-"""
+    Distributed under the terms of the GNU General Public License (GPL)
+                  http://www.gnu.org/licenses/
+
+    This file is part of the Math_quiz system.
+
+    <Andrew.Mathas@sydney.edu.au>
+    <Donald.Taylor@sydney.edu.au>
+#----------------------------------------------------------------------
+'''
 
 # -*- encoding: utf-8 -*-
 

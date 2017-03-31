@@ -12,6 +12,11 @@ Version 5.0:
     - better installation support
     - mathquizrc configuration file added
     - integrated diverging branches of the code and upgraded to use MathJax
+    - changed from using optionparser to argparse
+    - replace shell script with python front end
+    - proper version management control
+    - made compatible with setup tools
+    - export to ctan
 
 Version 4.6:
 ------------
@@ -19,12 +24,13 @@ Version 4.6:
 
 Version 4.5:
 ------------
-    - Updated and streamlined in many respects
+    - Updated and streamlined many aspects of the code
 
 Version 4.0:
 ------------
-    - separated out local page structure by wrint mathquizLocal and mathquizSMS,
-      the later of which calls writepagenew and Bob's web page updating code
+    - separated allowed default and localised versions for the quiz page payout
+      with the SMS versiion calling Bob Howlett's update programs to generate
+      the quiz web pages
 
 Version 3:
 ----------
@@ -35,14 +41,9 @@ Version 3:
 
 Versions 1 and 2:
 -----------------
-    - initial prototype by Don Taylor
+2001-03-21  Don Taylor -  initial prototype by Don Taylor
 
-=====
-To do
-=====
-
-#. Change from using OptionParser to ArgParse
-#. Replace shell script with python front end
-#. Proper version management control
-#. Make compatible with setup tools
+    - randomise order of questions (easy) and question parts (hard?)
+    - allow varibales in questions
+    - use vue (?) to render and control quiz pages
 

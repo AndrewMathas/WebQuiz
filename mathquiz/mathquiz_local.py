@@ -1,21 +1,19 @@
-r"""  mathquizLocal.py | 2017 Verion 5.0 | Andrew Mathas and Donald Taylor
+r'''
+-----------------------------------------------------------------------------
+    mathquiz_local | default layout of mathquiz web pages.
+-----------------------------------------------------------------------------
 
-     Specifie default printing of mathquiz web pages.
+    Copyright (C) Andrew Mathas and Donald Taylor, University of Sydney
 
-#*****************************************************************************
-#       Copyright (C) 2004-2017 Andrew Matha and Donald Taylor
-#                          Univerity of Sydney
-#
-#  Ditributed under the terms of the GNU General Public License (GPL)
-#                  http://www.gnu.org/licenes/
-#
-# Thi file is part of the MathQuiz system.
-#
-# Copyright (C) 2004-2012 by the School of Mathematic and Statistics
-# <Andrew.Matha@sydney.edu.au>
-# <Donald.Taylor@ydney.edu.au>
-#*****************************************************************************
-"""
+    Distributed under the terms of the GNU General Public License (GPL)
+                  http://www.gnu.org/licenses/
+
+    This file is part of the Math_quiz system.
+
+    <Andrew.Mathas@sydney.edu.au>
+    <Donald.Taylor@sydney.edu.au>
+-----------------------------------------------------------------------------
+'''
 
 # -*- encoding: utf-8 -*-
 

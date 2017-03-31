@@ -1,3 +1,18 @@
+-- -----------------------------------------------------------------------
+--   mathquiz.mk4 | mathquiz make4ht build file (not used)
+-- -----------------------------------------------------------------------
+--
+--   Copyright (C) Andrew Mathas and Donald Taylor, University of Sydney
+--
+--   Distributed under the terms of the GNU General Public License (GPL)
+--               http://www.gnu.org/licenses/
+--
+--   This file is part of the Math_quiz system.
+--
+--   <Andrew.Mathas@sydney.edu.au>
+--   <Donald.Taylor@sydney.edu.au>
+-- ----------------------------------------------------------------------
+
 -- http://tex.stackexchange.com/questions/260673/problem-with-pstricks-and-htlatex-tex4ht
 -- Use png for image processing except for pstricks, which will use svg
 

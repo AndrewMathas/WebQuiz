@@ -1,13 +1,17 @@
-%*****************************************************************************
-% Copyright (C) 2004-2017 Andrew Mathas, University of Sydney
+% -----------------------------------------------------------------------
+%   mathquiz.cls | mathquiz latex class file
+% -----------------------------------------------------------------------
 %
-% Distributed under the terms of the GNU General Public License (GPL)
-%                  http://www.gnu.org/licenses/
+%   Copyright (C) Andrew Mathas and Donald Taylor, University of Sydney
 %
-% This file is part of the MathQuiz system.
+%   Distributed under the terms of the GNU General Public License (GPL)
+%               http://www.gnu.org/licenses/
 %
-% <Andrew.Mathas@sydney.edu.au>
-%*****************************************************************************
+%   This file is part of the Math_quiz system.
+%
+%   <Andrew.Mathas@sydney.edu.au>
+%   <Donald.Taylor@sydney.edu.au>
+% ----------------------------------------------------------------------
 
 \NeedsTeXFormat{LaTeX2e}[1996/12/01]
 \ProvidesClass{mathquiz}
