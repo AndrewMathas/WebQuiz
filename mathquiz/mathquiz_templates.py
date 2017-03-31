@@ -52,6 +52,7 @@ side_menu = r'''<div class="side_menu">
         <br>{buttons}
       </div>
       <table class="marking_key">
+         <tr><td></td><td></td></tr>
          <tr><td style="color: #FFCC00; font-size:small;">&starf;</td><td>right first<br>attempt</td></tr>
          <tr><td style="color: green; font-size:medium;">&check;</td><td>right</td></tr>
          <tr><td style="color: red; font-size:medium;">&cross;</td><td>wrong</td></tr>

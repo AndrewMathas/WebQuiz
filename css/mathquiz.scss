@@ -99,14 +99,19 @@ div.side_menu {
   div.copyright A{
     text-decoration: none;
   }
-
-  table.marking_key {
-    padding-top: 10px;
-    margin-left: 6px;
-  }
-
 }
 
+table.marking_key {
+  margin-left: 2px;
+}
+
+table.marking_key > tr td {
+  padding-right: 2px !important;
+}
+
+div question table tr td {
+
+}
 span.question_label {
   color: $Subheading;
   font-size: 12px;
