@@ -35,7 +35,7 @@ html_meta = r'''<meta name="generator" content="MathQuiz {version} (http://www.m
 # javascript for setting up the questions
 questions_javascript = r'''  <script type="text/javascript" src="{MathQuizURL}/mathquiz.js"></script>
   <script type="text/javascript" src="quiztitles.js"></script>
-  <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=MML_CHTML"></script>
+  <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML-full"></script>
   <script type="text/javascript">MathQuizInit({qTotal}, {dTotal}, '{quiz_file}');</script>'''
 
 bread_crumbs = r'''<div class="bread_crumbs">
@@ -82,7 +82,7 @@ navigation_arrows='''<span class="arrows">
       </span>'''
 
 # discussion item
-discussion='''     <div id="question-{dnum}" class="question" {display}><h2>{discussion.heading}</h2>
+discussion='''     <div id="question-{dnum}" class="question" {display}>
         <p>{discussion.discussion}</p>{input_button}
       </div>
 '''

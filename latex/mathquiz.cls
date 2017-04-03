@@ -17,6 +17,15 @@
 \ProvidesClass{mathquiz}
   [2017/03/21 v5.0
   MathQuiz LaTeX document class (based on article.cls)]
+
+\DeclareOption{pst2pdf}{
+   % this option tells mathquiz to use pst2pdf
+   \ifdefined\HCode\else
+     \AtBeginDocument{\textsc{MathQuiz} will process this quiz using \textbf{pst2pdf}.}
+   \fi
+}
+
+
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
 \PassOptionsToClass{a4paper}{article}
 \ProcessOptions\relax
@@ -47,6 +56,7 @@
 \UnitName{Unit name???}
 \UnitURL{Unit URL???}
 \QuizzesURL{Quizzes URL???}
+\BreadCrumb{Crumbs???}
 \def\@title{No title}
 \def\ps@quiz{\ps@empty
   \def\@oddhead{\hbox to\textwidth{%

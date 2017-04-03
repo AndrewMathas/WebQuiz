@@ -439,6 +439,16 @@ class MakeMathQuiz(object):
         # as we may need to preprocess quiz_file with pst2pdf we allow ourselves to change it name
         q_file = self.quiz_file
 
+        # set pst2pdf = True if pst2pdf is given as an option to the mathquiz documentclass
+        with open(self.quiz_file+'.tex', 'r') as quiz_file:
+            doc = quiz_file.read()
+        try:
+            brac = doc.index(r'\documentclass[') + 15 # start of class options
+            if 'pst2pdf' in [ opt.strip() for opt in doc[brac:brac+doc[brac:].index(']')].split(',')]:
+                self.options.pst2pdf = True
+        except ValueError:
+            pass
+
         # preprocess the latex file with pst2pdf if requested
         if self.options.pst2pdf:
             talk('Preprocessing {} with pst2pdsf'.format(q_file))
@@ -525,39 +535,41 @@ class MakeMathQuiz(object):
         self.side_menu = side_menu.format(discussion_list=discussion_list, buttons=buttons, version=metadata.version)
 
     def add_question_javascript(self):
-        """ add the javascript for the questions to self """
-        if len(self.quiz.discussion_list)==0: currentQ='1'
-        else: currentQ='-1     // start showing discussion'
+        """ Add the javascript for the questions to self and write the
+        javascript initialisation file, <quiz>/quiz_list.js, for the quiz.
+        When the quiz page load, MathQuizInit read the quiz_list initialisation
+        file to load the answers to ythe question and tyhe discussino item
+        headers. We don't explsit list quiz_list.js in the page headers
+        because we want to hide this information from the stduent, although
+        they can easily get this if they open by the javascript console and
+        know what to look for.
+        """
 
-        if self.qTotal >0:
-            i=0
-            quiz_specs=''
-            for (i,q) in enumerate(self.quiz.question_list):
-              quiz_specs += 'QuizSpecifications[%d]=new Array();\n' % i
-              a = q.answer
-              if isinstance(a,mathquiz_xml.Answer):
-                quiz_specs +='QuizSpecifications[%d].value="%s";\n' % (i,a.value)
-                quiz_specs += 'QuizSpecifications[%d].type="input";\n' % i
-              else:
-                quiz_specs += 'QuizSpecifications[%d].type="%s";\n' % (i,a.type)
-                quiz_specs += '\n'.join('QuizSpecifications[%d][%d]=%s;' % (i,j,s.expect) for (j,s) in enumerate(a.item_list))
-              quiz_specs+='\n\n'
+        try:
+            os.makedirs(self.quiz_file, exist_ok=True)
+            with open(os.path.join(self.quiz_file,'quiz_list.js'), 'w') as quiz_list:
+                if self.qTotal>0:
+                    for (i,d) in enumerate(self.quiz.discussion_list):
+                        quiz_list.write('Discussion[{}]="{}";\n'.format(i,d.heading))
+                if self.qTotal >0:
+                    for (i,q) in enumerate(self.quiz.question_list):
+                        quiz_list.write('QuizSpecifications[%d]=new Array();\n' % i)
+                        a = q.answer
+                        if isinstance(a,mathquiz_xml.Answer):
+                             quiz_list.write('QuizSpecifications[%d].value="%s";\n' % (i,a.value))
+                             quiz_list.write('QuizSpecifications[%d].type="input";\n' % i)
+                        else:
+                             quiz_list.write('QuizSpecifications[%d].type="%s";\n' % (i,a.type))
+                             quiz_list.write(''.join('QuizSpecifications[%d][%d]=%s;\n' % (i,j,s.expect) for (j,s) in enumerate(a.item_list)))
 
-            try:
-                os.makedirs(self.quiz_file, exist_ok=True)
-                with open(os.path.join(self.quiz_file,'quiz_list.js'), 'w') as quiz_list:
-                    quiz_list.write(quiz_specs)
-                    quiz_list.write('MathQuizInit({},{});'.format(self.qTotal, self.dTotal))
-            except Exception as err:
-                MathQuizError('error writing quiz specifications', err)
+        except Exception as err:
+            MathQuizError('error writing quiz specifications', err)
 
-        self.load_question = 1 if self.dTotal==0 else self.qTotal
         self.javascript += questions_javascript.format(
                                 MathQuizURL = self.MathQuizURL,
                                 qTotal = self.qTotal,
                                 dTotal = self.dTotal,
                                 quiz_file = self.quiz_file,
-                                currentQ = currentQ
         )
 
     def add_page_body(self):
@@ -572,7 +584,7 @@ class MakeMathQuiz(object):
         # specify the quiz header - this will be wrapped in <div class="question_header>...</div>
         self.quiz_header=quiz_header.format(title=self.title,
                                       initialise_warning=initialise_warning if self.options.initialise_warning else '',
-                                      question_number='Discussion' if len(self.quiz.discussion_list)>0 else
+                                      question_number=self.quiz.discussion_list[0].heading if len(self.quiz.discussion_list)>0 else
                                                       'Question 1' if len(self.quiz.question_list)>0 else '',
                                       arrows = arrows
         )
@@ -584,7 +596,7 @@ class MakeMathQuiz(object):
           for d in self.quiz.discussion_list:
             dnum+=1
             self.page_body+=discussion.format(dnum=dnum, discussion=d,
-                               display='style="display: block;"' if dnum==1 else '',
+                               display='style="display: table;"' if dnum==1 else '',
                                input_button=input_button if len(self.quiz.question_list)>0 and dnum==len(self.quiz.discussion_list) else '')
 
         # index for quiz
@@ -603,7 +615,7 @@ class MakeMathQuiz(object):
         # finally we print the quesions
         if len(self.quiz.question_list)>0:
           self.page_body+=''.join(question_wrapper.format(qnum=qnum+1,
-                                                display='style="display: block;"' if qnum==0 and len(self.quiz.discussion_list)==0 else '',
+                                                display='style="display: table;"' if qnum==0 and len(self.quiz.discussion_list)==0 else '',
                                                 question=self.print_question(q,qnum+1),
                                                 response=self.print_responses(q,qnum+1))
                                 for (qnum,q) in enumerate(self.quiz.question_list)
