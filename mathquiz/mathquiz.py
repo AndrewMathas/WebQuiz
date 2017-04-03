@@ -643,17 +643,16 @@ class MakeMathQuiz(object):
         to add '<tr>' and '</tr>' tags depending on choice.
         '''
         ans = answers[choice]
-        item='<tr>' if ans.parent.cols==1 or (choice % ans.parent.cols)==0 else '<td>&nbsp;</td>'
-        item+= '<td class="brown" >%s)</td>' % alphabet[choice]
+        item  ='<tr>' if ans.parent.cols==1 or (choice % ans.parent.cols)==0 else '<td>&nbsp;</td>'
         if ans.parent.type == 'single':
-            item+=single_item.format(qnum=qnum, answer=ans.answer)
+            item+=single_item.format(choice=alphabet[choice], qnum=qnum, answer=ans.answer)
         elif ans.parent.type == 'multiple':
-            item+=multiple_item.format(qnum=qnum, optnum=choice, answer=ans.answer)
+            item+=multiple_item.format(choice=alphabet[choice], qnum=qnum, optnum=choice, answer=ans.answer)
         else:
             item+= '<!-- internal error: %s -->\n' % ans.parent.type
             sys.stderr.write('Unknown question type encountered: {}'.format(ans.parent.type))
-        if (choice % ans.parent.cols) == 1 or (choice+1) % ans.parent.cols == 0 or choice == len(answers)-1:
-            item+= '   </tr>\n'
+        if ans.parent.cols == 1 or (choice+1) % ans.parent.cols == 0 or choice == len(answers)-1:
+            item+= '   </tr><!-- choice={}, cols={}, # answers = {} -->\n'.format(choice, ans.parent.cols, len(answers))
         return item
 
     def print_responses(self,question,qnum):
@@ -663,8 +662,8 @@ class MakeMathQuiz(object):
         '''
         if isinstance(question.answer,mathquiz_xml.Answer):
             s = question.answer
-            response=tf_response_text.format(choice=qnum, response='true', answer='Correct!', text=s.when_true if s.when_true else '')
-            response+=tf_response_text.format(choice=qnum, response='false', answer='Incorrect. Please try again.', text=s.when_false if s.when_false else '')
+            response  = tf_response_text.format(choice=qnum, response='true', answer='Correct!', answer2='', text=s.when_true)
+            response += tf_response_text.format(choice=qnum, response='false', answer='Incorrect.', answer2='Please try again.', text=s.when_false)
         elif question.answer.type == "single":
             response='\n'+'\n'.join(single_response.format(qnum=qnum, part=snum+1,
                                                       answer='correct! ' if s.expect=='true' else 'incorrect ',

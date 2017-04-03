@@ -114,14 +114,14 @@ question_text='''  {question}
 '''
 
 # Questions and responses:
-input_answer='<input type="text"  onChange="checkanswer();" size="5"/> {tag}'
+input_answer='<input type="text"  onChange="checkAnswer();" size="5"/> {tag}'
 choice_answer='<table class="question_choices">{choices}</table>{hidden}'
 input_single='\n<input type="hidden" name="Q{qnum}hidden"/>'
 
-single_item='<td><input type="radio" name="Q{qnum}option"/></td><td><div class="question_choices">{answer}</div></td>'
-multiple_item='<td><input type="checkbox" name="Q{qnum}option{optnum}"/></td><td><div class="question_choices">{answer}</div></td>'
+single_item='<td><input type="radio" name="Q{qnum}option"/></td><td class="brown" >{choice})</td><td><div class="question_choices">{answer}</div></td>\n'
+multiple_item='<td><input type="checkbox" name="Q{qnum}option{optnum}"/></td><td class="brown" >{choice})</td><td><div class="question_choices">{answer}</div></td>\n'
 
-tf_response_text='''        <div id="q{choice}{response}" class="response"><em>{answer}</em>
+tf_response_text='''        <div id="q{choice}{response}" class="response"><em class="dazzle">{answer}</em> <em>{answer2}</em>
            <div>{text}</div>
         </div>'''
 single_response='''        <div id="q{qnum}response{part}" class="response">

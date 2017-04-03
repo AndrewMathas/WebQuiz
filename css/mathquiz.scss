@@ -192,7 +192,11 @@ div.question_choices {
   text-align: left;
 }
 table.question_choices td {
-  padding-top:7px;
+  padding-right: 0;
+  vertical-align: baseline;
+}
+table.question_choices td:nth-child(3n+1) {
+  padding-right: 6px;
 }
 td.brown {
   color: $QuestionPart;
@@ -201,7 +205,6 @@ td.brown {
 div.question {
   display: none;
   margin: 0;
-  padding: 0ex 0ex 20ex 0ex;
   z-index: 0;
 }
 form.question {
