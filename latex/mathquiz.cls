@@ -55,7 +55,7 @@
 \UnitCode{Unit code???}
 \UnitName{Unit name???}
 \UnitURL{Unit URL???}
-\QuizzesURL{Quizzes URL???}
+\QuizzesURL{}
 \BreadCrumb{Crumbs???}
 \def\@title{No title}
 \def\ps@quiz{\ps@empty
@@ -87,8 +87,10 @@
   \MQ@error{\@backslashchar title can only be used in the preamble}%
   \@ehc}
 }
-\ifx\MQ@quizzesUrl\@empty\QuizzesURL{\uos@url/Quizzes/}\else\relax\fi%
-\AtBeginDocument{\maketitle}
+\AtBeginDocument{%
+  \maketitle%
+  \ifx\MQ@quizzesUrl\@empty\QuizzesURL{\uos@url/Quizzes/}\else\relax\fi%
+}
 \newcounter{quiz}
 \newcommand{\quiz}[2][\relax]{\refstepcounter{quiz}%
   \ifx#1\relax\def\MQ@url{./quiz\thequiz.html}%
