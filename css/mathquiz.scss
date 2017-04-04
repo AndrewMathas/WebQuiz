@@ -186,6 +186,17 @@ div.quiz_list {
     }
 }
 
+
+/* specifications for the divs containing questions, answers and responses */
+div.question {
+  position: relative;
+  display: none;
+  margin: 0;
+  z-index: 0;
+}
+form.question {
+  padding-top:20px;
+}
 div.question_choices {
   padding-left:10px;
   padding-right:15px;
@@ -201,16 +212,6 @@ table.question_choices td:nth-child(3n+1) {
 td.brown {
   color: $QuestionPart;
 }
-/* specifications for the divs containing questions, answers and responses */
-div.question {
-  display: none;
-  margin: 0;
-  z-index: 0;
-}
-form.question {
-  padding-top:20px;
-}
-
 div.answer{
 }
 div.response {

@@ -43,7 +43,13 @@ Versions 1 and 2:
 -----------------
 2001-03-21  Don Taylor -  initial prototype by Don Taylor
 
+
+To do
+------
     - randomise order of questions (easy) and question parts (hard?)
-    - allow varibales in questions
-    - use vue (?) to render and control quiz pages
+    - allow variables in questions
+    - (?) allow vertical/horizontal/none customisations of question buttons
+    - (?) record marks of students...would need a interface for login details etc
+    - (?) use vue to render and control quiz pages
+    - (?) allow user configuration rather than just system configuration
 

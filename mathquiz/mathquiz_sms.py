@@ -21,12 +21,10 @@ r'''
 from mathquiz_templates import no_script
 from wp import processtemplate as sms_write_page
 
-sms_javascript=''' <link rel="stylesheet" href="/u/SMS/web2015/styles/SMS-mq.css" type="text/css">
-  <script type="text/javascript">var QuizURI="{}Quizzes";var QuizContents="{}";</script>
-'''
-index_javascript ="""  <script type="text/javascript" src="/u/SMS/web2010/js/ResearchSubmenu.js"></script>
-  <script type="text/javascript" src="/u/SMS/web2010/js/QSubmenu.js"></script>
-"""
+sms_quiz_specifications = '  <script type="text/javascript">var QuizURI="{}Quizzes";var QuizContents="{}";</script>\n'
+sms_research_menu  = '  <script type="text/javascript" src="/u/SMS/web2010/js/ResearchSubmenu.js"></script>\n'
+sms_qsubmenu = '  <script type="text/javascript" src="/u/SMS/web2010/js/QSubmenu.js"></script>\n'
+sms_course_qsubmenu = '  <script type="text/javascript" src="/u/SMS/web2010/js/CourseQSubmenu.js"></script>\n'
 
 nav_menu = r"""  <ul class="navmenu">
     <li>
@@ -42,13 +40,14 @@ def initialise_SMS_Menus(quiz):
     content="MATH100{0}/190{0}<br/>Quizzes".format(quiz.course['code'][-1])
   else:
     content="%s Quizzes" % quiz.course['code']
-  hd=sms_javascript.format(quiz.course['url'],content)
+  hd=sms_quiz_specifications.format(quiz.course['url'],content)
   if quiz.quiz_file=="index":
-    hd += index_javascript
+    hd += sms_research_menu+sms_qsubmenu
   elif quiz.quiz_file in [ 'mathquiz-manual','credits']:
-    hd += '  <script type="text/javascript" src="/u/SMS/web2010/js/QSubmenu.js"></script>\n'
+    hd += sms_qsubmenu
   else:
-    hd += '  <script type="text/javascript" src="/u/SMS/web2010/js/CourseQSubmenu.js"></script>\n'
+    hd += sms_course_qsubmenu
+
   return hd
 
 # breadcrumbs line

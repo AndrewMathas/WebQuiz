@@ -70,7 +70,7 @@ function showQuestion(newQ) { // newQ is an integer which is always in the corre
     document.getElementById('button'+currentQ).classList.remove('button-selected');
   }
   // display the new question and then set currentQ = new Q
-  document.getElementById('question'+newQ).style.display = 'table';
+  document.getElementById('question'+newQ).style.display = 'block';
   if (newQ>0) {
     document.getElementById('button'+newQ).classList.add('button-selected');
     document.getElementById('question_number').innerHTML = 'Question '+newQ;
