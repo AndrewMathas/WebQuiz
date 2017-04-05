@@ -20,14 +20,14 @@ r'''
 ## The quiz web pages are built using the following "template" strings
 
 # html meta statements
-html_meta = r'''<meta name="generator" content="MathQuiz {version} (http://www.maths.usyd.edu.au/u/MOW/MathQuiz/doc/mathquiz-manual.html)">
+html_meta = r'''  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width">
+  <meta name="generator" content="MathQuiz {version} (http://www.maths.usyd.edu.au/u/MOW/MathQuiz/doc/mathquiz-manual.html)">
   <meta name="description" content="{description}">
   <meta name="authors" content="{authors}">
   <meta name="organization" content="School of Mathematics and Statistics, University of Sydney">
   <meta name="Copyright" content="{copyright}">
   <meta name="keywords" content="mathquiz, TeX4ht, make4ht, latex, python, quiz, mathematics">
-  <meta name="viewport" content="width=device-width">
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <link href="{MathQuizURL}/mathquiz.css" type="text/css" rel="stylesheet">
   <link href="{quiz_file}/{quiz_file}.css" type="text/css" rel="stylesheet">
 '''
@@ -35,18 +35,18 @@ html_meta = r'''<meta name="generator" content="MathQuiz {version} (http://www.m
 # javascript for setting up the questions
 questions_javascript = r'''  <script type="text/javascript" src="{MathQuizURL}/mathquiz.js"></script>
   <script type="text/javascript" src="quiztitles.js"></script>
-  <script type="text/javascript" src="{mathjax}?config=MML_CHTML"></script>
+  <script type="text/javascript" src="{mathjax}/MathJax.js?config=MML_CHTML"></script>
   <script type="text/javascript">MathQuizInit({qTotal}, {dTotal}, '{quiz_file}');</script>
 '''
 
-mathjax = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js'
+mathjax = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/'
 
 bread_crumbs = r'''<div class="bread_crumbs">
     <a href="{url}">{code}</a> / <a href="{url}">Quizzes</a> / {title}
   </div>'''
 
 # question buttons
-button  = r'        <div id="button{b}" class="button{cls}" content="" onClick="gotoQuestion({b})">{b}</div>'
+button  = r'        <div id="button{b}" class="button{cls}" content=" " onClick="gotoQuestion({b})">{b}</div>'
 discuss = r'        <li class="discussion" onClick="gotoQuestion(-{b})">{title}</li>'
 side_menu = r'''<div class="side_menu">
       <div>MathQuiz</div>{discussion_list}
@@ -118,7 +118,7 @@ question_text='''  {question}
 
 # Questions and responses:
 input_answer='<input type="text"  onChange="checkAnswer();" size="5"/> {tag}'
-choice_answer='<table class="question_choices">{choices}</table>{hidden}'
+choice_answer='<table class="question_choices">{choices}</table>'
 input_single='\n<input type="hidden" name="Q{qnum}hidden"/>'
 
 single_item='<td><input type="radio" name="Q{qnum}option"/></td><td class="brown" >{choice})</td><td><div class="question_choices">{answer}</div></td>\n'

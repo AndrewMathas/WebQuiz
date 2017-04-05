@@ -67,7 +67,7 @@ def MathQuizError(msg, err=None):
         print('MathQuiz error: {}'.format(msg))
     else:
         print('MathQuiz error: {}\n  {}'.format(msg, err))
-    if metadata.debugging:
+    if metadata.debugging and err is not None:
         raise
     if hasattr(err, 'errno'):
         sys.exit(err.errno)
@@ -111,9 +111,8 @@ def main():
     options      = parser.parse_args()
     options.prog = parser.prog
 
-    # check for debugging mode
-    if options.debugging:
-        metadata.debugging = True
+    # set debugging mode from options
+    metadata.debugging = options.debugging
 
     # initialise and exit
     if options.initialise:
@@ -510,7 +509,9 @@ class MakeMathQuiz(object):
         '''
         try:
             # read in the xml version of the quiz
-            self.quiz = mathquiz_xml.ReadXMLTree(self.quiz_file+'.xml')
+            if not os.path.isfile(self.quiz_file+'.xml'):
+                MathQuizError('{}.xml does not exist!?'.format(self.quiz_file))
+            self.quiz = mathquiz_xml.ReadMathQuizXmlFile(self.quiz_file+'.xml', self.options.debugging)
         except Exception as err:
             MathQuizError('error reading the xml generated for {}. Please check your latex source.'.format(self.quiz_file), err)
 
@@ -637,8 +638,8 @@ class MakeMathQuiz(object):
         if isinstance(Q.answer,mathquiz_xml.Answer):
             options=input_answer.format(tag=Q.answer.tag if Q.answer.tag else '')
         else:
-            options=choice_answer.format(choices='\n'.join(self.print_choices(Qnum, Q.answer.item_list, choice) for choice in range(len(Q.answer.item_list))),
-                                         hidden=input_single.format(qnum=Qnum) if Q.answer.type=="single" else '')
+            options=choice_answer.format(choices='\n'.join(self.print_choices(Qnum, Q.answer.item_list, choice) for choice in range(len(Q.answer.item_list))))
+                                        #hidden=input_single.format(qnum=Qnum) if Q.answer.type=="single" else '')
         return question_text.format(qnum=Qnum, question=Q.question, questionOptions=options)
 
     def print_choices(self, qnum, answers, choice):

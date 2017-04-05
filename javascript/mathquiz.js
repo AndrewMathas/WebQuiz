@@ -69,7 +69,7 @@ function showQuestion(newQ) { // newQ is an integer which is always in the corre
   if (currentQ>0) {
     document.getElementById('button'+currentQ).classList.remove('button-selected');
   }
-  // display the new question and then set currentQ = new Q
+  // display the new question and then set currentQ = newQ
   document.getElementById('question'+newQ).style.display = 'block';
   if (newQ>0) {
     document.getElementById('button'+newQ).classList.add('button-selected');

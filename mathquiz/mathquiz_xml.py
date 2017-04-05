@@ -21,12 +21,9 @@ import sys, getopt
 import xml.sax
 
 DEBUG = False
-if DEBUG:
-    def Debugging(*arg):
-        sys.stderr.write(' '.join('%s' % a for a in arg)+'\n')
-else:
-    def Debugging(*arg):
-        pass
+def Debugging(*arg):
+    if DEBUG:
+        sys.stderr.write('ReadMathQuizXmlFile: '+' '.join('%s' % a for a in arg)+'\n')
 
 def strval(ustr):
   if type(ustr) == type(u''):
@@ -37,7 +34,10 @@ def strval(ustr):
     str = ustr
   return str
 
-def ReadXMLTree(quizfile):
+def ReadMathQuizXmlFile(quizfile, debugging):
+    global DEBUG
+
+    DEBUG = debugging
     parser = xml.sax.make_parser()
     quiz = QuizHandler()
     parser.setContentHandler(quiz)
@@ -216,10 +216,14 @@ class QuizHandler(xml.sax.ContentHandler):
 # defaults to None
 
 class Node(object):
-  def __init__(self,parent = None):
+  def __init__(self, parent = None):
     self.parent = parent
-    self.meta_list = []
+    self.course=dict(name='', code='', url='', quizzes='', department='', university='')
+    self.discussion_list = []
     self.link_list = []
+    self.meta_list = []
+    self.question_list = []
+    self.quiz_list = []
     Debugging('Node: class={}, parent={}'.format(self.__class__.__name__,
         parent.__class__.__name__ if parent else ''))
 
@@ -239,12 +243,6 @@ class Quiz(Node):
   """
   def __init__(self):
     Node.__init__(self)
-    self.course=dict(name='', code='', url='', quizzes='', department='', university='')
-    self.discussion_list = []
-    self.link_list = []
-    self.meta_list = []
-    self.question_list = []
-    self.quiz_list = []
 
   def accept(self,visitor):
     visitor.for_quiz(self)
