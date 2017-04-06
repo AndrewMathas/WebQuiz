@@ -54,6 +54,7 @@ side_menu = r'''<div class="side_menu">
         <span class="question_label">&nbsp;Questions&nbsp;</span>
         <br>{buttons}
       </div>
+      <div></div>
       <table class="marking_key">
          <tr><td></td><td></td></tr>
          <tr><td style="color: #FFCC00; font-size:small;">&starf;</td><td>right first<br>attempt</td></tr>

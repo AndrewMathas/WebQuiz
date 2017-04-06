@@ -120,7 +120,8 @@ span.question_label {
 /* container for the quiz questions, answers and responses */
 div.quiz_questions{
   padding-top: 8px;
-  display: table;
+  display: block;
+  position: relative;
   min-width: 600px;
 }
 div.quiz_header {

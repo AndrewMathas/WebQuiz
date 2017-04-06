@@ -111,7 +111,8 @@ class MathQuizCtan(build_py):
                                    ('mathquiz/mathquiz.ini', 'scripts/mathquiz'),
                                    ('javascript/mathquiz.js', 'scripts/mathquiz/www'),
                                    ('css/mathquiz.css', 'scripts/mathquiz/www'),
-                                   ('doc/mathquiz-manual.tex', 'scripts/mathquiz/www/doc'),
+                                   ('doc/*.tex', 'scripts/mathquiz/www/doc'),
+                                   ('doc/*.pdf', 'scripts/mathquiz/www/doc'),
                                    ('LICENCE', 'scripts'),
                                   ]:
                 for file in glob.glob(src):
