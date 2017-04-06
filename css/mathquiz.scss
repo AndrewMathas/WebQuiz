@@ -21,7 +21,7 @@
   $ButtonBorder:   #F2BB66;
   $ButtonHover:    #5B2C6F;
   $ButtonSelected: #B33C00;
-  $Dazzle:         #FF9900;
+  $Dazzle:         #FF1A1A;
   $Heading:        #CE1126;
   $QuestionPart:   #CC3300;
   $ResponseBG:     #E9E0D8;
@@ -180,6 +180,10 @@ div.quiz_list {
             padding-left: 0;
             padding-right: 1ex;
         }
+        li {
+          list-style-image: none !important;
+          overflow: visible;
+        }
         li:hover {
             color: $Subheading;
         }
@@ -193,6 +197,18 @@ div.question {
   display: none;
   margin: 0;
   z-index: 0;
+
+  form {
+    padding: 10px 0 0 0;
+
+    table tr {
+      vertical-align: top;
+
+      td {
+        vertical-align: top;
+      }
+    }
+  }
 }
 div.question_choices {
   padding-left:10px;
@@ -227,17 +243,20 @@ div.response {
 
     counter-reset: list;
     list-style-type: none;
+    margin: 0;
+    padding: 0 !important;
 
     li:before {
       color: $QuestionPart;
-      content: counter(list, lower-latin) ")";
+      content: counter(list, lower-latin) ") ";
       counter-increment: list;
-      padding-right: 1ex;
+      padding: 0 0 0 0;
     }
 
     li {
       text-align: left;
       color: $Text;
+      padding-right: 2em;
 
       em {
           color: $Dazzle;

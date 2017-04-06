@@ -101,22 +101,23 @@ function nextQuestion (increment) {
   if ( currentQ<0 ) {
     if ( increment==1 ) gotoQuestion(1);
     else gotoQuestion(qTotal);
-  }
-  var q = currentQ ;
-  do {
-    q=q+increment;
-    if (q==0) q=qTotal;
-    else if (q>qTotal) q=1;
-  } while (q!=currentQ && correct[q-1] );
-  if (q==currentQ)
-    alert("There are no more unanswered questions");
-  else {
-    if ( increment==1 ) {
-      self.status = 'Question '+q+' is the next unanswered question';
-    } else {
-      self.status = 'Question '+q+' was the last unanswered question';
+  } else {
+    var q = currentQ ;
+    do {
+      q=q+increment;
+      if (q==0) q=qTotal;
+      else if (q>qTotal) q=1;
+    } while (q!=currentQ && correct[q-1] );
+    if (q==currentQ)
+      alert("There are no more unanswered questions");
+    else {
+      if ( increment==1 ) {
+        self.status = 'Question '+q+' is the next unanswered question';
+      } else {
+        self.status = 'Question '+q+' was the last unanswered question';
+      }
+      gotoQuestion( q );
     }
-    gotoQuestion( q );
   }
 }
 

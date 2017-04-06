@@ -35,7 +35,7 @@ html_meta = r'''  <meta http-equiv="Content-Type" content="text/html; charset=ut
 # javascript for setting up the questions
 questions_javascript = r'''  <script type="text/javascript" src="{MathQuizURL}/mathquiz.js"></script>
   <script type="text/javascript" src="quiztitles.js"></script>
-  <script type="text/javascript" src="{mathjax}/MathJax.js?config=MML_CHTML"></script>
+  <script type="text/javascript" src="{mathjax}?config=MML_CHTML"></script>
   <script type="text/javascript">MathQuizInit({qTotal}, {dTotal}, '{quiz_file}');</script>
 '''
 

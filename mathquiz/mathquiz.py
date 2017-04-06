@@ -19,8 +19,9 @@ r'''
 # ---------------------------------------------------------------------------------------
 import argparse
 import glob
-import shutil
 import os
+import re
+import shutil
 import subprocess
 import sys
 
@@ -469,7 +470,7 @@ class MakeMathQuiz(object):
                 else:
                     MathQuizError('error running pst2pdf on {}'.format(q_file), err)
 
-            import re
+            # match \includegraphics commands
             fix_svg = re.compile(r'(\\includegraphics\[scale=1\])\{('+ q_file+r'-fig-[0-9]*)\}')
             # the svg images are in the q_file subdirectory but latex can't
             # find them so we update the tex file to look in the right place
@@ -481,26 +482,46 @@ class MakeMathQuiz(object):
                         for line in pst_file:
                             pst_fixed.write(fix_svg.sub(r'\1{%s/\2.svg}'%self.quiz_file, line))
             except IOError as err:
-                print('There was an error concerting the output from pst2pdf for {}\n  {}.\n'.format(q_file, err))
+                MathQuizError('there was an problem running pst2pdf for {}'.format(q_file), err)
 
             q_file = q_file + '-pdf-fixed'
 
-        talk('Processing {}.tex with TeX4ht'.format(q_file))
-
         try:
+            talk('Processing {}.tex with TeX4ht'.format(q_file))
             cmd='make4ht --utf8 --config mathquiz.cfg {build} {q_file}.tex'.format(
                             q_file    = q_file,
                             build     = '--build-file {} '.format(self.options.mathquiz_mk4) if self.options.mathquiz_mk4 !='' else ''
             )
             run(cmd)
 
-            # htlatex generates an html file, so we rename this as an xml file
-            shutil.move(q_file+'.html', self.quiz_file+'.xml')
+            # move the css file into the quiz_file subdirectory
             if os.path.exists(q_file+'.css'):
                 shutil.move(q_file+'.css', os.path.join(self.quiz_file, self.quiz_file+'.css'))
 
+            # Now move any images that were created into the quiz_file
+            # subdirectory and update the links in the html file As htlatex
+            # generates an html file, we rename this as an xml file at the same
+            # time - in the cfg file, \Preamable{ext=xml} should lead to an xml
+            # file being created but this doesn't seem to work ??
+            try:
+                fix_img = re.compile(r'^src="('+q_file+r'[0-9]*x\....)" (alt="PIC" .*)$')
+                with open(q_file+'.html','r') as make4ht_file:
+                    with open(self.quiz_file+'.xml', 'w') as xml_file:
+                        for line in make4ht_file:
+                            match = fix_img.match(line)
+                            if match is None:
+                                xml_file.write(line)
+                            else:
+                                # update html link and move file
+                                image, rest_of_line = match.groups()
+                                xml_file.write(r'src="{}/{}" {}'.format(self.quiz_file, image, rest_of_line))
+                                shutil.move(image, os.path.join(self.quiz_file, image))
+
+            except IOError as err:
+                MathQuizError('there was a problem moving the image files for {}'.format(self.quiz_file), err)
+
         except Exception as err:
-            MathQuizError('error running htlatex on {}'.format(self.quiz_file), err)
+            MathQuizError('something whent wrong when running htlatex on {}'.format(self.quiz_file), err)
 
     def read_xml_file(self):
         r'''
