@@ -34,12 +34,14 @@
 \RequirePackage{bbding}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{10pt}
-\newcommand*{\University}[1]{\def\MQ@university{#1}}
+\newcommand*{\DepartmentURL}[1]{\def\MQ@depturl{#1}}
 \newcommand*{\Department}[1]{\def\MQ@department{#1}}
-\newcommand*{\CopyrightNotice}[1]{\def\MQ@copyright{#1}}
-\University{The University of Sydney}
+\newcommand*{\UniversityURL}[1]{\def\MQ@uniurl{#1}}
+\newcommand*{\University}[1]{\def\MQ@university{#1}}
 \Department{School of Mathematics and Statistics}
-\CopyrightNotice{\the\year{} \MQ@university}
+\DepartmentURL{/}
+\University{University of Sydney}
+\UniversityURL{https://www.sydney.edu.au}
 
 % set the quiz filename for use below -- can set by mathquiz
 \ifdefined\MQ@quizfile\relax\else\xdef\MQ@quizfile{\jobname.tex}\fi

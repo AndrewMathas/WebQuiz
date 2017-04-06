@@ -145,6 +145,13 @@ class QuizHandler(xml.sax.ContentHandler):
     '''
     self.position.course={ k: attrs.get(k) for k in attrs.keys() }
 
+  def school_start( self, attrs ):
+    r'''
+    There should only be one school field. We replace `attrs` with a dictionary
+    of the school attributes.
+    '''
+    self.position.school={ k: attrs.get(k) for k in attrs.keys() }
+
   def question_start( self, attrs ):
     q = Question(self.position)
     self.position.question_list.append(q)
@@ -218,12 +225,6 @@ class QuizHandler(xml.sax.ContentHandler):
 class Node(object):
   def __init__(self, parent = None):
     self.parent = parent
-    self.course=dict(name='', code='', url='', quizzes='', department='', university='')
-    self.discussion_list = []
-    self.link_list = []
-    self.meta_list = []
-    self.question_list = []
-    self.quiz_list = []
     Debugging('Node: class={}, parent={}'.format(self.__class__.__name__,
         parent.__class__.__name__ if parent else ''))
 
@@ -243,6 +244,13 @@ class Quiz(Node):
   """
   def __init__(self):
     Node.__init__(self)
+    self.course=dict(name='', code='', url='', quizzes='')
+    self.school=dict(department='', department_url='', university='', university_url='')
+    self.discussion_list = []
+    self.link_list = []
+    self.meta_list = []
+    self.question_list = []
+    self.quiz_list = []
 
   def accept(self,visitor):
     visitor.for_quiz(self)

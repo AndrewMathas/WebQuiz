@@ -24,9 +24,9 @@ html_meta = r'''  <meta http-equiv="Content-Type" content="text/html; charset=ut
   <meta name="viewport" content="width=device-width">
   <meta name="generator" content="MathQuiz {version} (http://www.maths.usyd.edu.au/u/MOW/MathQuiz/doc/mathquiz-manual.html)">
   <meta name="description" content="{description}">
-  <meta name="authors" content="{authors}">
-  <meta name="organization" content="School of Mathematics and Statistics, University of Sydney">
-  <meta name="Copyright" content="{copyright}">
+  <meta name="authors" content="MathQuiz: {authors}">
+  <meta name="organization" content="{department}, {university}">
+  <meta name="Copyright" content="MathQuiz: {copyright}">
   <meta name="keywords" content="mathquiz, TeX4ht, make4ht, latex, python, quiz, mathematics">
   <link href="{MathQuizURL}/mathquiz.css" type="text/css" rel="stylesheet">
   <link href="{quiz_file}/{quiz_file}.css" type="text/css" rel="stylesheet">
@@ -42,14 +42,14 @@ questions_javascript = r'''  <script type="text/javascript" src="{MathQuizURL}/m
 mathjax = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/'
 
 bread_crumbs = r'''<div class="bread_crumbs">
-    <a href="{url}">{code}</a> / <a href="{url}">Quizzes</a> / {title}
+    <a href="{url}">{code}</a> / <a href="{quizzes}">Quizzes</a> / {title}
   </div>'''
 
 # question buttons
 button  = r'        <div id="button{b}" class="button{cls}" content=" " onClick="gotoQuestion({b})">{b}</div>'
 discuss = r'        <li class="discussion" onClick="gotoQuestion(-{b})">{title}</li>'
 side_menu = r'''<div class="side_menu">
-      <div>MathQuiz</div>{discussion_list}
+      {discussion_list}
       <div class="buttons">
         <span class="question_label">&nbsp;Questions&nbsp;</span>
         <br>{buttons}
@@ -60,14 +60,15 @@ side_menu = r'''<div class="side_menu">
          <tr><td style="color: green; font-size:medium;">&check;</td><td>right</td></tr>
          <tr><td style="color: red; font-size:medium;">&cross;</td><td>wrong</td></tr>
       </table>
+      <div class="school">
+        {department}<p>
+        {university}
+      </div>
       <div class="copyright">
-         <a href="http://www.maths.usyd.edu.au/u/MOW/MathQuiz/doc/credits.html">
-            <b>MathQuiz {version}</b>
-         </a>
-         <p><a href="http://www.maths.usyd.edu.au"> School of Mathematics<br>and Statistics</a>
-            <br><a href="http://www.usyd.edu.au">University of Sydney</a>
-            <br>&copy; Copyright 2004-2017
-         </p>
+        <a href="http://www.maths.usyd.edu.au/u/MOW/MathQuiz/doc/credits.html">
+           MathQuiz {version}
+        </a>
+        <br>&copy; Copyright 2004-2017
       </div>
     </div>'''
 

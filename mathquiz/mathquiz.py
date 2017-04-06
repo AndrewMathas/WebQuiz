@@ -425,13 +425,17 @@ class MakeMathQuiz(object):
 
         # generate the variuous components ofthe web page
         self.course = self.quiz.course
+        self.school = self.quiz.school
         self.title = self.quiz.title
         self.add_meta_data()
         self.add_question_javascript()
         self.add_side_menu()
         self.add_page_body()
 
-        self.bread_crumbs = bread_crumbs.format(title=self.title, **self.course)
+        if any(['???' in self.course[key] for key in ['name', 'code', 'url','quizzes']]):
+            self.bread_crumbs = ''
+        else:
+            self.bread_crumbs = bread_crumbs.format(title=self.title, **self.course)
 
         # now write the quiz to the html file
         with open(self.quiz_file+'.html', 'w') as file:
@@ -561,6 +565,8 @@ class MakeMathQuiz(object):
                                         MathQuizURL = self.MathQuizURL,
                                         description = metadata.description,
                                         copyright   = metadata.copyright,
+                                        department  = self.school['department'],
+                                        university  = self.school['university'],
                                         quiz_file   = self.quiz_file)
 
         # we don't need any of the links or metas from the latex file
@@ -577,8 +583,24 @@ class MakeMathQuiz(object):
 
         buttons = '\n'+'\n'.join(button.format(b=q, cls=' button-selected' if len(self.quiz.discussion_list)==0 and q==1 else '')
                                    for q in range(1, self.qTotal+1))
+
+        if self.school['department_url']=='':
+            department = self.school['department']
+        else:
+            department = '''<a href="{department_url}">{department}</a>'''.format(**self.school)
+
+        if self.school['university_url']=='':
+            university = self.school['university']
+        else:
+            university = '''<a href="{university_url}">{university}</a>'''.format(**self.school)
+
         # end of progress buttons, now for the credits
-        self.side_menu = side_menu.format(discussion_list=discussion_list, buttons=buttons, version=metadata.version)
+        self.side_menu = side_menu.format(discussion_list=discussion_list, 
+                                          buttons=buttons, 
+                                          version=metadata.version,
+                                          department=department,
+                                          university=university,
+        )
 
     def add_question_javascript(self):
         """ Add the javascript for the questions to self and write the
