@@ -400,11 +400,11 @@ class MakeMathQuiz(object):
     The HTMl is contructed using the template strings in mathquiz_templates
     """
     # attributes that will form part of the generated web page
-    header=''      # everything printed in the page header: meta data, includes, javascript, CSS, ...
-    css=''         # css specifications
-    javascript=''  # javascript code
-    page_body=''   # the main page
-    side_menu=''   # the left hand quiz menu
+    header=''         # everything printed in the page header: meta data, includes, javascript, CSS, ...
+    css=''            # css specifications
+    javascript=''     # javascript code
+    quiz_questions='' # the main quiz page
+    side_menu=''      # the left hand quiz menu
 
     def __init__(self, quiz_file, options):
         self.options = options
@@ -425,13 +425,17 @@ class MakeMathQuiz(object):
 
         # generate the variuous components ofthe web page
         self.course = self.quiz.course
+        self.school = self.quiz.school
         self.title = self.quiz.title
         self.add_meta_data()
         self.add_question_javascript()
         self.add_side_menu()
-        self.add_page_body()
+        self.add_quiz_header_and_questions()
 
-        self.bread_crumbs = bread_crumbs.format(title=self.title, **self.course)
+        if any(['???' in self.course[key] for key in ['name', 'code', 'url','quizzes']]):
+            self.bread_crumbs = ''
+        else:
+            self.bread_crumbs = bread_crumbs.format(title=self.title, **self.course)
 
         # now write the quiz to the html file
         with open(self.quiz_file+'.html', 'w') as file:
@@ -561,6 +565,8 @@ class MakeMathQuiz(object):
                                         MathQuizURL = self.MathQuizURL,
                                         description = metadata.description,
                                         copyright   = metadata.copyright,
+                                        department  = self.school['department'],
+                                        university  = self.school['university'],
                                         quiz_file   = self.quiz_file)
 
         # we don't need any of the links or metas from the latex file
@@ -577,8 +583,24 @@ class MakeMathQuiz(object):
 
         buttons = '\n'+'\n'.join(button.format(b=q, cls=' button-selected' if len(self.quiz.discussion_list)==0 and q==1 else '')
                                    for q in range(1, self.qTotal+1))
+
+        if self.school['department_url']=='':
+            department = self.school['department']
+        else:
+            department = '''<a href="{department_url}">{department}</a>'''.format(**self.school)
+
+        if self.school['university_url']=='':
+            university = self.school['university']
+        else:
+            university = '''<a href="{university_url}">{university}</a>'''.format(**self.school)
+
         # end of progress buttons, now for the credits
-        self.side_menu = side_menu.format(discussion_list=discussion_list, buttons=buttons, version=metadata.version)
+        self.side_menu = side_menu.format(discussion_list=discussion_list, 
+                                          buttons=buttons, 
+                                          version=metadata.version,
+                                          department=department,
+                                          university=university,
+        )
 
     def add_question_javascript(self):
         """ Add the javascript for the questions to self and write the
@@ -619,7 +641,7 @@ class MakeMathQuiz(object):
                                 mathjax = mathjax if self.options.mathjax == '' else self.options.mathjax
         )
 
-    def add_page_body(self):
+    def add_quiz_header_and_questions(self):
         r'''
         Write the quiz head and the main body of the quiz.
         '''
@@ -636,20 +658,21 @@ class MakeMathQuiz(object):
                                       arrows = arrows
         )
 
+        self.quiz_questions = '  <div class="quiz_questions">\n'
         # now comes the main page text
         # discussion(s) masquerade as negative questions
         if len(self.quiz.discussion_list)>0:
           dnum = 0
           for d in self.quiz.discussion_list:
             dnum+=1
-            self.page_body+=discussion.format(dnum=dnum, discussion=d,
+            self.quiz_questions+=discussion.format(dnum=dnum, discussion=d,
                                display='style="display: table;"' if dnum==1 else '',
                                input_button=input_button if len(self.quiz.question_list)>0 and dnum==len(self.quiz.discussion_list) else '')
 
         # index for quiz
         if len(self.quiz.quiz_list)>0:
           # add index to the web page
-          self.page_body+=quiz_list.format(course=self.course['name'],
+          self.quiz_questions+=quiz_list.format(course=self.course['name'],
                                            quiz_index='\n          '.join(quiz_list_item.format(url=q['url'], title=q['title']) for q in self.quiz.quiz_list)
           )
           # write a javascript file for displaying the menu
@@ -661,12 +684,14 @@ class MakeMathQuiz(object):
 
         # finally we print the quesions
         if len(self.quiz.question_list)>0:
-          self.page_body+=''.join(question_wrapper.format(qnum=qnum+1,
+          self.quiz_questions+=''.join(question_wrapper.format(qnum=qnum+1,
                                                 display='style="display: table;"' if qnum==0 and len(self.quiz.discussion_list)==0 else '',
                                                 question=self.print_question(q,qnum+1),
                                                 response=self.print_responses(q,qnum+1))
                                 for (qnum,q) in enumerate(self.quiz.question_list)
           )
+
+        self.quiz_questions += '  </div>'
 
     def print_question(self, Q, Qnum):
         r'''Here:

@@ -26,7 +26,7 @@ def write_web_page(quiz):
                breadcrumbs    = quiz.bread_crumbs,                    # bread crumb constructed above
                side_menu      = quiz.side_menu,                       # navigation menu for quiz
                quiz_header    = quiz.quiz_header,                     # quiz title + navigation arrows
-               quiz_questions = quiz.page_body,                       # html for quiz
+               quiz_questions = quiz.quiz_questions,                  # html for quiz
                no_script      = no_script,                            # error when javascript is not enabled
     )
 
@@ -43,9 +43,7 @@ quiz_page = r'''<!DOCTYPE HTML>
   <div class="quiz_page">
     {side_menu}
     {quiz_header}
-    <div class="quiz_questions">
-      {quiz_questions}
-    </div>
+    {quiz_questions}
   </div>
 </body>
 </html>

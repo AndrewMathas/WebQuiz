@@ -23,9 +23,11 @@
   $ButtonSelected: #B33C00;
   $Dazzle:         #FF1A1A;
   $Heading:        #CE1126;
+  $MathQuiz:       #0000FF;
   $QuestionPart:   #CC3300;
   $ResponseBG:     #E9E0D8;
   $ResponseBorder: #C9A798;
+  $School:         #e63900;
   $Subheading:     #FF0000;
   $Text:           #000000;
   $WarningBG:      #EC7063;
@@ -88,24 +90,37 @@ div.side_menu {
       }
   }
 
+  table.marking_key {
+    margin-left: 2px;
+    clear: left;
+  }
+
+  table.marking_key > tr td {
+    padding-right: 2px !important;
+  }
+
+  div.school {
+    font-family: arial, verdana, helvetica;
+    font-weight: normal;
+    font-size: x-small;
+    color: $School;
+    text-align: center;
+    padding: 10px 0px 0px 0px;
+  }
+
   div.copyright {
     font-family: arial, verdana, helvetica;
     font-size: x-small;
     font-weight: normal;
-    padding:20px 0px 20px 0px;
     text-align: center;
+    color: $Text;
   }
-  div.copyright A{
+  div.copyright A, div.copyright A:link, div.copyright A:visited {
     text-decoration: none;
+    color: $MathQuiz;
+    font-weight: bold;
   }
-}
 
-table.marking_key {
-  margin-left: 2px;
-}
-
-table.marking_key > tr td {
-  padding-right: 2px !important;
 }
 
 span.question_label {
@@ -290,6 +305,7 @@ div.buttons {
     width:      30px;
   }
 }
+
 /* javascript cannot access the css of pseudo elements, so we put the button
  * content inside a span coloured black. It theory it would be easier to
  * make the button label equal to the content and the marker the innerHTML
@@ -314,6 +330,7 @@ div.button:after {
   position: absolute;
   width: 100%;
   right: -35%;
+  clear: right;
 }
 
 input.input_button {
