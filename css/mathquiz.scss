@@ -106,6 +106,15 @@ div.side_menu {
     color: $School;
     text-align: center;
     padding: 10px 0px 0px 0px;
+
+    A, A:link, A:visited {
+      font-family: arial, verdana, helvetica;
+      font-weight: normal;
+      font-size: x-small;
+      color: $School;
+      text-align: center;
+      padding: 10px 0px 0px 0px;
+    }
   }
 
   div.copyright {
