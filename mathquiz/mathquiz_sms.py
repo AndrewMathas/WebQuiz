@@ -110,7 +110,7 @@ def write_web_page(quiz):
       head_data_string =  quiz.javascript+initialise_SMS_Menus(quiz)+quiz.css,
       breadcrumbs_string = SMS_breadcrumbs(quiz),
       menu_string = sms_menu+quiz.side_menu,
-      page_body_string = quiz.quiz_header+quiz.page_body,
+      page_body_string = quiz.quiz_header+quiz.quiz_questions,
       nopreview = ''
   )
   for (key, value) in [('CODE','QUIZ'),

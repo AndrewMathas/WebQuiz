@@ -400,11 +400,11 @@ class MakeMathQuiz(object):
     The HTMl is contructed using the template strings in mathquiz_templates
     """
     # attributes that will form part of the generated web page
-    header=''      # everything printed in the page header: meta data, includes, javascript, CSS, ...
-    css=''         # css specifications
-    javascript=''  # javascript code
-    page_body=''   # the main page
-    side_menu=''   # the left hand quiz menu
+    header=''         # everything printed in the page header: meta data, includes, javascript, CSS, ...
+    css=''            # css specifications
+    javascript=''     # javascript code
+    quiz_questions='' # the main quiz page
+    side_menu=''      # the left hand quiz menu
 
     def __init__(self, quiz_file, options):
         self.options = options
@@ -430,7 +430,7 @@ class MakeMathQuiz(object):
         self.add_meta_data()
         self.add_question_javascript()
         self.add_side_menu()
-        self.add_page_body()
+        self.add_quiz_header_and_questions()
 
         if any(['???' in self.course[key] for key in ['name', 'code', 'url','quizzes']]):
             self.bread_crumbs = ''
@@ -641,7 +641,7 @@ class MakeMathQuiz(object):
                                 mathjax = mathjax if self.options.mathjax == '' else self.options.mathjax
         )
 
-    def add_page_body(self):
+    def add_quiz_header_and_questions(self):
         r'''
         Write the quiz head and the main body of the quiz.
         '''
@@ -658,20 +658,21 @@ class MakeMathQuiz(object):
                                       arrows = arrows
         )
 
+        self.quiz_questions = '  <div class="quiz_questions">\n'
         # now comes the main page text
         # discussion(s) masquerade as negative questions
         if len(self.quiz.discussion_list)>0:
           dnum = 0
           for d in self.quiz.discussion_list:
             dnum+=1
-            self.page_body+=discussion.format(dnum=dnum, discussion=d,
+            self.quiz_questions+=discussion.format(dnum=dnum, discussion=d,
                                display='style="display: table;"' if dnum==1 else '',
                                input_button=input_button if len(self.quiz.question_list)>0 and dnum==len(self.quiz.discussion_list) else '')
 
         # index for quiz
         if len(self.quiz.quiz_list)>0:
           # add index to the web page
-          self.page_body+=quiz_list.format(course=self.course['name'],
+          self.quiz_questions+=quiz_list.format(course=self.course['name'],
                                            quiz_index='\n          '.join(quiz_list_item.format(url=q['url'], title=q['title']) for q in self.quiz.quiz_list)
           )
           # write a javascript file for displaying the menu
@@ -683,12 +684,14 @@ class MakeMathQuiz(object):
 
         # finally we print the quesions
         if len(self.quiz.question_list)>0:
-          self.page_body+=''.join(question_wrapper.format(qnum=qnum+1,
+          self.quiz_questions+=''.join(question_wrapper.format(qnum=qnum+1,
                                                 display='style="display: table;"' if qnum==0 and len(self.quiz.discussion_list)==0 else '',
                                                 question=self.print_question(q,qnum+1),
                                                 response=self.print_responses(q,qnum+1))
                                 for (qnum,q) in enumerate(self.quiz.question_list)
           )
+
+        self.quiz_questions += '  </div>'
 
     def print_question(self, Q, Qnum):
         r'''Here:
