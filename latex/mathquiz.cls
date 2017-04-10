@@ -43,7 +43,7 @@
 \University{University of Sydney}
 \UniversityURL{https://www.sydney.edu.au}
 
-% set the quiz filename for use below -- can set by mathquiz
+% set the quiz filename for use below -- can be set by mathquiz
 \ifdefined\MQ@quizfile\relax\else\xdef\MQ@quizfile{\jobname.tex}\fi
 
 % the names of the next three macros are chosen so as to be compatible with sms-uos.sty

@@ -28,12 +28,12 @@ html_meta = r'''  <meta http-equiv="Content-Type" content="text/html; charset=ut
   <meta name="organization" content="{department}, {university}">
   <meta name="Copyright" content="MathQuiz: {copyright}">
   <meta name="keywords" content="mathquiz, TeX4ht, make4ht, latex, python, quiz, mathematics">
-  <link href="{MathQuizURL}/mathquiz.css" type="text/css" rel="stylesheet">
+  <link href="{mathquiz_url}/mathquiz.css" type="text/css" rel="stylesheet">
   <link href="{quiz_file}/{quiz_file}.css" type="text/css" rel="stylesheet">
 '''
 
 # javascript for setting up the questions
-questions_javascript = r'''  <script type="text/javascript" src="{MathQuizURL}/mathquiz.js"></script>
+questions_javascript = r'''  <script type="text/javascript" src="{mathquiz_url}/mathquiz.js"></script>
   <script type="text/javascript" src="quiztitles.js"></script>
   <script type="text/javascript" src="{mathjax}?config=MML_CHTML"></script>
   <script type="text/javascript">MathQuizInit({qTotal}, {dTotal}, '{quiz_file}');</script>
@@ -199,7 +199,7 @@ initialise_warning='''<div class="warning">
 '''
 
 permission_error='''
-You do not have permission to write to the directory {}.
+You do not have permission to write tou {}.
 To install MathQuiz files into this directory you probably need to run this
 command using an administrator account, or sudo on linux/macosx.
 '''

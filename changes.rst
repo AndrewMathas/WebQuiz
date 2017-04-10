@@ -4,18 +4,19 @@ Changes
 
 Version 5.0:
 ------------
+    - updated to use html5, mathjax and mathml
     - images for buttons etc replaced by css
     - python and javascript streamlined and largely rewritten
     - bash script wrapper replaced with python, making it more portable and more flexible
     - now using make4ht
+    - option for pst2pdf preprocessing for quizzes using pstruicks/postscript
     - program packaged for uploading to ctan and texlive
     - better installation support
     - mathquizrc configuration file added
-    - integrated diverging branches of the code and upgraded to use MathJax
     - changed from using optionparser to argparse
-    - replace shell script with python front end
-    - proper version management control
-    - made compatible with setup tools
+    - using git and bitbucket for version management control
+    - made compatible with setup tools, together with option to export to ctan
+    - allow user configuration via .mathquizrc file in HOME directory
     - export to ctan
 
 Version 4.6:
@@ -51,5 +52,5 @@ To do
     - (?) allow vertical/horizontal/none customisations of question buttons
     - (?) record marks of students...would need a interface for login details etc
     - (?) use vue to render and control quiz pages
-    - (?) allow user configuration rather than just system configuration
+    - (?) add timer to quiz
 
