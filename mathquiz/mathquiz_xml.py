@@ -193,11 +193,11 @@ class QuizHandler(xml.sax.ContentHandler):
   def response_end( self ):
     self.position.response = self.text.strip()
 
-  def whenRight_end( self ):
-    self.position.when_true = self.text.strip()
+  def when_right_end( self ):
+    self.position.when_right = self.text.strip()
 
-  def whenWrong_end( self ):
-    self.position.when_false = self.text.strip()
+  def when_wrong_end( self ):
+    self.position.when_wrong = self.text.strip()
 
   def item_end( self ):
     self.position = self.position.parent

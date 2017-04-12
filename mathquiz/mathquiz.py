@@ -445,7 +445,7 @@ class MakeMathQuiz(object):
         if any(['???' in self.course[key] for key in ['name', 'code', 'url','quizzes_url']]):
             self.bread_crumbs = ''
         else:
-            self.bread_crumbs = bread_crumbs.format(title=self.title, **self.course)
+            self.bread_crumbs = bread_crumbs.format(title=self.title, **self.course, **self.school, bread_crumb=self.quiz.bread_crumb)
 
         # now write the quiz to the html file
         with open(self.quiz_file+'.html', 'w') as file:
@@ -648,7 +648,7 @@ class MakeMathQuiz(object):
                               mathquiz_url = self.mathquiz_url,
                               mathjax = mathjax if self.settings['mathjax'] == '' else self.settings['mathjax']
         )
-        self.final_javascript = final_javascript.format(
+        self.mathquiz_init = mathquiz_init.format(
                               qTotal = self.qTotal,
                               dTotal = self.dTotal,
                               quiz_file = self.quiz_file,
@@ -723,7 +723,7 @@ class MakeMathQuiz(object):
         else:
             options=choice_answer.format(choices='\n'.join(self.print_choices(Qnum, Q.answer.item_list, choice) for choice in range(len(Q.answer.item_list))))
                                         #hidden=input_single.format(qnum=Qnum) if Q.answer.type=="single" else '')
-        return question_text.format(qnum=Qnum, question=Q.question, questionOptions=options)
+        return question_text.format(qnum=Qnum, question=Q.question, question_options=options)
 
     def print_choices(self, qnum, answers, choice):
         r'''
@@ -754,8 +754,8 @@ class MakeMathQuiz(object):
         '''
         if isinstance(question.answer,mathquiz_xml.Answer):
             s = question.answer
-            response  = tf_response_text.format(choice=qnum, response='true', answer='Correct!', answer2='', text=s.when_true)
-            response += tf_response_text.format(choice=qnum, response='false', answer='Incorrect.', answer2='Please try again.', text=s.when_false)
+            response  = tf_response_text.format(choice=qnum, response='true', answer='Correct!', answer2='', text=s.when_right)
+            response += tf_response_text.format(choice=qnum, response='false', answer='Incorrect.', answer2='Please try again.', text=s.when_wrong)
         elif question.answer.type == "single":
             response='\n'+'\n'.join(single_response.format(qnum=qnum, part=snum+1,
                                                       answer='correct! ' if s.expect=='true' else 'incorrect ',

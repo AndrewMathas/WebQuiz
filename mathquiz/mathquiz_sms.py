@@ -25,6 +25,15 @@ sms_quiz_specifications = '  <script type="text/javascript">var QuizURI="{}Quizz
 sms_research_menu  = '  <script type="text/javascript" src="/u/SMS/web2010/js/ResearchSubmenu.js"></script>\n'
 sms_qsubmenu = '  <script type="text/javascript" src="/u/SMS/web2010/js/QSubmenu.js"></script>\n'
 sms_course_qsubmenu = '  <script type="text/javascript" src="/u/SMS/web2010/js/CourseQSubmenu.js"></script>\n'
+quiz_titlesx= r'''
+var customMenu='<ul role="menu" class="togglemenu" style="height:0px; transition:height 1s;">\n'
+for (q=0; q<QuizTitles.length; q++) {
+    if (thisPage != QuizTitles[q][1]) {
+       customMenu +=''<li role="menuitem">\n<a href="'+QuizTitles[q][1]+'">'+QuizTitles[q][0]+'</a>\n</li>\n';
+    }
+}
+customMenu +='</ul>\n'
+'''
 
 nav_menu = r"""  <ul class="navmenu">
     <li>
@@ -87,16 +96,10 @@ def SMS_breadcrumbs(web_page):
 
 # the left side menu
 def SMS_menu(quiz):
-    # write a javascript file for displaying the menu
-    # quizmenu = the index file for the quizzes in this directory
+    # append the quiz_titlesx string to the quiztitles.js
     if len(quiz.quiz_list)>0:
-        with open('quiztitles.js','w') as quizmenu:
-            quizmenu.write('var QuizTitles = [\n{titles}\n];\n'.format(
-                  titles = ',\n'.join("  ['{:<60}', '{}/Quizzes/{}']".format(
-                             q['title'],self.course['url'],q['url']
-                  ) for q in quiz.quiz_list)
-            )
-         )
+        with open('quiztitles.js','a') as quiztitles:
+            quiztitles.write(quiz_titlesx)
 
     menu = ''
     if len(course['name'])>0:

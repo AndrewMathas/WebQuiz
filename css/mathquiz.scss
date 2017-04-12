@@ -48,7 +48,8 @@ div.quiz_page {
     float: none !important;
     margin: 0 auto !important;
     max-width: 90%;
-  min-width:620px;
+    min-width: 620px;
+    padding-top: 10px;
 }
 
 /* side menu with question buttons and copyright message */
@@ -60,7 +61,6 @@ div.side_menu {
     margin-right: 20px;
     overflow: auto;
     padding-left: 1%;
-    padding-top: 16px;
     width: 100px;
 
     > div {
@@ -143,7 +143,6 @@ span.question_label {
 /* container for the quiz questions, answers and responses */
 
 div.quiz_header {
-    padding-top: 12px;
     padding-right: 1%;
     min-width: 600px;
 
@@ -214,7 +213,6 @@ div.quiz_list {
 div.quiz_questions{
     padding-top: 8px;
     display: block;
-    position: relative;
     min-width: 600px;
 }
 
@@ -310,34 +308,36 @@ div.buttons {
         position: relative;
         text-align: center;
         width:      30px;
-    }
-}
 
-/* javascript cannot access the css of pseudo elements, so we put the button
- * content inside a span coloured black. It theory it would be easier to
- * make the button label equal to the content and the marker the innerHTML
- * for the div but I could not figure out how to align everything properly
- * this way.
- */
-div.button span {
-    color: $Text;
-    text-decoration: none;
-}
-div.button-selected {
-    border: solid $ButtonSelected 2px !important;
-}
-div.button:hover {
-    border: solid $ButtonHover 2px !important;
-    text-decoration: underline !important;
-}
-div.button:after {
-    bottom: -35%;
-    content: attr(content);
-    height: 100%;
-    position: absolute;
-    width: 100%;
-    right: -35%;
-    clear: right;
+        /* javascript cannot access the css of pseudo elements, so we put the button
+         * content inside a span coloured black. It theory it would be easier to
+         * make the button label equal to the content and the marker the innerHTML
+         * for the div but I could not figure out how to align everything properly
+         * this way.
+         */
+        span {
+            color: $Text;
+            text-decoration: none;
+        }
+    }
+
+    div.button:hover {
+        border: solid $ButtonHover 2px !important;
+        text-decoration: underline !important;
+    }
+    div.button:after {
+        bottom: -35%;
+        content: attr(content);
+        height: 100%;
+        position: absolute;
+        width: 100%;
+        right: -35%;
+        clear: right;
+    }
+
+    div.button-selected {
+        border: solid $ButtonSelected 2px !important;
+    }
 }
 
 input.input_button {
@@ -347,6 +347,7 @@ input.input_button {
     margin-right: 40px;
     padding-right: 0 4px 0 4px;
 }
+
 /* warning messages - for the noscript error */
 div.warning {
     background-color: $WarningBG;
@@ -369,7 +370,6 @@ div.bread_crumb {
 }
 
 /* Drop down menu for quiz list modified from http://www.mrc-productivity.com/techblog/?p=1049 */
-
 div.bread_crumbs {
     margin: 0 auto !important;
     max-width: 90%;
@@ -378,7 +378,10 @@ div.bread_crumbs {
     z-index: 99; /* Makes sure that your menu remains on top of other page elements */
     position: relative;
     border-radius: 5px;
-    font: 10px Sans-Serif;
+    padding: 4px;
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    font-size: 9px;
+    font-weight: bold;
     min-width: 600px;
 
     ul {
@@ -389,19 +392,17 @@ div.bread_crumbs {
         li {
             text-align: center;  /* All text is placed in the center of the box */
             list-style: none;  /* Removes the default styling (bullets) for the list */
-            padding: 0;
             margin: 0;
             -webkit-transition: all 0.2s;
-            padding: 2px 4px 2px 16px;
+            padding: 2px 4px 2px 18px;
             background: brown; /* fallback color */
-            background: hsla(30,80%,60%,1);
+            background: hsla(48,100%,30%,1);
             position: relative;
             display: block;
             float: left;
         }
 
         li, li a {
-            color:  white;
             text-decoration: none;
         }
         // pseduo elements give the navigation triangles
@@ -412,12 +413,12 @@ div.bread_crumbs {
               height: 0;
               border-top: 7px solid transparent;
               border-bottom: 7px solid transparent;
-              border-left: 14px solid hsla(30,80%,50%,1);
+              border-left: 14px solid hsla(48,100%,30%,1);
               position: absolute;
               top: 50%;
               margin-top: -7px;
               left: 100%;
-              z-index: 2;
+              z-index: 99;
         }
         li::before {
           content: " ";
@@ -432,18 +433,27 @@ div.bread_crumbs {
           margin-top: -7px;
           margin-left: 2px;
           left: 100%;
-          z-index: 1;
+          z-index: 98;
         }
         // We only have three levels of menus
         li:nth-child(1){
-            background: hsla(30,80%,50%,1);
+            background: hsla(48,100%,30%,1);
             padding-left: 4px;
         }
-        li:nth-child(1):after { border-left-color: hsla(30,80%,50%,1); }
-        li:nth-child(2)       { background:        hsla(30,80%,60%,1); }
-        li:nth-child(2):after { border-left-color: hsla(30,80%,60%,1); }
-        li:nth-child(3)       { background:        hsla(30,80%,70%,1); }
-        li:nth-child(3):after { border-left-color: hsla(30,80%,70%,1); }
+        li:nth-child(1) A { color: white;}
+        li:nth-child(1):after { border-left-color: hsla(48,100%,30%,1); }
+
+        li:nth-child(2) { background: hsla(48,100%,70%,1); }
+        li:nth-child(2) A { color: hsla(48,100%,30%,1); }
+        li:nth-child(2):after { border-left-color: hsla(48,100%,70%,1); }
+
+        li:nth-child(3) { background: hsla(48,100%,93%,1); }
+        li:nth-child(3) A { color: blue; }
+        li:nth-child(3):after { border-left-color: hsla(48,100%,93%,1); }
+
+        li:nth-child(4) { background: white; }
+        li:nth-child(3) A { color: hsla(48,100%,30%,1); }
+        li:nth-child(4):after { border-left-color: white; }
 
         li a {
             text-decoration: none;  /* Removes the default hyperlink styling. */
@@ -451,48 +461,46 @@ div.bread_crumbs {
             -webkit-transition: all 0.5s;
         }
 
-        li:hover, li a:hover {
-            color: $ButtonBG;
-        }
+        li:hover, li a:hover { color: hsla(48,100%,30%,1); }
+
         /* turn off highlighting for span elements inside li */
         li span, li span:hover {
-            background-color: $ButtonBG;
+            background-color: $ButtonBorder;
         }
 
         li ul {
             display: none;  /* Hides the drop-down menu */
-            height: auto;
             margin: 0; /* Aligns drop-down box underneath the menu item */
-            padding: 0; /* Aligns drop-down box underneath the menu item */
+            padding: 2px 2px 2px 2px;
             -webkit-transition: all 1s;
             background-color: #cc6600;
+            border: solid $ButtonBorder 2px;
         }
         li:hover ul {
             display: block; /* Displays the drop-down boxon hover */
         }
         li ul li {
             width: 100%;
+            padding: 0 2px 2 2px;
             text-align: left;
-            padding-bottom: 2px;
             -webkit-transition: height 0.5s;
+            padding: 2px 0px 2px 4px;
+            color: blue
         }
+        li ul li:nth-child(1) { padding-top: 2px; }
+        li ul li A { padding: 2px 0px 2px 4px; }
+
         // turn off "triangle" colouring above
         li ul li:nth-child(n) {
-            background:   hsla(30,80%,50%,1);
-            padding-left: 4px;
+            background:   hsla(48,100%,93%,1);
+            padding-left: 0px;
         }
         li ul li:nth-child(n):after {
-            border-left-color: hsla(30,80%,50%,1);
+            border-left-color: hsla(48,100%,93%,1);
             border: 7px solid transparent;
         }
-        li ul li a {
-            border-left: 1px solid #1f5065;
-            border-right: 1px solid #1f5065;
-            border-top: 1px solid #74a3b7;
-            border-bottom: 1px solid #1f5065;
-        }
         li ul li:hover, li ul li a:hover {
-            background: orange !important;
+            background: $ButtonBorder;
         }
     }
 }
