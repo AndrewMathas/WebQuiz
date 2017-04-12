@@ -21,10 +21,10 @@ r'''
 from mathquiz_templates import no_script
 from wp import processtemplate as sms_write_page
 
-sms_quiz_specifications = '  <script type="text/javascript">var QuizURI="{}Quizzes";var QuizContents="{}";</script>\n'
-sms_research_menu  = '  <script type="text/javascript" src="/u/SMS/web2010/js/ResearchSubmenu.js"></script>\n'
-sms_qsubmenu = '  <script type="text/javascript" src="/u/SMS/web2010/js/QSubmenu.js"></script>\n'
-sms_course_qsubmenu = '  <script type="text/javascript" src="/u/SMS/web2010/js/CourseQSubmenu.js"></script>\n'
+sms_quiz_specifications = '  <script type="text/javascript">var QuizURI="{}";var QuizContents="{}";</script>\n'
+sms_research_menu  = '  <script type="text/javascript" src="/u/SMS/web2015/js/ResearchSubmenu.js"></script>\n'
+sms_qsubmenu = '  <script type="text/javascript" src="/u/SMS/web2015/js/QSubmenu.js"></script>\n'
+sms_course_qsubmenu = '  <script type="text/javascript" src="/u/SMS/web2015/js/CourseQSubmenu.js"></script>\n'
 
 nav_menu = r"""  <ul class="navmenu">
     <li>
@@ -40,7 +40,7 @@ def initialise_SMS_Menus(quiz):
     content="MATH100{0}/190{0}<br/>Quizzes".format(quiz.course['code'][-1])
   else:
     content="%s Quizzes" % quiz.course['code']
-  hd=sms_quiz_specifications.format(quiz.course['url'],content)
+  hd=sms_quiz_specifications.format(quiz.course['quizzes'],content)
   if quiz.quiz_file=="index":
     hd += sms_research_menu+sms_qsubmenu
   elif quiz.quiz_file in [ 'mathquiz-manual','credits']:
@@ -69,7 +69,7 @@ def SMS_breadcrumbs(quiz):
   elif quiz.quiz_file=="credits":
     bc += """<a href="/u/MOW/">GEM</a> /
              <a href="/u/MOW/MathQuiz/doc/mathquiz-manual.html">MathQuiz</a> /
-	     Credits"""
+         Credits"""
   else:
     bc += """
              <a href="/u/UG/">Teaching program</a> /
@@ -115,9 +115,10 @@ def write_web_page(quiz):
   )
   for (key, value) in [('CODE','QUIZ'),
                        ('menuname', sms_menu_name),
-                       ('pagetitle', quiz.title), ('title',''),
+                       ('pagetitle', quiz.title), 
+                       ('title',''),
                        ('no-compmenu', 'y'),
                        ('bodyonload', 'onload=""'),
                        ('tablevel', 'internal' if quiz.quiz_file in ['mathquiz-manual','credits'] else '')]:
       page['UNIT_OF_STUDY,'+key] = value
-  return sms_write_page(page, {}, quiz.course['url'], quiz.quiz_file+'.html;')[0]
+  return sms_write_page(page, {}, quiz.course['url'][3:], quiz.quiz_file+'.html')[0]
