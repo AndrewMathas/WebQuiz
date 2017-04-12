@@ -2,7 +2,7 @@
 % Title:    MathQuiz
 % Author:   Andrew Mathas
 % Created:  April 2017
-% Modified: 15:15 Monday, 10 April 2017
+% Modified: 16:02 Tuesday, 11 April 2017
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \synctex=1
 
@@ -29,7 +29,7 @@
 \usepackage{graphicx}
 \usepackage{pdfpages}
 
-\setcounter{secnumdepth}{0}
+%\setcounter{secnumdepth}{0}
 % \renewcommand\section[1]{%
 %   \ifx#1*\relax\else%
 %     \noindent\textcolor{blue}{\Large \textsc{#1}}%
@@ -77,23 +77,49 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% listings code for python and latex examples
 \usepackage{listings}\lstset{language=[LaTeX]TeX,framerule=2pt}
-\lstset{language=[LaTeX]TeX,
-        backgroundcolor=\color{Ivory},
-        basewidth  = {.5em,0.5em},
-        basicstyle = \small\ttfamily,
-        boxpos=c, % centered
-        breaklines=true,
-        commentstyle=\color{Brown},
-        keywordstyle=\color{Blue},
-        linewidth=14cm,
-        numbers=none,
-        resetmargins=true,
-        tabsize=2,
-        texcsstyle=*\bfseries\color{Blue},
-        xleftmargin=10mm,
-        morekeywords={UnitCode,UnitName,UnitURL,QuizzesURL,BreadCrumb,University,Department,quiz,quizlist,discussion,
-                      question,choice,Choice,response,correct,incorrect,whenRight,whenWrong,answer},
+\lstdefinestyle{latexcode}{
+  language=[LaTeX]TeX,
+  backgroundcolor=\color{Azure!50},
+  basewidth  = {.5em,0.5em},
+  basicstyle = \small\ttfamily,
+  boxpos=c, % centered
+  breaklines=true,
+  commentstyle=\color{DarkRed},
+  keywordstyle=\color{MediumBlue},
+  linewidth=14cm,
+  numbers=none,
+  resetmargins=true,
+  tabsize=2,
+  texcsstyle=*\bfseries\color{DodgerBlue},
+  xleftmargin=10mm,
+  classoffset=1,
+  keywordstyle={\color{ForestGreen}},
+  morekeywords={UnitCode,UnitName,UnitURL,QuizzesURL,BreadCrumb,University,Department},
+  classoffset=2,
+  keywordstyle={\color{Red}},
+  morekeywords={quiz,quizlist,discussion,question,choice,Choice},
+  classoffset=3,
+  keywordstyle={\color{DarkViolet}},
+  morekeywords={response,correct,incorrect,whenRight,whenWrong,answer},
 }
+\lstnewenvironment{latexcode}{\lstset{style=latexcode}}{}
+
+\lstdefinestyle{pythoncode}{
+  language=HTML,
+  upquote=true,
+  backgroundcolor=\color{AliceBlue},
+  basewidth  = {.5em,0.5em},
+  basicstyle = \small\ttfamily,
+  boxpos=c, % centered
+  breaklines=true,
+  showstringspaces=false,
+  tabsize=4,
+  classoffset=1,
+  keywordstyle={\color{ForestGreen}},
+  morekeywords={quiz_page,side_menu,quiz_questions,breadcrumbs,include,title},
+}
+\lstnewenvironment{pythoncode}{\lstset{style=pythoncode}}{}
+
 % hyperref links to ctan
 \newcommand\ctan[1]{\href{https://www.ctan.org/pkg/#1}{\texttt{#1}}}
 
@@ -229,7 +255,7 @@
     are one main pedagogical advantages of on-line quizzes because they
     allow you to give instant feedback to the person taking the quiz.)
 
-    \lstinputlisting{example.tex}
+    \lstinputlisting[style=latexcode]{example}
 
     Since this is a \LaTeX\ file it can be processed using
     \texttt{latex} and \texttt{pdflatex} to produce a readable and
@@ -238,7 +264,7 @@
     following:
 
     \begin{center}
-      \fbox{\includegraphics[width=0.4\textwidth]{example-pdf}}
+      \fbox{\includegraphics[width=0.5\textwidth]{example-pdf}}
     \end{center}
 
     Of course, the real reason for using \MathQuiz is that it is also
@@ -252,17 +278,20 @@
     \end{center}
 
     The web page version of the quiz displays one question at a time,
-    with the question buttons serving the dual purpose of providing a
-    way navigate between the questions in the quiz and displaying
-    whether the question has not been answered or if it has been
-    answered, correctly, corretly on the first attempt or answered
-    incorrectly. Targeted feedback can be given to the person taking the
+    with the question buttons serving the dual purpose of, first,
+    providing a way to navigate between the different questions in the
+    quiz and, secondly, displaying whether or not the question has been
+    attempted. When a question has been attempted the question
+    ``button'' shows whether the question was correctly on the first
+    attempt, correctly on a second attempt or if the answer was
+    incorrect. Targeted feedback can be given to the person taking the
     quiz based on their responses.
 
-    As explained in \autoref{S:documenntclass} and , it is possible to
+    As explained in \autoref{S:documentclass}, it is possible to
     customise some aspects of the web pages constructed by \MathQuiz.
-    \autoref{S:installation} explains how the page layout can be altered
-    to suit local requirements with some rudimentary python the quizze.
+    With some very rudimentary python, it is possible to change the page
+    layout of the quizzes or to embed them into you local web pages; see
+    \autoref{S:installation}.
 
 \section{Credits}
     \MathQuiz{} was written and developed in the
@@ -294,40 +323,42 @@
    some of Don's code and, in particular, his idea of using \TeX 4ht are
    still very much in use.
 
-   For version 5, thanks are due to Bob Howlett and Michal Hoftich for
-   comments and technical advice.
+   Thanks are due to Bob Howlett for general help with CSS and, for
+   Version~5, to  Michal Hoftich for technical advice.
 
-  \section{What \MathQuiz does and does not do}
+  \section{What can \MathQuiz does and does not do}
 
     The quizzes made using \MathQuiz are intended to be used as a
     revision resource rather than as an assessment tool. In particular,
-    \MathQuiz does not provide a mechanism for recording the marks
-    on the quizzes. Technically this would not be very hard to do but it
-    would be more difficult to ensure that the quizzes are secure.
-    Currently the answers to the quiz are not part of the HTML source
-    code for the quiz, however, there are easy ways to access then if
-    you know when you are doing.
+    \MathQuiz does not provide a mechanism for recording the marks on
+    the quizzes. Technically, it would not be very hard to record marks
+    but it would be more difficult to ensure that the quiz content
+    content and solutions are secure. Currently the answers to the quiz
+    are not part of the HTML source code for the quiz, however, there
+    are ways to access the answers if you know when you are doing.
 
-    There is no limit on the number of times that a question, or indeed
-    the entire quiz, can be attempted.
+    Each question in a quiz, and each quiz itself, can be attempted as
+    many times as the student wants. \MathQuiz does not provide any way
+    of limiting the number of times that the questions can be attempted.
 
     The questions in a \MathQuiz quiz are static. In particular, they do
-    not accept variables and each person taking the quiz will get
-    exactly the same questions. It would not be hard to make the
-    questions appear in a random order.Randomising the order of the
-    multiple choice answers would be more difficult.
+    not accept variables and exactly the same questions will appear in
+    exactly the same order each time the quiz is taken. It would not be
+    hard to make the questions appear in a random order. Randomising the
+    order of the multiple choice answers might be difficult with the
+    current implementation.
 
     \MathQuiz is able to ask ``computational'' questions that accept a
-    numerical answer, however, it does not accept symbolic answers. So,
-    for example, if the answer to a question is $0$ then $\sin(0)$ will
+    numerical answer, however, symbolic answers are not supported.
+    For example, if the answer to a question is $0$ then $\sin(0)$ will
     not be accented as a correct answer and the only way to ask for the
     indefinite integral of a function is as a multiple choice question.
 
-    The quizzes are not timed.pas
+    The quizzes are not timed.
 
     Some of these issues may be addressed in future releases.
 
-\section{The \MathQuiz document class}\label{S:documenntclass}
+\section{The \MathQuiz document class}\label{S:documentclass}
 
 \begin{description}
   \item[$\backslash$BreadCrumb]
@@ -474,32 +505,28 @@ the base class used by \texttt{mathquiz}.
   calls our content management system directly and uses this to create
   the web page for the quiz.
 
-\begin{lstlisting}[
-  language=Python,
-  showstringspaces=false,
-  tabsize=4,
-  morekeywords={title, include, breadcrumbs,quiz_page,side_menu,quiz_header,quiz_questions}]
-quiz_page = r'''<!DOCTYPE HTML>
-<html lang="en-AU">
-<head>
-  <title> {title} </title>
-  {include}
-</head>
+\begin{pythoncode}
+    quiz_page = r'''<!DOCTYPE HTML>
+    <html lang="en-AU">
+    <head>
+      <title> {title} </title>
+      {include}
+    </head>
 
-<body>
-  {breadcrumbs}
-  {no_script}
-  <div class="quiz_page">
-    {side_menu}
-    {quiz_header}
-    <div class="quiz_questions">
-      {quiz_questions}
-    </div>
-  </div>
-</body>
-</html>
-'''
-\end{lstlisting}
+    <body>
+      {breadcrumbs}
+      {no_script}
+      <div class="quiz_page">
+        {side_menu}
+        {quiz_header}
+        <div class="quiz_questions">
+          {quiz_questions}
+        </div>
+      </div>
+    </body>
+    </html>
+    '''
+\end{pythoncode}
 
 
 

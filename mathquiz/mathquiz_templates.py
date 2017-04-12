@@ -36,13 +36,22 @@ html_meta = r'''  <meta http-equiv="Content-Type" content="text/html; charset=ut
 questions_javascript = r'''  <script type="text/javascript" src="{mathquiz_url}/mathquiz.js"></script>
   <script type="text/javascript" src="quiztitles.js"></script>
   <script type="text/javascript" src="{mathjax}?config=MML_CHTML"></script>
-  <script type="text/javascript">MathQuizInit({qTotal}, {dTotal}, '{quiz_file}');</script>
 '''
+
+final_javascript=r'''<script type="text/javascript">MathQuizInit({qTotal}, {dTotal}, '{quiz_file}');</script>'''
 
 mathjax = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/'
 
+# bread crumbs including a drop down menu for all of the quizzes for the unit
 bread_crumbs = r'''<div class="bread_crumbs">
-    <a href="{url}">{code}</a> / <a href="{quizzes}">Quizzes</a> / {title}
+    <ul>
+        <li><a href="{url}">{code}</a></li>
+        <li><a href="{quizzes_url}">Quizzes</a>
+           <ul id="drop_down_menu">
+           </ul>
+        </li>
+        <li>{title}</li>
+    </ul>
   </div>'''
 
 # question buttons
@@ -217,4 +226,3 @@ no_script='''<noscript>
 mathquiz_help_message=r'''
 Mathquiz provides a way of writing on-line quizzes starting from a latex file.
 '''
-

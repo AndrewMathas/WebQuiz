@@ -434,7 +434,7 @@ class MakeMathQuiz(object):
         self.school = self.quiz.school
         for opt in ['department', 'department_url', 'university', 'university_url']:
             if settings[opt] != '':
-                self.school[opt] = settets[opt]
+                self.school[opt] = settings[opt]
 
         self.title = self.quiz.title
         self.add_meta_data()
@@ -442,7 +442,7 @@ class MakeMathQuiz(object):
         self.add_side_menu()
         self.add_quiz_header_and_questions()
 
-        if any(['???' in self.course[key] for key in ['name', 'code', 'url','quizzes']]):
+        if any(['???' in self.course[key] for key in ['name', 'code', 'url','quizzes_url']]):
             self.bread_crumbs = ''
         else:
             self.bread_crumbs = bread_crumbs.format(title=self.title, **self.course)
@@ -644,12 +644,14 @@ class MakeMathQuiz(object):
         except Exception as err:
             MathQuizError('error writing quiz specifications', err)
 
-        self.javascript += questions_javascript.format(
-                                mathquiz_url = self.mathquiz_url,
-                                qTotal = self.qTotal,
-                                dTotal = self.dTotal,
-                                quiz_file = self.quiz_file,
-                                mathjax = mathjax if self.settings['mathjax'] == '' else self.settings['mathjax']
+        self.javascript = questions_javascript.format(
+                              mathquiz_url = self.mathquiz_url,
+                              mathjax = mathjax if self.settings['mathjax'] == '' else self.settings['mathjax']
+        )
+        self.final_javascript = final_javascript.format(
+                              qTotal = self.qTotal,
+                              dTotal = self.dTotal,
+                              quiz_file = self.quiz_file,
         )
 
     def add_quiz_header_and_questions(self):
@@ -683,15 +685,22 @@ class MakeMathQuiz(object):
         # index for quiz
         if len(self.quiz.quiz_list)>0:
           # add index to the web page
-          self.quiz_questions+=quiz_list.format(course=self.course['name'],
-                                           quiz_index='\n          '.join(quiz_list_item.format(url=q['url'], title=q['title']) for q in self.quiz.quiz_list)
+          self.quiz_questions+=quiz_list.format(
+                 course=self.course['name'],
+                 quiz_index='\n          '.join(quiz_list_item.format(url=q['url'], title=q['title'])
+                                                for q in self.quiz.quiz_list)
           )
           # write a javascript file for displaying the menu
           # quizmenu = the index file for the quizzes in this directory
           with open('quiztitles.js','w') as quizmenu:
              quizmenu.write('var QuizTitles = [\n{titles}\n];\n'.format(
-                 titles = ',\n'.join("  ['{:<60}', '{}/Quizzes/{}']".format(q['title'],self.course['url'],q['url']) for q in self.quiz.quiz_list)
-             ))
+                 titles = ',\n'.join("  ['{}', '{}/Quizzes/{}']".format(
+                                     q['title'],
+                                     self.course['url'],
+                                     q['url']) for q in self.quiz.quiz_list
+                                    )
+                 )
+             )
 
         # finally we print the quesions
         if len(self.quiz.question_list)>0:

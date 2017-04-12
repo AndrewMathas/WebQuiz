@@ -21,6 +21,7 @@ var QuizSpecifications = new Array();
 var Discussion = new Array();
 var wrongAnswers = new Array();
 var correct  = new Array();
+var QuizTitles = new Array();
 
 // QuizSpecifications will be an array of the expected responses for each question
 var QuizSpecifications = new Array();
@@ -43,6 +44,7 @@ function MathQuizInit(questions, discussions, quizfile) {
     alert("Your browser version is " + navigator.appVersion + ".\n" +
           "This quiz is unlikely to work unless your browser version is at least 5.");
   }
+
   qTotal = questions
   dTotal = discussions
   currentQuiz = quizfile
@@ -51,6 +53,11 @@ function MathQuizInit(questions, discussions, quizfile) {
   // read the question specifications for the quiz from <currentQuiz>/quiz_list.js
   document.head.appendChild(document.createElement("script")).src=currentQuiz+'/quiz_list.js';
   WaitForQuizSpecifications();
+
+  // make the drop down menu if QuizTitles has some entries
+  if (QuizTitles.length>0) {
+      create_drop_down_menu()
+  }
 
   // set up arrays for tracking how many times that questions have been attempted
   var i;
@@ -196,4 +203,17 @@ function checkAnswer() {
   //
   if ( !correct[qnum] ) { wrongAnswers[qnum] += 1; }
   updateQuestionMarker();
+}
+
+// create the drop down menu dynamically using the QuizTitles array
+function create_drop_down_menu() {
+   var drop_down = document.getElementById('drop_down_menu');
+   var max = 0;
+   for (q=0; q < QuizTitles.length; q++) {
+       var quiz_link = document.createElement('li')
+       quiz_link.innerHTML = '<a href="'+QuizTitles[q][1]+'">'+QuizTitles[q][0]+'</a>';
+       drop_down.appendChild(quiz_link);
+       max = Math.max(max, QuizTitles[q][0].length)
+    }
+    drop_down.style.width = Math.round(0.8*max)+'ex'
 }
