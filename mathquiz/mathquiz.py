@@ -443,9 +443,10 @@ class MakeMathQuiz(object):
         self.add_quiz_header_and_questions()
 
         if any(['???' in self.course[key] for key in ['name', 'code', 'url','quizzes_url']]):
+            # don't add bread crumbs if we are missing important information
             self.bread_crumbs = ''
         else:
-            self.bread_crumbs = bread_crumbs.format(title=self.title, **self.course, **self.school, bread_crumb=self.quiz.bread_crumb)
+            self.bread_crumbs = bread_crumbs.format(title=self.title, bread_crumb=self.quiz.bread_crumb, **self.course, **self.school)
 
         # now write the quiz to the html file
         with open(self.quiz_file+'.html', 'w') as file:

@@ -29,7 +29,7 @@ quiz_titlesx= r'''
 var customMenu='<ul role="menu" class="togglemenu" style="height:0px; transition:height 1s;">\n'
 for (q=0; q<QuizTitles.length; q++) {
     if (thisPage != QuizTitles[q][1]) {
-       customMenu +=''<li role="menuitem">\n<a href="'+QuizTitles[q][1]+'">'+QuizTitles[q][0]+'</a>\n</li>\n';
+       customMenu +='<li role="menuitem">\n<a href="'+QuizTitles[q][1]+'">'+QuizTitles[q][0]+'</a>\n</li>\n';
     }
 }
 customMenu +='</ul>\n'
@@ -99,38 +99,38 @@ def SMS_menu(quiz):
     # append the quiz_titlesx string to the quiztitles.js
     if len(quiz.quiz_list)>0:
         with open('quiztitles.js','a') as quiztitles:
-            quiztitles.write(quiz_titlesx)
+            quiztitles.write('\n'+quiz_titlesx)
 
-  menu = ''
-  if len(quiz.course['name'])>0:
-      menu_name = 'MathQuiz'
-      if len(quiz.quiz.quiz_list)==0:  # not on a quiz index page
-          if  quiz.quiz_file in ["mathquiz-manual","credits"]: 
-              type="QSubmenu"
-          else: 
-              type="CourseQSubmenu"
-          heading = 'Manual contents' if quiz.quiz_file=='mathquiz-manual' else \
-                    'Discussion' if len(quiz.quiz.discussion_list)>0 else ''
-          menu += nav_menu.format(menu=type, heading='' if heading=='' else '<li>{}</li>'.format(heading))
-  else:
-      menu_name = "Current Students"
-      menu += '[@@ URLplus=[^^~currentmenu^^] @@]\n'
-  return menu_name, menu
+    menu = ''
+    if len(quiz.course['name'])>0:
+        menu_name = 'MathQuiz'
+        if len(quiz.quiz.quiz_list)==0:  # not on a quiz index page
+            if  quiz.quiz_file in ["mathquiz-manual","credits"]: 
+                type="QSubmenu"
+            else: 
+                type="CourseQSubmenu"
+            heading = 'Manual contents' if quiz.quiz_file=='mathquiz-manual' else \
+                      'Discussion' if len(quiz.quiz.discussion_list)>0 else ''
+            menu += nav_menu.format(menu=type, heading='' if heading=='' else '<li>{}</li>'.format(heading))
+    else:
+        menu_name = "Current Students"
+        menu += '[@@ URLplus=[^^~currentmenu^^] @@]\n'
+    return menu_name, menu
 
 def write_web_page(web_page):
-  sms_menu_name, sms_menu=SMS_menu(web_page.quiz)
-  page=dict(
+    sms_menu_name, sms_menu=SMS_menu(web_page.quiz)
+    page=dict(
       meta_string = web_page.header,
       head_data_string =  web_page.javascript+initialise_SMS_Menus(web_page)+web_page.css,
       breadcrumbs_string = SMS_breadcrumbs(web_page),
       menu_string = sms_menu+web_page.side_menu,
       page_body_string = web_page.quiz_header+web_page.quiz_questions,
       nopreview = ''
-  )
-  for (key, value) in [('CODE','QUIZ'),
-                       ('menuname', sms_menu_name),
-                       ('pagetitle', web_page.title), ('title',''),
-                       ('no-compmenu', 'y'),
-                       ('tablevel', 'internal' if web_page.quiz_file in ['mathquiz-manual','credits'] else '')]:
+    )
+    for (key, value) in [('CODE','QUIZ'),
+                         ('menuname', sms_menu_name),
+                         ('pagetitle', web_page.title), ('title',''),
+                         ('no-compmenu', 'y'),
+                         ('tablevel', 'internal' if web_page.quiz_file in ['mathquiz-manual','credits'] else '')]:
       page['UNIT_OF_STUDY,'+key] = value
-  return sms_write_page(page, {}, web_page.course['url'][3:], web_page.quiz_file+'.html')[0]
+    return sms_write_page(page, {}, web_page.course['url'][3:], web_page.quiz_file+'.html')[0]
