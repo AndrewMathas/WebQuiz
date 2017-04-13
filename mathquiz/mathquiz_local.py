@@ -45,8 +45,8 @@ quiz_page = r'''<!DOCTYPE HTML>
     {side_menu}
     {quiz_header}
     {quiz_questions}
-    {mathquiz_init}
   </div>
+  {mathquiz_init}
 </body>
 </html>
 '''

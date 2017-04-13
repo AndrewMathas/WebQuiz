@@ -119,9 +119,9 @@ class QuizHandler(xml.sax.ContentHandler):
   def quiz_start( self, attrs ):
         self.root = Quiz()
         self.position = self.root
-        self.position.title=attrs.get('title','default')
-        self.position.bread_crumb=attrs.get('bread_crumb','default')
-        self.position.src=attrs.get('src','default')
+        self.position.title=attrs.get('title','')
+        self.position.bread_crumb=attrs.get('bread_crumb','')
+        self.position.src=attrs.get('src','')
 
   def meta_start( self, attrs ):
       r'''

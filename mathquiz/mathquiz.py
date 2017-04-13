@@ -54,7 +54,7 @@ metadata.debugging = False
 # used to label the parts of questions as a, b, c, ...
 alphabet = "abcdefghijklmnopqrstuvwxyz"
 
-# this should no lopnger be necessary as we have switched to python 3
+# this should no longer be necessary as we have switched to python 3
 def strval(ustr):
     return ustr
     return ustr.encode('ascii','xmlcharrefreplace')
@@ -446,7 +446,15 @@ class MakeMathQuiz(object):
             # don't add bread crumbs if we are missing important information
             self.bread_crumbs = ''
         else:
-            self.bread_crumbs = bread_crumbs.format(title=self.title, bread_crumb=self.quiz.bread_crumb, **self.course, **self.school)
+            self.bread_crumbs = bread_crumbs.format(
+                    title=self.title, 
+                    bread_crumb=self.quiz.bread_crumb, 
+                    code = self.course['code'],
+                    url = self.course['url'],
+                    quizzes_url = self.course['quizzes_url'],
+                    department = self.school['department'],
+                    department_url = self.school['department_url']
+            )
 
         # now write the quiz to the html file
         with open(self.quiz_file+'.html', 'w') as file:

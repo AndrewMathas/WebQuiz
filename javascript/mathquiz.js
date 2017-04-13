@@ -55,7 +55,7 @@ function MathQuizInit(questions, discussions, quizfile) {
   WaitForQuizSpecifications();
 
   // make the drop down menu if QuizTitles has some entries
-  if (QuizTitles.length>0) {
+  if (QuizTitles.length>0 && document.getElementById('drop_down_menu')) {
       create_drop_down_menu()
   }
 
