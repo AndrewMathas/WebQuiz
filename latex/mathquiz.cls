@@ -2,7 +2,7 @@
 %   mathquiz.cls | mathquiz latex class file
 % -----------------------------------------------------------------------
 %
-%   Copyright (C) Andrew Mathas and Donald Taylor, University of Sydney
+%   Copyright (C) Andrew Mathas, University of Sydney
 %
 %   Distributed under the terms of the GNU General Public License (GPL)
 %               http://www.gnu.org/licenses/
@@ -30,36 +30,57 @@
 \PassOptionsToClass{a4paper}{article}
 \ProcessOptions\relax
 \LoadClass{article}
+
+\def\MQ@error{\PackageError{mathquiz}}
+\def\MQ@complain#1#2{%
+  \MQ@error{\noexpand#1 required in Question \number#2}\@ehc
+}
+
 \RequirePackage{amsfonts,amsmath}
 \RequirePackage{bbding}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{10pt}
+
+% Set the quiz filename for use in mathquiz -- can be set directly by mathquiz when
+% doing pst2pdf preprocessing
+\ifdefined\MQ@quizfile\relax\else\xdef\MQ@quizfile{\jobname.tex}\fi
+
+% Macros for defining the university and department
 \newcommand*{\DepartmentURL}[1]{\def\MQ@depturl{#1}}
 \newcommand*{\Department}[1]{\def\MQ@department{#1}}
 \newcommand*{\UniversityURL}[1]{\def\MQ@uniurl{#1}}
 \newcommand*{\University}[1]{\def\MQ@university{#1}}
-\Department{School of Mathematics and Statistics}
-\DepartmentURL{/}
-\University{University of Sydney}
-\UniversityURL{https://www.sydney.edu.au}
 
-% set the quiz filename for use below -- can set by mathquiz
-\ifdefined\MQ@quizfile\relax\else\xdef\MQ@quizfile{\jobname.tex}\fi
-
-% the names of the next three macros are chosen so as to be compatible with sms-uos.sty
+% Macros for defining the quiz web breadcrumbs using the unit code, name and
+% URL. The names of these macros are chosen so as to be compatible with the
+% in-house SMS package sms-uos.sty that specifies these for all units.
 \newcommand*{\UnitCode}[1]{\def\uos@code{#1}}
 \newcommand*{\UnitName}[1]{\def\uos@name{#1}}
 \newcommand*{\UnitURL}[1]{\def\uos@url{#1}}
 \newcommand*{\QuizzesURL}[1]{\def\MQ@quizzesUrl{#1}}
 \newcommand*{\BreadCrumb}[1]{\def\MQ@breadCrumb{#1}}
+
+% Trickery to set the breadcrumb equal to the portion of the title before
+% a colon in the title...I can't remember but [resumably this is used in
+% some of the SMS quizzes.
 \def\MQ@SetBreadCrumb#1:#2!{\def\MQ@breadCrumb{#1}}
 \def\title#1{\def\@title{#1}\MQ@SetBreadCrumb#1:!}
+
+% Default values - the university and department defaults can also be
+% set in the mathquizrc file. The main purpose of these defaults is
+% to remind the user to set them.
 \UnitCode{Unit code???}
 \UnitName{Unit name???}
 \UnitURL{Unit URL???}
 \QuizzesURL{}
 \BreadCrumb{Crumbs???}
-\def\@title{No title}
+\Department{School of Mathematics and Statistics}
+\DepartmentURL{/}
+\University{University of Sydney}
+\UniversityURL{https://www.sydney.edu.au}
+
+% Define page header and footer for the printable version of the quiz
+% to show the course code information.
 \def\ps@quiz{\ps@empty
   \def\@oddhead{\hbox to\textwidth{%
       \uos@code\hss\textsc{\@title}\hss Page \thepage}}%
@@ -79,20 +100,27 @@
       }}
   }
 }
-\AtBeginDocument{\thispagestyle{firstpage}}
 \pagestyle{quiz}
-\def\MQ@error{\PackageError{mathquiz}}
-\def\maketitle{\vspace*{10mm}\begin{center}
+
+
+%
+\def\@title{No title}
+\def\maketitle{\vspace*{10mm}
+  \begin{center}
     {\large\textsc{\@title}}%
   \end{center}
-\def\title{%
-  \MQ@error{\@backslashchar title can only be used in the preamble}%
+  \def\title{%
+    \MQ@error{\@backslashchar title can only be used in the preamble}%
   \@ehc}
 }
+
 \AtBeginDocument{%
+  \thispagestyle{firstpage}
   \maketitle%
   \ifx\MQ@quizzesUrl\@empty\QuizzesURL{\uos@url/Quizzes/}\else\relax\fi%
 }
+
+% deifne a quiz counter for keeping track of the question numbers
 \newcounter{quiz}
 \newcommand{\quiz}[2][\relax]{\refstepcounter{quiz}%
   \ifx#1\relax\def\MQ@url{./quiz\thequiz.html}%
@@ -102,14 +130,14 @@
   \phantom{XXX}\textit{URL}:\quad \MQ@url}
 \newenvironment{quizlist}{\bigskip}{}
 \newenvironment{discussion}[1][Discussion]{\textbf{#1}\newline}{\par\bigskip}
-\def\MQ@complain#1#2{%
-  \MQ@error{\noexpand#1 required in Question \number#2}\@ehc
-}
+
+% As
 \newif\ifInQuestion
 \newif\ifInChoice
 \newif\ifInItem
 \newif\ifInAnswer
 \newif\ifHaveResponse
+
 \newcounter{question}
 \newenvironment{question}{\bigskip%
   \refstepcounter{question}

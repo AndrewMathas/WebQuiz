@@ -67,7 +67,7 @@ class MathQuizCtan(build_py):
     It is necessary to subclass setuptools.command but, in fact, we do not use
     anything from setuptools.
     """
-    ctanupload_data = {
+    ctan_data = {
         'contribution' : settings.program,
              'version' : settings.version,
                 'name' : settings.authors,
@@ -80,15 +80,38 @@ class MathQuizCtan(build_py):
          'freeversion' : 'gpl',
                 'file' : 'mathquiz.zip',
     }
-    # (source target) pairs for directories to be copied
+
     def run(self):
         # write the zip file for uploading to ctan
         self.write_zip_file()
 
         # upload the zip file to ctan using ctanupload
-        subprocess.call('ctanupload -v {options}'.format(
-             options = ' '.join('--{}="{}"'.format(key, val) for (key, val) in self.ctanupload_data.items())
-        ), shell = True)
+        subprocess.call('ctanupload -v {options}'.format(options = ' '.join('--{}="{}"'.format(key, val) for key,val in self.ctan_data.items())),
+                        shell=True
+        )
+
+    def shell_command(self, cmd):
+        r'''
+        Run the system command `cmd` and print any output to stdout indented
+        by two spaces.
+        '''
+        print('Executing {}'.format(cmd))
+        for line in  subprocess.getoutput(cmd).split('\n'):
+            if line.strip() != '':
+                print('  {}'.format(line.rstrip()))
+
+    def build_files_for_zipping(self):
+        r'''
+        Rebuilds the documentation files and css for inclusion in the zip file:
+            - doc/mathquiz-manual.tex
+            - doc/mathquiz.tex
+            - css/mathquiz.css
+        to ensure that they are correct for the ctan upload. We need to make
+        mathquiz-manual.pdf first because it is included in mathquiz.pdf.
+        '''
+        self.shell_command('cd css && sass mathquiz.scss mathquiz.css')
+        self.shell_command('cd doc && latex --interaction=batchmode mathquiz-manual && dvipdf mathquiz-manual')
+        self.shell_command('cd doc && pdflatex --interaction=batchmode mathquiz')
 
     def write_zip_file(self):
         r'''
@@ -99,6 +122,8 @@ class MathQuizCtan(build_py):
         # if the ctan directory already exists then delete it
         if os.path.isfile('mathquiz.zip'):
             os.remove('mathquiz.zip')
+
+        self.build_files_for_zipping()
 
         # save the files as a TDS (Tex directory standard) zip file
         with zipfile.ZipFile('mathquiz.zip', 'w', zipfile.ZIP_DEFLATED) as zfile:
@@ -112,12 +137,14 @@ class MathQuizCtan(build_py):
                                    ('javascript/mathquiz.js', 'scripts/mathquiz/www'),
                                    ('css/mathquiz.css', 'scripts/mathquiz/www'),
                                    ('doc/*.tex', 'scripts/mathquiz/www/doc'),
-                                   ('doc/*.pdf', 'scripts/mathquiz/www/doc'),
+                                   ('doc/mathquiz*.pdf', 'scripts/mathquiz/www/doc'),
+                                   ('doc/mathquiz*.pdf', 'scripts/mathquiz/www/doc'),
+                                   ('doc/*.png', 'scripts/mathquiz/www/doc'),
+                                   ('mathquiz/mathquiz.ini', 'scripts/mathquiz/www/doc'),
                                    ('LICENCE', 'scripts'),
                                   ]:
                 for file in glob.glob(src):
                     zfile.write(file, os.path.join('mathquiz', target, file.split('/')[-1]))
-
 
 setup(name             = settings.program,
       version          = settings.version,

@@ -10,6 +10,7 @@
     2002/11/26 Version 2.0
     2001/03/21 Version 1.2
 
+    2017: No longer used....
 -->
 <!ENTITY % xhtml SYSTEM "xhtml-core.dtd">
 
@@ -62,10 +63,10 @@
 >
 <!ELEMENT item (text,response?)>
 <!ATTLIST item expect (true|false) #REQUIRED>
-<!ELEMENT answer (tag?,whenRight,whenWrong)>
+<!ELEMENT answer (tag?,when)_right,when_wrong)>
 <!ATTLIST answer value CDATA #REQUIRED>
 <!ELEMENT tag (#PCDATA)>
 <!ELEMENT text %Flow;>
 <!ELEMENT response %Flow;>
-<!ELEMENT whenRight %Flow;>
-<!ELEMENT whenWrong %Flow;>
+<!ELEMENT when_right %Flow;>
+<!ELEMENT when_wrong %Flow;>

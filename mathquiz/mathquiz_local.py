@@ -28,6 +28,7 @@ def write_web_page(quiz):
                quiz_header    = quiz.quiz_header,                     # quiz title + navigation arrows
                quiz_questions = quiz.quiz_questions,                  # html for quiz
                no_script      = no_script,                            # error when javascript is not enabled
+               mathquiz_init  = quiz.mathquiz_init                    # parting javascript callsMathQuizInt
     )
 
 quiz_page = r'''<!DOCTYPE HTML>
@@ -44,6 +45,7 @@ quiz_page = r'''<!DOCTYPE HTML>
     {side_menu}
     {quiz_header}
     {quiz_questions}
+    {mathquiz_init}
   </div>
 </body>
 </html>

@@ -20,7 +20,7 @@ r'''
 ## The quiz web pages are built using the following "template" strings
 
 # html meta statements
-html_meta = r'''  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+html_meta = r'''<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width">
   <meta name="generator" content="MathQuiz {version} (http://www.maths.usyd.edu.au/u/MOW/MathQuiz/doc/mathquiz-manual.html)">
   <meta name="description" content="{description}">
@@ -28,21 +28,34 @@ html_meta = r'''  <meta http-equiv="Content-Type" content="text/html; charset=ut
   <meta name="organization" content="{department}, {university}">
   <meta name="Copyright" content="MathQuiz: {copyright}">
   <meta name="keywords" content="mathquiz, TeX4ht, make4ht, latex, python, quiz, mathematics">
-  <link href="{MathQuizURL}/mathquiz.css" type="text/css" rel="stylesheet">
+  <link href="{mathquiz_url}/mathquiz.css" type="text/css" rel="stylesheet">
   <link href="{quiz_file}/{quiz_file}.css" type="text/css" rel="stylesheet">
 '''
 
 # javascript for setting up the questions
-questions_javascript = r'''  <script type="text/javascript" src="{MathQuizURL}/mathquiz.js"></script>
+questions_javascript = r'''  <script type="text/javascript" src="{mathquiz_url}/mathquiz.js"></script>
   <script type="text/javascript" src="quiztitles.js"></script>
   <script type="text/javascript" src="{mathjax}?config=MML_CHTML"></script>
-  <script type="text/javascript">MathQuizInit({qTotal}, {dTotal}, '{quiz_file}');</script>
 '''
+
+mathquiz_init=r'''<div style="display: none;">
+    <script type="text/javascript">MathQuizInit({qTotal}, {dTotal}, '{quiz_file}');</script>
+  </div>'''
 
 mathjax = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/'
 
+# Bread crumbs including a drop down menu for all of the quizzes for the unit.
+# The drop_down_menu is added by create_drop_down_menu() in maghquiz.js
 bread_crumbs = r'''<div class="bread_crumbs">
-    <a href="{url}">{code}</a> / <a href="{quizzes}">Quizzes</a> / {title}
+    <ul>
+        <li><a href="{department_url}">{department}</a></li>
+        <li><a href="{url}">{code}</a></li>
+        <li><a href="{quizzes_url}">Quizzes</a>
+           <ul id="drop_down_menu">
+           </ul>
+        </li>
+        <li>{bread_crumb}</li>
+    </ul>
   </div>'''
 
 # question buttons
@@ -54,7 +67,6 @@ side_menu = r'''<div class="side_menu">
         <span class="question_label">&nbsp;Questions&nbsp;</span>
         <br>{buttons}
       </div>
-      <div></div>
       <table class="marking_key">
          <tr><td></td><td></td></tr>
          <tr><td style="color: #FFCC00; font-size:small;">&starf;</td><td>right first<br>attempt</td></tr>
@@ -110,7 +122,7 @@ question_wrapper='''      <div id="question{qnum}" class="question" {display}>
 '''
 question_text='''  {question}
       <form id="Q{qnum}Form" onSubmit="return false;" class="question">
-        {questionOptions}
+        {question_options}
         <p>
           <input type="button" value="Check Answer" name="answer" class="input_button" onClick="checkAnswer();"/>
           <input type="button" value="Next Question" class="input_button" title="Next unanswered question" name="next" onClick="nextQuestion(1);"/>
@@ -200,7 +212,7 @@ initialise_warning='''<div class="warning">
 '''
 
 permission_error='''
-You do not have permission to write to the directory {}.
+You do not have permission to write tou {}.
 To install MathQuiz files into this directory you probably need to run this
 command using an administrator account, or sudo on linux/macosx.
 '''
@@ -218,4 +230,3 @@ no_script='''<noscript>
 mathquiz_help_message=r'''
 Mathquiz provides a way of writing on-line quizzes starting from a latex file.
 '''
-
