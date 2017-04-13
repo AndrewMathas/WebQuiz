@@ -288,54 +288,53 @@ div.response {
 
 /* question buttons */
 div.buttons {
-  width: 100%;
-  height: 100%;
-  margin-bottom: 6px;
+    width: 100%;
+    height: 100%;
+    margin-bottom: 6px;
 
-  div.button {
-    background-color: $ButtonBG;
-    border-radius: 5px;
-    color: $Text;
-    border: solid $ButtonBorder 2px;
-    display: table-cell;
-    float: left;
-    font-size: 12px;
-    font-weight: normal;
-    height:     30px;
-    line-height: 30px; /* needed so that float does not break vertical alignment */
-    margin-left: 5px;
-    margin-top: 5px;
-    position: relative;
-    text-align: center;
-    width:      30px;
-  }
-}
+    div.button {
+        background-color: $ButtonBG;
+        border-radius: 5px;
+        color: $Text;
+        border: solid $ButtonBorder 2px;
+        display: table-cell;
+        float: left;
+        font-size: 12px;
+        font-weight: normal;
+        height:     30px;
+        /* needed so that float does not break vertical alignment */
+        line-height: 30px; 
+        margin-left: 5px;
+        margin-top: 5px;
+        position: relative;
+        text-align: center;
+        width:      30px;
+    }
 
-/* javascript cannot access the css of pseudo elements, so we put the button
- * content inside a span coloured black. It theory it would be easier to
- * make the button label equal to the content and the marker the innerHTML
- * for the div but I could not figure out how to align everything properly
- * this way.
- */
-div.button span {
-  color: $Text;
-  text-decoration: none;
-}
+    /* javascript cannot access the css of pseudo elements, so we put the button
+     * content inside a span coloured black. It theory it would be easier to
+     * make the button label equal to the content and the marker the innerHTML
+     * for the div but I could not figure out how to align everything properly
+     * this way.
+     */
+    div.button span {
+        color: $Text;
+        text-decoration: none;
+    }
 
-
-div.button:hover {
-  border: solid $ButtonHover 2px !important;
-  text-decoration: underline !important;
-}
-div.button:after {
-  bottom: -35%;
-  content: attr(content);
-  height: 100%;
-  position: absolute;
-  width: 100%;
-  right: -35%;
-  clear: right;
-}
+    div.button:hover {
+        border: solid $ButtonHover 2px !important;
+        text-decoration: underline !important;
+    }
+    div.button:after {
+        bottom: -35%;
+        content: attr(content);
+        height: 100%;
+        position: absolute;
+        width: 100%;
+        right: -35%;
+        clear: right;
+    }
 
     div.button-selected {
         border: solid $ButtonSelected 2px !important;
@@ -343,17 +342,17 @@ div.button:after {
 }
 
 input.input_button {
-  background-color: $ButtonBG;
-  border: solid $ButtonBorder 2px;
-  border-radius: 5px;
-  margin-right: 40px;
+    background-color: $ButtonBG;
+    border: solid $ButtonBorder 2px;
+    border-radius: 5px;
+    margin-right: 40px;
     padding-right: 0 4px 0 4px;
 }
 /* warning messages - for the noscript error */
 div.warning {
-  background-color: $WarningBG;
-  border: 2px solid $WarningBorder;
-  color: $WarningFG;
+    background-color: $WarningBG;
+    border: 2px solid $WarningBorder;
+    color: $WarningFG;
 }
 
 /* Drop down menu for quiz list modified from http://www.mrc-productivity.com/techblog/?p=1049 */
@@ -383,31 +382,72 @@ div.bread_crumbs {
             -webkit-transition: all 0.2s;
             padding: 2px 4px 2px 18px;
             background: brown; /* fallback color */
-            background: hsla(48,100%,30%,1);
+            background: $Heading;
             position: relative;
             display: block;
             float: left;
+            color: $Text;
+
+            a {
+                text-decoration: none;
+                color: white;
+                display: contents;
+                -webkit-transition: all 0.5s;
+            }
+
+            ul {
+                display: none;  /* Hides the drop-down menu */
+                margin: 0; /* Aligns drop-down box underneath the menu item */
+                padding: 4px;
+                -webkit-transition: all 1s;
+               border: solid $ButtonBorder 4px;
+                border-radius: 5px;
+
+                li {
+                    width: 100%;
+                    text-align: left;
+                    -webkit-transition: height 0.5s;
+
+                    a { color: blue; }
+                }
+
+                li:first-child(1) { padding-top: 2px; }
+
+                // turn off "triangle" colouring inside the ul
+                li:nth-child(n) {
+                    background:   hsla(48,100%,93%,1);
+                    padding-left: 0px;
+                }
+                li:nth-child(n):after {
+                    border-left-color: hsla(48,100%,93%,1);
+                    border: 7px solid ;
+                }
+                li:hover { background: $ButtonBorder; }
+            }
         }
 
-        li, li a {
-            text-decoration: none;
-        }
-        // pseduo elements give the navigation triangles
-        li::after {
-              content: " ";
-              display: block;
-              width: 0;
-              height: 0;
-              border-top: 7px solid transparent;
-              border-bottom: 7px solid transparent;
-              border-left: 14px solid hsla(48,100%,30%,1);
-              position: absolute;
-              top: 50%;
-              margin-top: -7px;
-              left: 100%;
-              z-index: 99;
-        }
-        li::before {
+        li:hover { background-color: $ButtonBG; }
+        li a:hover { color: yellow; }
+    }
+
+    // pseduo elements give the navigation triangles
+    ul > li::after {
+          content: " ";
+          display: block;
+          width: 0;
+          height: 0;
+          border-top: 7px solid transparent;
+          border-bottom: 7px solid transparent;
+          border-left: 14px solid $Heading;
+          position: absolute;
+          top: 50%;
+          margin-top: -7px;
+          left: 100%;
+          z-index: 99;
+    }
+
+    // the white shadow of the triangles
+    ul > li::before {
           content: " ";
           display: block;
           width: 0;
@@ -421,73 +461,27 @@ div.bread_crumbs {
           margin-left: 2px;
           left: 100%;
           z-index: 98;
-        }
-        // We only have three levels of menus
-        li:nth-child(1){
-            background: hsla(48,100%,30%,1);
-            padding-left: 4px;
-        }
-        li:nth-child(1) A { color: white;}
-        li:nth-child(1):after { border-left-color: hsla(48,100%,30%,1); }
-
-        li:nth-child(2) { background: hsla(48,100%,70%,1); }
-        li:nth-child(2) A { color: hsla(48,100%,30%,1); }
-        li:nth-child(2):after { border-left-color: hsla(48,100%,70%,1); }
-
-        li:nth-child(3) { background: hsla(48,100%,93%,1); }
-        li:nth-child(3) A { color: blue; }
-        li:nth-child(3):after { border-left-color: hsla(48,100%,93%,1); }
-
-        li:nth-child(4) { background: white; }
-        li:nth-child(3) A { color: hsla(48,100%,30%,1); }
-        li:nth-child(4):after { border-left-color: white; }
-
-        li a {
-            text-decoration: none;  /* Removes the default hyperlink styling. */
-            display: contents;
-            -webkit-transition: all 0.5s;
-        }
-
-        li:hover, li a:hover { color: hsla(48,100%,30%,1); }
-
-        /* turn off highlighting for span elements inside li */
-        li span, li span:hover {
-            background-color: $ButtonBorder;
-        }
-
-        li ul {
-            display: none;  /* Hides the drop-down menu */
-            margin: 0; /* Aligns drop-down box underneath the menu item */
-            padding: 2px 2px 2px 2px;
-            -webkit-transition: all 1s;
-            background-color: #cc6600;
-            border: solid $ButtonBorder 2px;
-        }
-        li:hover ul {
-            display: block; /* Displays the drop-down boxon hover */
-        }
-        li ul li {
-            width: 100%;
-            padding: 0 2px 2 2px;
-            text-align: left;
-            -webkit-transition: height 0.5s;
-            padding: 2px 0px 2px 4px;
-            color: blue
-        }
-        li ul li:nth-child(1) { padding-top: 2px; }
-        li ul li A { padding: 2px 0px 2px 4px; }
-
-        // turn off "triangle" colouring above
-        li ul li:nth-child(n) {
-            background:   hsla(48,100%,93%,1);
-            padding-left: 0px;
-        }
-        li ul li:nth-child(n):after {
-            border-left-color: hsla(48,100%,93%,1);
-            border: 7px solid transparent;
-        }
-        li ul li:hover, li ul li a:hover {
-            background: $ButtonBorder;
-        }
     }
+
+        // We only have four levels of crumbs so we can style them individuality
+    ul > li:nth-child(1){
+          background: $Heading;
+          padding-left: 4px;
+    }
+
+    ul > li:nth-child(1):after { border-left-color: $Heading; }
+
+    ul > li:nth-child(2) { background: $ButtonSelected; }
+    ul > li:nth-child(2):after { border-left-color: $ButtonSelected; }
+
+    ul > li:nth-child(3) { background: $ButtonBorder; }
+    ul > li:nth-child(3):after { border-left-color: $ButtonBorder; }
+
+    ul > li:nth-child(4) { background: $ButtonBG; }
+    ul > li:nth-child(4):after { border-left-color: $ButtonBG; }
+
+    ul > li:nth-child(4) A:hover { color: $Heading; }
+
+    /* Displays the drop-down menu on hover */
+    ul > li:hover ul { display: block; }
 }

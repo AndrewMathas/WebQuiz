@@ -21,11 +21,11 @@ r'''
 from mathquiz_templates import no_script
 from wp import processtemplate as sms_write_page
 
-sms_quiz_specifications = '  <script type="text/javascript">var QuizURI="{}Quzzes";var QuizContents="{}";</script>\n'
+sms_quiz_specifications = '  <script type="text/javascript">var QuizURI="{}/Quizzes";var QuizContents="{}";</script>\n'
 sms_research_menu  = '  <script type="text/javascript" src="/u/SMS/web2015/js/ResearchSubmenu.js"></script>\n'
 sms_qsubmenu = '  <script type="text/javascript" src="/u/SMS/web2015/js/QSubmenu.js"></script>\n'
 sms_course_qsubmenu = '  <script type="text/javascript" src="/u/SMS/web2015/js/CourseQSubmenu.js"></script>\n'
-quiz_titlesx= r'''// construct customMenu for the fancy pull-down menu on narrow screens
+custom_menu= r'''// construct customMenu for the fancy pull-down menu on narrow screens
 var customMenu='<ul role="menu" class="togglemenu" style="height:0px; transition:height 1s;">\n'
 for (q=0; q<QuizTitles.length; q++) {
     if (thisPage != QuizTitles[q][1]) {
@@ -98,10 +98,10 @@ def SMS_breadcrumbs(doc):
 
 # the left side menu
 def SMS_menu(doc):
-    # append the quiz_titlesx string to the quiztitles.js
+    # append the custom_menu string to the quiztitles.js
     if len(doc.quiz.quiz_list)>0:
         with open('quiztitles.js','a') as quiztitles:
-            quiztitles.write('\n'+quiz_titlesx)
+            quiztitles.write('\n'+custom_menu)
 
     menu = ''
     if len(doc.quiz.course['name'])>0:
@@ -132,7 +132,7 @@ def write_web_page(doc):
     for (key, value) in [('CODE','QUIZ'),
                          ('menuname', sms_menu_name),
                          ('pagetitle', doc.title), ('title',''),
-                         ('no-compmenu', 'y'),
+                         ('extrajsmenu','mathquiztitles'),
                          ('tablevel', 'internal' if doc.quiz_file in ['mathquiz-manual','credits'] else '')]:
       page['UNIT_OF_STUDY,'+key] = value
 

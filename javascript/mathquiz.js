@@ -215,5 +215,5 @@ function create_drop_down_menu() {
        drop_down.appendChild(quiz_link);
        max = Math.max(max, QuizTitles[q][0].length)
     }
-    drop_down.style.width = Math.round(0.8*max)+'ex'
+    drop_down.style.width = Math.round(max)+'ex'
 }
