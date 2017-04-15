@@ -45,301 +45,276 @@
 
 /* container for the full quiz page */
 div.quiz_page {
-  float: none !important;
-  margin: 0 auto !important;
-  max-width: 90%;
-  min-width:620px;
-    padding-top: 10px;
+    position: absolute;
+    left: 6%;
+    top: 26px;
+    width: 90%;
+    margin-top: 16px;
 }
 
 /* side menu with question buttons and copyright message */
 div.side_menu {
-  float: left;
-  font-size: 10px;
-  font-weight: normal;
-  height: 100%;
-  margin-right: 20px;
-  overflow: auto;
-  padding-left: 1%;
-  width: 100px;
-
-  > div {
-    color: $Heading;
-    font-family: $HeadingFont;
-    font-size: 12px;
-    font-weight: bold;
-    margin-bottom: 0.8ex;
-  }
-
-  ul {
-      list-style: none;
-      padding-left: 0;
-
-      li {
-        color: $Text;
-        font-size: 14px;
-        text-align: left;
-        white-space: nowrap;
-      }
-
-      li:before {
-        color: $Heading;
-        content: $ListMarker;
-        padding-left: 0;
-        padding-right: 1ex;
-      }
-  }
-
-  table.marking_key {
-    margin-left: 2px;
-    clear: left;
-  }
-
-  table.marking_key > tr td {
-    padding-right: 2px !important;
-  }
-
-  div.school {
-    font-family: arial, verdana, helvetica;
+    float: left;
+    font-size: 10px;
     font-weight: normal;
-    font-size: x-small;
-    color: $School;
-    text-align: center;
-    padding: 10px 0px 0px 0px;
-
-    A, A:link, A:visited {
-      font-family: arial, verdana, helvetica;
-      font-weight: normal;
-      font-size: x-small;
-      color: $School;
-      text-align: center;
-      padding: 10px 0px 0px 0px;
-    }
-  }
-
-  div.copyright {
-    font-family: arial, verdana, helvetica;
-    font-size: x-small;
-    font-weight: normal;
-    text-align: center;
-    color: $Text;
-  }
-  div.copyright A, div.copyright A:link, div.copyright A:visited {
-    text-decoration: none;
-    color: $MathQuiz;
-    font-weight: bold;
-  }
-
-}
-
-span.question_label {
-  color: $Subheading;
-  font-size: 12px;
-  font-variant: small-caps;
-  font-weight: normal;
-  margin-bottom: 10px;
-  text-align: left;
-}
-
-/* container for the quiz questions, answers and responses */
-div.quiz_questions{
-  padding-top: 8px;
-  display: block;
-  min-width: 600px;
-}
-div.quiz_header {
-  padding-top: 12px;
-  padding-right: 1%;
-
-  h1 {
-    color: $Heading;
-    font-size: 36px;
-    font-weight: 600;
-    font-weight: bold;
-    position: static;
-    text-align: center;
-    text-transform: uppercase;
-  }
-
-  div.quiz_title {
-    color: $Heading;
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-weight: bold;
-    margin-bottom: 0.8ex;
-  }
-
-  span.arrows {
-    color: $Subheading;
-    float: right;
-    right: 5%;
-    font-size: 12px;
     margin-right: 20px;
-  }
+    overflow: auto;
+    width: 100px;
 
-  span.arrows A {
-      text-decoration: none !important;
-  }
-  span.arrows A {
-    color: $Subheading;
-    font-size: 12px;
-  }
-  span.arrows A:hover {
-      color: $ArrowHover;
-      text-decoration: underline;
-  }
-}
-
-div.quiz_list {
-    color: $Heading;
-    font-family: Arial, Helvetica, sans-serif;
-    text-decoration: none;
-    text-align: left;
+    > div {
+        color: $Heading;
+        font-family: $HeadingFont;
+        font-size: 12px;
+        font-weight: bold;
+        margin-bottom: 0.8ex;
+    }
 
     ul {
-        list-style: none !important;
+        list-style: none;
+        padding-left: 0;
+
+        li {
+            color: $Text;
+            font-size: 14px;
+            text-align: left;
+            white-space: nowrap;
+        }
 
         li:before {
-            content: $ListMarker;
             color: $Heading;
+            content: $ListMarker;
             padding-left: 0;
             padding-right: 1ex;
         }
-        li {
-          list-style-image: none !important;
-          overflow: visible;
-        }
-        li:hover {
-            color: $Subheading;
-        }
-    }
-}
-
-
-/* specifications for the divs containing questions, answers and responses */
-div.question {
-  position: relative;
-  display: none;
-  margin: 0;
-
-  form {
-    padding: 10px 0 0 0;
-
-    table tr {
-      vertical-align: top;
-
-      td {
-        vertical-align: top;
-      }
-    }
-  }
-}
-div.question_choices {
-  padding-left:10px;
-  padding-right:15px;
-  text-align: left;
-}
-table.question_choices td {
-  padding-right: 0;
-  vertical-align: baseline;
-}
-table.question_choices td:nth-child(3n+1) {
-  padding-right: 6px;
-}
-td.brown {
-  color: $QuestionPart;
-}
-div.response {
-  background-color: $ResponseBG;
-  border: solid $ResponseBorder 2px;
-  border-radius: 5px;
-  display: none;
-  padding: 1ex;
-
-  div {
-    text-align: left;
-    color: $Text;
-  }
-
-  ol {
-
-    counter-reset: list;
-    list-style-type: none;
-    margin: 0;
-    padding: 0 !important;
-
-    li:before {
-      color: $QuestionPart;
-      content: counter(list, lower-latin) ") ";
-      counter-increment: list;
-      padding: 0 0 0 0;
     }
 
-    li {
-      text-align: left;
-      color: $Text;
-      padding-right: 2em;
-
-      em {
-          color: $Dazzle;
-      }
-    }
-  }
-}
-
-/* question buttons */
-div.buttons {
-    width: 100%;
-    height: 100%;
-    margin-bottom: 6px;
-
-    div.button {
-        background-color: $ButtonBG;
-        border-radius: 5px;
-        color: $Text;
-        border: solid $ButtonBorder 2px;
-        display: table-cell;
-        float: left;
-        font-size: 12px;
-        font-weight: normal;
-        height:     30px;
-        /* needed so that float does not break vertical alignment */
-        line-height: 30px; 
-        margin-left: 5px;
-        margin-top: 5px;
-        position: relative;
-        text-align: center;
-        width:      30px;
-    }
-
-    /* javascript cannot access the css of pseudo elements, so we put the button
-     * content inside a span coloured black. It theory it would be easier to
-     * make the button label equal to the content and the marker the innerHTML
-     * for the div but I could not figure out how to align everything properly
-     * this way.
-     */
-    div.button span {
-        color: $Text;
-        text-decoration: none;
-    }
-
-    div.button:hover {
-        border: solid $ButtonHover 2px !important;
-        text-decoration: underline !important;
-    }
-    div.button:after {
-        bottom: -35%;
-        content: attr(content);
-        height: 100%;
-        position: absolute;
+    /* question buttons */
+    div.buttons {
         width: 100%;
-        right: -35%;
-        clear: right;
+        height: 100%;
+        margin-bottom: 6px;
+        display: table;
+
+        div.button {
+            background-color: $ButtonBG;
+            border-radius: 5px;
+            color: $Text;
+            border: solid $ButtonBorder 2px;
+            display: table-cell;
+            float: left;
+            font-size: 12px;
+            font-weight: normal;
+            height:     30px;
+            /* needed so that float does not break vertical alignment */
+            line-height: 30px;
+            margin-left: 5px;
+            margin-top: 5px;
+            position: relative;
+            text-align: center;
+            width:      30px;
+        }
+
+        /* javascript cannot access the css of pseudo elements, so we put the button
+         * content inside a span coloured black. It theory it would be easier to
+         * make the button label equal to the content and the marker the innerHTML
+         * for the div but I could not figure out how to align everything properly
+         * this way.
+         */
+        div.button span {
+            color: $Text;
+            text-decoration: none;
+        }
+
+        div.button:hover {
+            border: solid $ButtonHover 2px !important;
+            text-decoration: underline !important;
+        }
+        div.button:after {
+            bottom: -35%;
+            content: attr(content);
+            height: 100%;
+            position: absolute;
+            width: 100%;
+            right: -35%;
+            clear: right;
+        }
+
+        div.button-selected {
+            border: solid $ButtonSelected 2px !important;
+        }
     }
 
-    div.button-selected {
-        border: solid $ButtonSelected 2px !important;
+    table.marking_key {
+        margin-left: 2px;
+        clear: left;
+    }
+
+    table.marking_key > tr td { padding-right: 2px !important; }
+
+    div.school {
+        font-family: arial, verdana, helvetica;
+        font-weight: normal;
+        font-size: x-small;
+        color: $School;
+        text-align: center;
+        padding: 10px 0px 0px 0px;
+
+        A, A:link, A:visited {
+            font-family: arial, verdana, helvetica;
+            font-weight: normal;
+            font-size: x-small;
+            color: $School;
+            text-align: center;
+            padding: 10px 0px 0px 0px;
+        }
+    }
+
+    div.copyright {
+        font-family: arial, verdana, helvetica;
+        font-size: x-small;
+        font-weight: normal;
+        text-align: center;
+        color: $Text;
+    }
+    div.copyright A, div.copyright A:link, div.copyright A:visited {
+        text-decoration: none;
+        color: $MathQuiz;
+        font-weight: bold;
     }
 }
+
+span.question_label {
+    color: $Subheading;
+    font-size: 12px;
+    font-variant: small-caps;
+    font-weight: normal;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+/* container for the quiz questions, answers and responses */
+div.quiz_questions {
+    display: grid;
+
+    div.quiz_header {
+        padding-right: 1%;
+
+        div.quiz_title {
+            color: $Heading;
+            font-family: Verdana, Arial, Helvetica, sans-serif;
+            font-weight: bold;
+            margin-bottom: 0.8ex;
+            min-width: 400px;
+        }
+
+        span.arrows {
+            color: $Subheading;
+            float: right;
+            right: 5%;
+            font-size: 12px;
+            margin-right: 20px;
+        }
+
+        span.arrows A { text-decoration: none !important; }
+        span.arrows A {
+            color: $Subheading;
+            font-size: 12px;
+        }
+        span.arrows A:hover {
+            color: $ArrowHover;
+            text-decoration: underline;
+        }
+    }
+
+    div.quiz_list {
+        color: $Heading;
+        font-family: Arial, Helvetica, sans-serif;
+        text-decoration: none;
+        text-align: left;
+
+        ul {
+            list-style: none !important;
+
+            li:before {
+                content: $ListMarker;
+                color: $Heading;
+                padding-left: 0;
+                padding-right: 1ex;
+                margin-left: -1em;
+            }
+            li {
+                list-style-image: none !important;
+                overflow: visible;
+            }
+            li:hover { color: $Subheading; }
+        }
+    }
+
+
+    /* specifications for the divs containing questions, answers and responses */
+    div.question {
+        position: relative;
+        display: none;
+        margin: 0;
+
+        form {
+            padding: 10px 0 0 0;
+
+            table tr {
+                vertical-align: top;
+
+                td { vertical-align: top; }
+            }
+        }
+        div.question_choices {
+            padding-left:10px;
+            padding-right:15px;
+            text-align: left;
+        }
+        table.question_choices td {
+            padding-right: 0;
+            vertical-align: baseline;
+        }
+        table.question_choices td:nth-child(3n+1) { padding-right: 6px; }
+        td.brown { color: $QuestionPart; }
+        div.response {
+            background-color: $ResponseBG;
+            border: solid $ResponseBorder 2px;
+            border-radius: 5px;
+            display: none;
+            padding: 1ex;
+
+            div {
+                text-align: left;
+                color: $Text;
+            }
+
+            ol {
+
+                counter-reset: list;
+                list-style-type: none;
+                margin: 0;
+                padding: 0 !important;
+
+                li:before {
+                    color: $QuestionPart;
+                    content: counter(list, lower-latin) ") ";
+                    counter-increment: list;
+                    padding: 0 0 0 0;
+                }
+
+                li {
+                    text-align: left;
+                    color: $Text;
+                    padding-right: 2em;
+
+                    em { color: $Dazzle; }
+                }
+            }
+        }
+    }
+}
+
 
 input.input_button {
     background-color: $ButtonBG;
@@ -356,35 +331,32 @@ div.warning {
 }
 
 /* Drop down menu for quiz list modified from http://www.mrc-productivity.com/techblog/?p=1049 */
-div.bread_crumbs {
-    margin: 0 auto !important;
-    max-width: 90%;
+nav.bread_crumbs {
+    margin: 0 auto;
+    padding: 4px 0 4px 0;
     height: 20px;
-    margin: 0; /* Ensures there is no space between sides of the screen and the menu */
-    z-index: 99; /* Makes sure that your menu remains on top of other page elements */
-    position: relative;
-    border-radius: 5px;
-    padding: 4px;
+    z-index: 99;
+    position: absolute;
+    left: 5%;
+    top: 10px;
     font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
     font-size: 9px;
     font-weight: bold;
     min-width: 600px;
 
     ul {
-        padding: 0;
         margin: 0;
+        list-style-type: none;
         position: absolute; /* Ensures that the menu doesn’t affect other elements */
+        padding: 0;
 
         li {
             text-align: center;  /* All text is placed in the center of the box */
-            list-style: none;  /* Removes the default styling (bullets) for the list */
             margin: 0;
             -webkit-transition: all 0.2s;
             padding: 2px 4px 2px 18px;
-            background: brown; /* fallback color */
-            background: $Heading;
+            background-color: $Heading;
             position: relative;
-            display: block;
             float: left;
             color: $Text;
 
@@ -392,25 +364,31 @@ div.bread_crumbs {
                 text-decoration: none;
                 color: white;
                 display: contents;
+                padding: 5px;
                 -webkit-transition: all 0.5s;
             }
 
             ul {
                 display: none;  /* Hides the drop-down menu */
                 margin: 0; /* Aligns drop-down box underneath the menu item */
-                padding: 4px;
+                padding: 0px;
                 -webkit-transition: all 1s;
-               border: solid $ButtonBorder 4px;
+                border: solid $ButtonBorder 4px;
                 border-radius: 5px;
 
                 li {
                     width: 100%;
                     text-align: left;
                     -webkit-transition: height 0.5s;
+                    padding: 0;
 
-                    a { color: blue; }
+                    a { 
+                      color: blue; 
+                      padding: 2px;
+                    }
                 }
 
+                li::after { content:none;}
                 li:first-child(1) { padding-top: 2px; }
 
                 // turn off "triangle" colouring inside the ul
@@ -422,7 +400,10 @@ div.bread_crumbs {
                     border-left-color: hsla(48,100%,93%,1);
                     border: 7px solid ;
                 }
-                li:hover { background: $ButtonBorder; }
+                li:hover {
+                    background: $ButtonBorder;
+                    color: red;
+                }
             }
         }
 
@@ -432,7 +413,7 @@ div.bread_crumbs {
 
     // pseduo elements give the navigation triangles
     ul > li::after {
-          content: " ";
+          content: "";
           display: block;
           width: 0;
           height: 0;
@@ -448,7 +429,7 @@ div.bread_crumbs {
 
     // the white shadow of the triangles
     ul > li::before {
-          content: " ";
+          content: "";
           display: block;
           width: 0;
           height: 0;
@@ -480,8 +461,36 @@ div.bread_crumbs {
     ul > li:nth-child(4) { background: $ButtonBG; }
     ul > li:nth-child(4):after { border-left-color: $ButtonBG; }
 
-    ul > li:nth-child(4) A:hover { color: $Heading; }
-
     /* Displays the drop-down menu on hover */
     ul > li:hover ul { display: block; }
+}
+
+
+div.menu_icon { 
+  display: hidden; 
+  float:left;
+  color: $Heading;
+  text-decoration: none;
+  margin-right: 0.8ex;
+  font-family: Verdana, Arial, Helvetica, sans-serif !important;
+  font-weight: bold !important;
+  font-size: 14px !important;
+}
+
+div.menu_icon:hover { 
+    color: yellow;
+    background-color: $Heading;
+    width: 1em;
+    border-radius: 3px;
+}
+
+/*MEDIA QUERIES*/
+@media only screen and (max-width : 600px) {
+    div.menu_icon { display: inline-block;}
+    div.side_menu { display: none; }
+}
+
+@media only screen and (min-width : 601px) {
+    div.side_menu { display: block; }
+    div.menu_icon { display: none; }
 }

@@ -21,7 +21,11 @@ r'''
 from mathquiz_templates import no_script
 from wp import processtemplate as sms_write_page
 
-sms_quiz_specifications = '  <script type="text/javascript">var QuizURI="{}/Quizzes";var QuizContents="{}";</script>\n'
+sms_quiz_specifications = '''  <script type="text/javascript">
+    var QuizURI="{}/Quizzes";
+    var QuizContents="{}"i
+</script>
+'''
 sms_research_menu  = '  <script type="text/javascript" src="/u/SMS/web2015/js/ResearchSubmenu.js"></script>\n'
 sms_qsubmenu = '  <script type="text/javascript" src="/u/SMS/web2015/js/QSubmenu.js"></script>\n'
 sms_course_qsubmenu = '  <script type="text/javascript" src="/u/SMS/web2015/js/CourseQSubmenu.js"></script>\n'

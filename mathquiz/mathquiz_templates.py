@@ -46,7 +46,7 @@ mathjax = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/'
 
 # Bread crumbs including a drop down menu for all of the quizzes for the unit.
 # The drop_down_menu is added by create_drop_down_menu() in maghquiz.js
-bread_crumbs = r'''<div class="bread_crumbs">
+bread_crumbs = r'''<nav class="bread_crumbs">
     <ul>
         <li><a href="{department_url}">{department}</a></li>
         <li><a href="{url}">{code}</a></li>
@@ -56,13 +56,13 @@ bread_crumbs = r'''<div class="bread_crumbs">
         </li>
         <li>{bread_crumb}</li>
     </ul>
-  </div>'''
+  </nav>'''
 
 # question buttons
 button  = r'        <div id="button{b}" class="button{cls}" content=" " onClick="gotoQuestion({b})">{b}</div>'
 discuss = r'        <li class="discussion" onClick="gotoQuestion(-{b})">{title}</li>'
-side_menu = r'''<div class="side_menu">
-      {discussion_list}
+side_menu = r'''<div class="menu_icon" onclick="toggle_side_menu_display();">&#9776;</div>
+    <div class="side_menu">{discussion_list}
       <div class="buttons">
         <span class="question_label">&nbsp;Questions&nbsp;</span>
         <br>{buttons}
@@ -78,7 +78,8 @@ side_menu = r'''<div class="side_menu">
         {university}
       </div>
       <div class="copyright">
-        <a href="http://www.maths.usyd.edu.au/u/MOW/MathQuiz/doc/credits.html">
+        <a href="http://www.maths.usyd.edu.au/u/MOW/Math:w
+        Quiz/doc/credits.html">
            MathQuiz {version}
         </a>
         <br>&copy; Copyright 2004-2017
@@ -87,19 +88,18 @@ side_menu = r'''<div class="side_menu">
 
 # quiz title and navigation arrows
 quiz_header='''{initialise_warning}<div class="quiz_header">
-      <div class="quiz_title">{title}</div><div></div>
-      <span id="question_number" class="question_label">{question_number}</span>
-      {arrows}
-    </div>
-'''
+        <div class="quiz_title">{title}</div><div></div>
+        <span id="question_number" class="question_label">{question_number}</span>
+        {arrows}
+      </div>'''
 navigation_arrows='''<span class="arrows">
-        <a onClick="nextQuestion(-1);" title="Previous unanswered question">&#x25c4;</a>
-        <span class="question_label">Questions</span>
-        <a onClick="nextQuestion(1);"  title="Next unanswered question">&#x25ba;</a>
-      </span>'''
+          <a onClick="nextQuestion(-1);" title="Previous unanswered question">&#x25c4;</a>
+          <span class="question_label">Questions</span>
+          <a onClick="nextQuestion(1);"  title="Next unanswered question">&#x25ba;</a>
+        </span>'''
 
 # discussion item
-discussion='''     <div id="question-{dnum}" class="question" {display}>
+discussion='''<div id="question-{dnum}" class="question" {display}>
         <p>{discussion.discussion}</p>{input_button}
       </div>
 '''
@@ -115,7 +115,7 @@ quiz_list='''     <div class="quiz_list">
 quiz_list_item='''<li><a href={url}>{title}</a></li>'''
 
 # now we come to the question wrappers
-question_wrapper='''      <div id="question{qnum}" class="question" {display}>
+question_wrapper='''<div id="question{qnum}" class="question" {display}>
       {question}
       {response}
       </div>
@@ -219,12 +219,12 @@ command using an administrator account, or sudo on linux/macosx.
 
 # no script error when javascript is not enabled
 no_script='''<noscript>
-      <div class="warning">
-        If you are reading this message either your browser does not support
-        JavaScript or because JavaScript is not enabled. You will need to enable
-        JavaScript and then reload this page in order to use this quiz.
-       </div>
-    </noscript>'''
+    <div class="warning">
+      If you are reading this message either your browser does not support
+      JavaScript or because JavaScript is not enabled. You will need to enable
+      JavaScript and then reload this page in order to use this quiz.
+     </div>
+  </noscript>'''
 
 # and now for the mathquiz help message
 mathquiz_help_message=r'''

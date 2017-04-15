@@ -680,7 +680,6 @@ class MakeMathQuiz(object):
                                       arrows = arrows
         )
 
-        self.quiz_questions = '  <div class="quiz_questions">\n'
         # now comes the main page text
         # discussion(s) masquerade as negative questions
         if len(self.quiz.discussion_list)>0:
@@ -719,8 +718,6 @@ class MakeMathQuiz(object):
                                                 response=self.print_responses(q,qnum+1))
                                 for (qnum,q) in enumerate(self.quiz.question_list)
           )
-
-        self.quiz_questions += '  </div>'
 
     def print_question(self, Q, Qnum):
         r'''Here:

@@ -43,8 +43,9 @@ quiz_page = r'''<!DOCTYPE HTML>
   {no_script}
   <div class="quiz_page">
     {side_menu}
-    {quiz_header}
-    {quiz_questions}
+    <div class="quiz_questions">
+      {quiz_header}
+      {quiz_questions}
   </div>
   {mathquiz_init}
 </body>
