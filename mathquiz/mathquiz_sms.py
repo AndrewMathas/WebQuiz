@@ -154,6 +154,8 @@ def SMS_menu(doc):
             heading = 'Manual contents' if doc.quiz_file=='mathquiz-manual' else \
                       'Discussion' if len(doc.quiz.discussion_list)>0 else ''
             menu = navigation_menu.format(menu=type, heading='' if heading=='' else '<li>{}</li>'.format(heading))
+        else:
+            menu = ''
     else:
         menu_name = "Current Students"
         menu = '[@@ URLplus=[^^~currentmenu^^] @@]\n'
