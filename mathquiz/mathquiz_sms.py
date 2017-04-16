@@ -20,6 +20,8 @@ r'''
 # -----------------------------------------------------
 from mathquiz_templates import no_script
 from wp import processtemplate as sms_write_page
+from mathquiz_templates import button, discuss
+from mathquiz import metadata
 
 sms_quiz_specifications = '''  <script type="text/javascript">
     var QuizURI="{}/Quizzes";
@@ -151,7 +153,7 @@ def SMS_menu(doc):
                 type="CourseQSubmenu"
             heading = 'Manual contents' if doc.quiz_file=='mathquiz-manual' else \
                       'Discussion' if len(doc.quiz.discussion_list)>0 else ''
-            menu = nav_menu.format(menu=type, heading='' if heading=='' else '<li>{}</li>'.format(heading))
+            menu = navigation_menu.format(menu=type, heading='' if heading=='' else '<li>{}</li>'.format(heading))
     else:
         menu_name = "Current Students"
         menu = '[@@ URLplus=[^^~currentmenu^^] @@]\n'
@@ -165,12 +167,8 @@ def SMS_menu(doc):
     buttons = '\n'+'\n'.join(button.format(b=q, cls=' button-selected' if len(doc.quiz.discussion_list)==0 and q==1 else '')
                                for q in range(1, doc.qTotal+1))
 
-   department = '<a href="/">School of Mathematics and Statistics</a>'
-   university = '<a href="https://sydney.edu.au">University of Sydney</a>'
-
-    if self.school['university_url']=='':
-        university = self.school['university']
-        else:
+    department = '<a href="/">School of Mathematics and Statistics</a>'
+    university = '<a href="https://sydney.edu.au">University of Sydney</a>'
 
     return menu_name, sms_side_menu.format(discussion_list=discussion_list,
                                           buttons=buttons,
@@ -188,9 +186,9 @@ def write_web_page(doc):
       breadcrumbs_string = SMS_breadcrumbs(doc),
       menu_string = sms_menu,
       page_body_string = sms_page_body.format(
-                         quiz_header = doc.quiz_header,
-                         quuiz_questions = doc.quiz_questions,
-                         mathquiz_init = doc.mathquiz_init
+                             quiz_header = doc.quiz_header,
+                             quiz_questions = doc.quiz_questions,
+                             mathquiz_init = doc.mathquiz_init
                          ),
       nopreview = ''
     )
