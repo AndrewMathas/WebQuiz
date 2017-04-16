@@ -78,8 +78,7 @@ side_menu = r'''<div class="menu_icon" onclick="toggle_side_menu_display();">&#9
         {university}
       </div>
       <div class="copyright">
-        <a href="http://www.maths.usyd.edu.au/u/MOW/Math:w
-        Quiz/doc/credits.html">
+        <a href="http://www.maths.usyd.edu.au/u/MOW/MathQuiz/doc/credits.html">
            MathQuiz {version}
         </a>
         <br>&copy; Copyright 2004-2017
