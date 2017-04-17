@@ -144,9 +144,7 @@ div.side_menu {
             clear: right;
         }
 
-        div.button-selected {
-            border: solid $ButtonSelected 2px !important;
-        }
+        div.button-selected { border: solid $ButtonSelected 2px; }
     }
 
     table.marking_key {
@@ -373,6 +371,7 @@ nav.bread_crumbs {
                 display: contents;
                 -webkit-transition: all 0.5s;
             }
+            span { color: $Heading; }
 
             ul {
                 display: none;  /* Hides the drop-down menu */
@@ -412,7 +411,7 @@ nav.bread_crumbs {
         }
 
         li:hover { background-color: $ButtonBG; }
-        li a:hover { color: yellow; }
+        li a:hover { color: $Subheading; }
     }
 
     // pseduo elements give the navigation triangles

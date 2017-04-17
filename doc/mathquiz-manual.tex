@@ -23,8 +23,11 @@
 \newcommand*{\vect}[1]{\mathbf{#1}}
 \newcommand{\MathQuiz}{\textbf{MathQuiz}}
 \UnitCode{MathQuiz}
-
 \UnitName{MathQuiz Manual}
+\UnitURL{}
+\BreadCrumb{MathQuiz on-line manual}
+\University{University of Sydney}
+\Department{School of Mathematics and Statistics}
 \QuizzesURL{}
 
 \title{MathQuiz: Web Quizzes using LaTeX}
@@ -286,14 +289,14 @@ an easily readable layout.
   By default, the \verb|choice| environments puts the multiple choice
   options into two column format. Sometimes, however, the options look
   better when listed in a single column and, sometimes, three or more
-  columns are better.  There is a more general \verb|Choice|
-  environment which lets you specify the number of columns in the HTML
-  version of the quiz. Its syntax is similar to that of the
-  \verb|choice| environment.
+  columns are better.  The \verb|choice|
+  environment lets you specify the number of columns in the HTML
+  version of the quiz.
+
 \begin{verbatim}
     \begin{question}
       . . .question text. . .
-      \begin{Choice}[multiple]{n}     . . . n columns
+      \begin{choice}[multiple, n]     . . . n columns
         \(in)correct . . . text for (in)correct option
         \response    . . . feedback on response
 
@@ -302,7 +305,7 @@ an easily readable layout.
         .
         .
         .
-      \end{Choice}
+      \end{choice}
     \end{question}
 \end{verbatim}
   If the optional argument \verb|[multiple]| is not present, then the
@@ -322,7 +325,7 @@ an easily readable layout.
         \end{pspicture}
       \end{center}
 
-      \begin{Choice}{1}
+      \begin{choice}{1}
         \incorrect $x=2\cos t + 1$, $y=3\sin t + 2$
         \response This is an ellipse with centre $(1,2)$ and with axes of
         length $4$ in the $x$-direction and $6$ in the $y$-direction.
@@ -365,7 +368,7 @@ an easily readable layout.
             { t cos 2 mul 1 sub t sin 3 mul 2 sub}
           \end{pspicture}
         \end{center}
-      \end{Choice}
+      \end{choice}
     \end{question}
 \end{verbatim}
 \end{discussion}
@@ -542,7 +545,7 @@ an easily readable layout.
     \end{pspicture}
   \end{center}
 
-  \begin{Choice}{1}
+  \begin{choice}[1]
     \incorrect $x=2\cos t + 1$, $y=3\sin t + 2$
     \response This is an ellipse with centre $(1,2)$ and with axes of
     length $4$ in the $x$-direction and $6$ in the $y$-direction.
@@ -585,7 +588,7 @@ an easily readable layout.
         { t cos 2 mul 1 sub t sin 3 mul 2 sub}
       \end{pspicture}
     \end{center}
-  \end{Choice}
+  \end{choice}
 \end{question}
 
 \begin{question}

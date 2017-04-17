@@ -131,8 +131,8 @@
   \phantom{XXX}\textit{URL}:\quad \MQ@url}
 \newenvironment{quizlist}{\bigskip}{}
 % \begin{dicussion}[short title][title -default-> Discussion]
-\NewDocumentEnvironment{discussion}{o O{Discussion}}{%
-\IfNoValueTF{#1}{\textbf{#2}}{\texbf{#2}(#1)}\newline}{\par\bigskip}
+\NewDocumentEnvironment{discussion}{O{Discussion}o}{%
+\IfNoValueTF{#2}{\textbf{#1}}{\texbf{#2} (#1)}\newline}{\par\bigskip}
 \newenvironment{banner}{\centerline{Web page banner}}{}
 
 % As
@@ -157,24 +157,39 @@
   \ifWhenWrong\else\MQ@complain\whenWrong\thequestion\fi
   \fi
   \par\bigskip}
-\newenvironment{Choice}[2][\relax]{%
-  \if2#2\else%
-  (\textit{The choices will be listed in #2 columns in
-    the HTML version of the quiz})
-  \fi
-  \ifInQuestion\relax
-  \else\MQ@error{Choice environments must be contained in a question}
-  \fi
-  \global\InChoicetrue
-  \par\ifx #1\relax(\textit{Exactly one option must be correct})%
-  \else(\textit{Zero or more options can be correct})
+
+% \begin{choice}[choice type, number of columns] ... \end{choice}
+% The choice tyoe should be "single" or "multiple", and the type and number of
+% columns is allowewd to appear in either order, so most of the fun and game is
+% sanity checking.
+\def\MQ@choicesingle{single}      % the two legal choices
+\def\MQ@choicemultiple{multiple}
+\NewDocumentEnvironment{choice}{O{}}{%
+  \ifInQuestion\relax% Give a warning if we aer not inside a question
+  \else\MQ@error{Choice environments must be contained in a question}%
+  \fi%
+  \def\MQ@choicetype{single}% default choice type is single
+  \def\MQ@choicecols{2}     % default of 2 columns
+  \foreach \opt in {#1} {   % loop throug the options and check for strings and numbers
+    \ifnum0<0\opt1\relax% \opt is a positive integer
+       \xdef\MQ@choicecols{\opt}
+    \else
+       \xdef\MQ@choicetype{\opt}
+    \fi
+  }%
+  (\textit{The choices will be printed in \MQ@choicecols columns in the HTML version of the quiz})
+  \global\InChoicetrue%
+  \par%
+  % check that we have a valid choice type and give an error if we don't
+  \ifx\MQ@choicetype\MQ@choicesingle\textit{Exactly one option must be correct})%
+  \else\ifx\MQ@choicetype\MQ@choicemultiple(\textit{Zero or more options can be correct})
+       \else\MQ@error{\MQ@choicetype\space is not a valid multiple choice type. Use single or multiple}%
+       \fi%
   \fi%
   \setcounter{choice}{0}%
 }{\InChoicefalse}
 
-\newenvironment{choice}[1][\relax]
-{\begin{Choice}[#1]{2}}%
-  {\end{Choice}}
+% booleans for keeping track of where we are in an answer
 \newif\ifanswer
 \newif\ifWhenRight
 \newif\ifWhenWrong

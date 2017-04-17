@@ -15,30 +15,33 @@
  * ----------------------------------------------------------------------
  */
 
-// global varaibles
+// Global variables
 var currentQ, qTotal, dTotal, currentQuiz, currentResponse=null;
-var QuizSpecifications = new Array();
 var Discussion = new Array();
-var wrongAnswers = new Array();
-var correct  = new Array();
+var QuizSpecifications = new Array();
 var QuizTitles = new Array();
+var correct  = new Array();
+var wrongAnswers = new Array();
 
 // QuizSpecifications will be an array of the expected responses for each question
 var QuizSpecifications = new Array();
 
-// specification for the question buttons
+// Specification for the question buttons for use in updateQuestionMarker
 blank = {'marker': '',       'color': 'black',  'bg': '#FFF8DC' }
 cross = {'marker': '\u2718', 'color': 'red',    'bg': 'linear-gradient(to bottom right, white,  slateblue)' }
 star  = {'marker': '\u272D', 'color': 'yellow', 'bg': 'linear-gradient(to bottom right, yellow, green)' }
 tick  = {'marker': '\u2714', 'color': 'green',  'bg': 'linear-gradient(to bottom right, red, yellow)' }
 
-
-var WaitForQuizSpecifications = function(){
-  if (QuizSpecifications.length==0) {
+// Add a small delay for loading the quiz specifications. Not sure that this
+// actually does anything. We can't use a while-loop because with this the
+// page never loads
+var WaitForQuizSpecifications = function(qTotal){
+  if (QuizSpecifications.length<qTotal) {
     setTimeout(WaitForQuizSpecifications, 15)
   }
 }
 
+// initialise the quiz, loading specifcations and setting up the first question
 function MathQuizInit(questions, discussions, quizfile) {
   if (navigator.appName=="Netscape" && parseFloat(navigator.appVersion)<5) {
     alert("Your browser version is " + navigator.appVersion + ".\n" +
@@ -48,18 +51,19 @@ function MathQuizInit(questions, discussions, quizfile) {
   qTotal = questions
   dTotal = discussions
   currentQuiz = quizfile
-  currentQ=0
-  newQ =(dTotal>0) ? -1 : 1
-  showQuestion(newQ)
 
   // read the question specifications for the quiz from <currentQuiz>/quiz_list.js
   document.head.appendChild(document.createElement("script")).src=currentQuiz+'/quiz_list.js';
-  WaitForQuizSpecifications();
+  WaitForQuizSpecifications(qTotal);
 
   // make the drop down menu if QuizTitles has some entries
   if (QuizTitles.length>0 && document.getElementById('drop_down_menu')) {
       create_drop_down_menu()
   }
+
+  currentQ=0
+  newQ =(dTotal>0) ? -1 : 1
+  showQuestion(newQ)
 
   // set up arrays for tracking how many times that questions have been attempted
   var i;
@@ -91,7 +95,7 @@ function showQuestion(newQ) { // newQ is an integer which is always in the corre
         if (currentQ>0) {
               button.classList.add('button-selected');
               document.getElementById('question_number').innerHTML = 'Question '+currentQ;
-        } else {
+        } else if ( Discussion[-1-currentQ] ) {
               document.getElementById('question_number').innerHTML = Discussion[-1-currentQ]
         }
     }
@@ -114,7 +118,7 @@ function showResponse(tag) {
 // if increment==+1 we find the next questions which has not
 // been wrongAnswers correctly; if increment==-1 we find the last
 // such question
-function nextQuestion (increment) {
+function nextQuestion(increment) {
   if ( currentQ<0 ) {
     if ( increment==1 ) gotoQuestion(1);
     else gotoQuestion(qTotal);
@@ -217,6 +221,11 @@ function checkAnswer() {
 
 // create the drop down menu dynamically using the QuizTitles array
 function create_drop_down_menu() {
+   // add the menu icon for the quizzes menu if there is at least one quiz
+   if (QuizTitles.length>0) {
+     document.getElementById('quizzes_menu_icon').innerHTML=' &#9776;'
+   }
+
    var drop_down = document.getElementById('drop_down_menu');
    var max = 0;
    for (q=0; q < QuizTitles.length; q++) {

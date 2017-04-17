@@ -638,7 +638,7 @@ class MakeMathQuiz(object):
             with open(os.path.join(self.quiz_file,'quiz_list.js'), 'w') as quiz_list:
                 if self.qTotal>0:
                     for (i,d) in enumerate(self.quiz.discussion_list):
-                        quiz_list.write('Discussion[{}]="{}";\n'.format(i,d.heading))
+                        quiz_list.write('Discussion[{}]="{}";\n'.format(i, d.heading))
                 if self.qTotal >0:
                     for (i,q) in enumerate(self.quiz.question_list):
                         quiz_list.write('QuizSpecifications[%d]=new Array();\n' % i)

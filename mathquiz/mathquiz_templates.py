@@ -50,9 +50,9 @@ bread_crumbs = r'''<nav class="bread_crumbs">
     <ul>
         <li><a href="{department_url}">{department}</a></li>
         <li><a href="{url}">{code}</a></li>
-        <li><a href="{quizzes_url}">Quizzes</a> <a id="quiz_menu" onclick="toggle_quiz_menu();">&#9776;</a>
-           <ul id="drop_down_menu" onclick="toggle_quiz_menu();">
-           </ul>
+        <li><a href="{quizzes_url}">Quizzes</a><span onclick="toggle_quiz_menu();" id="quizzes_menu_icon"></span>
+            <ul id="drop_down_menu" onclick="toggle_quiz_menu();">
+            </ul>
         </li>
         <li>{bread_crumb}</li>
     </ul>

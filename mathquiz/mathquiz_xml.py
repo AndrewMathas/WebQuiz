@@ -76,83 +76,83 @@ class QuizHandler(xml.sax.ContentHandler):
     # a null string by startElement but it may persist
     # after the corresponding endElement fires.
 
-  def startElement(self, name, attrs):
+  def startElement(self,  name, attrs):
     self.text= ''
     self.level += 1
     method = name + "_start"
     Debugging('Looking for '+ method)
-    if hasattr(self,method):
-      getattr(self,method)(attrs)
+    if hasattr(self, method):
+      getattr(self, method)(attrs)
     else:
       self.default_start(name,attrs)
 
-  def characters(self,chars): #data,start,length):
+  def characters(self, chars): #data,start,length):
     if self.level > 0:
       self.text +=chars # cdata[start:start+length]
 
-  def endElement(self,name):
+  def endElement(self, name):
     self.level = self.level-1
     method = name + "_end"
-    if hasattr(self,method):
-      getattr(self,method)()
+    if hasattr(self, method):
+      getattr(self, method)()
     else:
       self.default_end(name)
 
-#  def ignorable_whitespace(self,cdata,start,length):
+#  def ignorable_whitespace(self, cdata,start,length):
 #    self.characters(cdata,start,length)
 
-#  def processing_instruction(self,target,data):
+#  def processing_instruction(self, target,data):
 #    print "<?"+target+" "+data+"?>"
 
-  def default_start( self, name, attrs ):
+  def default_start( self,  name, attrs ):
     Debugging('START:', name)
 
-  def default_end( self, name ):
+  def default_end( self,  name ):
     Debugging('END:', name)
 
-  def error(self, e):
+  def error(self,  e):
     raise e
 
-  def fatalError(self, e):
+  def fatalError(self,  e):
     raise e
 
-  def quiz_start( self, attrs ):
+  def quiz_start( self,  attrs ):
         self.root = Quiz()
         self.position = self.root
         self.position.title=attrs.get('title','')
         self.position.bread_crumb=attrs.get('bread_crumb','')
         self.position.src=attrs.get('src','')
 
-  def meta_start( self, attrs ):
+  def meta_start( self,  attrs ):
       r'''
       Convert attrs to a normal dictionary and append to meta_list
       '''
       self.position.meta_list.append({ meta : attrs.get(meta, '') for meta in attrs.keys()})
 
-  def link_start( self, attrs ):
+  def link_start( self,  attrs ):
       r'''
       Convert attrs to a normal dictionary and append to link_list
       '''
       self.position.link_list.append({ link : attrs.get(link, '') for link in attrs.keys()})
 
-  def quizlistitem_start( self, attrs ):
+  def quizlistitem_start( self,  attrs ):
     self.position.quiz_list.append(attrs)
 
-  def course_start( self, attrs ):
+  def course_start( self,  attrs ):
     r'''
     There should only be one course field. We replace `attrs` with a dictionary
     of the course attributes.
     '''
     self.position.course={ k: attrs.get(k) for k in attrs.keys() }
 
-  def school_start( self, attrs ):
+  def school_start( self,  attrs ):
     r'''
     There should only be one school field. We replace `attrs` with a dictionary
     of the school attributes.
     '''
     self.position.school={ k: attrs.get(k) for k in attrs.keys() }
 
-  def question_start( self, attrs ):
+  def question_start( self,  attrs ):
     q = Question(self.position)
     self.position.question_list.append(q)
     self.position = q
@@ -160,14 +160,14 @@ class QuizHandler(xml.sax.ContentHandler):
   def text_end( self ):
     self.position.set_text(self.text)
 
-  def choice_start( self, attrs ):
+  def choice_start( self,  attrs ):
     if self.position.answer:
         sys.stderr.write("Processing halted. Multiple <choice>/<answer> tags\n")
         sys.exit(1)
     self.position.answer=Choice(self.position,attrs.get('type'),attrs.get('cols'))
     self.position = self.position.answer
 
-  def answer_start( self, attrs ):
+  def answer_start( self,  attrs ):
     if self.position.answer:
         sys.stderr.write("Processing halted. Multiple <choice>/<answer> tags\n")
         sys.exit(1)
@@ -177,15 +177,15 @@ class QuizHandler(xml.sax.ContentHandler):
   def tag_end( self ):
     self.position.tag = self.text.strip()
 
-  def discussion_start( self, attrs ):
-    d = Discussion(self.position, attrs.get('heading', 'Discussion'), attrs.get('short_heading', ''))
+  def discussion_start( self,  attrs ):
+    d = Discussion(self.position, attrs.get('heading'), attrs.get('short_heading'))
     self.position.discussion_list.append(d)
     self.position = d
 
   def discussion_end( self ):
     self.position = self.position.parent
 
-  def item_start( self, attrs ):
+  def item_start( self,  attrs ):
     r = Item(self.position,attrs.get('expect'))
     self.position.item_list.append(r)
     self.position = r
@@ -223,15 +223,15 @@ class QuizHandler(xml.sax.ContentHandler):
 # defaults to None
 
 class Node(object):
-  def __init__(self, parent = None):
+  def __init__(self,  parent = None):
     self.parent = parent
     Debugging('Node: class={}, parent={}'.format(self.__class__.__name__,
         parent.__class__.__name__ if parent else ''))
 
-  def accept(self,visitor):
+  def accept(self, visitor):
     pass
 
-  def broadcast(self,visitor):
+  def broadcast(self, visitor):
     pass
 
   def __str__(self):
@@ -252,10 +252,10 @@ class Quiz(Node):
     self.question_list = []
     self.quiz_list = []
 
-  def accept(self,visitor):
+  def accept(self, visitor):
     visitor.for_quiz(self)
 
-  def broadcast(self,visitor):
+  def broadcast(self, visitor):
     for node in self.question_list:
       node.accept(visitor)
 
@@ -269,20 +269,20 @@ class Discussion(Node):
   """<!ELEMENT discussion (#PCDATA)>
      <!ATTLIST dicussion heading #PCDATA #required>
   """
-  def __init__(self,parent,heading, short_heading):
-    Node.__init__(self,parent)
+  def __init__(self, parent, heading, short_heading):
+    Node.__init__(self, parent)
     self.discussion=""
     self.heading=heading
-    self.short_heading = heading if short_heading=='' else short_heading
+    self.short_heading = short_heading
 
-  def accept(self,visitor):
+  def accept(self, visitor):
     visitor.for_discussion(self)
 
-  def broadcast(self,visitor):
+  def broadcast(self, visitor):
     for node in self.question_list:
       node.accept(visitor)
 
-  def set_text(self,text):
+  def set_text(self, text):
     self.discussion=text.strip()
 
   def __str__(self):
@@ -292,18 +292,18 @@ class Question(Node):
   """<!ELEMENT question (text, (choice|answer))>
      <!ELEMENT text (#PCDATA)>
   """
-  def __init__(self, parent):
-    Node.__init__(self,parent)
+  def __init__(self,  parent):
+    Node.__init__(self, parent)
     self.question = ""  # The text of the question
     self.answer = None  # Can be a Node of class Answer OR Choice
 
-  def set_text(self,text):
+  def set_text(self, text):
     self.question = text.strip()
 
-  def accept(self,visitor):
+  def accept(self, visitor):
     visitor.for_question(self)
 
-  def broadcast(self,visitor):
+  def broadcast(self, visitor):
     if self.answer:
       self.answer.accept(visitor)
 
@@ -317,17 +317,17 @@ class Choice(Node):
                            cols #CDATA       #REQUIRED
      >
   """
-  def __init__(self,parent,type,cols):
-    Node.__init__(self,parent)
+  def __init__(self, parent, type, cols):
+    Node.__init__(self, parent)
     self.item_list = []
     # --
     self.type = type
     self.cols = int(cols)
 
-  def accept(self,visitor):
+  def accept(self, visitor):
     visitor.for_choice(self)
 
-  def broadcast(self,visitor):
+  def broadcast(self, visitor):
     for node in self.item_list:
       node.accept(visitor)
 
@@ -345,15 +345,15 @@ class Answer(Node):
      <!ELEMENT when_right (#PCDATA)>
      <!ELEMENT when_wrong (#PCDATA)>
   """
-  def __init__(self,parent,value):
-    Node.__init__(self,parent)
+  def __init__(self, parent, value):
+    Node.__init__(self, parent)
     self.tag       = ""
     self.when_true  = ""
     self.when_false = ""
     # --
     self.value     = value
 
-  def accept(self,visitor):
+  def accept(self, visitor):
     visitor.for_answer(self)
 
   def __str__(self):
@@ -369,17 +369,17 @@ class Item(Node):
      <!ELEMENT text (#PCDATA)>
      <!ELEMENT response (#PCDATA)>
   """
-  def __init__(self,parent,expect):
-    Node.__init__(self,parent)
+  def __init__(self, parent, expect):
+    Node.__init__(self, parent)
     self.answer   = ""
     self.response = ""
     # --
     self.expect = expect
 
-  def set_text(self,text):
+  def set_text(self, text):
     self.answer = text.strip()
 
-  def accept(self,visitor):
+  def accept(self, visitor):
     visitor.for_item(self)
 
   def __str__(self):
