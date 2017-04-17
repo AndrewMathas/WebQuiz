@@ -30,6 +30,7 @@
 \PassOptionsToClass{a4paper}{article}
 \ProcessOptions\relax
 \LoadClass{article}
+\RequirePackage{xparse}
 
 \def\MQ@error{\PackageError{mathquiz}}
 \def\MQ@complain#1#2{%
@@ -129,7 +130,10 @@
   \textbf{Quiz~\arabic{quiz}}.\space #2. \newline
   \phantom{XXX}\textit{URL}:\quad \MQ@url}
 \newenvironment{quizlist}{\bigskip}{}
-\newenvironment{discussion}[1][Discussion]{\textbf{#1}\newline}{\par\bigskip}
+% \begin{dicussion}[short title][title -default-> Discussion]
+\NewDocumentEnvironment{discussion}{o O{Discussion}}{%
+\IfNoValueTF{#1}{\textbf{#2}}{\texbf{#2}(#1)}\newline}{\par\bigskip}
+\newenvironment{banner}{\centerline{Web page banner}}{}
 
 % As
 \newif\ifInQuestion

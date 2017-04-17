@@ -48,7 +48,9 @@ function MathQuizInit(questions, discussions, quizfile) {
   qTotal = questions
   dTotal = discussions
   currentQuiz = quizfile
-  currentQ = (dTotal>0) ? -1 : 1
+  currentQ=0
+  newQ =(dTotal>0) ? -1 : 1
+  showQuestion(newQ)
 
   // read the question specifications for the quiz from <currentQuiz>/quiz_list.js
   document.head.appendChild(document.createElement("script")).src=currentQuiz+'/quiz_list.js';
@@ -70,23 +72,29 @@ function MathQuizInit(questions, discussions, quizfile) {
 // Code to hide/show questions
 
 function showQuestion(newQ) { // newQ is an integer which is always in the correct range
-  if ( newQ != currentQ ) {
-    hideResponse();
-    // hide the current question
-    document.getElementById('question'+currentQ).style.display = 'none';
-    if (currentQ>0) {
-      document.getElementById('button'+currentQ).classList.remove('button-selected');
+    if ( newQ != currentQ ) {
+        if ( currentQ != 0 ) { // hide the current question and responses
+            hideResponse();
+            document.getElementById('question'+currentQ).style.display = 'none';
+            var button = document.getElementById('button'+currentQ);
+            button.classList.remove('nolink');
+            if (currentQ>0) {
+                button.classList.remove('button-selected');
+            }
+        }
+
+        // now set curtentQ = newQ and display it
+        currentQ = newQ;
+        document.getElementById('question'+currentQ).style.display = 'table';
+        var button = document.getElementById('button'+currentQ);
+        button.classList.add('nolink');
+        if (currentQ>0) {
+              button.classList.add('button-selected');
+              document.getElementById('question_number').innerHTML = 'Question '+currentQ;
+        } else {
+              document.getElementById('question_number').innerHTML = Discussion[-1-currentQ]
+        }
     }
-    // display the new question and then set currentQ = newQ
-    document.getElementById('question'+newQ).style.display = 'table';
-    if (newQ>0) {
-      document.getElementById('button'+newQ).classList.add('button-selected');
-      document.getElementById('question_number').innerHTML = 'Question '+newQ;
-    } else {
-      document.getElementById('question_number').innerHTML = Discussion[-1-newQ]
-    }
-    currentQ=newQ;
-  }
 }
 
 // Code to hide/show responses
@@ -192,7 +200,7 @@ function checkAnswer() {
         break;
       }
     }
-    // fully correct only if badAnswer === 0 
+    // fully correct only if badAnswer === 0
     if (badAnswer > 0) {
       correct[qnum] = false;
       showResponse('q'+currentQ+'response'+badAnswer);
@@ -226,5 +234,14 @@ function toggle_side_menu_display() {
         side_menu.style.display='none'
     } else {
         side_menu.style.display='block'
+    }
+}
+
+function toggle_quiz_menu() {
+    var quiz_menu = document.getElementById('drop_down_menu')
+    if (quiz_menu.style.display=='block') {
+        quiz_menu.style.display='none'
+    } else {
+        quiz_menu.style.display='block'
     }
 }

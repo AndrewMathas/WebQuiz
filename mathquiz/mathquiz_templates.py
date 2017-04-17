@@ -50,8 +50,8 @@ bread_crumbs = r'''<nav class="bread_crumbs">
     <ul>
         <li><a href="{department_url}">{department}</a></li>
         <li><a href="{url}">{code}</a></li>
-        <li><a href="{quizzes_url}">Quizzes</a>
-           <ul id="drop_down_menu">
+        <li><a href="{quizzes_url}">Quizzes</a> <a id="quiz_menu" onclick="toggle_quiz_menu();">&#9776;</a>
+           <ul id="drop_down_menu" onclick="toggle_quiz_menu();">
            </ul>
         </li>
         <li>{bread_crumb}</li>
@@ -60,7 +60,7 @@ bread_crumbs = r'''<nav class="bread_crumbs">
 
 # question buttons
 button  = r'        <div id="button{b}" class="button{cls}" content=" " onClick="gotoQuestion({b})">{b}</div>'
-discuss = r'        <li class="discussion" onClick="gotoQuestion(-{b})">{title}</li>'
+discuss = r'        <li class="discussion" onClick="gotoQuestion(-{b})" id="button-{b}">{title}</li>'
 side_menu = r'''<div class="menu_icon" onclick="toggle_side_menu_display();">&#9776;</div>
     <div class="side_menu">{discussion_list}
       <div class="buttons">

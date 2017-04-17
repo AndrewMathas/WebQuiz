@@ -178,7 +178,7 @@ class QuizHandler(xml.sax.ContentHandler):
     self.position.tag = self.text.strip()
 
   def discussion_start( self, attrs ):
-    d = Discussion(self.position,attrs.get('heading'))
+    d = Discussion(self.position, attrs.get('heading', 'Discussion'), attrs.get('short_heading', ''))
     self.position.discussion_list.append(d)
     self.position = d
 
@@ -269,10 +269,11 @@ class Discussion(Node):
   """<!ELEMENT discussion (#PCDATA)>
      <!ATTLIST dicussion heading #PCDATA #required>
   """
-  def __init__(self,parent,heading="Discussion"):
+  def __init__(self,parent,heading, short_heading):
     Node.__init__(self,parent)
     self.discussion=""
     self.heading=heading
+    self.short_heading = heading if short_heading=='' else short_heading
 
   def accept(self,visitor):
     visitor.for_discussion(self)

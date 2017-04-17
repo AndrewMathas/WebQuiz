@@ -597,7 +597,7 @@ class MakeMathQuiz(object):
         """ construct the left hand quiz menu """
         if len(self.quiz.discussion_list)>0: # links for discussion items
             discussion_list = '\n       <ul>\n   {}\n       </ul>'.format(
-                  '\n   '.join(discuss.format(b=q+1, title=d.heading) for (q,d) in enumerate(self.quiz.discussion_list)))
+                  '\n   '.join(discuss.format(b=q+1, title=d.short_heading) for (q,d) in enumerate(self.quiz.discussion_list)))
         else:
             discussion_list = ''
 

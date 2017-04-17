@@ -58,7 +58,7 @@ div.side_menu {
     font-size: 10px;
     font-weight: normal;
     margin-right: 20px;
-    overflow: auto;
+    overflow: hidden;
     width: 100px;
 
     > div {
@@ -80,12 +80,17 @@ div.side_menu {
             white-space: nowrap;
         }
 
-        li:before {
-            color: $Heading;
-            content: $ListMarker;
-            padding-left: 0;
-            padding-right: 1ex;
-        }
+     /*
+      * li:before {
+      *     color: $Heading;
+      *     content: $ListMarker;
+      *     padding-left: 0;
+      *     padding-right: 1ex;
+      *     display:inline-block;
+      * }
+      */
+
+        li:hover {text-decoration: underline; }
     }
 
     /* question buttons */
@@ -127,7 +132,7 @@ div.side_menu {
 
         div.button:hover {
             border: solid $ButtonHover 2px !important;
-            text-decoration: underline !important;
+            text-decoration: underline;
         }
         div.button:after {
             bottom: -35%;
@@ -182,6 +187,8 @@ div.side_menu {
         font-weight: bold;
     }
 }
+
+li:hover.nolink, div:hover.nolink  { text-decoration: none !important; }
 
 span.question_label {
     color: $Subheading;
@@ -346,9 +353,9 @@ nav.bread_crumbs {
 
     ul {
         margin: 0;
+        padding: 0;
         list-style-type: none;
         position: absolute; /* Ensures that the menu doesn’t affect other elements */
-        padding: 0;
 
         li {
             text-align: center;  /* All text is placed in the center of the box */
@@ -364,28 +371,25 @@ nav.bread_crumbs {
                 text-decoration: none;
                 color: white;
                 display: contents;
-                padding: 5px;
                 -webkit-transition: all 0.5s;
             }
 
             ul {
                 display: none;  /* Hides the drop-down menu */
+                padding-left: 4px;
                 margin: 0; /* Aligns drop-down box underneath the menu item */
-                padding: 0px;
                 -webkit-transition: all 1s;
                 border: solid $ButtonBorder 4px;
                 border-radius: 5px;
+                background-color: $ButtonBG;
 
                 li {
                     width: 100%;
                     text-align: left;
                     -webkit-transition: height 0.5s;
-                    padding: 0;
+                    padding: 1px 0 0 4px;
 
-                    a { 
-                      color: blue; 
-                      padding: 2px;
-                    }
+                    a { color: blue; }
                 }
 
                 li::after { content:none;}
@@ -461,8 +465,9 @@ nav.bread_crumbs {
     ul > li:nth-child(4) { background: $ButtonBG; }
     ul > li:nth-child(4):after { border-left-color: $ButtonBG; }
 
-    /* Displays the drop-down menu on hover */
-    ul > li:hover ul { display: block; }
+    /* Displays the drop-down menu on hover
+     * ul > li:hover ul { display: block; }
+     */
 }
 
 
