@@ -239,7 +239,7 @@ function create_drop_down_menu() {
 
 function toggle_side_menu_display() {
     var side_menu = document.getElementsByClassName('side_menu')[0]
-    if (side_menu.style.display=='block') {
+    if (side_menu.style.display=='block' || side_menu.style.display=='') {
         side_menu.style.display='none'
     } else {
         side_menu.style.display='block'

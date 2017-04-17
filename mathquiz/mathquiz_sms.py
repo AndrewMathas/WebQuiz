@@ -145,7 +145,7 @@ def SMS_menu(doc):
             quiztitles.write('\n'+custom_menu)
 
     if len(doc.quiz.course['name'])>0:
-        menu_name = 'MathQuiz'
+        menu_name = ''
         if len(doc.quiz.quiz_list)==0:  # not on a quiz index page
             if  doc.quiz_file in ["mathquiz-manual","credits"]:
                 type="QSubmenu"

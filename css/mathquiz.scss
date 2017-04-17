@@ -60,6 +60,7 @@ div.side_menu {
     margin-right: 20px;
     overflow: hidden;
     width: 100px;
+    display: block;
 
     > div {
         color: $Heading;
@@ -144,7 +145,10 @@ div.side_menu {
             clear: right;
         }
 
-        div.button-selected { border: solid $ButtonSelected 2px; }
+        div.button-selected { 
+            border: solid $ButtonSelected 2px;
+            color: $Subheading;
+        }
     }
 
     table.marking_key {
@@ -187,6 +191,8 @@ div.side_menu {
 }
 
 li:hover.nolink, div:hover.nolink  { text-decoration: none !important; }
+li.nolink, div:hover.nolink  { color:  $Subheading !important;}
+
 
 span.question_label {
     color: $Subheading;
@@ -489,12 +495,14 @@ div.menu_icon:hover {
 }
 
 /*MEDIA QUERIES*/
-@media (max-width : 600px) {
-    div.menu_icon { display: inline-block;}
-    div.side_menu { display: none; }
-}
-
-@media (min-width : 601px) {
-    div.side_menu { display: block !important;}
-    div.menu_icon { display: none; }
-}
+/*
+ * @media (max-width : 600px) {
+ *     div.menu_icon { display: inline-block;}
+ *     div.side_menu { display: none; }
+ * }
+ * 
+ * @media (min-width : 601px) {
+ *     div.side_menu { display: block !important;}
+ *     div.menu_icon { display: none; }
+ * }
+ */
