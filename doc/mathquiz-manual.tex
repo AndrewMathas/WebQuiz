@@ -24,11 +24,11 @@
 \newcommand{\MathQuiz}{\textbf{MathQuiz}}
 \UnitCode{MathQuiz}
 \UnitName{MathQuiz Manual}
-\UnitURL{}
+\UnitURL{/u/MOW/MathQuiz/doc/mathquiz-manual.html}
 \BreadCrumb{MathQuiz on-line manual}
 \University{University of Sydney}
 \Department{School of Mathematics and Statistics}
-\QuizzesURL{}
+\QuizzesURL{MOW/MathQuiz/doc/}
 
 \title{MathQuiz: Web Quizzes using LaTeX}
 \begin{document}
@@ -437,27 +437,37 @@ an easily readable layout.
 \end{discussion}
 
 \begin{discussion}[Credits]
-  \MathQuiz{} is a HTML quiz preparation system which was written and
-   developed in the
-  \href{http://www.maths.usyd.edu.au/}{School of Mathematics and Statistics}
-   at the
-   \href{http://www.usyd.edu.au/}{University of Sydney}. The system is built on
-   \LaTeX{} with the conversion from \LaTeX{} to HTML being done by
-   Eitan Gurari's
-  \href{http://www.cis.ohio-state.edu/~gurari/TeX4ht/mn.html}{TeX4ht}
-    and some python programs.
+    \MathQuiz{} was written and developed in the
+    \href{http://www.maths.usyd.edu.au/}{School of Mathematics and
+    Statistics} at the \href{http://www.usyd.edu.au/}{University of
+    Sydney}.  The system is built on \LaTeX{} with the conversion from
+    \LaTeX{} to HTML being done by Eitan Gurari's
+    \href{http://www.cis.ohio-state.edu/~gurari/TeX4ht/mn.html}{TeX4ht},
+    and Michal Hoftich's
+    \href{https://github.com/michal-h21/make4ht}{make4ht}.
 
-    \quad\newline
-   The \LaTeX{} component of \MathQuiz{} was written by Andrew Mathas and the python
-   and javascript code were written by Andrew Mathas and Don Taylor, based on an
-   initial protype of Don Taylor's. A related system which produces quizzes for self
-   assessment tests was written by a team supervised by Daniel Daners (see
-   \href{http://www.maths.usyd.edu.au:8000/us/selftest.cgi}{example test}).
+    To write quizzes using \MathQuiz it is only necessary to know
+    \LaTeX, however, the \MathQuiz system has three components:
+    \begin{itemize}
+      \item A \LaTeX{} document class file, \texttt{mathquiz.cls}, and
+      a \TeX 4ht configuration file, \texttt{mathquiz.cfg}, that enable the
+      quiz files to be processed by \LaTeX{} and \LaTeX 4ht,
+      respectively.
+      \item A python program, \texttt{mathquiz}, that translates the xml
+      file that is produced by \TeX 4ht into  HTML.
+      \item Some javascript and css that controls the quiz web page.
+    \end{itemize}
 
-   \quad\newline
+   The \LaTeX{} component of \MathQuiz{} was written by Andrew Mathas
+   and the python and javascript code were written by Andrew Mathas and
+   Don Taylor, based on an initial protype of Don Taylor's from 2001.
+   Since 2004 the program has been maintained and developed by Andrew
+   Mathas. Although the program has changed substantially since 2004
+   some of Don's code and, in particular, his idea of using \TeX 4ht are
+   still very much in use.
 
-    \textbf{Authors}\newline
-    Andrew Mathas and Don Taylor.
+   Thanks are due to Bob Howlett for general help with CSS and, for
+   Version~5, to  Michal Hoftich for technical advice.
 \end{discussion}
 
 \begin{question}
