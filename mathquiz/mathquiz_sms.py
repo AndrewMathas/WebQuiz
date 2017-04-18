@@ -52,8 +52,8 @@ sms_page_body=r'''
 '''
 
 sms_side_menu = r'''<div class="menu_icon" onclick="toggle_side_menu_display();">&#9776;</div>
-    <div class="side_menu">{discussion_list}
-      {navigation_menu}
+    <div class="side_menu">
+      {navigation_menu}{discussion_list}
       <div class="buttons">
         <span class="question_label">&nbsp;Questions&nbsp;</span>
         <br>{buttons}
@@ -162,7 +162,7 @@ def SMS_menu(doc):
 
     if len(doc.quiz.discussion_list)>0: # links for discussion items
         discussion_list = '\n       <ul>\n   {}\n       </ul>'.format(
-              '\n   '.join(discuss.format(b=q+1, title=d.heading) for (q,d) in enumerate(doc.quiz.discussion_list)))
+              '\n   '.join(discuss.format(b=q+1, title=d.short_heading) for (q,d) in enumerate(doc.quiz.discussion_list)))
     else:
         discussion_list = ''
 
