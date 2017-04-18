@@ -60,7 +60,7 @@ bread_crumbs = r'''<nav class="bread_crumbs">
 
 # question buttons
 button  = r'        <div id="button{b}" class="button{cls}" content=" " onClick="gotoQuestion({b})">{b}</div>'
-discuss = r'        <li class="discussion" onClick="gotoQuestion(-{b})" id="button-{b}">{title}</li>'
+discuss = r'        <li id="button-{b}" class="discussion" onClick="gotoQuestion(-{b})">{title}</li>'
 side_menu = r'''<div class="menu_icon" onclick="toggle_side_menu_display();">&#9776;</div>
     <div class="side_menu">{discussion_list}
       <div class="buttons">

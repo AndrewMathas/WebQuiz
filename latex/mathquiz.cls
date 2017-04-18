@@ -31,6 +31,7 @@
 \ProcessOptions\relax
 \LoadClass{article}
 \RequirePackage{xparse}
+\RequirePackage{pgffor}
 
 \def\MQ@error{\PackageError{mathquiz}}
 \def\MQ@complain#1#2{%

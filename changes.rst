@@ -13,6 +13,8 @@ Version 5.0:
     - program packaged for uploading to ctan and texlive
     - better installation support
     - mathquizrc configuration file added
+    - replaced Choice environment with smarter choice environment
+    - added button for hiding/showing question buttons
     - changed from using optionparser to argparse
     - using git and bitbucket for version management control
     - made compatible with setup tools, together with option to export to ctan
