@@ -151,8 +151,7 @@ def SMS_menu(doc):
                 type="QSubmenu"
             else:
                 type="CourseQSubmenu"
-            heading = 'Manual contents' if doc.quiz_file=='mathquiz-manual' else \
-                      'Discussion' if len(doc.quiz.discussion_list)>0 else ''
+            heading = 'Manual contents' if doc.quiz_file=='mathquiz-manual' else ''
             menu = navigation_menu.format(menu=type, heading='' if heading=='' else '<li>{}</li>'.format(heading))
         else:
             menu = ''
