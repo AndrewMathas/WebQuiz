@@ -1,9 +1,14 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Title:    MathQuiz
-% Author:   Andrew Mathas
-% Created:  April 2017
-% Modified: 16:02 Tuesday, 11 April 2017
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%-----------------------------------------------------------------------------
+%  Copyright (C) 2004-2017 Andrew Mathas, University of Sydney
+%
+%  Distributed under the terms of the GNU General Public License (GPL)
+%                  http://www.gnu.org/licenses/
+%
+% This file is part of the MathQuiz system.
+%
+% <Andrew.Mathas@sydney.edu.au>
+%-----------------------------------------------------------------------------
+
 \synctex=1
 
 \documentclass[svgnames]{article}
@@ -16,8 +21,6 @@
 \usepackage[utf8]{inputenc}
 \usepackage{cmap} % fix search and cut-and-paste in Acrobat
 \usepackage{stix}
-
-\usepackage{xspace}
 
 \usepackage{enumitem}
 \setlist[itemize]{nosep}
@@ -39,91 +42,8 @@
 \renewcommand*\contentsname{\relax}
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Read the mathquiz.ini file into \pgfkeys for later use so that we
-%% don't need to hard-code this information. We allow unknown keys and
-%% slurp in all of ythe information in the file
-\usepackage{pgfkeys}
-\pgfkeys{/mathquiz/.is family, /mathquiz,
-  % allow arbitrary unknown keys and set with \pgfkeyssetvalue
-  .unknown/.code={\pgfkeyssetvalue{\pgfkeyscurrentpath/\pgfkeyscurrentname}{#1}},
-}
-\newcommand\mathquiz[1]{\pgfkeysvalueof{/mathquiz/#1}}
-
-% split input line into key-value pair -- necessary as commas can appear in the value
-\usepackage{xparse}
-\NewDocumentCommand{\AddIniFileKeyValue}{ >{\SplitList{=}} m }{%
-  \AddIniFileValue #1%
-}
-% put a key-value pair into \pgfkeys{/cycles}
-\newcommand\AddIniFileValue[2]{\expandafter\pgfkeys\expandafter{/mathquiz,#1={#2}}}
-
-% read the mathquiz.ini file into \pgfkeys{/mathquiz}
-\newread\inifile% file handler
-\def\apar{\par}% \ifx\par won't work but \ifx\apar will
-\newcommand\AddEntry[1]{\expandafter\pgfkeys\expandafter{/mathquiz, #1}}
-\openin\inifile=mathquiz.ini% open file for reading
-\loop\unless\ifeof\inifile% loop until end of file
-  \read\inifile to \iniline% read line from file
-  \ifx\iniline\apar% test for, and ignore, \par
-  \else%
-    \ifx\iniline\empty\relax% skip over empty lines/comments
-    \else\expandafter\AddIniFileKeyValue\expandafter{\iniline}
-    \fi%
-  \fi%
-\repeat% end of file reading loop
-\closein\inifile% close input file
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% listings code for python and latex examples
-\usepackage{listings}\lstset{language=[LaTeX]TeX,framerule=2pt}
-\lstdefinestyle{latexcode}{
-  language=[LaTeX]TeX,
-  backgroundcolor=\color{Azure!50},
-  basewidth  = {.5em,0.5em},
-  basicstyle = \small\ttfamily,
-  boxpos=c, % centered
-  breaklines=true,
-  commentstyle=\color{DarkRed},
-  keywordstyle=\color{MediumBlue},
-  linewidth=14cm,
-  numbers=none,
-  resetmargins=true,
-  tabsize=2,
-  texcsstyle=*\bfseries\color{DodgerBlue},
-  xleftmargin=10mm,
-  classoffset=1,
-  keywordstyle={\color{ForestGreen}},
-  morekeywords={UnitCode,UnitName,UnitURL,QuizzesURL,BreadCrumb,University,Department},
-  classoffset=2,
-  keywordstyle={\color{Red}},
-  morekeywords={quiz,quizlist,discussion,question,choice,Choice},
-  classoffset=3,
-  keywordstyle={\color{DarkViolet}},
-  morekeywords={response,correct,incorrect,whenRight,whenWrong,answer},
-}
-\lstnewenvironment{latexcode}{\lstset{style=latexcode}}{}
-
-\lstdefinestyle{pythoncode}{
-  language=HTML,
-  upquote=true,
-  backgroundcolor=\color{AliceBlue},
-  basewidth  = {.5em,0.5em},
-  basicstyle = \small\ttfamily,
-  boxpos=c, % centered
-  breaklines=true,
-  showstringspaces=false,
-  tabsize=4,
-  classoffset=1,
-  keywordstyle={\color{ForestGreen}},
-  morekeywords={quiz_page,side_menu,quiz_questions,breadcrumbs,include,title},
-}
-\lstnewenvironment{pythoncode}{\lstset{style=pythoncode}}{}
-
 % hyperref links to ctan
 \newcommand\ctan[1]{\href{https://www.ctan.org/pkg/#1}{\texttt{#1}}}
-
-\NewDocumentCommand{\Verb}{v}{{\color{blue}#1}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% MathQuiz title box for front page
@@ -145,7 +65,7 @@
                     text=RoyalBlue,
      }
 }
-\def\MathQuiz{\textcolor{SlateBlue}{\textsc{MathQuiz}}\xspace}
+
 \def\MathQuizTitle{
   \begin{tikzpicture}[remember picture,overlay]
       \node[yshift=-3cm] at (current page.north west)
@@ -159,28 +79,14 @@
    \end{tikzpicture}
 }
 
+\usepackage{mathquiz-doc}
+\hypersetup{pdftitle={MathQuiz manual}}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% headers and footers
 \makeatletter
 \def\@oddfoot{\tiny\MathQuiz -- \mathquiz{version}\hfill\thepage}
 \makeatother
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% hyperref settings
-\usepackage[colorlinks=true,linkcolor=blue,urlcolor=blue]{hyperref}
-\hypersetup{ pdfauthor   = {\mathquiz{authors}                       },
-             pdfkeywords = {\mathquiz{keywords}                      },
-             pdfsubject  = {\mathquiz{description}                   },
-             pdftitle    = {\mathquiz{program} --- \mathquiz{version}},
-             pdfinfo     = {%
-                 copyright    = {\mathquiz{copyright}},
-                 licence      = {\mathquiz{licence}},
-                 release date = {\mathquiz{release date}},
-                 url          = {\mathquiz{url}},
-             }
-}
-
 
 \begin{document}
 
@@ -308,20 +214,19 @@
     \begin{itemize}
       \item A \LaTeX{} document class file, \texttt{mathquiz.cls}, and
       a \TeX 4ht configuration file, \texttt{mathquiz.cfg}, that enable the
-      quiz files to be processed by \LaTeX{} and \LaTeX 4ht,
-      respectively.
+      quiz files to be processed by \LaTeX{} and \TeX 4ht, respectively.
       \item A python program, \texttt{mathquiz}, that translates the xml
       file that is produced by \TeX 4ht into  HTML.
       \item Some javascript and css that controls the quiz web page.
     \end{itemize}
 
    The \LaTeX{} component of \MathQuiz{} was written by Andrew Mathas
-   and the python and javascript code were written by Andrew Mathas and
-   Don Taylor, based on an initial protype of Don Taylor's from 2001.
-   Since 2004 the program has been maintained and developed by Andrew
-   Mathas. Although the program has changed substantially since 2004
-   some of Don's code and, in particular, his idea of using \TeX 4ht are
-   still very much in use.
+   and the python, css and javascript code was written by Andrew Mathas
+   (and Don Taylor), based on an initial protype of Don Taylor's from
+   2001.  Since 2004 the program has been maintained and developed by
+   Andrew Mathas. Although the program has changed substantially since
+   2004 some of Don's code and his idea of using \TeX 4ht are still very
+   much in use.
 
    Thanks are due to Bob Howlett for general help with CSS and, for
    Version~5, to  Michal Hoftich for technical advice.

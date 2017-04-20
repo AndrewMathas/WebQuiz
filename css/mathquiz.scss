@@ -385,7 +385,7 @@ nav.bread_crumbs {
                 padding-left: 4px;
                 margin: 0; /* Aligns drop-down box underneath the menu item */
                 -webkit-transition: all 1s;
-                border: solid $ButtonBorder 4px;
+                border: solid $ButtonBorder 2px;
                 border-radius: 5px;
                 background-color: $ButtonBG;
 
@@ -418,7 +418,7 @@ nav.bread_crumbs {
         }
 
         li:hover { background-color: $ButtonBG; }
-        li a:hover { color: $Subheading; }
+        li a:hover { color: yellow; }
     }
 
     // pseduo elements give the navigation triangles
