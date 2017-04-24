@@ -39,8 +39,10 @@ for (q=0; q<QuizTitles.length; q++) {
     }
 }
 customMenu +='</ul>\n'
-document.getElementById("custom-menu").innerHTML=customMenu;
-menulist.push('custom');
+if (document.getElementById("custom-menu")) {
+  document.getElementById("custom-menu").innerHTML=customMenu;
+  menulist.push('custom');
+}
 '''
 
 sms_page_body=r'''
@@ -88,10 +90,10 @@ navigation_menu = r"""  <ul class="navmenu">
 # -----------------------------------------------------
 # stuff to go in the <head> ... </head> section of the page
 def initialise_SMS_Menus(web_page):
-  if web_page.course['code'] in ["MATH1001", "MAGTH1002", "MATH1005"]:
-    content="MATH100{0}/190{0}<br/>Quizzes".format(web_page.course['code'][-1])
+  if web_page.course['code'] in ["MATH1002", "MATH1005"]:
+    content="MATH100{0}<br>MATH190{0}<br>Quizzes".format(web_page.course['code'][-1])
   else:
-    content="%s Quizzes" % web_page.course['code']
+    content="%s<br>Quizzes" % web_page.course['code']
   hd=sms_quiz_specifications.format(web_page.course['url'],content)
   if web_page.quiz_file=="index":
     hd += sms_research_menu+sms_qsubmenu
