@@ -46,7 +46,7 @@
 /* container for the full quiz page */
 div.quiz_page {
     position: absolute;
-    left: 6%;
+    left: 5%;
     top: 26px;
     width: 90%;
     margin-top: 16px;
@@ -80,7 +80,7 @@ div.side_menu {
             color: $Text;
             font-size: 14px;
             text-align: left;
-            white-space: nowrap;
+            word-wrap: break-word;
         }
 
      /*
@@ -483,7 +483,7 @@ div.menu_icon {
   color: $Heading;
   float: left;
   text-decoration: none;
-  margin-right: 0.1ex;
+  margin-right: 1px;
   font-family: Verdana, Arial, Helvetica, sans-serif !important;
   font-weight: bold !important;
   font-size: 14px !important;
