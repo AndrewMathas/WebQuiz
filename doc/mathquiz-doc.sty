@@ -12,7 +12,8 @@
 % common latex code in the documentation files
 
 \usepackage{xspace}
-\def\MathQuiz{\textcolor{SlateBlue}{\textsc{MathQuiz}}\xspace}
+\usepackage[svgnames]{xcolor}
+\def\MathQuiz{{\color{SlateBlue}\textsc{MathQuiz}}\xspace}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Read the mathquiz.ini file into \pgfkeys for later use so that we
