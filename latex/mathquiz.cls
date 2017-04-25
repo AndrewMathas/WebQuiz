@@ -182,7 +182,7 @@
   \global\InChoicetrue%
   \par%
   % check that we have a valid choice type and give an error if we don't
-  \ifx\MQ@choicetype\MQ@choicesingle\textit{Exactly one option must be correct})%
+  \ifx\MQ@choicetype\MQ@choicesingle(\textit{Exactly one option must be correct})%
   \else\ifx\MQ@choicetype\MQ@choicemultiple(\textit{Zero or more options can be correct})
        \else\MQ@error{\MQ@choicetype\space is not a valid multiple choice type. Use single or multiple}%
        \fi%

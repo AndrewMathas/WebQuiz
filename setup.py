@@ -130,18 +130,20 @@ class MathQuizCtan(build_py):
 
             # now add the files
             for (src, target) in [ ('README.rst', ''),
-                                   ('latex/mathquiz.c*', 'tex/latex/mathquiz'),
-                                   ('doc/mathquiz.{tex,pdf}', 'doc'),
-                                   ('mathquiz/mathquiz*.py', 'scripts/mathquiz'),
-                                   ('mathquiz/mathquiz.ini', 'scripts/mathquiz'),
-                                   ('javascript/mathquiz.js', 'scripts/mathquiz/www'),
-                                   ('css/mathquiz.css', 'scripts/mathquiz/www'),
-                                   ('doc/*.tex', 'scripts/mathquiz/www/doc'),
-                                   ('doc/mathquiz*.pdf', 'scripts/mathquiz/www/doc'),
-                                   ('doc/mathquiz*.pdf', 'scripts/mathquiz/www/doc'),
-                                   ('doc/*.png', 'scripts/mathquiz/www/doc'),
-                                   ('mathquiz/mathquiz.ini', 'scripts/mathquiz/www/doc'),
+                                   ('latex/mathquiz.c*', 'tex'),
+                                   ('doc/mathquiz-doc.sty', 'tex'),
+                                   ('doc/mathquiz*.tex', 'doc'),
+                                   ('doc/mathquiz*.pdf', 'doc'),
+                                   ('mathquiz/mathquiz.ini', 'doc'),
+                                   ('mathquiz/mathquiz*.py', 'scripts'),
+                                   ('mathquiz/mathquiz.ini', 'scripts'),
+                                   ('javascript/mathquiz.js', 'scripts/www'),
                                    ('LICENCE', 'scripts'),
+                                   ('css/mathquiz.css', 'scripts/www'),
+                                   ('doc/mathquiz-manual.tex', 'scripts/www/doc'),
+                                   ('doc/mathquiz-manual.pdf', 'scripts/www/doc'),
+                                   ('doc/*.png', 'scripts/www/doc'),
+                                   ('mathquiz/mathquiz.ini', 'scripts/www/doc'),
                                   ]:
                 for file in glob.glob(src):
                     zfile.write(file, os.path.join('mathquiz', target, file.split('/')[-1]))

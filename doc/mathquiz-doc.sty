@@ -17,8 +17,9 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Read the mathquiz.ini file into \pgfkeys for later use so that we
-%% don't need to hard-code this information. We allow unknown keys and
-%% slurp in all of the information in the file
+%% don't need to hard-code this information. We allow unknown keys so
+%% that we can slurp in all of the information in the file into
+%% \pgfkeys{/mathquiz}
 \usepackage{pgfkeys}
 \pgfkeys{/mathquiz/.is family, /mathquiz,
   % allow arbitrary unknown keys and set with \pgfkeyssetvalue
@@ -28,10 +29,12 @@
 
 % split input line into key-value pairs -- necessary as commas can appear in the value
 \usepackage{xparse}
+% \AddIniFileKeyValue{key=value} - take a single argument and split it on =
 \NewDocumentCommand{\AddIniFileKeyValue}{ >{\SplitList{=}} m }{%
   \AddIniFileValue #1%
 }
-% put a key-value pair into \pgfkeys{/cycles}
+% put a key-value pair into \pgfkeys{/mathquiz}
+% \AddIniFile{key}{value}  - note that value may contain commas
 \newcommand\AddIniFileValue[2]{\expandafter\pgfkeys\expandafter{/mathquiz,#1={#2}}}
 
 % read the mathquiz.ini file into \pgfkeys{/mathquiz}
