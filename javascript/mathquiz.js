@@ -239,10 +239,17 @@ function create_drop_down_menu() {
 
 function toggle_side_menu_display() {
     var side_menu = document.getElementsByClassName('side_menu')[0]
+    var quiz_menu = document.getElementById('menu')
     if (side_menu.style.display=='block' || side_menu.style.display=='') {
         side_menu.style.display='none'
+        if (menu) {
+          menu.style.margin = '0px 10px 10px 15px';
+        }
     } else {
         side_menu.style.display='block'
+        if (menu) {
+          menu.style.margin = '0'
+        }
     }
 }
 
