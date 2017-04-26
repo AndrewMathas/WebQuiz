@@ -53,8 +53,7 @@ sms_page_body=r'''
   {mathquiz_init}
 '''
 
-sms_side_menu = r'''<div class="menu_icon" onclick="toggle_side_menu_display();">&#9776;</div>
-    <div class="side_menu">
+sms_side_menu = r'''<div class="side_menu">
       {navigation_menu}{discussion_list}
       <div class="buttons">
         <span class="question_label">&nbsp;Questions&nbsp;</span>
@@ -193,7 +192,8 @@ def write_web_page(doc):
                              quiz_questions = doc.quiz_questions,
                              mathquiz_init = doc.mathquiz_init
                          ),
-      nopreview = ''
+      nopreview = '',
+      menu_icon = '<div class="menu_icon" onclick="toggle_side_menu_display();">&#9776;</div>'
     )
     for (key, value) in [('CODE','QUIZ'),
                          ('menuname', sms_menu_name),
