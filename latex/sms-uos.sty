@@ -22,6 +22,7 @@
 % Defines macros
 %   - \UnitCode = code for a uos of study
 %   - \UnitName = name for a uos of study
+  \Semester{1}
 %   - \UnitULR =  url  for a uos of study
 % together with defaults for these that are set using the package options.
 
@@ -31,460 +32,539 @@
 % 2004 - initial version written
 
 %-----------------------------------------------------------------------------
-\ProvidesPackage{sms-uos}
-  [2017/03/21 v5.0
-  MathQuiz configuration file for SMS]
+\ProvidesPackage{sms-uos}[2017/03/21 v5.0 MathQuiz configuration file for SMS]
 
-% Define \UnitCode,  \UnitName and UnitUrl only if they are not already defined
-\def\UnitCode#1{\def\uos@code{#1}}
-\def\UnitName#1{\def\uos@name{#1}}
+% Define \UnitCode,  \UnitName and UnitURL only if they are not already defined
+  \Semester{1}
+\providecommand\UnitCode[1]{\def\uos@code{#1}}
+
+\providecommand\UnitName[1]{\def\uos@name{#1}}
+  \Semester{1}
 
 % Given a uos code like MATHxyyy or STATxyyy or EVNXxyyy return
 % JM, IM SM or HM if x is 1, 2, 3 or 4 respectively
 \def\uos@year#1#2#3#4#5#6@{\ifcase#5\relax\or JM\or IM\or SM\else HM\fi}
-\def\UnitUrl#1{\xdef\uos@url{/u/UG/\expandafter\uos@year #1@/#1}}
+\providecommand\UnitURL[1]{\xdef\uos@url{/u/UG/\expandafter\uos@year #1@/#1}}
 
 %-----------------------------------------------------------------------------
 % unit of study declations - extracted using sctable
 \DeclareOption{MATH4401}{
   \UnitCode{MATH4401}
-  \UnitUrl{MATH4401}
+  \UnitURL{MATH4401}
   \UnitName{Advanced option pricing}
+  \Semester{1}
 }
 \DeclareOption{STAT4203}{
   \UnitCode{STAT4203}
-  \UnitUrl{STAT4203}
+  \UnitURL{STAT4203}
   \UnitName{Advanced time series analysis and forecasting methods and extreme valu}
+  \Semester{1}
 }
 \DeclareOption{MATH4403}{
   \UnitCode{MATH4403}
-  \UnitUrl{MATH4403}
+  \UnitURL{MATH4403}
   \UnitName{Advanced topics in fluid dynamics}
+  \Semester{2}
 }
 \DeclareOption{MATH2968}{
   \UnitCode{MATH2968}
-  \UnitUrl{MATH2968}
+  \UnitURL{MATH2968}
   \UnitName{Algebra (advanced)}
+  \Semester{2}
 }
 \DeclareOption{MATH3066}{
   \UnitCode{MATH3066}
-  \UnitUrl{MATH3066}
+  \UnitURL{MATH3066}
   \UnitName{Algebra and logic}
+  \Semester{1}
 }
 \DeclareOption{MATH4301}{
   \UnitCode{MATH4301}
-  \UnitUrl{MATH4301}
+  \UnitURL{MATH4301}
   \UnitName{Algebraic topology}
+  \Semester{1}
 }
 \DeclareOption{MATH3068}{
   \UnitCode{MATH3068}
-  \UnitUrl{MATH3068}
+  \UnitURL{MATH3068}
   \UnitName{Analysis}
+  \Semester{2}
 }
 \DeclareOption{MATH1011}{
   \UnitCode{MATH1011}
-  \UnitUrl{MATH1011}
+  \UnitURL{MATH1011}
   \UnitName{Applications of calculus}
+  \Semester{1}
 }
 \DeclareOption{MATH4401}{
   \UnitCode{MATH4401}
-  \UnitUrl{MATH4401}
+  \UnitURL{MATH4401}
   \UnitName{Applied asymptotic analysis}
+  \Semester{1}
 }
 \DeclareOption{STAT3012}{
   \UnitCode{STAT3012}
-  \UnitUrl{STAT3012}
+  \UnitURL{STAT3012}
   \UnitName{Applied linear models (a/n)}
+  \Semester{1}
 }
 \DeclareOption{STAT3912}{
   \UnitCode{STAT3912}
-  \UnitUrl{STAT3912}
+  \UnitURL{STAT3912}
   \UnitName{Applied linear models (a/n)}
+  \Semester{1}
 }
 \DeclareOption{STAT3912}{
   \UnitCode{STAT3912}
-  \UnitUrl{STAT3912}
+  \UnitURL{STAT3912}
   \UnitName{Applied linear models (advanced)}
+  \Semester{1}
 }
 \DeclareOption{STAT3014}{
   \UnitCode{STAT3014}
-  \UnitUrl{STAT3014}
+  \UnitURL{STAT3014}
   \UnitName{Applied statistics (a/n)}
+  \Semester{2}
 }
 \DeclareOption{STAT3914}{
   \UnitCode{STAT3914}
-  \UnitUrl{STAT3914}
+  \UnitURL{STAT3914}
   \UnitName{Applied statistics (a/n)}
+  \Semester{2}
 }
 \DeclareOption{STAT3914}{
   \UnitCode{STAT3914}
-  \UnitUrl{STAT3914}
+  \UnitURL{STAT3914}
   \UnitName{Applied statistics advanced}
+  \Semester{2}
 }
 \DeclareOption{MATH4403}{
   \UnitCode{MATH4403}
-  \UnitUrl{MATH4403}
+  \UnitURL{MATH4403}
   \UnitName{Backwards stochastic differential equations}
+  \Semester{1}
 }
 \DeclareOption{PHAR1812}{
   \UnitCode{PHAR1812}
-  \UnitUrl{PHAR1812}
+  \UnitURL{PHAR1812}
   \UnitName{Basic pharmaceutical sciences}
+  \Semester{1}
 }
 \DeclareOption{MATH1015}{
   \UnitCode{MATH1015}
-  \UnitUrl{MATH1015}
+  \UnitURL{MATH1015}
   \UnitName{Biostatistics}
+  \Semester{1}
 }
 \DeclareOption{MATH4301}{
   \UnitCode{MATH4301}
-  \UnitUrl{MATH4301}
+  \UnitURL{MATH4301}
   \UnitName{Commutative algebra}
+  \Semester{1}
 }
 \DeclareOption{MATH4401}{
   \UnitCode{MATH4401}
-  \UnitUrl{MATH4401}
+  \UnitURL{MATH4401}
   \UnitName{Computational projects in applied mathematics}
+  \Semester{1}
 }
 \DeclareOption{MATH4403}{
   \UnitCode{MATH4403}
-  \UnitUrl{MATH4403}
+  \UnitURL{MATH4403}
   \UnitName{Computational projects in applied mathematics}
+  \Semester{1}
 }
 \DeclareOption{STAT5003}{
   \UnitCode{STAT5003}
-  \UnitUrl{STAT5003}
+  \UnitURL{STAT5003}
   \UnitName{Computational statistical methods}
+  \Semester{2}
 }
 \DeclareOption{MATH2067}{
   \UnitCode{MATH2067}
-  \UnitUrl{MATH2067}
+  \UnitURL{MATH2067}
   \UnitName{Des and vector calculus for engineers}
+  \Semester{1}
 }
 \DeclareOption{MATH1001}{
   \UnitCode{MATH1001}
-  \UnitUrl{MATH1001}
+  \UnitURL{MATH1001}
   \UnitName{Differential calculus}
+  \Semester{1}
 }
 \DeclareOption{MATH1901}{
   \UnitCode{MATH1901}
-  \UnitUrl{MATH1901}
+  \UnitURL{MATH1901}
   \UnitName{Differential calculus (advanced) }
+  \Semester{1}
 }
 \DeclareOption{MATH1906}{
   \UnitCode{MATH1906}
-  \UnitUrl{MATH1906}
+  \UnitURL{MATH1906}
   \UnitName{Differential calculus (advanced)}
+  \Semester{1}
 }
 \DeclareOption{MATH3968}{
   \UnitCode{MATH3968}
-  \UnitUrl{MATH3968}
+  \UnitURL{MATH3968}
   \UnitName{Differential geometry (advanced)}
+  \Semester{2}
 }
 \DeclareOption{MATH1004}{
   \UnitCode{MATH1004}
-  \UnitUrl{MATH1004}
+  \UnitURL{MATH1004}
   \UnitName{Discrete mathematics}
+  \Semester{2}
 }
 \DeclareOption{MATH2069}{
   \UnitCode{MATH2069}
-  \UnitUrl{MATH2069}
+  \UnitURL{MATH2069}
   \UnitName{Discrete mathematics and graph theory (a/n)}
+  \Semester{1}
 }
 \DeclareOption{MATH2969}{
   \UnitCode{MATH2969}
-  \UnitUrl{MATH2969}
+  \UnitURL{MATH2969}
   \UnitName{Discrete mathematics and graph theory (a/n)}
+  \Semester{1}
 }
 \DeclareOption{PHAR2821}{
   \UnitCode{PHAR2821}
-  \UnitUrl{PHAR2821}
+  \UnitURL{PHAR2821}
   \UnitName{Drug discovery and design b}
+  \Semester{2}
 }
 \DeclareOption{MATH3075}{
   \UnitCode{MATH3075}
-  \UnitUrl{MATH3075}
+  \UnitURL{MATH3075}
   \UnitName{Financial mathematics}
+  \Semester{2}
 }
 \DeclareOption{MATH3974}{
   \UnitCode{MATH3974}
-  \UnitUrl{MATH3974}
+  \UnitURL{MATH3974}
   \UnitName{Fluid dynamics (advanced)}
+  \Semester{1}
 }
 \DeclareOption{PHAR1811}{
   \UnitCode{PHAR1811}
-  \UnitUrl{PHAR1811}
+  \UnitURL{PHAR1811}
   \UnitName{Foundations of pharmacy}
+  \Semester{1}
 }
 \DeclareOption{MATH4301}{
   \UnitCode{MATH4301}
-  \UnitUrl{MATH4301}
+  \UnitURL{MATH4301}
   \UnitName{Functional analysis}
+  \Semester{1}
 }
 \DeclareOption{STAT4201}{
   \UnitCode{STAT4201}
-  \UnitUrl{STAT4201}
+  \UnitURL{STAT4201}
   \UnitName{Fundamentals of statistical consulting}
+  \Semester{1}
 }
 \DeclareOption{MATH4401}{
   \UnitCode{MATH4401}
-  \UnitUrl{MATH4401}
+  \UnitURL{MATH4401}
   \UnitName{Geometric singular perturbation theory}
+  \Semester{1}
 }
 \DeclareOption{MATH3061}{
   \UnitCode{MATH3061}
-  \UnitUrl{MATH3061}
+  \UnitURL{MATH3061}
   \UnitName{Geometry and topology}
+  \Semester{2}
 }
 \DeclareOption{MATH1003}{
   \UnitCode{MATH1003}
-  \UnitUrl{MATH1003}
+  \UnitURL{MATH1003}
   \UnitName{Integral calculus and modelling}
+  \Semester{2}
 }
 \DeclareOption{MATH1903}{
   \UnitCode{MATH1903}
-  \UnitUrl{MATH1903}
+  \UnitURL{MATH1903}
   \UnitName{Integral calculus and modelling (advanced)}
+  \Semester{2}
 }
 \DeclareOption{MATH1907}{
   \UnitCode{MATH1907}
-  \UnitUrl{MATH1907}
+  \UnitURL{MATH1907}
   \UnitName{Integral calculus and modelling (advanced)}
+  \Semester{1}
 }
 \DeclareOption{MATH1111}{
   \UnitCode{MATH1111}
-  \UnitUrl{MATH1111}
+  \UnitURL{MATH1111}
   \UnitName{Introduction to calculus}
+  \Semester{1}
 }
 \DeclareOption{MATH1014}{
   \UnitCode{MATH1014}
-  \UnitUrl{MATH1014}
+  \UnitURL{MATH1014}
   \UnitName{Introduction to linear algebra}
+  \Semester{2}
 }
 \DeclareOption{ENVX1002}{
   \UnitCode{ENVX1002}
-  \UnitUrl{ENVX1002}
+  \UnitURL{ENVX1002}
   \UnitName{Introduction to statistical methods}
+  \Semester{1}
 }
 \DeclareOption{STAT4201}{
   \UnitCode{STAT4201}
-  \UnitUrl{STAT4201}
+  \UnitURL{STAT4201}
   \UnitName{Introduction to stochastic calculus with applications}
+  \Semester{1}
 }
 \DeclareOption{STAT4203}{
   \UnitCode{STAT4203}
-  \UnitUrl{STAT4203}
+  \UnitURL{STAT4203}
   \UnitName{Introduction to stochastic calculus with applications}
+  \Semester{1}
 }
 \DeclareOption{MATH3977}{
   \UnitCode{MATH3977}
-  \UnitUrl{MATH3977}
+  \UnitURL{MATH3977}
   \UnitName{Lagrangian and hamiltonian dynamics (adv)}
+  \Semester{2}
 }
 \DeclareOption{MATH1002}{
   \UnitCode{MATH1002}
-  \UnitUrl{MATH1002}
+  \UnitURL{MATH1002}
   \UnitName{Linear algebra}
+  \Semester{1}
 }
 \DeclareOption{MATH1902}{
   \UnitCode{MATH1902}
-  \UnitUrl{MATH1902}
+  \UnitURL{MATH1902}
   \UnitName{Linear algebra (advanced)}
+  \Semester{1}
 }
 \DeclareOption{MATH2061}{
   \UnitCode{MATH2061}
-  \UnitUrl{MATH2061}
+  \UnitURL{MATH2061}
   \UnitName{Linear mathematics and vector calculus}
+  \Semester{1}
 }
 \DeclareOption{MATH2961}{
   \UnitCode{MATH2961}
-  \UnitUrl{MATH2961}
+  \UnitURL{MATH2961}
   \UnitName{Linear mathematics and vector calculus adv}
+  \Semester{1}
 }
 \DeclareOption{MATH3076}{
   \UnitCode{MATH3076}
-  \UnitUrl{MATH3076}
+  \UnitURL{MATH3076}
   \UnitName{Mathematical computing (a/n)}
+  \Semester{1}
 }
 \DeclareOption{MATH3976}{
   \UnitCode{MATH3976}
-  \UnitUrl{MATH3976}
+  \UnitURL{MATH3976}
   \UnitName{Mathematical computing (a/n)}
+  \Semester{1}
 }
 \DeclareOption{MATH1013}{
   \UnitCode{MATH1013}
-  \UnitUrl{MATH1013}
+  \UnitURL{MATH1013}
   \UnitName{Mathematical modelling}
+  \Semester{2}
 }
 \DeclareOption{MATH3969}{
   \UnitCode{MATH3969}
-  \UnitUrl{MATH3969}
+  \UnitURL{MATH3969}
   \UnitName{Measure theory and fourier analysis (adv)}
+  \Semester{2}
 }
 \DeclareOption{MATH3961}{
   \UnitCode{MATH3961}
-  \UnitUrl{MATH3961}
+  \UnitURL{MATH3961}
   \UnitName{Metric spaces (advanced)}
+  \Semester{1}
 }
 \DeclareOption{STAT4203}{
   \UnitCode{STAT4203}
-  \UnitUrl{STAT4203}
+  \UnitURL{STAT4203}
   \UnitName{Model selection and generalized linear models}
+  \Semester{1}
 }
 \DeclareOption{MATH3063}{
   \UnitCode{MATH3063}
-  \UnitUrl{MATH3063}
+  \UnitURL{MATH3063}
   \UnitName{Nonlinear odes with applications}
+  \Semester{1}
 }
 \DeclareOption{MATH3963}{
   \UnitCode{MATH3963}
-  \UnitUrl{MATH3963}
+  \UnitURL{MATH3963}
   \UnitName{Nonlinear odes with applications (adv)}
+  \Semester{1}
 }
 \DeclareOption{MATH2068}{
   \UnitCode{MATH2068}
-  \UnitUrl{MATH2068}
+  \UnitURL{MATH2068}
   \UnitName{Number theory and cryptography (a/n)}
+  \Semester{2}
 }
 \DeclareOption{MATH2988}{
   \UnitCode{MATH2988}
-  \UnitUrl{MATH2988}
+  \UnitURL{MATH2988}
   \UnitName{Number theory and cryptography (a/n)}
+  \Semester{1}
 }
 \DeclareOption{MATH2070}{
   \UnitCode{MATH2070}
-  \UnitUrl{MATH2070}
+  \UnitURL{MATH2070}
   \UnitName{Optimisation and financial mathematics (a/n)}
+  \Semester{1}
 }
 \DeclareOption{MATH2970}{
   \UnitCode{MATH2970}
-  \UnitUrl{MATH2970}
+  \UnitURL{MATH2970}
   \UnitName{Optimisation and financial mathematics (a/n)}
+  \Semester{1}
 }
 \DeclareOption{MATH2065}{
   \UnitCode{MATH2065}
-  \UnitUrl{MATH2065}
+  \UnitURL{MATH2065}
   \UnitName{Partial differential equations (intro)}
+  \Semester{2}
 }
 \DeclareOption{MATH2965}{
   \UnitCode{MATH2965}
-  \UnitUrl{MATH2965}
+  \UnitURL{MATH2965}
   \UnitName{Partial differential equations intro adv}
+  \Semester{2}
 }
 \DeclareOption{MATH3078}{
   \UnitCode{MATH3078}
-  \UnitUrl{MATH3078}
+  \UnitURL{MATH3078}
   \UnitName{Partial differential equations and waves (a/n)}
+  \Semester{2}
 }
 \DeclareOption{MATH3978}{
   \UnitCode{MATH3978}
-  \UnitUrl{MATH3978}
+  \UnitURL{MATH3978}
   \UnitName{Partial differential equations and waves (a/n)}
+  \Semester{2}
 }
 \DeclareOption{PHAR1822}{
   \UnitCode{PHAR1822}
-  \UnitUrl{PHAR1822}
+  \UnitURL{PHAR1822}
   \UnitName{Physical pharmaceutics and formulation a}
+  \Semester{2}
 }
 \DeclareOption{STAT4201}{
   \UnitCode{STAT4201}
-  \UnitUrl{STAT4201}
+  \UnitURL{STAT4201}
   \UnitName{Probability theory}
+  \Semester{1}
 }
 \DeclareOption{STAT2911}{
   \UnitCode{STAT2911}
-  \UnitUrl{STAT2911}
+  \UnitURL{STAT2911}
   \UnitName{Probability and statistical models (adv)}
+  \Semester{1}
 }
 \DeclareOption{MATH2962}{
   \UnitCode{MATH2962}
-  \UnitUrl{MATH2962}
+  \UnitURL{MATH2962}
   \UnitName{Real and complex analysis (advanced)}
+  \Semester{1}
 }
 \DeclareOption{MATH4301}{
   \UnitCode{MATH4301}
-  \UnitUrl{MATH4301}
+  \UnitURL{MATH4301}
   \UnitName{Representation theory}
+  \Semester{1}
 }
 \DeclareOption{MATH4303}{
   \UnitCode{MATH4303}
-  \UnitUrl{MATH4303}
-  \UnitName{Riemannian geometry with applications to ricci flow}
+  \UnitURL{MATH4303}
 }
 \DeclareOption{MATH3962}{
   \UnitCode{MATH3962}
-  \UnitUrl{MATH3962}
+  \UnitURL{MATH3962}
   \UnitName{Rings, fields and galois theory (adv)}
+  \Semester{1}
 }
 \DeclareOption{MATH4303}{
   \UnitCode{MATH4303}
-  \UnitUrl{MATH4303}
-  \UnitName{Spectral theory and pdes}
+  \UnitURL{MATH4303}
 }
 \DeclareOption{STAT3013}{
   \UnitCode{STAT3013}
-  \UnitUrl{STAT3013}
+  \UnitURL{STAT3013}
   \UnitName{Statistical inference (a/n)}
+  \Semester{2}
 }
 \DeclareOption{STAT3913}{
   \UnitCode{STAT3913}
-  \UnitUrl{STAT3913}
-  \UnitName{Statistical inference (a/n)}
-}
-\DeclareOption{STAT3913}{
-  \UnitCode{STAT3913}
-  \UnitUrl{STAT3913}
+  \UnitURL{STAT3913}
   \UnitName{Statistical inference advanced}
+  \Semester{2}
 }
 \DeclareOption{STAT2011}{
   \UnitCode{STAT2011}
-  \UnitUrl{STAT2011}
+  \UnitURL{STAT2011}
   \UnitName{Statistical models}
+  \Semester{1}
 }
 \DeclareOption{STAT2012}{
   \UnitCode{STAT2012}
-  \UnitUrl{STAT2012}
+  \UnitURL{STAT2012}
   \UnitName{Statistical tests}
+  \Semester{2}
 }
 \DeclareOption{STAT2912}{
   \UnitCode{STAT2912}
-  \UnitUrl{STAT2912}
+  \UnitURL{STAT2912}
   \UnitName{Statistical tests (advanced)}
+  \Semester{2}
 }
 \DeclareOption{MATH1005}{
   \UnitCode{MATH1005}
-  \UnitUrl{MATH1005}
+  \UnitURL{MATH1005}
   \UnitName{Statistics}
+  \Semester{2}
 }
 \DeclareOption{MATH1905}{
   \UnitCode{MATH1905}
-  \UnitUrl{MATH1905}
+  \UnitURL{MATH1905}
   \UnitName{Statistics (advanced)}
+  \Semester{2}
 }
 \DeclareOption{STAT3011}{
   \UnitCode{STAT3011}
-  \UnitUrl{STAT3011}
+  \UnitURL{STAT3011}
   \UnitName{Stochastic processes and time series (a/n)}
+  \Semester{1}
 }
 \DeclareOption{STAT3911}{
   \UnitCode{STAT3911}
-  \UnitUrl{STAT3911}
+  \UnitURL{STAT3911}
   \UnitName{Stochastic processes and time series (a/n)}
+  \Semester{1}
 }
 \DeclareOption{STAT3911}{
   \UnitCode{STAT3911}
-  \UnitUrl{STAT3911}
+  \UnitURL{STAT3911}
   \UnitName{Stochastic processes and time series adv}
+  \Semester{1}
 }
 \DeclareOption{PHAR2813}{
   \UnitCode{PHAR2813}
-  \UnitUrl{PHAR2813}
+  \UnitURL{PHAR2813}
   \UnitName{Therapeutic principles}
+  \Semester{1}
 }
 \DeclareOption{MATH4303}{
   \UnitCode{MATH4303}
-  \UnitUrl{MATH4303}
+  \UnitURL{MATH4303}
   \UnitName{Topology and geometry of three dimensional manifolds}
+  \Semester{1}
 }
 
 \ProcessOptions

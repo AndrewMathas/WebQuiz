@@ -16,6 +16,12 @@
 \usepackage{hyperref}
 \usepackage[T1]{fontenc}
 
+\usepackage{ifpdf}
+\ifpdf
+  \makeatletter
+  \@warning{This file should be compiled using latex, not pdflatex}
+  \makeatother
+\fi
 \newcommand{\C}{\mathbb C}
 \newcommand*{\vect}[1]{\mathbf{#1}}
 \UnitCode{MathQuiz}

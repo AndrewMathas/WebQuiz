@@ -17,6 +17,8 @@
 \parskip=1mm
 \hfuzz 5pt
 
+\usepackage{mathquiz-doc}
+
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{cmap} % fix search and cut-and-paste in Acrobat
@@ -79,7 +81,6 @@
    \end{tikzpicture}
 }
 
-\usepackage{mathquiz-doc}
 \hypersetup{pdftitle={MathQuiz manual}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -124,15 +125,15 @@
 
 \section{Introduction}
     On-line quizzes provide a good way to reinforce learning, especially
-    because they can give ``interactive'' feedback to the students that
-    is based on the submitted responses. Unfortunately, in addition to
-    writing the quiz content there are significant technical hurdles
-    that need to be overcome when writing an on-line quiz -- and there
-    are additional complications if the quiz involves mathematics or
+    because they can give ``interactive'' feedback to the students based
+    on the answers that they give. Unfortunately, in addition to writing
+    the quiz content there are significant technical hurdles that need
+    to be overcome when writing an on-line quiz -- and there are
+    additional complications if the quiz involves mathematics or
     diagrams. On the other hand, professional mathematicians and
     educators use \LaTeX\ to write their research papers, books and
     teaching materials.  \MathQuiz merges these two paradigms and makes
-    it possible to write on-line quizzes using \LaTeX.
+    it possible to write on-line quizzes in \LaTeX.
 
     \MathQuiz supports the following three types of questions:
     \begin{itemize}
@@ -142,14 +143,12 @@
     \end{itemize}
     Each time a student answers a questiuon they are told whether they
     are right or wrong and it is possible for the quiz author to give
-    targeted feedback ti the student based on their answer. In
-    principle, anything that can be written using \LaTeX\ can appear in
-    the on-line quiz.
+    targeted feedback to the student based on their answer.
 
     In principle, the quiz can contain anything that can be typeset
     using \LaTeX.  In practise, the \LaTeX\ is converted to HTML using
-    \href{https://www.tug.org/applications/tex4ht/mn.html}{\TeX 4ht},
-    and \href{https://github.com/michal-h21/make4ht}{make4ht}, which are
+    \href{https://www.tug.org/applications/tex4ht/mn.html}{\TeX 4ht} (
+    and \href{https://github.com/michal-h21/make4ht}{make4ht}), which are
     packaged with most \TeX\ distributions. The quizzes constructed
     using \MathQuiz can use anything in \LaTeX\ that is understood by
     \TeX 4ht, which is almost everything.
@@ -158,16 +157,16 @@
     following \LaTeX\ file defines a quiz with a single multiple choice
     question that has four possible answers, each of which has a
     customised response.  (Responses to answers are optional, but they
-    are one main pedagogical advantages of on-line quizzes because they
-    allow you to give instant feedback to the person taking the quiz.)
+    are one of the main pedagogical advantages of on-line quizzes because the
+    quiz can explain why the submitted answer was correct or incorrect.)
 
     \lstinputlisting[style=latexcode]{example}
 
     Since this is a \LaTeX\ file it can be processed using
-    \texttt{latex} and \texttt{pdflatex} to produce a readable and
-    printable version of the quiz, which is useful when proofreading. In
-    the case the\LaTeX\ version of the quiz looks something like the
-    following:
+    \texttt{pdflatex}, or \texttt{latex}, to produce a readable and
+    printable version of the quiz, which can be useful useful when
+    proofreading. In this case, the \LaTeX\ version of the quiz looks
+    something like this:
 
     \begin{center}
       \fbox{\includegraphics[width=0.5\textwidth]{example-pdf}}
@@ -187,11 +186,9 @@
     with the question buttons serving the dual purpose of, first,
     providing a way to navigate between the different questions in the
     quiz and, secondly, displaying whether or not the question has been
-    attempted. When a question has been attempted the question
-    ``button'' shows whether the question was correctly on the first
-    attempt, correctly on a second attempt or if the answer was
-    incorrect. Targeted feedback can be given to the person taking the
-    quiz based on their responses.
+    attempted and, if so, whether it answered correctly or incorrectly.
+    Targeted feedback can be given to the person taking the quiz based
+    on their responses.
 
     As explained in \autoref{S:documentclass}, it is possible to
     customise some aspects of the web pages constructed by \MathQuiz.
@@ -205,19 +202,19 @@
     Statistics} at the \href{http://www.usyd.edu.au/}{University of
     Sydney}.  The system is built on \LaTeX{} with the conversion from
     \LaTeX{} to HTML being done by Eitan Gurari's
-    \href{http://www.cis.ohio-state.edu/~gurari/TeX4ht/mn.html}{TeX4ht},
-    and Michal Hoftich's
+    \href{http://www.cis.ohio-state.edu/~gurari/TeX4ht/mn.html}{TeX4ht}
+    (and, more recently, Michal Hoftich's
     \href{https://github.com/michal-h21/make4ht}{make4ht}.
 
     To write quizzes using \MathQuiz it is only necessary to know
-    \LaTeX, however, the \MathQuiz system has three components:
+    \LaTeX, however, the underlying \MathQuiz system actually has three components:
     \begin{itemize}
       \item A \LaTeX{} document class file, \texttt{mathquiz.cls}, and
       a \TeX 4ht configuration file, \texttt{mathquiz.cfg}, that enable the
       quiz files to be processed by \LaTeX{} and \TeX 4ht, respectively.
-      \item A python program, \texttt{mathquiz}, that translates the xml
-      file that is produced by \TeX 4ht into  HTML.
-      \item Some javascript and css that controls the quiz web page.
+      \item A python program, \texttt{mathquiz}, that translates the
+      \LaTeX{} into xml, using \TeX 4ht, and then into HTML.
+      \item Some javascript and css that controls and styles the quiz web page.
     \end{itemize}
 
    The \LaTeX{} component of \MathQuiz{} was written by Andrew Mathas
@@ -225,8 +222,8 @@
    (and Don Taylor), based on an initial protype of Don Taylor's from
    2001.  Since 2004 the program has been maintained and developed by
    Andrew Mathas. Although the program has changed substantially since
-   2004 some of Don's code and his idea of using \TeX 4ht are still very
-   much in use.
+   2004 some of Don's code and, in particular, his idea of using
+   \TeX 4ht are still very much in use.
 
    Thanks are due to Bob Howlett for general help with CSS and, for
    Version~5, to  Michal Hoftich for technical advice.
@@ -235,8 +232,8 @@
 
     The quizzes made using \MathQuiz are intended to be used as a
     revision resource rather than as an assessment tool. In particular,
-    \MathQuiz does not provide a mechanism for recording the marks on
-    the quizzes. Technically, it would not be very hard to record marks
+    \MathQuiz does not provide a mechanism for recording the marks
+    obtained in quizzes. Technically, it would not be very hard to record marks
     but it would be more difficult to ensure that the quiz content
     content and solutions are secure. Currently the answers to the quiz
     are not part of the HTML source code for the quiz, however, there
@@ -250,8 +247,8 @@
     not accept variables and exactly the same questions will appear in
     exactly the same order each time the quiz is taken. It would not be
     hard to make the questions appear in a random order. Randomising the
-    order of the multiple choice answers might be difficult with the
-    current implementation.
+    order of the multiple choice answers would be more be difficult with
+    the current implementation.
 
     \MathQuiz is able to ask ``computational'' questions that accept a
     numerical answer, however, symbolic answers are not supported.
@@ -267,14 +264,19 @@
 
 \begin{description}
   \item[$\backslash$BreadCrumb]
-     The last item in the web page breadcrumb, which refers to the current quiz.
+     Sets last item in the web page breadcrumb, which refers to the
+     current quiz. By default, the breadcrumb is as set to be the
+     part of the quiz title, as set by \verb!\title!,
+     before the first colon. For example, the title
 
-     Default: the quiz \texttt{title}, as set by \verb!\title!.
+     \hspace*{20mm}\verb!\title{Quiz 1: Some interesting questions about frogs}!
+
+     sets the breadcrumb to ``Quiz 1''.
 
   \item[$\backslash$Department]
     The name of the department that runs this unit (for example,
     Mathematics). This appears below the question buttons on the quiz web
-    page.
+    page{.
 
     The department can be set globally using \texttt{mathquiz --edit-settings}.
 
@@ -360,7 +362,9 @@ the base class used by \texttt{mathquiz}.
        \item[--edit-settings]
           Edit mathquiz settings
        \item[--build MATHQUIZ\_MK4]
-          Build file for make4ht
+          Build file for make4ht. This can be used to add local
+          customisations for make4ht.
+
        \item[-q, --quiet]
           Suppress tex4ht messages (also -qq etc)
        \item[-l LOCAL\_PAGE, --local LOCAL\_PAGE]
