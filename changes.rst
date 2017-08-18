@@ -19,6 +19,8 @@ Version 5.0:
     - using git and bitbucket for version management control
     - made compatible with setup tools, together with option to export to ctan
     - allow user configuration via .mathquizrc file in HOME directory
+    - implemented a suggestion of Michal Hoftich to workaround tikz/pgf bug
+    - implemented a suggestion to Herbert Voss to fix a pstricks issue using pst2pdf
     - export to ctan
 
 Version 4.6:
@@ -49,10 +51,12 @@ Versions 1 and 2:
 
 To do
 ------
-    - randomise order of questions (easy) and question parts (hard?)
-    - allow variables in questions
+    - finish writing documentation
+    - (?) randomise order of questions (easy) and question parts (hard?)
+    - (?) allow variables in questions
+    - (?) rewrite javascript to use vue to render and control quiz pages
     - (?) allow vertical/horizontal/none customisations of question buttons
     - (?) record marks of students...would need a interface for login details etc
-    - (?) use vue to render and control quiz pages
     - (?) add timer to quiz
+    - (?) allow question groups
 

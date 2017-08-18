@@ -1,4 +1,4 @@
-MathQuiz: on-line quizzes using _LaTeX
+MathQuiz: on-line quizzes using LaTeX_
 ======================================
 
 MathQuiz_ makes it possible to use LaTeX to write interactive web based
@@ -6,10 +6,10 @@ quizzes. The quizzes are first written in LaTeX and then converted into
 HTML files using MathQuiz_, which is written in python. The conversion
 from LaTeX to HTML is done behind the scenes using TeX4ht_.
 
-To use MathQuiz_ you will need to have the following programs installed:
+To use MathQuiz_ you need to have the following programs installed:
     * LaTeX_
     * TeX4ht_ (available with latest distribution of texlive_, for example)
-    * Python_ (python3
+    * Python_ (python3)
 
 Once the system is installed, MathQuiz_ is used directly from the
 command line. For example, if quiz1.tex is a latex file for a quiz then:
