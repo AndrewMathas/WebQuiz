@@ -27,7 +27,7 @@ MathQuiz_ has three different components that need to be installed:
  - python files: the main python is mathquiz.py. On unix systems create
    a link to it using something like
        ln -s <path to mathquiz directory>/mathquiz.py /usr/local/bin/mathquiz
- - web files: although not strictly necessary the files in the scripts 
+ - web files: although not strictly necessary, the files in the scripts 
    web directory www should be put on the local web server
 
 Once MathQuiz_ is available from ctan only the web files will need to be

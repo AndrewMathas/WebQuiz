@@ -168,6 +168,13 @@ To do this mathquiz needs:
   o A relative URL to the web directory above.
 
 WARNING: any files of the form mathquiz.* in these directories will be deleted.
+
+For typical usage you only need to set the following:
+  mathquiz_url
+  department
+  department_url
+  university
+  university_url
 '''
 
 web_directory_message='''

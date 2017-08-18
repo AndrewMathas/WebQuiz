@@ -25,6 +25,9 @@
    \fi
 }
 
+\newif\ifTikz\Tikzfalse
+\DeclareOption{tikz}{\Tikztrue}
+
 
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
 \PassOptionsToClass{a4paper}{article}
@@ -32,6 +35,10 @@
 \LoadClass{article}
 \RequirePackage{xparse}
 \RequirePackage{pgffor}
+\ifTikz
+   \def\pgfsysdriver{pgfsys-tex4ht-fixed.def}
+   \RequirePackage{tikz}
+\fi
 
 \def\MQ@error{\PackageError{mathquiz}}
 \def\MQ@complain#1#2{%

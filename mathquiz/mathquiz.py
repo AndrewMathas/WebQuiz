@@ -199,11 +199,11 @@ class MathQuizSettings(object):
     # default of settings for the mathquizrc file - a dictionart of dictionaries
     # the 'help' field is for printing descriptions in the mathquizrc file
     settings = dict(
-        mathquiz_local = dict(val = 'mathquiz_local', help = 'Python module that writes the HTML page for the quiz' ),
+        mathquiz_local = dict(val = 'mathquiz_local', help = 'ython module that writes the HTML page for the quiz' ),
         mathquiz_url   = dict(val = '/MathQuiz',      help = 'Relative URL for mathquiz web directory' ),
         mathquiz_dir   = dict(val = '',               help = 'Full path to MathQuiz web directory'),
-        mathquiz_mk4   = dict(val = '',               help = 'Build file for make4ht'),
-        mathjax        = dict(val = '',               help = 'URL for mathjax'),
+        mathquiz_mk4   = dict(val = '',               help = 'Local build file for make4ht'),
+        mathjax        = dict(val = '',               help = 'Local URL for mathjax'),
         department     = dict(val = '',               help = 'Department running quiz'),
         department_url = dict(val = '',               help = 'URL for department running quiz'),
         university     = dict(val = '',               help = 'University or institution'),
@@ -293,7 +293,7 @@ class MathQuizSettings(object):
         r'''
         Print the non-default settings for mathquiz from the mathquizrc
         '''
-        print('Mathquiz settings stored in {}\n'.format(self.rc_file))
+        print('MathQuiz settings stored in {}\n'.format(self.rc_file))
         for key in self.settings:
             if self[key] != '':
                 print('  # {}\n  {:<14} = {}\n'.format(self.settings[key]['help'], key, self[key]))

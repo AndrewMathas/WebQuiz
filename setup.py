@@ -86,8 +86,10 @@ class MathQuizCtan(build_py):
         self.write_zip_file()
 
         # upload the zip file to ctan using ctanupload
-        subprocess.call('ctanupload -v {options}'.format(options = ' '.join('--{}="{}"'.format(key, val) for key,val in self.ctan_data.items())),
-                        shell=True
+        subprocess.call('ctanupload -v {options}'.format(
+                options = ' '.join('--{}="{}"'.format(key, val) for key,val in self.ctan_data.items())
+            ),
+            shell=True
         )
 
     def shell_command(self, cmd):
@@ -130,8 +132,8 @@ class MathQuizCtan(build_py):
 
             # now add the files
             for (src, target) in [ ('README.rst', ''),
-                                   ('latex/mathquiz.c*', 'tex'),
-                                   ('doc/mathquiz-doc.sty', 'tex'),
+                                   ('latex/mathquiz.c*', 'latex'),
+                                   ('doc/mathquiz-doc.sty', 'latex'),
                                    ('doc/mathquiz*.tex', 'doc'),
                                    ('doc/mathquiz*.pdf', 'doc'),
                                    ('mathquiz/mathquiz.ini', 'doc'),

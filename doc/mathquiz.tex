@@ -19,30 +19,9 @@
 
 \usepackage{mathquiz-doc}
 
-\usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
-\usepackage{cmap} % fix search and cut-and-paste in Acrobat
-\usepackage{stix}
-
-\usepackage{enumitem}
-\setlist[itemize]{nosep}
-\setlist[description]{
-    font=\sffamily\bfseries\color{DodgerBlue},
-    labelwidth=\textwidth
-}
-
-\usepackage{graphicx}
 \usepackage{pdfpages}
 
-%\setcounter{secnumdepth}{0}
-% \renewcommand\section[1]{%
-%   \ifx#1*\relax\else%
-%     \noindent\textcolor{blue}{\Large \textsc{#1}}%
-%     \addcontentsline{toc}{subsection}{#1}%
-%   \fi
-% }
 \renewcommand*\contentsname{\relax}
-
 
 % hyperref links to ctan
 \newcommand\ctan[1]{\href{https://www.ctan.org/pkg/#1}{\texttt{#1}}}
@@ -52,19 +31,20 @@
 \usepackage{tikz}
 \usetikzlibrary{shadows.blur}
 \tikzset{shadowed/.style={blur shadow={shadow blur steps=5},
-                          bottom color=LightSkyBlue!30,
-                          draw=MidnightBlue!70,shade,
+                          bottom color=Wheat,
+                          top color=Peru,
+                          draw=Sienna,
+                          shade,
                           font=\normalfont\Huge\bfseries\scshape,
                           rounded corners=8pt,
-                          top color=SkyBlue,
       },
-      boxes/.style={draw=MidnightBlue,
+      boxes/.style={draw=Sienna,
                     fill=Cornsilk,
                     font=\sffamily\small,
                     inner sep=5pt,
                     rectangle,
                     rounded corners=8pt,
-                    text=RoyalBlue,
+                    text=Brown,
      }
 }
 
@@ -73,9 +53,10 @@
       \node[yshift=-3cm] at (current page.north west)
         {\begin{tikzpicture}[remember picture, overlay]
           \draw[shadowed](30mm,0) rectangle node[white]{MathQuiz} (\paperwidth-30mm,16mm);
-          \node[MidnightBlue,font=\normalfont\small\itshape] at (\paperwidth/2,2mm) {\small On-line quizzes written in LaTeX};
+          \node[Crimson,font=\normalfont\small\itshape] at (\paperwidth/2,2mm)
+          {\small \mathquiz{description}};
           \node[anchor=west,boxes] at (4cm,0cm) {\mathquiz{name}};
-          \node[anchor=east,boxes] at (\paperwidth-4cm,0) {\mathquiz{version}};
+          \node[anchor=east,boxes] at (\paperwidth-4cm,0) {Version \mathquiz{version}};
          \end{tikzpicture}
         };
    \end{tikzpicture}
@@ -100,9 +81,7 @@
         allows the quiz author to concentrate on the content of quizzes,
         unencumbered by the technicalities of HTML and javascript.
 
-        \begin{center}
-        \fbox{\includegraphics[width=0.8\textwidth]{quiz-page}}
-        \end{center}
+       \ScreenShot{quiz-page}
 
         \begin{center}
         \begin{minipage}{0.7\textwidth}
@@ -168,9 +147,7 @@
     proofreading. In this case, the \LaTeX\ version of the quiz looks
     something like this:
 
-    \begin{center}
-      \fbox{\includegraphics[width=0.5\textwidth]{example-pdf}}
-    \end{center}
+    \ScreenShot[0.5]{example-pdf}
 
     Of course, the real reason for using \MathQuiz is that it is also
     possible to make an on-line version of the quiz by processing the
@@ -178,9 +155,7 @@
     the web page in your favourite browser, you will see a web page
     that looks something like this:
 
-    \begin{center}
-      \fbox{\includegraphics[width=0.8\textwidth]{example-html}}
-    \end{center}
+    \ScreenShot{example-html}
 
     The web page version of the quiz displays one question at a time,
     with the question buttons serving the dual purpose of, first,
@@ -196,39 +171,7 @@
     layout of the quizzes or to embed them into you local web pages; see
     \autoref{S:installation}.
 
-\section{Credits}
-    \MathQuiz{} was written and developed in the
-    \href{http://www.maths.usyd.edu.au/}{School of Mathematics and
-    Statistics} at the \href{http://www.usyd.edu.au/}{University of
-    Sydney}.  The system is built on \LaTeX{} with the conversion from
-    \LaTeX{} to HTML being done by Eitan Gurari's
-    \href{http://www.cis.ohio-state.edu/~gurari/TeX4ht/mn.html}{TeX4ht}
-    (and, more recently, Michal Hoftich's
-    \href{https://github.com/michal-h21/make4ht}{make4ht}.
-
-    To write quizzes using \MathQuiz it is only necessary to know
-    \LaTeX, however, the underlying \MathQuiz system actually has three components:
-    \begin{itemize}
-      \item A \LaTeX{} document class file, \texttt{mathquiz.cls}, and
-      a \TeX 4ht configuration file, \texttt{mathquiz.cfg}, that enable the
-      quiz files to be processed by \LaTeX{} and \TeX 4ht, respectively.
-      \item A python program, \texttt{mathquiz}, that translates the
-      \LaTeX{} into xml, using \TeX 4ht, and then into HTML.
-      \item Some javascript and css that controls and styles the quiz web page.
-    \end{itemize}
-
-   The \LaTeX{} component of \MathQuiz{} was written by Andrew Mathas
-   and the python, css and javascript code was written by Andrew Mathas
-   (and Don Taylor), based on an initial protype of Don Taylor's from
-   2001.  Since 2004 the program has been maintained and developed by
-   Andrew Mathas. Although the program has changed substantially since
-   2004 some of Don's code and, in particular, his idea of using
-   \TeX 4ht are still very much in use.
-
-   Thanks are due to Bob Howlett for general help with CSS and, for
-   Version~5, to  Michal Hoftich for technical advice.
-
-  \section{What can \MathQuiz does and does not do}
+\subsection{What MathQuiz does and does not do}
 
     The quizzes made using \MathQuiz are intended to be used as a
     revision resource rather than as an assessment tool. In particular,
@@ -260,8 +203,41 @@
 
     Some of these issues may be addressed in future releases.
 
-\section{The \MathQuiz document class}\label{S:documentclass}
+\subsection{Credits}
+    \MathQuiz{} was written and developed in the
+    \href{http://www.maths.usyd.edu.au/}{School of Mathematics and
+    Statistics} at the \href{http://www.usyd.edu.au/}{University of
+    Sydney}.  The system is built on \LaTeX{} with the conversion from
+    \LaTeX{} to HTML being done by Eitan Gurari's
+    \href{http://www.cis.ohio-state.edu/~gurari/TeX4ht/mn.html}{TeX4ht}
+    (and, more recently, Michal Hoftich's
+    \href{https://github.com/michal-h21/make4ht}{make4ht}.
 
+    To write quizzes using \MathQuiz it is only necessary to know
+    \LaTeX, however, the underlying \MathQuiz system actually has three components:
+    \begin{itemize}
+      \item A \LaTeX{} document class file, \texttt{mathquiz.cls}, and
+      a \TeX 4ht configuration file, \texttt{mathquiz.cfg}, that enable the
+      quiz files to be processed by \LaTeX{} and \TeX 4ht, respectively.
+      \item A python program, \texttt{mathquiz}, that translates the
+      \LaTeX{} into xml, using \TeX 4ht, and then into HTML.
+      \item Some javascript and css that controls and styles the quiz web page.
+    \end{itemize}
+
+   The \LaTeX{} component of \MathQuiz{} was written by Andrew Mathas
+   and the python, css and javascript code was written by Andrew Mathas
+   (and Don Taylor), based on an initial protype of Don Taylor's from
+   2001.  Since 2004 the program has been maintained and developed by
+   Andrew Mathas. Although the program has changed substantially since
+   2004 some of Don's code and, in particular, his idea of using
+   \TeX 4ht are still very much in use.
+
+   Thanks are due to Bob Howlett for general help with CSS and, for
+   Version~5, to  Michal Hoftich for technical advice.
+
+\section{The MathQuiz document class}\label{S:documentclass}
+
+\subsection{MathQuiz environments and commands}
 \begin{description}
   \item[$\backslash$BreadCrumb]
      Sets last item in the web page breadcrumb, which refers to the
@@ -276,7 +252,7 @@
   \item[$\backslash$Department]
     The name of the department that runs this unit (for example,
     Mathematics). This appears below the question buttons on the quiz web
-    page{.
+    page.
 
     The department can be set globally using \texttt{mathquiz --edit-settings}.
 
@@ -331,7 +307,8 @@
     Default: \texttt{https://www.sydney.edu.au}
 \end{description}
 
-\subsection{Mathquiz class options}
+\subsection{Quiz inde files}
+\subsection{MathQuiz class options}
 
 \begin{description}
   \item[pst2pdf] The quiz should be preprocessed by \texttt{pst2pdf},
@@ -340,17 +317,18 @@
   This is equivalent to the command-line option \texttt{--pst2pdf}.
 \end{description}
 
-All other class options are passed given to the \texttt{article} class, which is
+All other class options are passed to the \texttt{article} class, which is
 the base class used by \texttt{mathquiz}.
 
-\section{Command line options}
+\section{The MathQuiz program}
+\subsection{Command line options}
 
     The following options can either be used inside \Verb|\MathQuiz| to
     control the formatting \textit{locally} for just the unit being
 
 
     \begin{description}
-       \item[ -h, --help]            show this help message and exit
+       \item[ -h, --help]            list the command-line options and exit
        \item[-p, --pst2pdf]
           Use pst2pdf to fix issues with images generated by pstricks
        \item[-s,--shell-escape]
@@ -371,7 +349,7 @@ the base class used by \texttt{mathquiz}.
           Local python code for generating the quiz web page
     \end{description}
 
-\section{System installation and configuration}\label{S:installation}
+\subsection{System installation and configuration}\label{S:installation}
 
     To use the system you will need to have all of the following programs installed:
     \begin{itemize}
@@ -385,14 +363,14 @@ the base class used by \texttt{mathquiz}.
     \MathQuiz will soon be submitted to ctan, in which case it will soon
     be incorporated into \TeX live.
 
-\section{Local customisation}
+\subsection{Local customisation}
 
   The "style" of the online quizzes is controlled by the file
   \verb!mathquiz_local.py!. If you want to change this format of the quiz
   pages then the easiest way to do this is to make a copy of
   \verb!mathquiz_local.py!, say to mathquizMyStyle.py, and then edit this file
   directly. To see what the new style looks like you can run the
-  mathquiz script with an optional argument which tells mathquiz to use
+  mathquiz script with an optional argument that tells mathquiz to use
   your style instead: mathquiz -l mathquizMyStyle quizfile.tex Using
   mathquiz to regenerate the html files is quite time consuming, so
   while you are editing this file you will find it easier if you ask
@@ -405,16 +383,16 @@ the base class used by \texttt{mathquiz}.
   MathQuizOptions="--local=mathquizMyStyle" at the top of the mathquiz
   shell script.
 
-  The easiest way to change \verb!mathquiz_local.py! is simply to edit the
+  The easiest way to change \verb!mathquiz_local.py! is to edit the
   "decorating" html that this file puts around the quiz page. You may
-  also need to change the CSS style sheet for mathquiz which is the file
+  also need to change the CSS style sheet for mathquiz, which is the file
   web/mathquiz.css. More sophisticated versions of \verb!mathquiz_local.py!
   where you change the underlying python code are of course possible.
   For example, at the University of Sydney our version of this file
   calls our content management system directly and uses this to create
   the web page for the quiz.
 
-\begin{pythoncode}
+\begin{htmlcode}
     quiz_page = r'''<!DOCTYPE HTML>
     <html lang="en-AU">
     <head>
@@ -435,7 +413,7 @@ the base class used by \texttt{mathquiz}.
     </body>
     </html>
     '''
-\end{pythoncode}
+\end{htmlcode}
 
 
 

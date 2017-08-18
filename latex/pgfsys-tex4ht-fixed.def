@@ -1,0 +1,4 @@
+% Fix due to Michal Hoftich
+% https://tex.stackexchange.com/questions/386757/work-around-for-bug-in-pgf-when-used-with-htlatex
+\input pgfsys-tex4ht.def
+\def\pgfsys@svg@newline{^^J}

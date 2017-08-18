@@ -11,9 +11,23 @@
 
 % common latex code in the documentation files
 
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{cmap} % fix search and cut-and-paste in Acrobat
+\usepackage{stix}
+
+\usepackage{enumitem}
+\setlist[itemize]{nosep}
+\setlist[description]{
+    font=\sffamily\bfseries\color{DodgerBlue},
+    labelwidth=\textwidth
+}
+
+\usepackage{graphicx}
+
 \usepackage{xspace}
 \usepackage[svgnames]{xcolor}
-\def\MathQuiz{{\color{SlateBlue}\textsc{MathQuiz}}\xspace}
+\def\MathQuiz{{\color{FireBrick}\textsc{MathQuiz}}\xspace}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Read the mathquiz.ini file into \pgfkeys for later use so that we
@@ -56,30 +70,48 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% listings code for python and latex examples in mathquiz documentation
 \usepackage{listings}
+\lstset{%
+    % Basic design
+    backgroundcolor=\color{LightYellow!50!White},
+    basicstyle={\small\ttfamily},
+    boxpos=c, % centered
+    % frame
+    framerule=2pt,
+    frame=l,
+    framerule=0.5mm,
+    rulesep=20mm,
+    rulecolor=\color{Peru},
+    breaklines=true,
+    % colours for keywords etc
+    commentstyle=\color{DarkRed},
+    keywordstyle=\color{MediumBlue},
+    linewidth=14cm,
+    basewidth  = {.5em,0.5em},
+    numbers=none,
+    resetmargins=true,
+    tabsize=2,
+    xleftmargin=10mm,
+    classoffset=1,
+    keywordstyle={\color{ForestGreen}},
+    % Code design
+    keywordstyle=\color{MediumBlue}\bfseries,
+    keywordstyle=2{\color{SandyBrown}},
+    keywordstyle=3{\color{ForestGreen}},
+    commentstyle=\color{BurlyWood}\ttfamily,
+    ndkeywordstyle=\color{ForestGreen}\bfseries,
+    stringstyle=\color{Coral},
+    tabsize=4,
+    showtabs=false,
+    showspaces=false,
+    showstringspaces=false,
+}
 \lstdefinestyle{latexcode}{
   language=[LaTeX]TeX,
-  backgroundcolor=\color{LightYellow!50!White},
-  basewidth  = {.5em,0.5em},
-  basicstyle = \small\ttfamily,
-  boxpos=c, % centered
-  framerule=2pt,
-  breaklines=true,
-  commentstyle=\color{DarkRed},
-  keywordstyle=\color{MediumBlue},
-  linewidth=14cm,
-  numbers=none,
-  resetmargins=true,
-  tabsize=2,
   texcsstyle=*\bfseries\color{DodgerBlue},
-  xleftmargin=10mm,
-  classoffset=1,
-  keywordstyle={\color{ForestGreen}},
   morekeywords={UnitCode,UnitName,UnitURL,QuizzesURL,BreadCrumb,University,Department},
-  classoffset=2,
-  keywordstyle={\color{SandyBrown}},
+  classoffset=1,
   morekeywords={quiz,quizlist,discussion,question,choice,Choice},
-  classoffset=3,
-  keywordstyle={\color{DarkViolet}},
+  classoffset=2,
   morekeywords={response,correct,incorrect,whenRight,whenWrong,answer},
 }
 \lstnewenvironment{latexcode}{\lstset{style=latexcode}}{}
@@ -87,18 +119,33 @@
 \lstdefinestyle{pythoncode}{
   language=HTML,
   upquote=true,
-  backgroundcolor=\color{LightYellow!50!White},
-  basewidth  = {.5em,0.5em},
-  basicstyle = \small\ttfamily,
-  boxpos=c, % centered
-  breaklines=true,
-  showstringspaces=false,
-  tabsize=4,
   classoffset=1,
-  keywordstyle={\color{ForestGreen}},
-  morekeywords={quiz_page,side_menu,quiz_questions,breadcrumbs,include,title},
+  morekeywords={quiz_page},
 }
 \lstnewenvironment{pythoncode}{\lstset{style=pythoncode}}{}
+
+\lstdefinestyle{htmlcode}{
+  language=HTML,
+  upquote=true,
+  morekeywords={no}
+  classoffset=1,
+  morekeywords={quiz_page, side_menu, quiz_questions, quiz_header, no_script, include, breadcrumbs,},
+}
+\lstnewenvironment{htmlcode}{\lstset{style=htmlcode}}{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{tcolorbox}
+\newcommand\ScreenShot[2][0.8]{%
+  \begin{center}
+    \begin{tcolorbox}[colframe=Peru,
+                      width=#1\textwidth,
+                      boxrule=0.2mm,
+                      colback=white,
+                      halign=center,
+                     ] \includegraphics[width=\textwidth]{#2}
+    \end{tcolorbox}
+  \end{center}%
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NewDocumentCommand{\Verb}{v}{{\color{blue}#1}}
@@ -108,8 +155,8 @@
 \usepackage{hyperref}
 \hypersetup{%
     colorlinks=true,
-    linkcolor=blue,
-    urlcolor=blue,
+    linkcolor=FireBrick,
+    urlcolor=Brown,
     pdfauthor   = {\mathquiz{authors}                       },
     pdfkeywords = {\mathquiz{keywords}                      },
     pdfsubject  = {\mathquiz{description}                   },
