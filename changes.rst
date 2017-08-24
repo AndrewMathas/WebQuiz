@@ -52,11 +52,12 @@ Versions 1 and 2:
 To do
 ------
     - finish writing documentation
+    - (?) improve quiz "security"
     - (?) randomise order of questions (easy) and question parts (hard?)
     - (?) allow variables in questions
     - (?) rewrite javascript to use vue to render and control quiz pages
     - (?) allow vertical/horizontal/none customisations of question buttons
     - (?) record marks of students...would need a interface for login details etc
-    - (?) add timer to quiz
+    - (?) add timer and/or time limits to quiz
     - (?) allow question groups
 

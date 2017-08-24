@@ -263,7 +263,7 @@ class MathQuizSettings(object):
                             key, val = line.split('=')
                             key = key.strip().lower()
                             val = val.strip()
-                            if key in self.settings:
+                            if key in self.settings and val != '':
                                 self[key] = val
                             elif len(key)>0:
                                 MathQuizError('unknown setting {} in mathquizrc'.format(key))
