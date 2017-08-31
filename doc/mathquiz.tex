@@ -18,13 +18,13 @@
 \hfuzz 5pt
 
 \usepackage{mathquiz-doc}
-
+\usepackage{xparse}
 \usepackage{pdfpages}
 
 \renewcommand*\contentsname{\relax}
 
 % hyperref links to ctan
-\newcommand\ctan[1]{\href{https://www.ctan.org/pkg/#1}{\texttt{#1}}}
+\NewDocumentCommand\ctan{ O{#2} m}{\href{https://www.ctan.org/pkg/#1}{\texttt{#2}}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% MathQuiz title box for front page
@@ -297,7 +297,6 @@
     The university can be set globally using \texttt{mathquiz --edit-settings}.
 
     Default: \texttt{University of Sydney}
-
   \item[$\backslash$UniversityURL]
     The URL for the university, or institution, that appears below the
     question buttons on the quiz web page.
@@ -307,14 +306,27 @@
     Default: \texttt{https://www.sydney.edu.au}
 \end{description}
 
-\subsection{Quiz inde files}
+\subsection{Quiz index files}
+
 \subsection{MathQuiz class options}
 
 \begin{description}
-  \item[pst2pdf] The quiz should be preprocessed by \texttt{pst2pdf},
-  which converts all postscript objects in the quiz to images. This
-  sometimes fixes issues with diagrams drawn using \ctan{pstricks},
-  This is equivalent to the command-line option \texttt{--pst2pdf}.
+  \item[pst2pdf] If this class option is given then \MathQuiz\ uses
+  \ctan{pst2pdf} to convert all postscript objects in the quiz to
+  images. This sometimes fixes issues with diagrams drawn using
+  \ctan{pstricks}. This class option is equivalent to the command-line option
+  \texttt{--pst2pdf}.
+
+  \item[tikz] This both loads the \ctan[pgf]{tikz} package (so you do
+  not need to have \Verb|\usepackage{tikz}| in your \LaTeX\ file). As a
+  bonus, the \textsf{tikz} class option also fixes a bug in PGF that
+  stops it from working with \TeX 4ht (thanks are due to Michal
+  Hoftich!).\footnote{This bug, together with a one-line solution, has
+  been reported to the PGF developers but for reasons unknown they have
+  not fixed the problem. See
+    \href{https://tex.stackexchange.com/questions/386757/work around for bug
+    in pgf when used with htlatex}{Work around for bug in pgf when used with htlatex}
+  for more details.}
 \end{description}
 
 All other class options are passed to the \texttt{article} class, which is
