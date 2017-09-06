@@ -36,7 +36,7 @@
 \RequirePackage{xparse}
 \RequirePackage{pgffor}
 \ifTikz
-   \def\pgfsysdriver{pgfsys-tex4ht-fixed.def}
+   \def\pgfsysdriver{pgfsys-tex4ht-mq-fixed.def}
    \RequirePackage{tikz}
 \fi
 
@@ -57,8 +57,12 @@
 % Macros for defining the university and department
 \newcommand*{\DepartmentURL}[1]{\def\MQ@depturl{#1}}
 \newcommand*{\Department}[1]{\def\MQ@department{#1}}
-\newcommand*{\UniversityURL}[1]{\def\MQ@uniurl{#1}}
-\newcommand*{\University}[1]{\def\MQ@university{#1}}
+
+% University/instution - university included for backwards compatibility
+\newcommand*{\InstitutionURL}[1]{\def\MQ@inst_url{#1}}
+\newcommand*{\UniversityURL}[1]{\def\MQ@inst_url{#1}}
+\newcommand*{\Institution}[1]{\def\MQ@instution{#1}}
+\newcommand*{\University}[1]{\def\MQ@instution{#1}}
 
 % Macros for defining the quiz web breadcrumbs using the unit code, name and
 % URL. The names of these macros are chosen so as to be compatible with the

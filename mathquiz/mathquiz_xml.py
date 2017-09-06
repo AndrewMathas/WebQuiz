@@ -245,7 +245,7 @@ class Quiz(Node):
   def __init__(self):
     Node.__init__(self)
     self.course=dict(name='', code='', url='', quizzes='')
-    self.school=dict(department='', department_url='', university='', university_url='')
+    self.school=dict(department='', department_url='', institution='', institution_url='')
     self.discussion_list = []
     self.link_list = []
     self.meta_list = []

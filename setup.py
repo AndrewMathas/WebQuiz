@@ -131,24 +131,27 @@ class MathQuizCtan(build_py):
         with zipfile.ZipFile('mathquiz.zip', 'w', zipfile.ZIP_DEFLATED) as zfile:
 
             # now add the files
-            for (src, target) in [ ('README.rst', ''),
-                                   ('LICENCE', 'scripts'),
-                                   ('css/mathquiz.css', 'scripts/www'),
-                                   ('doc/*.png', 'scripts/www/doc'),
-                                   ('doc/mathquiz*.pdf', 'doc'),
-                                   ('doc/mathquiz*.tex', 'doc'),
-                                   ('doc/mathquiz-doc.sty', 'latex'),
-                                   ('doc/mathquiz-manual.pdf', 'scripts/www/doc'),
-                                   ('doc/mathquiz-manual.tex', 'scripts/www/doc'),
-                                   ('javascript/mathquiz.js', 'scripts/www'),
-                                   ('latex/mathquiz.c*', 'latex'),
+            for (src, target) in [ ('README.rst',                    ''),
+                                   ('doc/*.pdf',                     'doc'),
+                                   ('doc/*.tex',                     'doc'),
+                                   ('doc/example*.png',              'doc'),
+                                   ('mathquiz/mathquiz.ini',         'doc'),
+                                   ('latex/mathquiz.c*',             'latex'),
                                    ('latex/pgfsys-tex4ht-fixed.def', 'latex'),
-                                   ('mathquiz/mathquiz*.py', 'scripts'),
-                                   ('mathquiz/mathquiz.ini', 'doc'),
-                                   ('mathquiz/mathquiz.ini', 'scripts'),
-                                   ('mathquiz/mathquiz.ini', 'scripts/www/doc'),
+                                   ('doc/mathquiz-doc.sty',          'latex'),
+                                   ('LICENCE',                       'scripts'),
+                                   ('mathquiz/mathquiz*.py',         'scripts'),
+                                   ('mathquiz/mathquiz.ini',         'scripts'),
+                                   ('css/mathquiz.css',              'scripts/www'),
+                                   ('javascript/mathquiz.js',        'scripts/www'),
+                                   ('doc/*.png',                     'scripts/www/doc'),
+                                   ('doc/mathquiz-manual.pdf',       'scripts/www/doc'),
+                                   ('doc/mathquiz-manual.tex',       'scripts/www/doc'),
+                                   ('mathquiz/mathquiz.ini',         'scripts/www/doc'),
+                                   ('doc/example*.tex',              'scripts/www/doc/examples'),
                                   ]:
                 for file in glob.glob(src):
+                  if file != 'mathquiz/mathquiz_sms.py':
                     zfile.write(file, os.path.join('mathquiz', target, file.split('/')[-1]))
 
 setup(name             = settings.program,

@@ -199,15 +199,15 @@ class MathQuizSettings(object):
     # default of settings for the mathquizrc file - a dictionart of dictionaries
     # the 'help' field is for printing descriptions in the mathquizrc file
     settings = dict(
-        mathquiz_local = dict(val = 'mathquiz_local', help = 'ython module that writes the HTML page for the quiz' ),
-        mathquiz_url   = dict(val = '/MathQuiz',      help = 'Relative URL for mathquiz web directory' ),
-        mathquiz_dir   = dict(val = '',               help = 'Full path to MathQuiz web directory'),
-        mathquiz_mk4   = dict(val = '',               help = 'Local build file for make4ht'),
-        mathjax        = dict(val = '',               help = 'Local URL for mathjax'),
-        department     = dict(val = '',               help = 'Department running quiz'),
-        department_url = dict(val = '',               help = 'URL for department running quiz'),
-        university     = dict(val = '',               help = 'University or institution'),
-        university_url = dict(val = '',               help = 'URL for university or institution'),
+        mathquiz_local  = dict(val = 'mathquiz_local', help = 'A python module that writes the HTML page for the quiz' ),
+        mathquiz_url    = dict(val = '/MathQuiz',      help = 'Relative URL for mathquiz web directory' ),
+        mathquiz_dir    = dict(val = '',               help = 'Full path to MathQuiz web directory'),
+        mathquiz_mk4    = dict(val = '',               help = 'Local build file for make4ht'),
+        mathjax         = dict(val = '',               help = 'Local URL for mathjax'),
+        department      = dict(val = '',               help = 'Department running quiz'),
+        department_url  = dict(val = '',               help = 'URL for department running quiz'),
+        institution     = dict(val = '',               help = 'University or institution'),
+        institution_url = dict(val = '',               help = 'URL for university or institution'),
     )
 
     def __init__(self):
@@ -376,6 +376,7 @@ class MathQuizSettings(object):
                 self.mathquizrc['mathquiz_url'] = mq_url
 
         if edit_settings:
+            print(edit_settings)
             for key in self.settings:
                 if key not in ['mathquiz_dir', 'mathquiz_url']:
                     setting = input('{}{}: '.format(self.settings[key]['help'],
@@ -432,7 +433,7 @@ class MakeMathQuiz(object):
         # generate the variuous components ofthe web page
         self.course = self.quiz.course
         self.school = self.quiz.school
-        for opt in ['department', 'department_url', 'university', 'university_url']:
+        for opt in ['department', 'department_url', 'institution', 'institution_url']:
             if settings[opt] != '':
                 self.school[opt] = settings[opt]
 
@@ -586,7 +587,7 @@ class MakeMathQuiz(object):
                                         description = metadata.description,
                                         copyright   = metadata.copyright,
                                         department  = self.school['department'],
-                                        university  = self.school['university'],
+                                        institution  = self.school['institution'],
                                         quiz_file   = self.quiz_file)
 
         # we don't need any of the links or metas from the latex file
@@ -609,17 +610,17 @@ class MakeMathQuiz(object):
         else:
             department = '''<a href="{department_url}">{department}</a>'''.format(**self.school)
 
-        if self.school['university_url']=='':
-            university = self.school['university']
+        if self.school['institution_url']=='':
+            institution = self.school['institution']
         else:
-            university = '''<a href="{university_url}">{university}</a>'''.format(**self.school)
+            institution = '''<a href="{institution_url}">{institution}</a>'''.format(**self.school)
 
         # end of progress buttons, now for the credits
         self.side_menu = side_menu.format(discussion_list=discussion_list, 
                                           buttons=buttons, 
                                           version=metadata.version,
                                           department=department,
-                                          university=university,
+                                          institution=institution,
         )
 
     def add_question_javascript(self):

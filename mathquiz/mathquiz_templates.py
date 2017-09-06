@@ -25,7 +25,7 @@ html_meta = r'''<meta http-equiv="Content-Type" content="text/html; charset=utf-
   <meta name="generator" content="MathQuiz {version} (http://www.maths.usyd.edu.au/u/MOW/MathQuiz/doc/mathquiz-manual.html)">
   <meta name="description" content="{description}">
   <meta name="authors" content="MathQuiz: {authors}">
-  <meta name="organization" content="{department}, {university}">
+  <meta name="organization" content="{department}, {institution}">
   <meta name="Copyright" content="MathQuiz: {copyright}">
   <meta name="keywords" content="mathquiz, TeX4ht, make4ht, latex, python, quiz, mathematics">
   <link href="{mathquiz_url}/mathquiz.css" type="text/css" rel="stylesheet">
@@ -75,7 +75,7 @@ side_menu = r'''<div class="menu_icon" onclick="toggle_side_menu_display();">&#9
       </table>
       <div class="school">
         {department}<p>
-        {university}
+        {institution}
       </div>
       <div class="copyright">
         <a href="http://www.maths.usyd.edu.au/u/MOW/MathQuiz/doc/credits.html">
@@ -168,13 +168,6 @@ To do this mathquiz needs:
   o A relative URL to the web directory above.
 
 WARNING: any files of the form mathquiz.* in these directories will be deleted.
-
-For typical usage you only need to set the following:
-  mathquiz_url
-  department
-  department_url
-  university
-  university_url
 '''
 
 web_directory_message='''
@@ -212,15 +205,30 @@ they need to be. Please use
 to better configure MathQuiz.
 '''
 initialise_warning='''<div class="warning">
-        MathQuiz has not yet been initialised so the quiz pages will be slower than they need to be.
-        Please use <em>mathquiz --initialise</em> to better configure MathQuiz.
+        MathQuiz has not yet been initialised so the quiz pages will load
+        and run more slowly than they need to.
+
+        Please use <em>mathquiz --initialise</em> to install the MathQuiz 
+        web files onto your web server.
       </div>
 '''
 
 permission_error='''
-You do not have permission to write tou {}.
+You do not have permission to write to {}.
 To install MathQuiz files into this directory you probably need to run this
-command using an administrator account, or sudo on linux/macosx.
+command using an administrator account, or using sudo on linux/macosx.
+'''
+
+edit_settings='''
+The mathquiz_url must be set to give the relative URL for the MathQuiz web
+directory on your web server. In addition, you can set global defaults for 
+the following.
+  department
+  department_url
+  institution
+  institution
+Leave these blank if you do not want to set defaults for the department and
+institution.
 '''
 
 # no script error when javascript is not enabled
