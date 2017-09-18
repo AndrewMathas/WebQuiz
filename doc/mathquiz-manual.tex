@@ -10,7 +10,7 @@
 %-----------------------------------------------------------------------------
 
 %% This file is part of the MathQuiz class distribution
-\documentclass{mathquiz}
+\documentclass[svgnames]{mathquiz}
 \usepackage{mathquiz-doc}
 \usepackage{pst-plot}
 \usepackage{hyperref}
@@ -121,7 +121,7 @@ an easily readable layout.
       .
       \end{document}
 \end{latexcode}
-  The preamble of the \LaTeX{} file specifies the course code, the
+  The preamble of the \LaTeX{} file specifies the unit code, the
   name of the unit of study, the location of the homepage for the
   unit and the index file for the quizzes for this unit; this is
   done using the commands
@@ -130,10 +130,10 @@ an easily readable layout.
   \verb|\UnitURL| and
   \verb|\QuizzesURL| respectively. If the
   command \verb|\QuizzesURL| is omitted then the URL for the quiz
-  index file is set to \verb|\UnitURL/|Quizzes. (Within the the School of
+  index file is set to \verb|\UnitURL/|Quizzes. (Within the School of
   Mathematics and Statistics, there is also a package
   \href{smsquiz.html}{smsquiz.sty} which sets the default
-  parameters from the course code.)
+  parameters from the unit code.)
 
   The title of the quiz should also be set in the preamble using the
   \verb|\title| command. Note that the \verb|\title|
@@ -144,7 +144,7 @@ an easily readable layout.
   The \verb|discussion| environment can be used to add comments or
   remarks to a quiz. For example, it can be used to summarize the
   material being tested in the quiz or to give references to the
-  course notes. The syntax for the \verb|discussion| environment is as
+  lecture notes for the unit. The syntax for the \verb|discussion| environment is as
   follows:
 \begin{latexcode}
       \begin{discussion}[optional title]

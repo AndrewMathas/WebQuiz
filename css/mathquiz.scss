@@ -57,7 +57,7 @@ div.side_menu {
     float: left;
     font-size: 10px;
     font-weight: normal;
-    margin-right: 20px;
+    margin: 0 0ex 0 3ex;
     overflow: hidden;
     width: 100px;
     display: block;
@@ -396,7 +396,7 @@ nav.bread_crumbs {
                     -webkit-transition: height 0.5s;
                     padding: 1px 0 0 4px;
 
-                    a { color: blue; }
+                    a { color: $ButtonSelected; }
                 }
 
                 li::after { content:none;}

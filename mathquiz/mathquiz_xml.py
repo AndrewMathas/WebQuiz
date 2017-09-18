@@ -25,15 +25,6 @@ def Debugging(*arg):
     if DEBUG:
         sys.stderr.write('ReadMathQuizXmlFile: '+' '.join('%s' % a for a in arg)+'\n')
 
-def strval(ustr):
-  if type(ustr) == type(u''):
-    str = ''
-    for c in ustr:
-      str += chr(ord(c))
-  else:
-    str = ustr
-  return str
-
 def ReadMathQuizXmlFile(quizfile, debugging):
     global DEBUG
 
@@ -120,7 +111,8 @@ class QuizHandler(xml.sax.ContentHandler):
         self.root = Quiz()
         self.position = self.root
         self.position.title=attrs.get('title','')
-        self.position.bread_crumb=attrs.get('bread_crumb','')
+        self.position.bread_crumbs=[crumb.strip() for crumb in attrs.get('breadcrumbs','').split('|')]
+        self.position.bread_crumb=attrs.get('breadcrumb','')
         self.position.src=attrs.get('src','')
 
   def meta_start( self,  attrs ):
@@ -138,12 +130,13 @@ class QuizHandler(xml.sax.ContentHandler):
   def quizlistitem_start( self,  attrs ):
     self.position.quiz_list.append(attrs)
 
-  def course_start( self,  attrs ):
+  def unit_start( self,  attrs ):
     r'''
-    There should only be one course field. We replace `attrs` with a dictionary
-    of the course attributes.
+    There should only be one unit field. We replace `attrs` with a dictionary
+    of the unit attributes.
     '''
-    self.position.course={ k: attrs.get(k) for k in attrs.keys() }
+    print('Unit attributes = {}.'.format(attrs))
+    self.position.unit={ k: attrs.get(k) for k in attrs.keys() }
 
   def school_start( self,  attrs ):
     r'''
@@ -244,7 +237,7 @@ class Quiz(Node):
   """
   def __init__(self):
     Node.__init__(self)
-    self.course=dict(name='', code='', url='', quizzes='')
+    self.unit=dict(name='', code='', url='', quizzes='')
     self.school=dict(department='', department_url='', institution='', institution_url='')
     self.discussion_list = []
     self.link_list = []

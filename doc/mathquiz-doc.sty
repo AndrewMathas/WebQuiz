@@ -10,10 +10,9 @@
 %-----------------------------------------------------------------------------
 
 % common latex code in the documentation files
-
+\usepackage{cmap} % fix search and cut-and-paste in Acrobat
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
-\usepackage{cmap} % fix search and cut-and-paste in Acrobat
 \usepackage{stix}
 
 \usepackage{enumitem}
@@ -26,7 +25,8 @@
 \usepackage{graphicx}
 
 \usepackage{xspace}
-\usepackage[svgnames]{xcolor}
+\usepackage{xcolor}
+
 \def\MathQuiz{{\color{SaddleBrown}\textsc{MathQuiz}}\xspace}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -79,7 +79,7 @@
     framerule=2pt,
     frame=l,
     framerule=0.5mm,
-    rulesep=20mm,
+    rulesep=10mm,
     rulecolor=\color{Peru},
     breaklines=true,
     % colours for keywords etc
@@ -108,7 +108,7 @@
 \lstdefinestyle{latexcode}{
   language=[LaTeX]TeX,
   texcsstyle=*\bfseries\color{DodgerBlue},
-  morekeywords={UnitCode,UnitName,UnitURL,QuizzesURL,BreadCrumb,University,Department},
+  morekeywords={UnitCode,UnitName,UnitURL,QuizzesURL,BreadCrumb,Institution,Department},
   classoffset=1,
   morekeywords={quiz,quizlist,discussion,question,choice,Choice},
   classoffset=2,
@@ -135,14 +135,20 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \usepackage{tcolorbox}
-\newcommand\ScreenShot[2][0.8]{%
+\tcbuselibrary{skins}
+\NewDocumentCommand\ScreenShot{ O{0.8} m m }{%
   \begin{center}
-    \begin{tcolorbox}[colframe=Peru,
-                      width=#1\textwidth,
-                      boxrule=0.2mm,
-                      colback=white,
-                      halign=center,
-                     ] \includegraphics[width=\textwidth]{#2}
+    \begin{tcolorbox}[width=#1\textwidth, title=#2, arc=3mm,
+      colframe=Peru,
+      boxrule=0.2mm,
+      colback=white,
+      halign=center,
+      enhanced,
+      attach boxed title to bottom right={yshift=3mm, xshift=-3mm},
+      fonttitle=\footnotesize,
+      boxed title style={size=fbox, colback=white, arc=2mm},
+      coltitle=Peru,
+    ] \includegraphics[width=\textwidth]{#3}
     \end{tcolorbox}
   \end{center}%
 }

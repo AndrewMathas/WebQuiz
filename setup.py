@@ -41,7 +41,7 @@ r'''
 
 # ctan: python setup.py ctan --> create zup file for upload to ctan
 
-import os, glob, shutil, sys
+import os, glob, sys
 from setuptools import setup, find_packages
 from setuptools.command.build_py import build_py
 import subprocess
@@ -131,24 +131,24 @@ class MathQuizCtan(build_py):
         with zipfile.ZipFile('mathquiz.zip', 'w', zipfile.ZIP_DEFLATED) as zfile:
 
             # now add the files
-            for (src, target) in [ ('README.rst',                    ''),
-                                   ('doc/*.pdf',                     'doc'),
-                                   ('doc/*.tex',                     'doc'),
-                                   ('doc/example*.png',              'doc'),
-                                   ('mathquiz/mathquiz.ini',         'doc'),
-                                   ('latex/mathquiz.c*',             'latex'),
-                                   ('latex/pgfsys-tex4ht-fixed.def', 'latex'),
-                                   ('doc/mathquiz-doc.sty',          'latex'),
-                                   ('LICENCE',                       'scripts'),
-                                   ('mathquiz/mathquiz*.py',         'scripts'),
-                                   ('mathquiz/mathquiz.ini',         'scripts'),
-                                   ('css/mathquiz.css',              'scripts/www'),
-                                   ('javascript/mathquiz.js',        'scripts/www'),
-                                   ('doc/*.png',                     'scripts/www/doc'),
-                                   ('doc/mathquiz-manual.pdf',       'scripts/www/doc'),
-                                   ('doc/mathquiz-manual.tex',       'scripts/www/doc'),
-                                   ('mathquiz/mathquiz.ini',         'scripts/www/doc'),
-                                   ('doc/example*.tex',              'scripts/www/doc/examples'),
+            for (src, target) in [ ('README.rst',                       ''),
+                                   ('doc/*.pdf',                        'doc'),
+                                   ('doc/*.tex',                        'doc'),
+                                   ('mathquiz/mathquiz.ini',            'doc'),
+                                   ('doc/examples/*.png',               'doc/examples'),
+                                   ('doc/examples/*.tex',               'doc/examples'),
+                                   ('latex/mathquiz.c*',                'latex'),
+                                   ('latex/pgfsys-tex4ht-mq-fixed.def', 'latex'),
+                                   ('doc/mathquiz-doc.sty',             'latex'),
+                                   ('LICENCE',                          'scripts'),
+                                   ('mathquiz/mathquiz*.py',            'scripts'),
+                                   ('mathquiz/mathquiz.ini',            'scripts'),
+                                   ('css/mathquiz.css',                 'scripts/www'),
+                                   ('javascript/mathquiz.js',           'scripts/www'),
+                                   ('doc/mathquiz-manual.pdf',          'scripts/www/doc'),
+                                   ('doc/mathquiz-manual.tex',          'scripts/www/doc'),
+                                   ('mathquiz/mathquiz.ini',            'scripts/www/doc'),
+                                   ('doc/examples/*.tex',               'scripts/www/doc/examples'),
                                   ]:
                 for file in glob.glob(src):
                   if file != 'mathquiz/mathquiz_sms.py':

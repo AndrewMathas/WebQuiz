@@ -42,29 +42,28 @@ mathquiz_init=r'''<div style="display: none;">
     <script type="text/javascript">MathQuizInit({qTotal}, {dTotal}, '{quiz_file}');</script>
   </div>'''
 
-mathjax = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/'
-
 # Bread crumbs including a drop down menu for all of the quizzes for the unit.
 # The drop_down_menu is added by create_drop_down_menu() in maghquiz.js
+bread_crumb_line='        <li><a href="{url}">{text}</a></li>\n'
+bread_crumb_quizzes = '''        <li><a href="{quizzes_url}">
+          Quizzes</a><span onclick="toggle_quiz_menu();" id="quizzes_menu_icon"></span>
+          <ul id="drop_down_menu" onclick="toggle_quiz_menu();"></ul>
+'''
 bread_crumbs = r'''<nav class="bread_crumbs">
     <ul>
-        <li><a href="{department_url}">{department}</a></li>
-        <li><a href="{url}">{code}</a></li>
-        <li><a href="{quizzes_url}">Quizzes</a><span onclick="toggle_quiz_menu();" id="quizzes_menu_icon"></span>
-            <ul id="drop_down_menu" onclick="toggle_quiz_menu();">
-            </ul>
-        </li>
-        <li>{bread_crumb}</li>
-    </ul>
-  </nav>'''
+{crumbs}
+  </nav>
+'''
 
 # question buttons
 button  = r'        <div id="button{b}" class="button{cls}" content=" " onClick="gotoQuestion({b})">{b}</div>'
 discuss = r'        <li id="button-{b}" class="discussion" onClick="gotoQuestion(-{b})">{title}</li>'
-side_menu = r'''<div class="menu_icon" onclick="toggle_side_menu_display();">&#9776;</div>
+side_menu = r'''<div class="menu_icon" onclick="toggle_side_menu_display();">
+      &#8676;<span class="question_label">&nbsp;Questions&nbsp;</span>
+    </div>
     <div class="side_menu">{discussion_list}
       <div class="buttons">
-        <span class="question_label">&nbsp;Questions&nbsp;</span>
+        
         <br>{buttons}
       </div>
       <table class="marking_key">
@@ -106,7 +105,7 @@ input_button='<input type="button" name="next" value="Start quiz" onClick="retur
 
 #quiz index
 quiz_list='''     <div class="quiz_list">
-        <h2>{course} Quizzes</h2>
+        <h2>{unit} Quizzes</h2>
         <ul>
           {quiz_index}
         </ul>
@@ -196,14 +195,13 @@ and typing
     mathquiz mathquiz-manual
 '''
 
-sms_http = 'http://www.maths.usyd.edu.au/u/MOW/MathQuiz/'
-
 mathquiz_url_warning = '''
 MathQuiz has not yet been initialised so the quiz pages will be slower than
 they need to be. Please use
     mathquiz --initialise
-to better configure MathQuiz.
+to install the MathQuiz javascript and css files.
 '''
+
 initialise_warning='''<div class="warning">
         MathQuiz has not yet been initialised so the quiz pages will load
         and run more slowly than they need to.
@@ -220,15 +218,22 @@ command using an administrator account, or using sudo on linux/macosx.
 '''
 
 edit_settings='''
-The mathquiz_url must be set to give the relative URL for the MathQuiz web
-directory on your web server. In addition, you can set global defaults for 
-the following.
-  department
-  department_url
-  institution
-  institution
-Leave these blank if you do not want to set defaults for the department and
-institution.
+In the mathquizrc file you can set global defaults for the following:
+    department
+    department_url
+    institution
+    institution
+Leave these blank if you do not want to set defaults for them. In addition, 
+there are three "advanced user options":
+    mathquiz_mk4
+    mathjax
+    mathquiz_format
+There should be changed only with care. If you want to change the relative URL
+for the mathquiz web files use: mathquiz --initialise
+
+If in doubt about any of these options accept the defaults by pressing return.
+You can change all of these settings later using the command
+    mathquiz --edit-settings
 '''
 
 # no script error when javascript is not enabled
@@ -242,5 +247,5 @@ no_script='''<noscript>
 
 # and now for the mathquiz help message
 mathquiz_help_message=r'''
-Mathquiz provides a way of writing on-line quizzes starting from a latex file.
+MathQuiz allows you to write writing on-line quizzes starting from a latex file.
 '''

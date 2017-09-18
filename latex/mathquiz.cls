@@ -19,7 +19,7 @@
   MathQuiz LaTeX document class (based on article.cls)]
 
 \DeclareOption{pst2pdf}{
-   % this option tells mathquiz to use pst2pdf
+   % this option tells mathquiz to use pst2pdf - but this is really done by mathquiz
    \ifdefined\HCode\else
      \AtBeginDocument{\textsc{MathQuiz} will process this quiz using \textbf{pst2pdf}.}
    \fi
@@ -28,16 +28,25 @@
 \newif\ifTikz\Tikzfalse
 \DeclareOption{tikz}{\Tikztrue}
 
-
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
 \PassOptionsToClass{a4paper}{article}
 \ProcessOptions\relax
-\LoadClass{article}
+\RequirePackage{ifpdf}
+\ifpdf\LoadClass[showtrims]{article}
+\else\LoadClass{article}
+\fi
 \RequirePackage{xparse}
 \RequirePackage{pgffor}
 \ifTikz
-   \def\pgfsysdriver{pgfsys-tex4ht-mq-fixed.def}
+   % hack to fix two pgf bugs - apply only when when using tex4ht
+   \ifdefined\HCode
+     \def\pgfsysdriver{pgfsys-tex4ht-mq-fixed.def}
+   \fi
    \RequirePackage{tikz}
+   % from https://tex.stackexchange.com/questions/390592/
+   \ifdefined\HCode
+     \tikzset{every node/.style={/pgf/tex4ht node/escape=true}}
+   \fi
 \fi
 
 \def\MQ@error{\PackageError{mathquiz}}
@@ -59,10 +68,10 @@
 \newcommand*{\Department}[1]{\def\MQ@department{#1}}
 
 % University/instution - university included for backwards compatibility
-\newcommand*{\InstitutionURL}[1]{\def\MQ@inst_url{#1}}
-\newcommand*{\UniversityURL}[1]{\def\MQ@inst_url{#1}}
-\newcommand*{\Institution}[1]{\def\MQ@instution{#1}}
-\newcommand*{\University}[1]{\def\MQ@instution{#1}}
+\newcommand*{\InstitutionURL}[1]{\def\MQ@insturl{#1}}
+\newcommand*{\UniversityURL}[1]{\def\MQ@insturl{#1}}
+\newcommand*{\Institution}[1]{\def\MQ@institution{#1}}
+\newcommand*{\University}[1]{\def\MQ@institution{#1}}
 
 % Macros for defining the quiz web breadcrumbs using the unit code, name and
 % URL. The names of these macros are chosen so as to be compatible with the
@@ -72,9 +81,10 @@
 \newcommand*{\UnitURL}[1]{\def\uos@url{#1}}
 \newcommand*{\QuizzesURL}[1]{\def\MQ@quizzesUrl{#1}}
 \newcommand*{\BreadCrumb}[1]{\def\MQ@breadCrumb{#1}}
+\newcommand*{\BreadCrumbs}[1]{\def\MQ@breadCrumbs{#1}}
 
 % Trickery to set the breadcrumb equal to the portion of the title before
-% a colon in the title...I can't remember but [resumably this is used in
+% a colon in the title...I can't remember but presumably this is used in
 % some of the SMS quizzes.
 \def\MQ@SetBreadCrumb#1:#2!{\def\MQ@breadCrumb{#1}}
 \def\title#1{\def\@title{#1}\MQ@SetBreadCrumb#1:!}
@@ -82,18 +92,18 @@
 % Default values - the university and department defaults can also be
 % set in the mathquizrc file. The main purpose of these defaults is
 % to remind the user to set them.
-\UnitCode{Unit code???}
-\UnitName{Unit name???}
-\UnitURL{Unit URL???}
+\UnitCode{}
+\UnitName{}
+\UnitURL{}
 \QuizzesURL{}
-\BreadCrumb{Crumbs???}
-\Department{School of Mathematics and Statistics}
-\DepartmentURL{/}
-\University{University of Sydney}
-\UniversityURL{https://www.sydney.edu.au}
+\BreadCrumbs{department | unit | Quizzes | breadcrumb}
+\Department{}
+\DepartmentURL{}
+\University{}
+\UniversityURL{}
 
 % Define page header and footer for the printable version of the quiz
-% to show the course code information.
+% to show the unit code information.
 \def\ps@quiz{\ps@empty
   \def\@oddhead{\hbox to\textwidth{%
       \uos@code\hss\textsc{\@title}\hss Page \thepage}}%
@@ -102,8 +112,8 @@
 \def\ps@firstpage{\ps@empty
   \def\@oddhead{{\hbox to\textwidth{\tiny
         \begin{tabular}{rl}
-          Course code &\uos@code \\
-          Course URL  &\uos@url
+          Unit code &\uos@code \\
+          Unit URL  &\uos@url
         \end{tabular}
         \hfill
         \begin{tabular}{rl}
@@ -170,10 +180,10 @@
   \fi
   \par\bigskip}
 
-% \begin{choice}[choice type, number of columns] ... \end{choice}
-% The choice tyoe should be "single" or "multiple", and the type and number of
-% columns is allowewd to appear in either order, so most of the fun and game is
-% sanity checking.
+% \begin{choice}[choice type, number of columns] ... \end{choice} The
+% allowed choice types are "single" or "multiple". The type and number
+% of columns is allowed to appear in either order, so most of the fun
+% and games below is sanity checking of the argunments.
 \def\MQ@choicesingle{single}      % the two legal choices
 \def\MQ@choicemultiple{multiple}
 \NewDocumentEnvironment{choice}{O{}}{%
@@ -189,7 +199,8 @@
        \xdef\MQ@choicetype{\opt}
     \fi
   }%
-  (\textit{The choices will be printed in \MQ@choicecols columns in the HTML version of the quiz})
+  \leavevmode\newline
+  (\textit{The choices will be printed in \MQ@choicecols\ columns in the HTML version of the quiz})
   \global\InChoicetrue%
   \par%
   % check that we have a valid choice type and give an error if we don't

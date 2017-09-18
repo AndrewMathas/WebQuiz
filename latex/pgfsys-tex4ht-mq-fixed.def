@@ -1,4 +1,11 @@
-% Fix due to Michal Hoftich
-% https://tex.stackexchange.com/questions/386757/work-around-for-bug-in-pgf-when-used-with-htlatex
+% Two fixes to pgfsys-tex4ht.def both due to Michal Hoftich
 \input pgfsys-tex4ht.def
+
+% from https://tex.stackexchange.com/questions/386757/work-around-for-bug-in-pgf-when-used-with-htlatex
 \def\pgfsys@svg@newline{^^J}
+
+% from https://tex.stackexchange.com/questions/390421/make4ht-tikz-and-utf-8-encoding-question
+\RequirePackage{etoolbox}% for \patchcmd
+\def\getEncoding#1charset=#2,#3\@nil{\if|#2|iso-8859-1\else#2\fi}
+\def\htmlencoding{\expandafter\getEncoding\Preamble ,charset=,\@nil}
+\patchcmd{\pgfsys@typesetpicturebox}{iso-8859-1}{\htmlencoding}{}{}
