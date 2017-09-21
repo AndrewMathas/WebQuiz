@@ -64,12 +64,12 @@
 \ifdefined\MQ@quizfile\relax\else\xdef\MQ@quizfile{\jobname.tex}\fi
 
 % Macros for defining the university and department
-\newcommand*{\DepartmentURL}[1]{\def\MQ@depturl{#1}}
+\newcommand*{\DepartmentURL}[1]{\def\MQ@departmentURL{#1}}
 \newcommand*{\Department}[1]{\def\MQ@department{#1}}
 
 % University/instution - university included for backwards compatibility
-\newcommand*{\InstitutionURL}[1]{\def\MQ@insturl{#1}}
-\newcommand*{\UniversityURL}[1]{\def\MQ@insturl{#1}}
+\newcommand*{\InstitutionURL}[1]{\def\MQ@institutionURL{#1}}
+\newcommand*{\UniversityURL}[1]{\def\MQ@institutionURL{#1}}
 \newcommand*{\Institution}[1]{\def\MQ@institution{#1}}
 \newcommand*{\University}[1]{\def\MQ@institution{#1}}
 
@@ -80,13 +80,13 @@
 \newcommand*{\UnitName}[1]{\def\uos@name{#1}}
 \newcommand*{\UnitURL}[1]{\def\uos@url{#1}}
 \newcommand*{\QuizzesURL}[1]{\def\MQ@quizzesUrl{#1}}
-\newcommand*{\BreadCrumb}[1]{\def\MQ@breadCrumb{#1}}
-\newcommand*{\BreadCrumbs}[1]{\def\MQ@breadCrumbs{#1}}
+\newcommand*{\BreadCrumb}[1]{\def\MQ@breadcrumb{#1}}
+\newcommand*{\BreadCrumbs}[1]{\def\MQ@breadcrumbs{#1}}
 
 % Trickery to set the breadcrumb equal to the portion of the title before
 % a colon in the title...I can't remember but presumably this is used in
 % some of the SMS quizzes.
-\def\MQ@SetBreadCrumb#1:#2!{\def\MQ@breadCrumb{#1}}
+\def\MQ@SetBreadCrumb#1:#2!{\def\MQ@breadcrumb{#1}}
 \def\title#1{\def\@title{#1}\MQ@SetBreadCrumb#1:!}
 
 % Default values - the university and department defaults can also be
@@ -96,7 +96,7 @@
 \UnitName{}
 \UnitURL{}
 \QuizzesURL{}
-\BreadCrumbs{department | unit | Quizzes | breadcrumb}
+\BreadCrumbs{}
 \Department{}
 \DepartmentURL{}
 \University{}
@@ -110,18 +110,21 @@
   \let\@evenhead=\@oddhead
 }
 \def\ps@firstpage{\ps@empty
-  \def\@oddhead{{\hbox to\textwidth{\tiny
-        \begin{tabular}{rl}
-          Unit code &\uos@code \\
-          Unit URL  &\uos@url
-        \end{tabular}
-        \hfill
-        \begin{tabular}{rl}
-          Course name &\uos@name \\
-          Quizzes URL    &\MQ@quizzesUrl
-        \end{tabular}
-      }}
-  }
+%   \def\@oddhead{{\hbox to\textwidth{\tiny
+%         \begin{tabular}{rl}
+%           Institution     & \MQ@institution \\
+%           Unit name       & \uos@name \\
+%           Unit code       & \uos@code \\
+%           Bread crumbs    & \expandafter\string\expandafter{\MQ@breadcrumbs}
+%         \end{tabular}
+%         \hfill
+%         \begin{tabular}{rl}
+%           Institution URL & \MQ@institutionURL\\
+%           Unit URL        & \uos@url \\
+%           Quizzes URL     & \MQ@quizzesUrl
+%         \end{tabular}
+%       }}
+%  }
 }
 \pagestyle{quiz}
 
@@ -138,7 +141,7 @@
 }
 
 \AtBeginDocument{%
-  \thispagestyle{firstpage}
+  \thispagestyle{firstpage}%
   \maketitle%
   \ifx\MQ@quizzesUrl\@empty\QuizzesURL{\uos@url/Quizzes/}\else\relax\fi%
 }

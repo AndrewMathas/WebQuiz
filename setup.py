@@ -112,7 +112,7 @@ class MathQuizCtan(build_py):
         mathquiz-manual.pdf first because it is included in mathquiz.pdf.
         '''
         self.shell_command('cd css && sass mathquiz.scss mathquiz.css')
-        self.shell_command('cd doc && latex --interaction=batchmode mathquiz-manual && dvipdf mathquiz-manual')
+        self.shell_command('cd doc && latex --interaction=batchmode mathquiz-online-manual && dvipdf mathquiz-online-manual')
         self.shell_command('cd doc && pdflatex --interaction=batchmode mathquiz')
 
     def write_zip_file(self):
@@ -145,8 +145,7 @@ class MathQuizCtan(build_py):
                                    ('mathquiz/mathquiz.ini',            'scripts'),
                                    ('css/mathquiz.css',                 'scripts/www'),
                                    ('javascript/mathquiz.js',           'scripts/www'),
-                                   ('doc/mathquiz-manual.pdf',          'scripts/www/doc'),
-                                   ('doc/mathquiz-manual.tex',          'scripts/www/doc'),
+                                   ('doc/mathquiz-online-manual.tex',   'scripts/www/doc'),
                                    ('mathquiz/mathquiz.ini',            'scripts/www/doc'),
                                    ('doc/examples/*.tex',               'scripts/www/doc/examples'),
                                   ]:

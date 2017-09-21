@@ -1,0 +1,43 @@
+#!/usr/local/bin/bash
+
+# Script to remake all of the images needed for the mathquiz manual.  This
+# involves first remaking the web pages and then using webkit2png to extract
+# the images. We assume that everything is set up to access the files in the
+# via http://localhost/MathQuiz/doc/examples/*.html
+
+phantomLib="/usr/local/Cellar/phantomjs/2.1.1/share/phantomjs/examples"
+mathquiz_ex="http://localhost/MathQuiz/doc/examples/"
+
+function phantom() {
+  echo "Extracting image from $2.html"
+  /usr/local/bin/phantomjs $phantomLib/$1.js $mathquiz_ex/$2.html $3 $4 $5 $6
+}
+declare -A pages
+
+#pages[quiz-page]='quiz-page'
+pages[simple]='simple-html'
+#pages[simple-html]='simple-html'
+pages[discussion]='discussion'
+pages[index]='index'
+#pages[examples-breadcrumbs]='examples-breadcrumbs'
+#pages[quizlist-dropdown.png]='quizlist-dropdown.png'
+#pages[montypython]='montypython'
+
+pdflatex simple && pdflatex simple && convert simple.pdf simple-pdg.png
+
+echo "simple-pdf extracted"
+
+for page in *.tex
+do
+  case $page in
+    typical*.tex) 
+      echo "Skipping $page."
+      break ;;
+    *)
+      echo "Making $page."
+      mathquiz -qq $page
+      phantom viewport ${page/.tex/} ${page/.tex/}.png 300 300
+      #phantom rasterize $page ${page}-rast.png 300px*300px zoom
+      break ;;
+    esac
+done

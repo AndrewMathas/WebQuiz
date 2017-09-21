@@ -44,14 +44,17 @@ mathquiz_init=r'''<div style="display: none;">
 
 # Bread crumbs including a drop down menu for all of the quizzes for the unit.
 # The drop_down_menu is added by create_drop_down_menu() in maghquiz.js
-bread_crumb_line='        <li><a href="{url}">{text}</a></li>\n'
-bread_crumb_quizzes = '''        <li><a href="{quizzes_url}">
-          Quizzes</a><span onclick="toggle_quiz_menu();" id="quizzes_menu_icon"></span>
+breadcrumb_line_text='        <li>{text}</li>\n'
+breadcrumb_line_url ='        <li><a href="{url}">{text}</a></li>\n'
+breadcrumb_quizlist = '''        <li><a href="{quizzes_url}">Quizzes</a>
+          <span onclick="toggle_quiz_menu();" id="quizzes_menu_icon"></span>
           <ul id="drop_down_menu" onclick="toggle_quiz_menu();"></ul>
+        </li>
 '''
-bread_crumbs = r'''<nav class="bread_crumbs">
+breadcrumbs = r'''<nav class="breadcrumbs">
     <ul>
 {crumbs}
+    </ul>
   </nav>
 '''
 
@@ -85,7 +88,7 @@ side_menu = r'''<div class="menu_icon" onclick="toggle_side_menu_display();">
     </div>'''
 
 # quiz title and navigation arrows
-quiz_header='''{initialise_warning}<div class="quiz_header">
+quiz_header='''<div class="quiz_header">
         <div class="quiz_title">{title}</div><div></div>
         <span id="question_number" class="question_label">{question_number}</span>
         {arrows}
@@ -159,30 +162,38 @@ multiple_response_answer='              <li><em>{answer}</em> {reason}</li>'
 
 # the remaining templates are used to prompt the user when initialising mathquiz
 initialise_introduction='''
-The on-line quizzes that MathQuiz constructs use javascript and casading style
-sheets and these files need to be placed on your webserver.
+In order to work the on-line quizzes that MathQuiz constructs need to load some 
+javascript and CSS files that, for efficiency reasons, should be kept on your
+webserver. It does not matter whether these files are in "system" directory
+on your web server or in your own web directories.
 
-To do this mathquiz needs:
-  o A directory on your local file system that is visible from your web server
-  o A relative URL to the web directory above.
+In order to copy these files to the right place and access them MathQuiz needs:
 
-WARNING: any files of the form mathquiz.* in these directories will be deleted.
+  o A "web directory" on your file system that is visible from your web server
+    This is the name of a dorectory or folder on your web server where the MathQuiz 
+    files can be copied to
+  o The relative URL for accessing these files from the web
+    This is the part of the URL that you have to add to your "root" URL to
+    access the files. For example, if the URL for your department is
+        http://www.maths.usyd.edu.au/
+    and the MathQuiz files can be accessed as
+        http://www.maths.usyd.edu.au/u/MOW/MathQuiz
+    then the relative URL for the MathQuiz files is /u/MOW/MathQuiz
 '''
 
-web_directory_message='''
-MathQuiz needs to install javascript and css files on the web sever. You can put these
-files into your own web directory or in a system directory. Possible system directories
-include:
+web_directory_message='''The location of the files on your web server will depend on your operating system.
+It is recommended that you have a separate directory for the MathQuiz files.
+Common locations for the MathQuiz web directory are:
      /Library/WebServer/Documents/MathQuiz     (for mac os x)
      /usr/local/httpd/MathQuiz                 (SuSE unix)
      /usr/local/apache2/MathQuiz               (some apache configurations)
      c:\inetpub\wwwroot\MathQuiz               (windows?)
-It is recommended that you have a separate directory for MathQuiz files.
 
-MathQuiz web directory [{}]: '''
+WARNING: any files of the form mathquiz.* in these directories will be deleted.
+'''
 
-mathquiz_url_message='''Please give the *relative* URL for the MathQuiz web directory.
-In all of the examples above the root would be /MathQuiz
+mathquiz_url_message='''Please give the relative URL for the MathQuiz web directory.
+In all of the examples above the relative URL for MathQuiz would be /MathQuiz
 
 MathQuiz relative URL [{}]: '''
 
@@ -190,31 +201,50 @@ initialise_ending ='''
 You should now be able to build web pages using mathquiz! As an initial test
 you can try to build the on-line version of the mathquiz manual pages by going
 to the directory
-    {web_dir}
+    {web_dir}/doc
 and typing
-    mathquiz mathquiz-manual
+    mathquiz mathquiz-online-manual
 '''
 
 mathquiz_url_warning = '''
-MathQuiz has not yet been initialised so the quiz pages will be slower than
-they need to be. Please use
+MathQuiz has not been initialised. To remove the warning message from the web
+page please use
     mathquiz --initialise
 to install the MathQuiz javascript and css files.
 '''
 
-initialise_warning='''<div class="warning">
-        MathQuiz has not yet been initialised so the quiz pages will load
-        and run more slowly than they need to.
+text_initialise_warning='''
+MathQuiz has not yet been initialised. To remove this warning please use
+      mathquiz --initialise
+to install the MathQuiz web files onto your system.
+'''
 
-        Please use <em>mathquiz --initialise</em> to install the MathQuiz 
-        web files onto your web server.
+web_initialise_warning='''
+      <div id="initialisewarning" class="warning">
+        MathQuiz has not yet been initialised. To remove this warning box please use
+        <blockquote>
+          mathquiz --initialise
+        </blockquote>
+        to install the MathQuiz web files on your system.
+        <button style="float: right" onclick="document.getElementById('initialisewarning').style.display='none'">OK</button>
       </div>
 '''
 
 permission_error='''
 You do not have permission to write to {}.
-To install MathQuiz files into this directory you probably need to run this
-command using an administrator account, or using sudo on linux/macosx.
+
+To install MathQuiz files into this directory you may need to quit and
+rerun this command either using an administrator account, or using sudo
+on linux/macosx.
+
+Alternatively, please give a different directory.
+'''
+
+mathquiz_url_warning='''
+WARNING: most of the time, but not always, the relative URL will be a suffix of
+the web directory name, which is not the case with your settings. Your URL may
+well be correct, however, if you have made a mistake then you can change this
+at any time using the command: mathquiz --edit-settings
 '''
 
 edit_settings='''
@@ -223,16 +253,16 @@ In the mathquizrc file you can set global defaults for the following:
     department_url
     institution
     institution
-Leave these blank if you do not want to set defaults for them. In addition, 
+Leave these blank if you do not want to set defaults for them. In addition,
 there are three "advanced user options":
     mathquiz_mk4
     mathjax
     mathquiz_format
-There should be changed only with care. If you want to change the relative URL
-for the mathquiz web files use: mathquiz --initialise
+Incorrect values for these settings will break MathQuiZ so you would not
+normally change them.
 
-If in doubt about any of these options accept the defaults by pressing return.
-You can change all of these settings later using the command
+If in doubt about one of these options then just accept the default value by
+pressing return. You can change any of these settings later using the command
     mathquiz --edit-settings
 '''
 

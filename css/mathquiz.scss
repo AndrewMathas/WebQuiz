@@ -1,4 +1,5 @@
 /*
+zindex: 999;
  * -----------------------------------------------------------------------
  *   mathquiz.css | css specifications
  * -----------------------------------------------------------------------
@@ -33,6 +34,7 @@
   $WarningBG:      #EC7063;
   $WarningBorder:  #5B2C6F;
   $WarningFG:      #FFCC00;
+  $White:          #FFFFFF;
 
   $ListMarker:    '\027A3';
 
@@ -339,12 +341,17 @@ input.input_button {
 /* warning messages - for the noscript error */
 div.warning {
     background-color: $WarningBG;
-    border: 2px solid $WarningBorder;
+    border: 2px solid $Heading;
     color: $WarningFG;
+    padding: 2mm;
+    top: 30%;
+    left: 20%;
+    position: absolute;
+    z-index: 999;
 }
 
 /* Drop down menu for quiz list modified from http://www.mrc-productivity.com/techblog/?p=1049 */
-nav.bread_crumbs {
+nav.breadcrumbs {
     margin: 0 auto;
     padding: 4px 0 4px 0;
     height: 20px;
@@ -371,11 +378,9 @@ nav.bread_crumbs {
             background-color: $Heading;
             position: relative;
             float: left;
-            color: $Text;
 
             a {
                 text-decoration: none;
-                color: white;
                 display: contents;
                 -webkit-transition: all 0.5s;
             }
@@ -396,7 +401,6 @@ nav.bread_crumbs {
                     -webkit-transition: height 0.5s;
                     padding: 1px 0 0 4px;
 
-                    a { color: $ButtonSelected; }
                 }
 
                 li::after { content:none;}
@@ -461,16 +465,30 @@ nav.bread_crumbs {
           padding-left: 4px;
     }
 
-    ul > li:nth-child(1):after { border-left-color: $Heading; }
+    ul > li:nth-child(5n+1) { color: $White;
+                              A { color: $White; }
+                            }
+    ul > li:nth-child(5n+1):after { border-left-color: $Heading; }
 
-    ul > li:nth-child(2) { background: $ButtonSelected; }
-    ul > li:nth-child(2):after { border-left-color: $ButtonSelected; }
+    ul > li:nth-child(5n+2) { background: $ButtonSelected; color: $White;
+                              A { color: $White; }
+                            }
+    ul > li:nth-child(5n+2):after { border-left-color: $ButtonSelected; }
 
-    ul > li:nth-child(3) { background: $ButtonBorder; }
-    ul > li:nth-child(3):after { border-left-color: $ButtonBorder; }
+    ul > li:nth-child(5n+3) { background: $ButtonBorder; color: $White;
+                              A { color: $White; }
+                            }
+    ul > li:nth-child(5n+3):after { border-left-color: $ButtonBorder; }
 
-    ul > li:nth-child(4) { background: $ButtonBG; }
-    ul > li:nth-child(4):after { border-left-color: $ButtonBG; }
+    ul > li:nth-child(5n+4) { background: $ButtonBG; color: $Text;
+                              A { color: $Text; }
+                            }
+    ul > li:nth-child(5n+4):after { border-left-color: $ButtonBG; }
+
+    ul > li:nth-child(5n+0) { background: $White; color: $Text;
+                              A { color: $Text; }
+                            }
+    ul > li:nth-child(5n+0):after { border-left-color: $White; }
 
     /* Displays the drop-down menu on hover
      * ul > li:hover ul { display: block; }
@@ -501,9 +519,13 @@ div.menu_icon:hover {
  */
 @media (max-width : 600px) {
     div.side_menu { display: none; }
+    div.side_menu > span { display: none; }
+    nav.breadcrumbs {display: none; }
 }
 
 @media (min-width : 601px) {
     div.side_menu { display: block;}
+    div.side_menu > span { display: block; }
+    nav.breadcrumbs {display: block; }
 }
 

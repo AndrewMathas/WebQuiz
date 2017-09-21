@@ -25,7 +25,7 @@
 
 \usepackage[nonewpage]{imakeidx}
 \indexsetup{level=\section*,toclevel=section,noclearpage}
-\makeindex[intoc,noautomatic]
+\makeindex[intoc,noautomatic,columns=3]
 \indexprologue{\textit{This is an index only for the main \MathQuiz manual. It does not index
 the on-line manual.}}
 
@@ -33,10 +33,6 @@ the on-line manual.}}
 
 \setcounter{secnumdepth}{2}
 \setcounter{tocdepth}{3}
-% automatic indexing using quotes: "word" puts word in the index and
-% typsets it as \Verb|Word|.
-\catcode`\"=13
-\def"#1"{\Verb|#1|\index{#1}}
 \newcommand\lowerCaseIndex[1]{%
   \lowercase{\def\temp{#1}}%
   \expandafter\index\expandafter{\temp@#1}%
@@ -58,6 +54,9 @@ the on-line manual.}}
   \lowercase{\def\temp{#1}}%
   \expandafter\index\expandafter{\temp@\textbackslash#1}%
 }
+\newcommand\gobbleone[1]{}% https://tex.stackexchange.com/questions/318472
+\newcommand{\See}[2]{\unskip\emph{see } #1}
+\newcommand\SeeIndex[2]{\index{#1!zzzz@\protect\gobbleone|See{#2}}}
 
 \newif\ifCtan\Ctanfalse % condition compilation for ctan distribution
 
@@ -68,7 +67,8 @@ the on-line manual.}}
 
 \newcommand\ddash{\texttt{\textemdash\textemdash}}
 \newcommand\mathquizopt[1]{\textsf{mathquiz \ddash#1}}
-
+\newcommand\mathquizrc{\index{mathquizrc}\textsf{mathquizrc}\xspace}
+\newcommand\advancedOption{\textit{This is an advanced option. An incorrect value for this setting may stop \MathQuiz from working.}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% MathQuiz title box for front page
 \usepackage{tikz}
@@ -112,7 +112,16 @@ the on-line manual.}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% headers and footers
 \makeatletter
-\def\@oddfoot{\tiny\MathQuiz -- \mathquiz{version}\hfill\thepage}
+\def\ps@mathquiz{
+  \ps@empty
+  \def\@oddfoot{\tiny\MathQuiz -- \mathquiz{version}\hfill%
+     \textsc{\ifodd\thepage The MathQuiz manual\else \mathquizheader\fi}\hfill\thepage}
+}
+% hijack section and subsectionmark for our headers
+\def\mathquizheader{\MathQuiz}
+\def\sectionmark#1{\def\mathquizheader{#1}}
+\def\subsectionmark#1{\def\mathquizheader{#1}}
+\pagestyle{mathquiz}
 \patchcmd\l@section{1.0em}{0.5em}{}{}
 \makeatother
 
@@ -127,7 +136,7 @@ the on-line manual.}}
       allows the quiz author to concentrate on the content of quizzes,
       unencumbered by the technicalities of HTML and javascript.
 
-      \ScreenShot{Example quiz}{examples/quiz-page}
+      \ScreenShot{Example \MathQuiz web page}{examples/quiz-page}
 
       \begin{center}
         \vskip-10mm
@@ -159,7 +168,7 @@ the on-line manual.}}
     quizzes can contain any \LaTeX commands that are understood by \TeX 4ht,
     which is almost everything. In particular, it is possible to use
     graphics constructed using packages like \ctan{pstricks} and
-    \ctan{tikz}.
+    \ctan{tikz}; however, see \autoref{SS:classOptions}.
 
     \MathQuiz supports the following three types of questions:
     \begin{itemize}
@@ -167,9 +176,17 @@ the on-line manual.}}
       \item Multiple choice questions zero or more correct answers
       \item Questions with a numerical answer.
     \end{itemize}
-    Each time a student answers a question they are told whether they
-    are right or wrong and it is possible for the quiz author to give
-    targeted feedback to the student based on their answer.
+    Each time a student answers a question they are told whether their
+    answer is correct and, moreover, it is possible for the quiz author
+    to give targeted feedback to the student based on their answer. This
+    feed back can be used to explain why the answer is right, why it is
+    wrong or to give further hints to the student to help them answer the
+    question.
+
+    This introduction outlines how to use \MathQuiz, however, the
+    impatient reader may want to skip ahead directly to the
+    \autoref{S:documentclass}, where the \LaTeX\ commands used by
+    \MathQuiz are described.
 
     The easiest way to explain how \MathQuiz works is by example. The
     following \LaTeX\ file defines a quiz with a single multiple choice
@@ -187,7 +204,7 @@ the on-line manual.}}
     proofreading. In this case, the \LaTeX\ version of the quiz looks
     something like this:
 
-    \ScreenShot[0.5]{PDF page}{examples/simple-pdf}
+    \ScreenShot[0.5]{Sample PDF output}{examples/simple-pdf}
 
     Of course, the real reason for using \MathQuiz is that it is also
     possible to make an on-line version of the quiz by processing the
@@ -195,7 +212,7 @@ the on-line manual.}}
     the resulting web page in your favourite browser, you will see a web page
     that looks something like this:
 
-    \ScreenShot{Web page}{examples/simple-html}
+    \ScreenShot{Sample web page}{examples/simple}
 
     The on-line version of the quiz displays one question at a time,
     with the question buttons serving the dual purpose of, first,
@@ -261,10 +278,17 @@ the on-line manual.}}
 
     The quizzes are not timed and do not have time-limits.
 
-    Finally, the point pf \MathQuiz is to make it possible to write
+    Finally, the point of \MathQuiz is to make it possible to write
     on-line quizzes without knowing any HTML, so \MathQuiz provides
     almost no mechanisms for controlling the style and format of the
     quizzes that it creates (although see \autoref{SS:customisation}).
+    In particular, the colour scheme of the quizzes is
+    fixed.\footnote{In principle, adding support for different colour
+    schemes would be easy to do, the only real difficulty is in finding
+    compatible colours. There is another minor complication in that the
+    \MathQuiz CSS file, \textsf{mathquiz.css}, is written using
+    \href{http://sass-lang.com/}{sass}. This said, I would be happy to
+    incorporate different colour schemes that are sent to me.}
     It is possible to add some styling using, for example, the
     \Verb|\Css| command from \ctan{tex4ht}, however, if you really want
     to do this then you are probably better off writing
@@ -299,14 +323,13 @@ the on-line manual.}}
    (and Don Taylor), based on an initial prototype of Don Taylor's from
    2001.  Since 2004 the program has been maintained and developed by
    Andrew Mathas. Although the program has changed substantially since
-   2004 some of Don's code and, in particular, his idea of using
-   \TeX4ht are still very much in use.
+   2004 some of Don's code, and in particular his idea of using
+   \TeX4ht, is still in use.
 
-   Thanks are due to Bob Howlett for general help with CSS and, for
-   Version~5, to  Michal Hoftich for invaluable technical advice on
-   \TeX4ht.
+   Thanks are due to Bob Howlett for general help with CSS and to
+   Michal Hoftich for invaluable technical advice on \TeX4ht.
 
-\section{System requirements, installation and configuration}
+ \section{System requirements, installation and configuration}\label{C:configuration}
   \index{system requirements}
   \CrossIndex{system requirements}{tex4ht}
   \CrossIndex{system requirements}{make4ht}
@@ -316,35 +339,63 @@ the on-line manual.}}
           {System requirements: Python3 and \LaTeX, including \TeX 4ht
     and \textsc{make4ht}}
 
-    It is advisable to have an up to date distribution of \LaTeX, such
+    It is advisable to have an up-to-date \LaTeX{} distribution, such
     as that provided by \href{https://www.tug.org/texlive/}{\TeX live},
     as well as a recent version of \href{https://www.python.org/}{Python 3}
     (as of writing, python 3.6 is available). I have tested the
-    \MathQuiz system extensively on linux and mac operating systems.
-    The program should work under windows, however, I do not have access
-    to window machine to test it on.
+    \MathQuiz system extensively on Linux and Mac operating systems.
+    Several people have used \MathQuiz on windows computers, but I
+    have not tested the program on a window myself.
 
-    \subsubsection{\MathQuiz components}
+    \subsubsection{\MathQuiz components --- \LaTeX, python, web, doc}
 
-    The \MathQuiz program has different components:
+    The \MathQuiz program has different four components:
       \begin{itemize}
            \item \LaTeX\ files (a class file and \TeX4ht configuration files)
            \item Python3 executables that use \TeX4ht to convert \LaTeX\ files into web pages
            \item Web files (javascript, css and on-line documentation)
-           \item \LaTeX\ Documentation
+           \item Documentation
       \end{itemize}
-    In order for \MathQuiz to work all of these files need to be put in
-    appropriate places. Of course, to use the on-line quizzes created by
-    \MathQuiz you will also need a web server.  This section guides you
-    through what needs to be done.
-    \ifCtan
-       Fortunately, because \MathQuiz is installed as part of your \TeX\
-       distribution, you only need to install the web files used by \MathQuiz
-       and this can be done using \MathQuiz.
-
+    Of course, to use the on-line quizzes created by \MathQuiz you will
+    also need a web server. To use \MathQuiz all of these files need to
+    be in appropriate places.
+    \ifCtan Fortunately, \ctan[/]{ctan} takes care of most of this but
     \else
+    You will need to install the \LaTeX{} files somewhere in the
+    \LaTeX{} search path and
+    \fi
+    the web-related files still need to be put onto your web server.
 
-    \subsubsection{Installation from the zip file}
+    \subsubsection{Installation}\index{installation}\index{initialisation}
+
+    The easiest way to install the web-related files is to run \MathQuiz
+    from the command line using:
+    \begin{quote}
+      \mathquizopt{initialise}
+    \end{quote}
+    In fact, it is enough to run \textsf{mathquiz} from the command-line
+    without any options because it will keep asking you to initialise
+    until you do so. \MathQuiz will work without being initialised,
+    however, any web pages that are created before initialisation will
+    be emblazoned with a message reminding you to initialise \MathQuiz.
+    As described in more detail below, initialisation copies the
+    javascript and CSS files used by \MathQuiz into the filespace used
+    by your web server.
+    \ifCtan\else If you are installing \MathQuiz from the zip file then
+    you need to read the next section, otherwise
+    \fi
+
+    I recommend that the TLDR-crowd just run the initialisation command
+    and follow the prompts. More detail about what is required appears
+    below for those who want it.
+
+    \ifCtan\else
+
+    \subsubsection{Installation of \MathQuiz from the zip file}
+
+    (\textit{This section of the manual will be removed when the
+    package is put onto \ctan[/]{ctan}.})
+
       The \MathQuiz zip file has three directories, or folders:
 
       \begin{itemize}
@@ -355,32 +406,39 @@ the on-line manual.}}
 
       The files in the \textsf{latex} directory need to be put somewhere in the \LaTeX\
     search path. For example, on my computer I have these files in
-
+    \begin{center}
        \Verb|/usr/local/texlive/texmf-local/tex/latex/local/mathquiz|
-
-    After you have moved these files to an appropriate place you will probably need to run
-    something like texhash. The exact command that you need to run to tell
-    \LaTeX\ that you have installed some files install the latex
-    components of the system depends on the \TeX distribution that you are
-    using.
+    \end{center}
+    After you have moved these files to an appropriate place you will need to run
+    something like texhash. The exact command that you need to run to
+    tell \LaTeX\ that you have installed some latex files depends on the
+    \TeX distribution that you are using.
 
     The files in the \textsf{doc} directory are the documentation. You can
-    put these files where ever you like!
+    put these files where ever you like, although if you want programs
+    like \textsf{texdoc} to find them then you will need to put them
+    into an appropriate place in the \LaTeX{} directory tree.
 
-    The \MathQuiz program itself lives in the script directory. On a unix
+    The \MathQuiz program itself lives in the script directory. On a UNIX
     like system I recommend making a link to the file mathquiz.py, which is
     the entry point to the code, using something like:
-
+    \begin{center}
         \Verb|ln -s <path to scripts directory>/mathquiz.py mathquiz|
-
-    \noindent Of course, the \textsf{mathquiz} executable should be in the system path.
+    \end{center}
+    Of course, the \textsf{mathquiz} executable should be in
+    the system path. Under windows, \textit{I believe} that you need to create a
+    \textit{batch file}, \textsf{mathquiz.bat}, that contains something like this:
+    \begin{center}
+        \Verb|c:\python3\python.exe c:\MathQuiz\mathquiz.py %*|
+    \end{center}
+    Of course, you will need to modify the paths in the batch.
 
     It remains to install the web files used by \MathQuiz, which can be
     done using \MathQuiz.
     \fi
 
     \subsubsection{Installing the web files used by \MathQuiz}
-    \index{installation}
+    \CrossIndex{command-line options}{initialise}
 
      The quiz files created by \MathQuiz use
      \href{https://en.wikipedia.org/wiki/JavaScript}{javascript} and
@@ -390,26 +448,28 @@ the on-line manual.}}
      CSS files onto your web server.\footnote{In fact, \MathQuiz will work
      even if you do not install these files on your web server, however,
      the quiz pages that it creates will have an annoying message at the
-     top of the web page that asks you to install these files.}  Rather
-     than doing this by hand you need to do this using the following
-     \MathQuiz command:
+     top of the web page to remind you to install these files.} It is
+     necessary that these files are accessible to your web server, but
+     it does not matter whether they are in a ``system directory'' or in
+     your personal web directories.
 
-     $>$ \mathquizopt{initialise}
-
-     \noindent This command will copying the files onto the web server
-     and set up a configuration file so that \MathQuiz knows where these
-     files are. These files can either be installed in a system directory,
-     so that everyone can use them, or they can be put into you own web
-     directories.
+     \MathQuiz provides a semi-automated way of moving these files into
+     place, so the short version of the installation process is to fun
+     the following command from the command-line:
+     \begin{center}
+        $>$ \mathquizopt{initialise}
+     \end{center}
+     You will be asked a series of questions that should be
+     straightforward to answer because \MathQuiz talks you through what
+     needs to be done. More details follows about the initialisation
+     process in the hope that this might be useful.
 
      When you run the \MathQuiz initialisation command you will be prompted for the
      following:
      \begin{itemize}
        \item The \MathQuiz web directory, which is a directory on your local file system that is visible
-             from to your web server
-       \item The \MathQuiz URL, which is the \textit{relative} URL to this
-       directory that you use to access the files in this directory from
-       your browser
+             to your web server
+       \item The relative URL for this directory, which tells your web browser where to find these files
      \end{itemize}
      For example, on my system the base directory for our web server is
      \textsf{/usr/local/httpd/} and the \MathQuiz web
@@ -420,23 +480,36 @@ the on-line manual.}}
          \MathQuiz relative URL  &=& \textsf{/MathQuiz}
        \end{tabular}
      \end{quote}
-     In addition, you can set global defaults for the following.
+     In addition, the initialisation command lets you set global defaults for the following:
      \begin{itemize}
+       \item breadcrumbs = the breadcrumbs at the top of the quiz web page
        \item department = a (short) name for your department
-       \item department\_url = the URL for your department web server
+       \item department\_url = the URL for your department's web server
        \item institution = a (short) name for your institution
        \item institution = the URL for your institution
      \end{itemize}
-    Leave these blank if you do not want to set defaults for the department and
-    institution. You can change these settings at any time using\quad
-    \mathquizopt{edit-settings}. You can also set these in the \LaTeX\ file
-    for the quiz.
+     These settings are mainly used in the \textit{breadcrumbs} on the
+     quiz web pages; see \autoref{S:documentclass} for
+     details.\index{breadcrumbs}
+     If in doubt just hit return to accept the default values for these
+     variables, which for most of these amounts to leaving them blank.
+     You can come back and change these settings at any time using the command:
+     \begin{center}
+        \mathquizopt{edit-settings}.
+     \end{center}
+     In addition, these defaults can always be overwritten by commands
+     in the individual quiz files.
+
+     Finally, the initialisation command will ask you about some more
+     advanced settings. It is very unlikely that you will need to change
+     these when you first use \MathQuiz, so I recommend that you hit
+     return to accept the default options for each of these settings.
 
     \bigskip
 
     \MathQuiz is now ready to use!
 
-  \section{The MathQuiz document class (the \LaTeX{} commands)}\label{S:documentclass}
+  \section{The MathQuiz document class --- the \LaTeX{} commands}\label{S:documentclass}
 
   This section describes the commands and environments provided by the
   \MathQuiz document class. The aim of \MathQuiz is to construct web
@@ -445,6 +518,370 @@ the on-line manual.}}
   other sections, can be found in the \textsf{examples} directory of the
   \MathQuiz web directory. More details and some examples can be found
   in the on-line manual in \autoref{S:online}.
+
+  A typical \MathQuiz quiz file is just a \LaTeX file of the form:
+
+    \lstinputlisting[style=latexcode]{examples/typicalquizfile}
+
+  \noindent You should write your quizzes in whatever editor you
+  normally use to write \LaTeX{} and you should use \Verb|latex| or
+  \Verb|pdflatex| to check that your quiz compiles and that you are
+  happy with the output as you write it Once you are happy with the
+  content of the quiz you can then convert it to an on-line quiz using
+  \MathQuiz. There are several reasons for using this workflow:
+  \begin{itemize}
+    \item
+    \textit{Very file that you give to \MathQuiz should be a valid \LaTeX{} file!}
+
+    \item The \textsf{dvi} or \textsf{PDF} file produced by \LaTeX{}
+    will show all of the information about the questions one the same
+    page (that is, the question, the answers and the feedback that you
+    will give to the students based on their answers). In contrast, by
+    design, the web pages hide most of this information.
+
+    \item Typesetting the quiz file with \LaTeX{} is \textit{much
+    faster} than processing it with \MathQuiz. In fact, \MathQuiz uses
+    \textsf{htlatex} to process the quiz file \textit{three times} in
+    order to produce an \textsf{xml} file and it is only then the
+    \MathQuiz program kicks in to rewrite this data as an \textsf{HTML}
+    file.
+
+    \item If \LaTeX{} produces errors then \MathQuiz will produce more
+    errors. Further, \textit{\LaTeX{} error messages are much easier to read and
+    debug than those produced by \TeX4ht and \MathQuiz}.
+  \end{itemize}
+  Note that the PDF version of a quiz does not contain any
+  information about the unit, department or institution. This
+  information was included in previous releases of \MathQuiz, however, it
+  is now omitted because this data can now be specified in the \mathquizrc
+  file, in which case \LaTeX{} has incomplete information.
+
+  The next sections describe the different environments and commands
+  provided by \MathQuiz. The last section in this chapter,
+  \autoref{SS:classOptions}, lists the class options for the \MathQuiz
+  document class. You should read this section if you are using
+  \ctan{pstricks} or \ctan[pgf]{tikz}.
+
+  Finally, if you want to use \MathQuiz for your students then you will
+  need to \textit{initialise} \MathQuiz using the command:
+  \mathquizopt{initialise}; see \autoref{C:configuration} for more
+  details.
+
+\subsection{\MathQuiz environments}
+
+The \MathQuiz document class defines the following four environments:
+\begin{quote}
+  \begin{description}
+    \item[question] Each quiz question needs to be inside a
+    \Verb|question| environment
+    \item[choice] For typesetting multiple choice questions
+    \item[discussion] For including (optional) discussion, or revision, material at
+    the top of the quiz
+    \item[quizlist] For writing an index file for a related ``family'' of quizzes,
+    such as the quizzes for a unit of study
+  \end{description}
+\end{quote}
+This section describes these environments and gives examples
+of their use.
+
+\subsubsection{Question environments}
+\CrossIndex{environment}{question environment}
+
+Quizzes are composed of questions and each quiz question must to be
+placed inside a \Verb|question| environment. Typically, a quiz will have
+several questions, each wrapped in its own \Verb|question| environment.
+For brevity, all of the examples in this chapter have only one question
+-- see the on-inline manual in the \MathQuiz web directory for a complete quiz file.
+
+  \lstinputlisting[style=latexcode]{examples/question}
+
+  This example code shows how to use \Verb|\answer|
+  \macroIndex{answer}\CrossIndex{question environment}*{answer}
+  \CrossIndex*{answer}*{whenRight}
+  \CrossIndex*{answer}*{whenWrong}
+  \index{feedback!whenRight}
+  \index{feedback!whenWrong}
+  \SeeIndex{numeric answer}{\textbackslash answer}
+
+\subsubsection{Choice environments}
+\CrossIndex{environment}{choice environment}
+\CrossIndex{question environment}{choice environment}
+\SeeIndex{multiple choice}{choice environment}
+
+The multiple choice options for a quiz question need to be placed inside
+a \Verb|choice| environment. The \Verb|choice| environment accepts two
+optional arguments, which can appear in any order:
+\begin{itemize}
+  \item\CrossIndex{choice environment}{single}\CrossIndex{choice environment}{multiple}
+  The word \Verb|single| (default, and can be omitted) or
+  \Verb|multiple|, which indicates whether the quiz has a
+  \textit{single} correct answer or whether 0 or more of the answers are
+  correct, respectively.
+  \item \index{choice environment!columns}
+  A non-negative integer $n$, specifying that the choices should
+  be rendered in $n$ columns.
+\end{itemize}
+Of course, \Verb|choice| environments need to be put inside a
+\Verb|question| environment.
+
+A \Verb|choice| environment  is similar to the list-like environments
+(\textit{enumerate}, \textit{itemize}, \textit{description}, ...) except
+that rather than using \Verb|\item| to separate the different list item
+you should use
+\Verb|\correct| \CrossIndex{choice environment}*{correct}
+for correct responses and
+\Verb|\incorrect| \CrossIndex{choice environment}*{incorrect}
+for incorrect responses. In addition, you can use
+\Verb|\response| \CrossIndex{choice environment}*{response}
+to give a feedback response to the person taking the quiz when they
+select the last correct or incorrect answer.
+\index{feedback!response}
+
+Here is an example of a multiple choice question with a unique answer
+
+  \lstinputlisting[style=latexcode]{examples/choice-single}
+
+\noindent
+It is not necessary to put the \Verb|\response| lines on the same line
+as the \Verb|\(in)correct| lines; this is done here only to make the
+example more compact.  Here is an example of a multiple choice question
+with two correct answers:
+
+  \lstinputlisting[style=latexcode]{examples/choice-multiple}
+
+When option \Verb|multiple| is used the question is marked correct if
+and only if all of the correct responses are selected.
+
+  \subsubsection{Discussion environments}
+  \CrossIndex{environment}{discussion environment}
+
+In addition to asking questions it is possible to have revision, or
+discussion, material at the \textit{start} of the quiz.  The discussion
+items always appear before the quiz questions in the menu down the
+left-hand side. It is not possible to interleave discussion items and
+questions. Each quiz can have zero or more discussion environments and
+these environments can, in principle, contain arbitrary \LaTeX\ code.
+
+For example, running the \LaTeX\ file through \MathQuiz
+
+  \lstinputlisting[style=latexcode]{examples/discussion}
+
+produces the web page:
+
+\ScreenShot{Web page: discussion environment}{examples/discussion}
+
+As with the questions, only one \Verb|discussion| environment is
+displayed on the quiz web page at a time. It is possible to have quizzes
+that contain only \Verb|discussion| environments, with no questions, and
+quizzes that contain only \Verb|question| environments, with no
+discussion.
+
+  \subsubsection{Quiz indexes}
+
+  \index{quizlist environment}
+  \CrossIndex{environment}{quizlist environment}
+
+  Most quizzes occur in sets that cover related material, for example
+  for a particular unit of study. The \Verb|quizlist| environment can be
+  used to create an index page for the quizzes.
+
+  \lstinputlisting[style=latexcode]{examples/index}
+
+  This code will produce an index web page of the form:
+
+  \ScreenShot{Example index page}{examples/index}
+
+  As the next section describes, index files are also used to
+  automatically adding a drop-down menu to the breadcrumbs for a web
+  page, which access the other quizzes for the unit. As the example
+  above shows, the entries in the \Verb|quizlist| ae all given using the
+  \Verb|\quiz| command.\CrossIndex{quizlist environment}*{quiz} The
+  syntax for this command is
+
+  \begin{center}
+      \Verb|\quiz|[URL for quiz]\{Title for quiz\}
+  \end{center}
+
+  \noindent
+  The \Verb|\quiz| macro automatically inserts the quiz numbers
+  into the list and, by default, it assumes that the URL for the quiz
+  is of the form \textsf{quiz1.html}, \textsf{quiz2.html},
+  \textsf{quiz3.html}, .... If the URL for the quiz is something
+  different this can be given as a optional argument to \Verb|\quiz|.
+
+  \subsubsection{Breadcrumbs}\label{SS:breadcrumbs}\index{breadcrumbs}
+
+  \MathQuiz provides a straightforward way to place navigation breadcrumbs
+  at the top of the quiz web page. By default these
+  breadcrumbs look something like this:
+
+  \ScreenShot{Example of breadcrumbs}{examples/examples-breadcrumbs}
+
+  \noindent
+  The breadcrumbs will typically be links, so clicking on the
+  \textit{School of Mathematics and Statistics} will take you to the
+  School's web page, clicking on \textit{MATH1001} will take you to the
+  unit of study web page and clicking on \textit{Quizzes} will take you
+  to the index page for the quizzes for the current unit. As alluded to
+  in the last section, clicking on the~{\large\color{red} $\equiv$} symbol after
+  \textit{Quizzes} causes a drop-down menu to appear that
+  contains links to all of the quizzes for the current unit of study.
+
+  \ScreenShot{Drop-down menu giving index of quizzes}{examples/quizlist-dropdown.png}
+
+  \noindent
+  The breadcrumbs for the quiz web page can be either be configured quiz-by-quiz, using the
+  \Verb|\BreadCrumbs| macro \macroIndex{BreadCrumbs}, or by setting \textsf{breadcrumbs} ``globally'' in the
+  \mathquizrc file using the command-line option
+  \begin{center}
+        \mathquizopt{edit-settings}\qquad (see \autoref{SS:commandline}).
+  \end{center}
+
+  \noindent
+  The breadcrumbs are specified as a ``|-separated list''. For example,
+  the default breadcrumbs can be specified as
+
+  \begin{lstlisting}[style=latexcode]
+    \BreadCrumbs{ department | unitcode | quiz_index | breadcrumb }
+  \end{lstlisting}
+
+  \noindent
+  or by setting \textsf{breadcrumbs} equal to the string
+  \begin{center}
+    \texttt{department | unitcode | quiz\_index | breadcrumb}
+  \end{center}
+  in the \mathquizrc file. More generally, the breadcrumbs are specified
+  as:
+
+  \begin{lstlisting}[style=latexcode]
+    \BreadCrumbs{ crumb1 | crumb2 | crumb3 | crumb4 | ...  }
+  \end{lstlisting}
+
+  \noindent
+  In principle, there can be arbitrarily many crumbs in your
+  breadcrumbs but, in practice, five is more than enough. Using
+  \Verb|\BreadCrumbs{none}| will disable the breadcrumbs. Similarly,
+  setting \textsf{breadcrumbs = none} in the \mathquizrc will also disable
+  the breadcrumbs, unless there is a \Verb|\BreadCrumbs| command in the
+  quiz file, which will overwrite the default settins in the rc-file.
+
+  The \Verb|\BreadCrumbs| command accepts the following ``magic crumbs'':
+
+  \begin{description}
+    \item[breadcrumb] The crumb for the current page, which is set using
+    \Verb|\BreadCrumb| or \Verb|\title|
+    \CrossIndex*{BreadCrumb}*{title}
+
+    \item[department] This expands to a link to your department, where
+    the deparment is set using \Verb|\Department| and its URL is set by
+    \Verb|\DepartmentURL|
+    \macroIndex{Department}\macroIndex{DepartmentURL}
+
+    \item[institution] This expands to a link to your institution, where
+    the deparment is set using \Verb|\Institution| and its URL is set by
+    \Verb|\InstitutionURL|
+    \macroIndex{Department}\macroIndex{DepartmentURL}
+
+    \item[quiz\_index] This expands to ``Quizzes'', which is a link to
+    the index page for your unit as given by \Verb|\QuizzesURL|. In
+    addition, a drop-down menu to the index page is added using the
+    symbol {\large\color{red} $\equiv$}.
+    \macroIndex{QuizzesURL}
+
+    \item[unitcode] This expands to a link to the unit code, where
+    the unit code is set using \Verb|\UnitCode|, and its URL is set by
+    \Verb|\UnitURL|
+    \macroIndex{UnitCode}\macroIndex{UnitURL}
+
+    \item[unitname] This expands to a link to the unit name, where
+    the unit name is set using \Verb|\UnitName|, and its URL is set by
+    \Verb|\UnitURL|
+    \macroIndex{UnitName}\macroIndex{UnitURL}
+
+  \end{description}
+
+  \noindent
+  In addition, each \textit{crumb} in a breadcrumb is allowed to be
+  arbitrary text, where the last ``word'' is treated as a URL if it
+  either beings with a backslash, $\backslash$, or with \texttt{http}.
+  For example, the follwing is perfectly valid:
+
+  \begin{lstlisting}[style=latexcode]
+   \BreadCrumbs{ Monty Python http://www.montypython.com/
+                 | Work http://www.montypython.com/ourwork
+                 | Meaning of life http://www.montypython.com/film_Monty\%20Python's\%20The\%20Meaning\%20of\%20Life\%20(1983)/17
+   }
+  \end{lstlisting}
+
+  \noindent
+  If you use this in your quiz file then you will find following breadcrumbs at the top of your quiz pages:
+
+  \ScreenShot{Guaranteed to offend some one}{examples/montypython}
+
+  If anything used in a breadcrumb is not specified then the crumb name
+  together with some question marks will appear on the web page. For
+  example, uyou wuill see \textit{?? unit name} if the unit name has not
+  been specified using \Verb|\UnitName|.
+
+  In more detail, here is the list of \MathQuiz commands that can be used to
+  specify the contents of the breadcrumbs. Some of these can set
+  globally in the \mathquizrc file.
+
+  \newcommand\Item[1]{\item[\textbackslash#1]\CrossIndex{breadcrumbs}*{#1}}
+\begin{description}
+  \Item{BreadCrumb}
+     Sets last item in the web page breadcrumb, which refers to the
+     current quiz. By default, the breadcrumb is as set to be the
+     part of the quiz title, as set by \verb!\title!,
+     before the first colon. For example, the title
+
+     \hspace*{20mm}\verb!\title{Quiz 1: Some interesting questions about frogs}!
+
+     sets the breadcrumb to ``Quiz 1''.
+
+  \Item{Department}
+    The name of the department that runs this unit (for example,
+    Mathematics). This appears below the question buttons on the quiz web
+    page.
+
+    The department can be set globally using \texttt{mathquiz \textemdash\textemdash edit-settings}.
+
+  \Item{DepartmentURL}
+    The URL for the department that runs this unit. This appears below
+    the question buttons on the quiz web page.
+
+    The department URL can be set globally using \mathquizopt{edit-settings}.
+
+  \Item{Institution}
+    The institution, or university, that appears below the question
+    buttons on the quiz web page. The institution also appears below
+    tyhe question buttons in the left-hand navigation menu.
+
+    The institution can be set globally using \mathquizopt{edit-settings}.
+
+  \Item{InstitutionURL}
+    The URL for the Institution, or institution, that appears below the
+    question buttons on the quiz web page.
+
+    The institution URL can be set globally using \mathquizopt{edit-settings}.
+
+  \Item{QuizzesURL}
+    The URL for the suite of quizzes attached to this unit of study. This
+    is used in the breadcrumb at the top of the quiz web page.
+
+  \Item{UnitCode}
+    The unit of study code for the unit that the quiz is attached
+    to. This is used in the breadcrumb at the top of the quiz web page.
+
+  \Item{UnitName}
+    The name of the unit of study for the unit that the quiz is attached
+    to. This is used in the breadcrumb at the top of the quiz web page.
+
+  \Item{UnitURL}
+    The URL for the unit of study code for the unit that the quiz is attached
+    to. This is used in the breadcrumb at the top of the quiz web page.
+
+\end{description}
 
   \subsection{MathQuiz class options}\label{SS:classOptions}
 
@@ -504,209 +941,6 @@ All other class options that are given to the \MathQuiz document class
 are passed to the \texttt{article} class, which is the base class used
 by \texttt{mathquiz}.
 
-\subsection{\MathQuiz environments}
-
-The \MathQuiz document class defines four environments for discussion,
-or revision, material, (multiple choice) questions and index lists for
-quizzes. This section describes these environments and gives examples
-of their use.
-
-\subsubsection{Question environments}
-\index{question environment}\CrossIndex{environment}{question}
-
-Quizzes are composed of questions and each quiz question needs to be
-placed inside a \Verb|question| environment.  Internally, by putting
-each quiz question inside an environment we are able to make \TeX4ht
-wrap the question inside an xml object that is then placed inside an
-HTML div by \MathQuiz.
-
-Typically, a quiz would have several questions,  each wrapped in its own
-\Verb|question| environment. All of the examples below have only one
-question.
-
-  \lstinputlisting[style=latexcode]{examples/question}
-
-  This example code shows how to use \Verb|\answer|
-  \macroIndex{answer}\CrossIndex{question environment}{numeric answers}
-  \CrossIndex*{answer}*{whenRight}
-  \CrossIndex*{answer}*{whenWrong}
-  \index{feedback!whenRight}
-  \index{feedback!whenWrong}
-
-\subsubsection{Choice environments}
-\index{choice environment}
-\CrossIndex{environment}{choice}
-\CrossIndex{question environment}{multiple choice}
-\index{multiple choice}
-
-The multiple choice options for a quiz question need to be placed inside
-a \Verb|choice| environment. The \Verb|choice| environment accepts two
-optional arguments, which can appear in any order:
-\begin{itemize}
-  \item\CrossIndex{multiple choice}{single}\CrossIndex{multiple choice}{multiple}
-  The word \Verb|single| (default, and can be omitted) or
-  \Verb|multiple|, which indicates whether the quiz has a
-  \textit{single} correct answer or whether 0 or more of the answers are
-  correct, respectively.
-  \item \CrossIndex{multiple choice}{columns}
-  A non-negative integer $n$, specifying that the choices should
-  be rendered in $n$ columns.
-\end{itemize}
-Of course, \Verb|choice| environments need to be put inside a
-\Verb|question| environment.
-
-A \Verb|choice| environment  is similar to the list-like environments
-(\textit{enumerate}, \textit{itemize}, \textit{description}, ...) except
-that rather than using \Verb|\item| to separate the different list item
-you should use
-\Verb|\correct| \CrossIndex{multiple choice}*{correct}
-for correct responses and
-\Verb|\incorrect| \CrossIndex{multiple choice}*{incorrect}
-for incorrect responses. In addition, you can use
-\Verb|\response| \CrossIndex{multiple choice}*{response}
-to give a feedback response to the person taking the quiz when they
-select the last correct or incorrect answer.
-\index{feedback!response}
-
-Here is an example of a multiple choice question with a unique answer
-
-  \lstinputlisting[style=latexcode]{examples/choice-single}
-
-\noindent
-It is not necessary to put the \Verb|\response| lines on the same line
-as the \Verb|\(in)correct| lines; this is done here only to make the
-example more compact.  Here is an example of a multiple choice question
-with two correct answers:
-
-  \lstinputlisting[style=latexcode]{examples/choice-multiple}
-
-When option \Verb|multiple| is used the question is marked correct if
-and only if all of the correct responses are selected.
-
-  \subsubsection{Discussion environments}
-  \index{discussion environment}\CrossIndex{environment}{discussion}
-
-In addition to asking questions it is possible to have revision, or
-discussion, material at the \textit{start} of the quiz.  The discussion
-items always appear before the quiz questions in the menu down the
-left-hand side. It is not possible to interleave discussion items and
-questions. Each quiz can have zero or more discussion environments and
-these environments can, in principle, contain arbitrary \LaTeX\ code.
-
-For example, running the \LaTeX\ file through \MathQuiz
-
-  \lstinputlisting[style=latexcode]{examples/discussion}
-
-produces the web page:
-
-\ScreenShot{Web page: discussion environment}{examples/discussion}
-
-As with the questions, only one \Verb|discussion| environment is
-displayed on the quiz web page at a time. It is possible to have quizzes
-that contain only \Verb|discussion| environments, with no questions, and
-quizzes that contain only \Verb|question| environments, with no
-discussion.
-
-  \subsubsection{Quiz indexes}
-
-  \index{quizlist environment}\CrossIndex{environment}{quizlist}
-
-  Most quizzes occur in sets that cover related material, for example
-  for a particular unit of study. The \Verb|quizlist| environment can be
-  used to create an index page for the quizzes.
-
-  \lstinputlisting[style=latexcode]{examples/index}
-
-  \subsubsection{Breadcrumbs}\label{breadcrumbs}\index{breadcrumbs}
-
-  \MathQuiz provides a straightforward way to place a breadcrumnb for
-  navigaton at the top of the quiz web page. By default these
-  breadcrumbs looks something like the following:
-
-  \ScreenShot{Breadcrumbs}{examples/examples-breadcrumbs}
-
-  The breadcrumbs will typically be links, so clicking on the
-  \textit{School of Mathematics and Statistics} will take you to the
-  Schools web page and clicking on \textit{MATH1001} will take you to
-  the iunbit of study web page. As described in the last section,
-  the~{\Large\color{red} $\equiv$} symbol after \textit{Quizzes} only
-  appears if there is an index file for all of the quizzes for this unit
-  in which case clicking on it gives a drop-down menu with links to all
-  of the quizzes for the unit of study.
-
-  \ScreenShot{Quiz list drop-down menu}{examples/quizlist-dropdown.png}
-
-  \newcommand\Item[1]{\item[\textbackslash#1]\CrossIndex{breadcrumbs}*{#1}}
-\begin{description}
-  \Item{BreadCrumb}
-     Sets last item in the web page breadcrumb, which refers to the
-     current quiz. By default, the breadcrumb is as set to be the
-     part of the quiz title, as set by \verb!\title!,
-     before the first colon. For example, the title
-
-     \hspace*{20mm}\verb!\title{Quiz 1: Some interesting questions about frogs}!
-
-     sets the breadcrumb to ``Quiz 1''.
-
-  \Item{Department}
-    The name of the department that runs this unit (for example,
-    Mathematics). This appears below the question buttons on the quiz web
-    page.
-
-    The department can be set globally using \texttt{mathquiz \textemdash\textemdash edit-settings}.
-
-    Default: \texttt{School of Mathematics and Statistics}
-
-  \Item{DepartmentURL}
-    The URL for the department that runs this unit. This appears below
-    the question buttons on the quiz web page.
-
-    The department URL can be set globally using \mathquizopt{edit-settings}.
-
-    Default: \texttt{http://www.maths.usyd.edu.au}
-
-  \Item{Insitution}
-    The institution, or university, that appears below the question
-    buttons on the quiz web page.
-
-    The institution can be set globally using \mathquizopt{edit-settings}.
-
-    Default: \texttt{University of Sydney}
-
-  \Item{InstitutionURL}
-    The URL for the Institution, or institution, that appears below the
-    question buttons on the quiz web page.
-
-    The institution URL can be set globally using \mathquizopt{edit-settings}.
-
-    Default: \texttt{https://www.sydney.edu.au}
-
-  \Item{QuizzesURL}
-    The URL for the suite of quizzes attached to this unit of study. This
-    is used in the breadcrumb at the top of the quiz web page.
-
-    Default: \texttt{Unit code???}
-
-  \Item{UnitCode}
-    The unit of study code for the unit that the quiz is attached
-    to. This is used in the breadcrumb at the top of the quiz web page.
-
-    Default: \texttt{Unit code???}
-
-  \Item{UnitName}
-    The name of the unit of study for the unit that the quiz is attached
-    to. This is used in the breadcrumb at the top of the quiz web page.
-
-    Default: \texttt{Unit name???}
-
-  \Item{UnitURL}
-    The URL for the unit of study code for the unit that the quiz is attached
-    to. This is used in the breadcrumb at the top of the quiz web page.
-
-    Default: \texttt{Unit URL???}
-
-\end{description}
-
 \section{The MathQuiz program}
 \index{usage}
     The \MathQuiz program was designed to be run from the command-line,
@@ -720,7 +954,7 @@ discussion.
     been tested. Once useful feature of \MathQuiz is that you can ask it
     to process more than one quiz file at a time. For example, if you have
     quiz files \textsf{quiz1.tex}, ..., \textsf{quiz9.tex} in the
-    current directory then, on a unix system, you can rebuild the web
+    current directory then, on a UNIX system, you can rebuild the web
     pages for all of these quizzes using the single command:
 
     $>$ \Verb|mathquiz quiz[1-9].tex|
@@ -736,45 +970,116 @@ discussion.
     the output produced by \LaTeX\ and \TeX4ht. The next section
     discusses the \MathQuiz command-line options.
 
-    \subsection{Command line options}\label{SS:commandline}
+    \subsection{Command-line options}\label{SS:commandline}
 \index{command-line options}
 
 \begin{verbatim}
-usage: mathquiz [-h] [-i] [-q] [--settings] [--edit-settings] [-s] [-p]
-                [--build MATHQUIZ_MK4] [--mathquiz_format MATHQUIZ_FORMAT]
+usage: mathquiz [-h] [-i] [-q] [--settings] [--edit-settings  [SETTING]] [-s]
+                [-r RCFILE] [-p] [--build MATHQUIZ_MK4]
+                [--mathquiz_format MATHQUIZ_FORMAT]
                 [quiz_file [quiz_file ...]]
 \end{verbatim}
 
 The command-line options are listed on separate lines here to improve
-readability but they need to all be on the same line when you use
-\MathQuiz. The order that the command-line options are discussed below
-indicates how often you are likely to need this option.
-
-    \newcommand\advancedOption{\newline\textit{This is an advanced
-    option that most people will not need}}
+readability but they can appear in any order when you use them provided
+that they are all on the same line.  The order that the command-line
+options are listed in indicates how often you are likely to need this
+option.
 
     \begin{description}
        \item[ -h, \ddash help] \CrossIndex{command-line options}{help}
           list the command-line options and exit
+
        \item[-i, \ddash initialise] \CrossIndex{command-line options}{initialise}
           Initialise files and settings for mathquiz. The command
-          \textsf{mathquiz --initialise} should be run before using
-          \MathQuiz. This commanbd will help you to copy the web files needed by
-          \MathQuiz into the directories used by your web server
-       \item[\ddash settings] \CrossIndex{command-line options}{settings}
-          List system settings for mathquiz
+          \mathquizopt{initialise} should be run before using
+          \MathQuiz. This command will help you to copy the web files needed by
+          \MathQuiz into the directories used by your web server. See
+          \autoref{C:configuration} for more details.
+
+          \item[\ddash settings {[SETTING]}] \CrossIndex{command-line options}{settings}
+          \SeeIndex{rc file}{mathquizrc}
+          \SeeIndex{default settings}{mathquizrc}
+          List system settings for mathquiz stored in the  rc-file
+          (\textit{run-time configuration file}); see the \textsf{\ddash
+          rcfile} command-line option below. Optionally, a single
+          \textsf{SETTING} can be given inb which case the value of only that
+          setting is returned. Typical settings returned by this
+          command look like:
+          \begin{verbatim}
+  MathQuiz settings stored in /Users/andrew/.mathquizrc
+
+    # Relative URL for mathquiz web directory
+    mathquiz_url    = /MathQuiz
+
+    # Breadcrumbs at the top of quiz page
+    breadcrumbs     = department|unitcode|Quuiz_index|breadcrumb
+
+    # Department running quiz
+    department      = School of Mathematics and Statistics
+
+    # (Relative) URL for department running quiz
+    department_url  = http://www.maths.edu.au
+
+    # University or institution
+    institution     = University of Sydney
+
+    # (Relative) URL for university or institution
+    institution_url = http://sydney.edu.au/
+
+    # The python module that determines the format of the quiz web page (default)
+    mathquiz_format = mathquiz_standard
+
+    # Local URL for mathjax (default)
+    mathjax         = https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/
+          \end{verbatim}
+
+          These settings are used by all of the quizzes created by
+          \MathQuiz unless the quiz overrides them. These defaults are
+          normally set when \MathQuiz is initialised, using the command:
+          \mathquizopt{initialise}. The defaults can be changed any time using:
+          \mathquizopt{edit-settings}.
+
        \item[\ddash edit-settings] \CrossIndex{command-line options}{edit-settings}
-          Edit the mathquiz settings
-       \item[-q, \ddash quiet] \CrossIndex{command-line options}{quiet mode}
-       Suppress tex4ht messages (also -qq etc). If you use
-       \textsf{mathquiz --qq textfile.tex} then almost not output will
-       be printed by \MathQuiz when it is processing your quiz file.Be
-       warned, however, that this may make it harder to find and fix
-       errors. The \mathquizopt{q} and \mathquizopt{qq} options are not
+          Edit the mathquiz settings in the rc-file. The settings that
+          are marked as advacned should be changed only with care. To
+          change the \textsf{mathquiz\_dir} and \textsf{mathquiz\_url}
+          use: \mathquizopt{initialise}.
+
+          \textit{The settings will be automatically saved to an rc-file,
+          \textsf{.mathquizrc}, in your home directory if you do
+          not have permission to write to the system rc-file in the
+          \MathQuiz scripts directory.}
+
+       \item[-q, -qq, \ddash quiet] \CrossIndex{command-line options}{quiet mode}
+       Suppress tex4ht messages: \textsf{\ddash q} is quiet and \textsf{\ddash qq} is  very quiet. If you use
+       \textsf{mathquiz --qq texfile.tex} then almost no output will
+       be printed by \MathQuiz when it is processing your quiz file. Be
+       warned, however, that both of these options csn make it harder to find and fix
+       errors, so using the \textsf{\ddash q} and \textsf{\ddash qq} options is not
        recommended if your file is not compiling.
+
        \item[-s,\ddash shell-escape] \CrossIndex{command-line options}{shell-escape}
           Shell escape for htlatex/make4ht
-          \bigskip
+
+       \item[-r RCFILE, \ddash rcfile RCFILE]\index{mathquizrc}
+          Specify the rc-file (\textit{run-time configuration file}), file
+          that \MathQuiz should read (and write to).
+
+          By default, \MathQuiz will first read the system rc-file (the
+          file \textsf{mathquizrc} in the \MathQuiz script directory),
+          followed by the rc-file in your home directory (the file
+          \textsf{$\sim$/.mathquizrc}), if it exists. If it is unable to
+          write to the system rc-file then \MathQuiz will create an
+          rc-file in your home directory, which it will subsequently
+          read whenever you run \MathQuiz. This setting is only
+          necessary if you want to override the default rc-file.
+
+          The rc-file can be editted by hand, however, it is
+          recommended that you instead use
+          \begin{center}
+            \mathquizopt{edit-settings}
+          \end{center}
        \item[-p, \ddash pst2pdf] \CrossIndex{command-line options}{pst2pdf}
           Use the \textsf{pst2pdf} command-line option to, \textit{potentially},
           fix issues with images generated by pstricks.  This option is
@@ -784,77 +1089,134 @@ indicates how often you are likely to need this option.
           \textit{Try this command-line option if you are having trouble
           displaying an image created using \ctan{pstricks}. It is not
           guaranteed to work but it does sometimes fix the problem}
+
        \item[\ddash build MATHQUIZ\_MK4] \CrossIndex{command-line options}{mk4 build file}
           Build file for make4ht. This can be used to add local
           customisations for make4ht. See the \ctan{make4ht} manual for
-          more information.
+          more information. This
+          option is equivalent to setting the \textsf{mathquiz\_mk4}
+          in the \mathquizrc file. For more detail see
+          \autoref{S:rcfile.}
+
           \advancedOption
+
        \item[\ddash mathquiz\_format MATHQUIZ\_FORMAT] \CrossIndex{command-line options}{format}
-          Local python code for generating the quiz web page
+          Local python code for formatting the quiz web page. This
+          option is equivalent to setting the \textsf{mathquiz\_format}
+          in the \mathquizrc file.
           \advancedOption
+
     \end{description}
 
-    \subsection{Default settings}
-    \index{default settings}
+    \subsection{The \mathquizrc
+    file}\label{SS:customisation}\label{S:rcfile}
 
-    \subsection{Local customisation}\label{SS:customisation}
+    \MathQuiz stores various \textit{run-time configuration settings} in the \mathquizrc file. The
+    system rc-file, which is in the \MathQuiz scripts directory, is read
+    first  followed by the rc-file \textsf{.mathquizrc} in the users home
+    directory, if it exists. Use
+   \begin{center}
+       \mathquizopt{rcfile RCFILE} to specify
+   \end{center}
+    a different rc-file. The following settings may be used:
 
-  The "style" of the online quizzes is controlled by the file
-  \verb!mathquiz_local.py!. If you want to change the format of the quiz
-  pages then the easiest way to do this is to make a copy of
-  \verb!mathquiz_local.py!, say to mathquiz\_MyStyle.py, and then edit this file
-  directly. To see what the new style looks like you can run the
+    \begin{description}
+        \item[mathquiz\_url] This is the relative URL for mathquiz web directory
+        \item[mathquiz\_web] This is the full path to the mathquiz web
+        directory. The on-line manual and other example code can be
+        found in the docs subdirectory
+        \item[breadcrumbs]
+          The default breadcrumbs at the top of quiz page; see \Verb|\Breadcrumbs| in \autoref{SS:breadcrumbs}
+          \macroIndex{Breadcrumbs}
+        \item[department]
+          The default department name; see \Verb|\Department| in \autoref{SS:breadcrumbs}
+          \macroIndex{Department}
+        \item[department\_url]
+          The URL for the department; see \Verb|\DepartmentURL| in \autoref{SS:breadcrumbs}
+          \macroIndex{DepartmentURL}
+        \item[institution]
+          The default institution name; see \Verb|\Institution| in \autoref{SS:breadcrumbs}
+          \macroIndex{Department}
+        \item[institution\_url]
+          The URL for the institution; see \Verb|\InstitutionURL| in \autoref{SS:breadcrumbs}
+          \macroIndex{InstitutionURL}
+          \item[mathjax] \MathQuiz web pages use \href{https://www.mathjax.org/}{mathjax} to
+          render the mathematics on the quiz web pages. By default this
+          is done by loading \textsf{mathjax} from
+          \begin{center}
+             \texttt{https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js}
+          \end{center}
+          Fetching \textsf{mathjax} from an external site can
+          cause a delay when the quiz web pages are loaded. This setting
+          in the rc-file allows you to change where \textsf{mathjax} is
+          loaded from. For example, if you install \textsf{mathjax} on
+          your web server then you would replace this will the
+          corresponding relative URL.
+        \item[mathquiz\_mk4]
+          Sets a default \textsf{mk4 build file}. This can be used to further
+          customise how \TeX4ht and \textsf{make4ht} convert \LaTeX.
+          This option was added to \MathQuiz to override how svg images
+          were handled but, currently, \MathQuiz does not use a  build
+          file. Most people will not need this option. See Chapter~2 of
+          the \ctan[make4ht]{make4ht manual} for more information.
+        \item[mathquiz\_format]
+          Sets the python file that writes the HTML file for the quiz.
+          Most people will not need this option. See below for more details.
+    \end{description}
+
+
+  \subsubsection{Changing the format of the \MathQuiz web pages}
+  The construction of the online quizzes is controlled by the python
+  file \verb!mathquiz_standard.py!. If you want to change the structure
+  of the web pages for the quizzes then the easiest way to do this is to make a
+  copy of \verb!mathquiz_standard.py!, say \textsf{mathquiz\_myformat.py}, and
+  then edit this file directly. This will require some knowledge of
+  python and HTML. To see what the new format looks like you can run the
   mathquiz script with an optional argument that tells mathquiz to use
-  your style instead:
+  your format instead:
   \begin{center}
-        mathquiz -l mathquiz\_MyStyle quizfile.tex
+    \textsf{mathquiz \ddash mathquiz\_format mathquiz\_myformat quizfile.tex}
   \end{center}
 
-  The easiest way to change \verb!mathquiz_local.py! is to edit the
-  "decorating" html that this file puts around the quiz page. You may
-  also need to change the CSS style sheet for mathquiz, which is the file
-  web/mathquiz.css. More sophisticated versions of \verb!mathquiz_local.py!
-  where you change the underlying python code are of course possible.
-  For example, at the University of Sydney our version of this file
-  calls our content management system directly and uses this to create
-  the web page for the quiz.
-
-\begin{htmlcode}
-    quiz_page = r'''<!DOCTYPE HTML>
-    <html lang="en-AU">
-      <head>
-        <title> {title} </title>
-        {include}
-      </head>
-
-      <body>
-        {breadcrumbs}
-        {no_script}
-        <div class="quiz_page">
-          {side_menu}
-          {quiz_header}
-          <div class="quiz_questions">
-            {quiz_questions}
-          </div>
-        </div>
-      </body>
-    </html>
-    '''
-\end{htmlcode}
+  \noindent
+  You may also want to change the CSS style sheet for mathquiz, which is
+  the file \textsf{web/mathquiz.css}. More sophisticated versions of
+  \verb!mathquiz_standard.py!  where you change the underlying python
+  code are of course possible.  For example, at the University of Sydney
+  our version of this python file calls our content management system directly
+  and uses this to create the web page for the quiz. Once you have
+  finalised the new format you can make this the default format using
+  \mathquizopt{edit-settings}.\index{edit-settings}\index{mathquiz\_format}
 
 
+\section{The on-line MathQuiz manual}\label{S:online}
 
+  \MathQuiz has an
+  \href{http://www.maths.usyd.edu.au/u/MOW/MathQuiz/doc/mathquiz-manual.html}{on-line
+  manual} that is a \LaTeX file, which uses the \textsf{mathquiz}
+  document class,  that converted into a web page using \MathQuiz. The
+  PDF version of this manual is included here for your convenience. The
+  source file for the on-line manual is included in the documentation of
+  \MathQuiz to allow you to create a local version of the on-line
+  manual.
 
-\section{The on-line manual}\label{S:online}
+  The on-line manual was written for ``internal use'' when \MathQuiz was
+  first written in 2004. \MathQuiz has evolved a little since then,
+  although mainly on the javascript side. If there are any discrepancies
+  between the on-line manual and the earlier sections of this manual
+  then the on-line manual should be discounted. There is quite a bit of
+  overlap between the on-line manual and previous sections, however,
+  more recent functionality such as breadcrumbs is not described in the
+  on-line manual.
 
-  \MathQuiz has an \href{http://www.maths.usyd.edu.au/u/MOW/MathQuiz/doc/mathquiz-manual.html}{on-line manual}
-  that is written in \LaTeX\ and then
-  transformed into a web page using \MathQuiz. The PDF version of this
-  manual is included here for your convenience. The source file for the
-  on-line manual is included with the documentation of \MathQuiz to
-  allow you to create a local version of the on-line manual.
+  The on-line manual has diagrams that are drawn using
+  \ctan{pstricks} and, as a result, to create a PDF version of the
+  on-line manual use
+  \Verb|latex mathquiz-online-manual| to create a \textsf{dvi file}, which can be  converted to PDF using
+  \Verb|dvipdf|. If you try to use \Verb|pdflatex| directly you will
+  get an error.
 
-    \includepdf[pages=-]{mathquiz-manual}
+  \includepdf[pages=-,pagecommand={\pagestyle{mathquiz}}]{mathquiz-online-manual}
 
 \section{Licence}
 
@@ -877,9 +1239,10 @@ PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 Authors             & \mathquiz{authors}\\
 Description         & \mathquiz{description}\\
 Maintainer          & \mathquiz{name}\\
-System requirements & python3 and \LaTeX, including \TeX 4ht and \textsc{make4ht}\\
+System requirements & \mathquiz{requirements}\\
 Licence             & \mathquiz{licence}\\
-Release date        & \mathquiz{release date}
+Release date        & \mathquiz{release date}\\
+Repository          & \href{https://\mathquiz{repository}}{\mathquiz{repository}}
 \end{tabular}
 \eject
 

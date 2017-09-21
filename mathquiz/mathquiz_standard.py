@@ -23,7 +23,7 @@ def write_web_page(quiz):
     return quiz_page.format(
                title          = quiz.title,                           # page title
                include        = quiz.header+quiz.javascript+quiz.css, # header material
-               breadcrumbs    = quiz.bread_crumbs,                    # bread crumb constructed above
+               breadcrumbs    = quiz.breadcrumbs,                     # bread crumb constructed above
                side_menu      = quiz.side_menu,                       # navigation menu for quiz
                quiz_header    = quiz.quiz_header,                     # quiz title + navigation arrows
                quiz_questions = quiz.quiz_questions,                  # html for quiz

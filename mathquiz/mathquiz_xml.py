@@ -111,8 +111,8 @@ class QuizHandler(xml.sax.ContentHandler):
         self.root = Quiz()
         self.position = self.root
         self.position.title=attrs.get('title','')
-        self.position.bread_crumbs=[crumb.strip() for crumb in attrs.get('breadcrumbs','').split('|')]
-        self.position.bread_crumb=attrs.get('breadcrumb','')
+        self.position.breadcrumbs=[crumb.strip() for crumb in attrs.get('breadcrumbs','').split('|')]
+        self.position.breadcrumb=attrs.get('breadcrumb','')
         self.position.src=attrs.get('src','')
 
   def meta_start( self,  attrs ):
@@ -135,7 +135,6 @@ class QuizHandler(xml.sax.ContentHandler):
     There should only be one unit field. We replace `attrs` with a dictionary
     of the unit attributes.
     '''
-    print('Unit attributes = {}.'.format(attrs))
     self.position.unit={ k: attrs.get(k) for k in attrs.keys() }
 
   def school_start( self,  attrs ):
@@ -232,7 +231,7 @@ class Node(object):
 
 
 class Quiz(Node):
-  """<!ELEMENT quiz (title, bread_crumb, meta*, link*, question*)>
+  """<!ELEMENT quiz (title, breadcrumb, meta*, link*, question*)>
      <!ELEMENT title (#PCDATA)>
   """
   def __init__(self):
