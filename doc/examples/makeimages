@@ -83,11 +83,15 @@ image_files = dict(
     single      = dict(src='html', file_in='choice-single'),
     discussion  = dict(src='html'),
     index       = dict(src='html'),
-    montypython = dict(src='html', js='toggle_side_menu()', delay=5),
-    nounits     = dict(src='html', js='toggle_side_menu()', delay=5),
-    quizpage    = dict(src='html', file_in='quiz-page', js="document.forms['Q1Form'].elements[1].checked=true; setTimeout(checkAnswer, 4)", delay=5),
+    montypython = dict(src='html', delay=5),
+    nounits     = dict(src='html', delay=5),
+    quizpage    = dict(src='html',
+                       file_in='quiz-page',
+                       js="document.forms['Q1Form'].elements[1].checked=true; setTimeout(checkAnswer, 4)",
+                       delay=5),
     simplehtml  = dict(src='html', file_in='simple', file_out='simple-html'),
-    simplepdf   = dict(src='pdf',  file_in='simple', file_out='simple-pdf')
+    simplepdf   = dict(src='pdf',  file_in='simple', file_out='simple-pdf'),
+    tikz        = dict(src='html')
 )
 
 if __name__ == '__main__':

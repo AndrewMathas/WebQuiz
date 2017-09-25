@@ -225,6 +225,15 @@ the on-line manual.}}
     targeted feedback can be given to the person taking the quiz based
     on their responses.
 
+    The underlying engine used by \MathQuiz is \ctan{tikz} so, because
+    \ctan{tikz} is not able process all \LaTeX{} code, it is possible to
+    find \LaTeX{} code that \MathQuiz is not able to cope with.
+    This said, \MathQuiz has been used to write literally thousands of quiz
+    questions without any problems. In particular, it is possible to use
+    \ctan[pgf]{tikz} and \ctan{pstricks} in \MathQuiz quizzes, although
+    (very?) complicated drawings with these packages may fail; see
+    \autoref{SS:classOptions}.
+
 \subsection{What MathQuiz does and does not do}
 
     The \MathQuiz program was designed to be run from the command-line.
@@ -758,10 +767,10 @@ to mitigate for some of the known issues.
     For the most part \ctan{pstricks} drawings will display correctly and
     when they fail they can often be salvaged by using \ctan{pst2pdf}. The
     \Verb|pst2pdf| class option automates what needs to be done to apply
-    \ctan{pst2pdf} with \MathQuiz.to convert all postscript objects in the
-    quiz to images. Whilst not guaranteed to work, this often fixes issues
-    with \ctan{pstricks} diagrams. This class option is equivalent to
-    using the \Verb|pst2pdf| command-line option; see
+    \ctan{pst2pdf} to a \MathQuiz file in order to to convert all postscript objects in the
+    quiz into images. Whilst not guaranteed to work, this often fixes
+    issues with \ctan{pstricks} diagrams. This class option is
+    equivalent to using the \Verb|pst2pdf| command-line option; see
     \autoref{SS:commandline}.
 
     \lstinputlisting[style=latexcode]{examples/pst2pdf}
@@ -782,6 +791,11 @@ to mitigate for some of the known issues.
     displaying an image created using \ctan{pstricks}. It is not
     guaranteed to work but it does sometimes fix the problem}.
 
+    \textit{25-09-2017: Recently \textsf{pst2pdf} has stopped working
+    for me. It used to make the example above display correctly,
+    however, it no longer does. I do not know whether the problem is
+    occurs only on my computer or whether it is more general.}
+
   \item[tikz]\index{tikz}
     Giving this class option both loads the \ctan[pgf]{tikz} package (so
     you do not need to have \Verb|\usepackage{tikz}| in your \LaTeX\ file)
@@ -799,11 +813,17 @@ to mitigate for some of the known issues.
 
     \lstinputlisting[style=latexcode]{examples/tikz}
 
+    This produces:
+
+    \ScreenShot{Tikz example}{examples/tikz}
+
   \item[hidesidemenu]\index{hide side menu}
     If this option is set the end the side menu is not displayed
     initially.  By default, the side menu appears unless the screen size
     is too small.
 
+    Examples of the \textsf{hidesidemenu} class option have already been
+    given above.
 \end{description}
 
 All other class options that are given to the \MathQuiz document class
@@ -856,7 +876,7 @@ by \texttt{mathquiz}.
     however, any web pages that are created before initialisation will
     be emblazoned with a message reminding you to initialise \MathQuiz.
     As described in more detail below, initialisation copies the
-    javascript and CSS files used by \MathQuiz into the filespace used
+    javascript and CSS files used by \MathQuiz into the file space used
     by your web server.
     \ifCtan\else If you are installing \MathQuiz from the zip file then
     you need to read the next section, otherwise

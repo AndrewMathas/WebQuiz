@@ -21,9 +21,10 @@ import glob
 import os
 import re
 import shutil
-import subprocess
 import stat
+import subprocess
 import sys
+import traceback
 
 import mathquiz_xml
 from mathquiz_templates import *
@@ -89,14 +90,21 @@ def MathQuizError(msg, err=None):
     Consistent handling of errors in magthquiz: print the message `msg` and
     exist with error code `err.errno` if it is available.abs
     '''
-    if err is None:
-        print('MathQuiz error: {}'.format(msg))
-    else:
-        print('MathQuiz error: {}\n  {}'.format(msg, err))
+    print('MathQuiz error: {}'.format(msg))
+
     if metadata.debugging and err is not None:
         raise
+
+    if err is not None:
+        trace = traceback.extract_tb(sys.exc_info()[2])
+        filename, lineno, fn, text = trace[-1]
+        print('File: {}, line number: {}\nError in {}: {}'.format(
+                       filename, lineno, fn, text)
+        )
+
     if hasattr(err, 'errno'):
         sys.exit(err.errno)
+
     sys.exit(1)
 
 #################################################################################
@@ -194,16 +202,13 @@ class MathQuizSettings(object):
             self.read_mathquizrc( self.user_rc_file )
 
         # if mathquiz_url is empty then assume that we need to initialise
+        self.initialise_warning = ''
         if self['mathquiz_url'] == '':
-            self['mathquiz_url'] = 'http://www.maths.usyd.edu.au/u/MOW/MathQuiz/'
+            self['mathquiz_url'] = 'http://www.maths.usyd.edu.au/u/mathas/MathQuiz/'
+            self.initialise_warning = web_initialise_warning
             initialise = input('Do you want to initialise MathQuiz [Y/n]? ')
             if initialise=='' or initialise.strip().lower()[0]=='y':
                 self.initialise_mathquiz()
-
-        if self['mathquiz_url'] == 'http://www.maths.usyd.edu.au/u/MOW/MathQuiz/':
-            self.initialise_warning = web_initialise_warning
-        else:
-            self.initialise_warning = ''
 
     def __getitem__(self, key):
         r'''
@@ -227,7 +232,7 @@ class MathQuizSettings(object):
         else:
             MathQuizError('unknown setting {} in mathquizrc'.format(key))
 
-    def read_mathquizrc(self, rc_file):
+    def read_mathquizrc(self, rc_file, external = False):
         r'''
         Read the settings from the specified mathquizrc file - if it exists, in
         which case set self.rc_file equal to this directory. If the file does
@@ -259,7 +264,8 @@ class MathQuizSettings(object):
             except Exception as err:
                 MathQuizError('there was an error reading the mathquizrc file,', err)
 
-        else:
+        elif external:
+            # this is only an error if we have been asked to read this file
             MathQuizError('the rc-file {} does not exist'.format(rc_file))
 
     def write_mathquizrc(self):
@@ -516,8 +522,8 @@ class MakeMathQuiz(object):
                                                        missing='department'
                     )
                 elif crumb == 'institution':
-                    crumbs += self.add_breadcrumb_line(text=self.unit['institution'],
-                                                       url=self.unit['institution_url'],
+                    crumbs += self.add_breadcrumb_line(text=self.school['institution'],
+                                                       url=self.school['institution_url'],
                                                        missing='insitution'
                     )
                 elif crumb == 'unitcode':
@@ -931,7 +937,7 @@ if __name__ == '__main__':
 
         # set the rcfile to be used
         if options.rcfile != '':
-            settings.read_mathquizrc(options.rcfile)
+            settings.read_mathquizrc(options.rcfile, external=True)
 
         # initialise and exit
         if options.initialise:
@@ -1002,5 +1008,6 @@ if __name__ == '__main__':
             print(text_initialise_warning)
 
     except Exception as err:
-        MathQuizError('An unknown error occurred.\n {}'.format(sys.exc_info()[0]), err)
-
+        MathQuizError('unknown problem.\n\nIf you think this is a bug please report it by creating an issue at\n    {}\n'.format(
+                       metadata.repository) , err
+        )
