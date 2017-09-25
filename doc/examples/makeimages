@@ -1,39 +1,135 @@
-#!/usr/local/bin/bash
+#!/usr/bin/env python3
 
-# Script to remake all of the images needed for the mathquiz manual.  This
-# involves first remaking the web pages and then using webkit2png to extract
-# the images. We assume that everything is set up to access the files in the
-# via http://localhost/MathQuiz/doc/examples/*.html
+r'''
+-----------------------------------------------------------------------------
+    makeimages | extract images from mathquiz wev pages for the manual
+-----------------------------------------------------------------------------
 
-examples="http://localhost/MathQuiz/doc/examples/"
+    Copyright (C) Andrew Mathas, University of Sydney
 
-function extract_web_page() {
-      echo "Making web page image for $1"
-      mathquiz -qq "$page"
-      webkit2png -o "${2}.png" -F -W 300 --ignore-ssl-check $examples/${1}.html > /dev/null
-      mogrify -trim "${2}.png"
-}
+    Distributed under the terms of the GNU General Public License (GPL)
+                  http://www.gnu.org/licenses/
 
-if [[ $# -ne 0 ]] ; then
+    This file is part of the MathQuiz system.
 
-else
+    <Andrew.Mathas@sydney.edu.au>
+-----------------------------------------------------------------------------
 
-# extract simple-pdf from simple.tex
-(pdflatex simple && pdflatex simple && convert simple.pdf simple-pdf.png && mogrify -trim simple-pdf.png) > /dev/null
-echo "simple-pdf extracted"
+Python script to extract png images for the various web pages that are in the
+mathquiz manual. We first use
+    - mathquiz to construct the web page
+    - webkit2png to extract an image of the web page, sometimes with options
+    - mogrify to trim the image down to size
+Optionally a png image of a PDF file can also be extracted
+'''
 
-# web pages to be extracted
-declare -A pages
-pages[discussion]='discussion'
-pages[index]='index'
-pages[quiz-page]='quiz-page'
-pages[simple]='simple-html'
-pages[breadcrumbs]='breadcrumbs'
-pages[choice-single]='choice-single'
-pages[choice-multiple]='choice-multiple'
+import argparse, glob, os, shutil, subprocess
+#import selenium
+#print('Selenium verson: {}'.format(selenium.__version__))
+#from selenium import webdriver  # Import selenium web driver
 
-for page in "${!pages[@]}"
-do
-    extract_web_page "$page" "${pages[$page]}"
-done
-/bin/rm *-full.png
+#driver = webdriver.PhantomJS()
+
+# location of the mathquiz example web pages on a development server
+examplesURL = "http://localhost/MathQuiz/doc/examples"
+
+# lambda function for running shell commands: run( command )
+run  = lambda cmd: subprocess.call(cmd, shell=True)
+
+mathquiz_mode = '-qq'
+webkit2png_mode = ''
+
+# extract and trim and image using mathquiz, webkit2png and mogrify
+def webkit2png(file_in, file_out, delay, javascript):
+    if os.path.exists(file_out+'.png'): # remove png file if it already exists
+        os.remove(file_out+'.png')
+
+    # run the quiz file through mathquiz
+    run('mathquiz {} {}'.format(mathquiz_mode, file_in))
+
+    # extract a png image for the web page using webkit2png
+    cmd = r"webkit2png {debug} --ignore-ssl-check -o {fout} -W 400 -F --delay={delay} {js} {URL}/{fin}.html".format(
+                    URL=examplesURL,
+                    debug = webkit2png_mode,
+                    delay=delay,
+                    fin=file_in,
+                    fout=file_out,
+                    js='--js="{java};"'.format(java=javascript) if javascript != '' else ''
+                )
+    if webkit2png_mode == '--debug':
+        print(cmd)
+    run(cmd)
+    if os.path.exists(file_out+'-full.png'): # remove png file if it already exists
+        shutil.move(file_out+'-full.png', file_out+'.png')
+        run('mogrify -trim -gravity center {}.png'.format(file_out))
+    else:
+        print('makeimages error: weblit2png failed because {}-full.png does not exist'.format(file_out))
+
+# extract and trim an image of the pdf file using pdflatex, convert and mogrify
+def pdf2png(file_in, file_out, dummy1, dummy2):
+    run('pdflatex {fin} > /dev/null'.format(fin=file_in))
+    run('convert {fin}.pdf {fout}.png && mogrify -trim {fout}.png'.format(fin=file_in, fout=file_out))
+
+# specify how to construct each image:
+#   src      isource, either html or pdf
+#   file_in  input fileo, defaults to the page key
+#   file_out output file, defaults to file_in
+#   js       javascript code, defaults to ''
+#   delay    delay before taking screenshot defaults to 3
+image_files = dict(
+    dropdown    = dict(src='html', js='toggle_dropdown_menu()', delay=10),
+    breadcrumbs = dict(src='html', delay=10),
+    multiple    = dict(src='html', file_in='choice-multiple'),
+    single      = dict(src='html', file_in='choice-single'),
+    discussion  = dict(src='html'),
+    index       = dict(src='html'),
+    montypython = dict(src='html', js='toggle_side_menu()', delay=5),
+    nounits     = dict(src='html', js='toggle_side_menu()', delay=5),
+    quizpage    = dict(src='html', file_in='quiz-page', js="document.forms['Q1Form'].elements[1].checked=true; setTimeout(checkAnswer, 4)", delay=5),
+    simplehtml  = dict(src='html', file_in='simple', file_out='simple-html'),
+    simplepdf   = dict(src='pdf',  file_in='simple', file_out='simple-pdf')
+)
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description = 'script to extract images for the mathquiz manual')
+    parser.add_argument('extract', nargs='*',type=str, default=None, help='pages to extract')
+    parser.add_argument('-c', '--cleaning', action='store_true', default=False, help='delete all extraneouis files on exirt')
+    parser.add_argument('-d', '--debugging', action='store_true', default=False, help='turn on debugging')
+
+    args = parser.parse_args()
+
+    # debugging mode
+    if args.debugging:
+        mathquiz_mode = '--debugging'
+        webkit2png_mode = '--debug'
+
+    if args.extract == []:
+        pages = image_files.keys()
+    else:
+        pages = []
+        for page in args.extract:
+            if '.' in page:
+                page = page[:page.index('.')]
+            page = page.replace('-','')
+            if page not in image_files:
+                print('makeimages error: unrecognised image'.format(page))
+            else:
+                pages.append(page)
+
+    # run through pages and extract the corresponding images
+    for page in pages:
+        print('Extracting image file for {}...'.format(page))
+        extract=image_files[page]
+        convert  = globals()['webkit2png' if extract['src']=='html' else 'pdf2png']
+        file_in  = extract['file_in']     if 'file_in'  in extract else page
+        file_out = extract['file_out']    if 'file_out' in extract else file_in
+        delay    = extract['delay']       if 'delay' in extract else 3
+        js       = extract['js']  if 'js' in extract else ''
+        convert(file_in, file_out, delay, js)
+
+        if args.cleaning:
+            for ext in ['.log', '.xml', '-[ft]*.png', '/']:
+                for file in glob.glob(file_out+ext):
+                    os.remove(file)
+
+

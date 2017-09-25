@@ -28,12 +28,12 @@
 \newif\ifTikz\Tikzfalse
 \DeclareOption{tikz}{\Tikztrue}
 
-\def\MQ@HideSideMenu{True}
+\def\MQ@HideSideMenu{false}
 \DeclareOption{sidemenu}{% default
-  \def\MQ@HideSideMenu{False}
+  \def\MQ@HideSideMenu{false}
 }
 \DeclareOption{hidesidemenu}{
-  \def\MQ@SideMenu{True}
+  \def\MQ@HideSideMenu{true}
 }
 
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}

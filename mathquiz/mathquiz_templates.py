@@ -39,7 +39,7 @@ questions_javascript = r'''  <script type="text/javascript" src="{mathquiz_url}/
 '''
 
 mathquiz_init=r'''<div style="display: none;">
-    <script type="text/javascript">MathQuizInit({qTotal}, {dTotal}, '{quiz_file}', '{hide_side_menu}');</script>
+    <script type="text/javascript">MathQuizInit({qTotal}, {dTotal}, '{quiz_file}', {hide_side_menu});</script>
   </div>'''
 
 # Bread crumbs including a drop down menu for all of the quizzes for the unit.
