@@ -113,6 +113,7 @@ class QuizHandler(xml.sax.ContentHandler):
         self.position.title=attrs.get('title','')
         self.position.breadcrumbs=[crumb.strip() for crumb in attrs.get('breadcrumbs','').split('|')]
         self.position.breadcrumb=attrs.get('breadcrumb','')
+        self.position.hide_side_menu=attrs.get('hidesidemenu', False)
         self.position.src=attrs.get('src','')
 
   def meta_start( self,  attrs ):
@@ -217,6 +218,8 @@ class QuizHandler(xml.sax.ContentHandler):
 class Node(object):
   def __init__(self,  parent = None):
     self.parent = parent
+    self.meta_list = []
+    self.link_list = []
     Debugging('Node: class={}, parent={}'.format(self.__class__.__name__,
         parent.__class__.__name__ if parent else ''))
 
@@ -231,7 +234,7 @@ class Node(object):
 
 
 class Quiz(Node):
-  """<!ELEMENT quiz (title, breadcrumb, meta*, link*, question*)>
+  """<!ELEMENT quiz (title, breadcrumbs, breadcrumb, hidesidemenu, meta*, link*, question*)>
      <!ELEMENT title (#PCDATA)>
   """
   def __init__(self):
@@ -239,8 +242,6 @@ class Quiz(Node):
     self.unit=dict(name='', code='', url='', quizzes='')
     self.school=dict(department='', department_url='', institution='', institution_url='')
     self.discussion_list = []
-    self.link_list = []
-    self.meta_list = []
     self.question_list = []
     self.quiz_list = []
 
@@ -266,6 +267,7 @@ class Discussion(Node):
     self.discussion=""
     self.heading=heading
     self.short_heading = short_heading
+    self.meta_list = []
 
   def accept(self, visitor):
     visitor.for_discussion(self)

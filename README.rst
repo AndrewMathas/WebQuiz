@@ -40,6 +40,15 @@ however, the quiz pages will display a warning message. For more details
 about installation, configuration and use please see the MathQuiz_ manual
 and the MathQuiz_ on-line manual.
 
+Distrubution
+------------
+
+To organisation of the the code in the MathQuiz_ repository is not suitable 
+for distribution. To upload the package to ctan use:
+
+    python3 setup.py ctan
+
+
 Authors
 =======
 
@@ -65,7 +74,7 @@ PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
 .. _GPL: https://www.gnu.org/licenses/gpl-3.0.en.html
 .. _LaTeX: https://www.latex-project.org/
-.. _MathQuiz: http://www.maths.usyd.edu.au/u/MOW/MathQuiz/doc/mathquiz-manual.html
+.. _MathQuiz: https://bitbucket.org/AndrewsBucket/mathquiz
 .. _Python: https://www.python.org
 .. _TeX4ht: http://www.tug.org/tex4ht/
 .. _texlive: https://www.tug.org/texlive/

@@ -9,14 +9,13 @@ r'''
     Distributed under the terms of the GNU General Public License (GPL)
                   http://www.gnu.org/licenses/
 
-    This file is part of the Math_quiz system.
+    This file is part of the MathQuiz system.
 
     <Andrew.Mathas@sydney.edu.au>
     <Donald.Taylor@sydney.edu.au>
 -----------------------------------------------------------------------------------------
 '''
 
-# ---------------------------------------------------------------------------------------
 import argparse
 import glob
 import os
@@ -122,7 +121,7 @@ class MathQuizSettings(object):
         'advanced' : False,
         'help'     : 'Relative URL for mathquiz web directory',
       },
-      mathquiz_web = {
+      mathquiz_www = {
         'default'  : '',
         'advanced' : False,
         'help'     : 'Full path to MathQuiz web directory',
@@ -138,7 +137,7 @@ class MathQuizSettings(object):
         'help'     : 'Name of department',
       },
       department_url  = {
-        'default'  : '',
+        'default'  : '/',
         'advanced' : False,
         'help'     : 'URL for department',
       },
@@ -163,7 +162,7 @@ class MathQuizSettings(object):
         'help'     : 'Build file for make4ht',
       },
       mathjax  = {
-        'default'  : 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js'
+        'default'  : 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js',
         'advanced' : True,
         'help'     : 'URL for mathjax',
       }
@@ -234,7 +233,6 @@ class MathQuizSettings(object):
         which case set self.rc_file equal to this directory. If the file does
         not exist then return without changing the current settings.
         '''
-
         if os.path.isfile(rc_file):
             try:
                 with open(rc_file, 'r') as mathquizrc:
@@ -245,7 +243,6 @@ class MathQuizSettings(object):
                             key, value = line.split('=')
                             key = key.strip().lower()
                             value = value.strip()
-                            print('key={}, value={}.'.format(key,value))
                             if key in self.settings:
                                 if value != self[key]:
                                     self[key] = value
@@ -256,8 +253,14 @@ class MathQuizSettings(object):
                 # record the rc_file for later use
                 self.rc_file = rc_file
 
+            except IOError as err:
+                MathQuizError('there was a problem reading the rc-file {}'.format(rc_file), err)
+
             except Exception as err:
                 MathQuizError('there was an error reading the mathquizrc file,', err)
+
+        else:
+            MathQuizError('the rc-file {} does not exist'.format(rc_file))
 
     def write_mathquizrc(self):
         r'''
@@ -287,15 +290,17 @@ class MathQuizSettings(object):
 
             except PermissionError as err:
                 # if writing to the system_rc_file then try to write to user_rc_file
-                if self.rc_file == self.system_rc_file:
+                print(rc_permission_error.format(self.rc_file, self.user_rc_file))
+                rc_file = input()
+                if a.startswith('1'):
                     self.rc_file = self.user_rc_file
-                    self.write_mathquizrc()
+                elif a.startswith('2'):
+                    self.rc_file = os.path.expanduser(rc_file)
                 else:
-                    # if these both fail give an error
-                    MathQuizError(permission_error.format(self.rc_file), err)
-                    self.rc_file = input('Name of mathquizrc file [leave blank to exit] ')
-                    if self.rc_file =='':
-                        sys.exit(1)
+                    sys.exit(1)
+
+                # if still here then try to write the rc-file again
+                self.write_mathquizrc()
 
             except IOError as err:
                 MathQuizError('there was an error writing the mathquizrc file {}'.format(self.rc_file), err)
@@ -338,8 +343,8 @@ class MathQuizSettings(object):
 
         # prompt for directory and copy files - are these reasonable defaults
         # for each OS?
-        if len(self['mathquiz_web']) > 0:
-            web_root = self['mathquiz_web']
+        if len(self['mathquiz_www']) > 0:
+            web_root = self['mathquiz_www']
         elif sys.platform == 'linux':
             web_root = '/usr/local/httpd/MathQuiz'
         elif sys.platform == 'darwin':
@@ -359,7 +364,7 @@ class MathQuizSettings(object):
             print('Web directory set to {}'.format(web_dir))
             if web_dir == 'SMS':
                 # undocumented: allow links to SMS web pages
-                self['mathquiz_web'] = 'SMS'
+                self['mathquiz_www'] = 'SMS'
                 self['mathquiz_url'] =  'http://www.maths.usyd.edu.au/u/MOW/MathQuiz/'
 
             else:
@@ -391,8 +396,8 @@ class MathQuizSettings(object):
                                               ('doc', 'doc')]:
                             os.symlink(os.path.join(mathquiz_src, src), os.path.join(web_dir, target))
 
-                    self['mathquiz_web'] = web_dir
-                    self.settings['mathquiz_web']['changed'] = True
+                    self['mathquiz_www'] = web_dir
+                    self.settings['mathquiz_www']['changed'] = True
                     files_copied = True
 
                 except PermissionError as err:
@@ -402,7 +407,7 @@ class MathQuizSettings(object):
                     print('There was a problem copying files to {}.\n  Error: {}]\n'.format(web_dir, err))
                     print('Please give a different directory.\n')
 
-        if self['mathquiz_web'] != 'SMS':
+        if self['mathquiz_www'] != 'SMS':
             # now prompt for the relative url
             mq_url = input(mathquiz_url_message.format(self['mathquiz_url']))
             if mq_url != '':
@@ -419,11 +424,11 @@ class MathQuizSettings(object):
         self.settings['mathquiz_url']['changed'] = (self['mathquiz_url']!=self.settings['mathquiz_url']['default'])
 
         # read and save the rest of the settings and exit
-        self.edit_settings(ignored_settings = ['mathquiz_url', 'mathquiz_web'])
-        print(initialise_ending.format(web_dir=self['mathquiz_web']))
+        self.edit_settings(ignored_settings = ['mathquiz_url', 'mathquiz_www'])
+        print(initialise_ending.format(web_dir=self['mathquiz_www']))
         self.just_initialised = True
 
-    def edit_settings(self, ignored_settings = ['mathquiz_web']):
+    def edit_settings(self, ignored_settings = ['mathquiz_www']):
         print(edit_settings)
         input('Press return to continue... ')
         for key in self.settings:
@@ -535,8 +540,6 @@ class MakeMathQuiz(object):
                 elif crumb != '':
                     lastSpace = crumb.rfind(' ')
                     url = crumb[lastSpace:].strip()
-                    print('Funny crumb: lastSpace={}, url={} ({} and {}), crumb={}.'.format(lastSpace, url,
-                        url[0] == '/', url.lower()[:4]=='http', crumb))
                     if url[0] == '/' or url.lower()[:4]=='http':
                         crumbs += self.add_breadcrumb_line(text=crumb[:lastSpace], url=url)
                     else:
@@ -727,7 +730,7 @@ class MakeMathQuiz(object):
         )
 
     def add_question_javascript(self):
-        """ 
+        """
         Add the javascript for the questions to self and write the javascript
         initialisation file, <quiz>/quiz_list.js, for the quiz.  When the quiz
         page is loaded, MathQuizInit reads the quiz_list initialisation file to
@@ -746,7 +749,7 @@ class MakeMathQuiz(object):
                         quiz_list.write('Discussion[{}]="{}";\n'.format(i, d.heading))
                 if self.qTotal >0:
                     for (i,q) in enumerate(self.quiz.question_list):
-                        quiz_list.write('QuizSpecifications[%d]=new Array();\n' % i)
+                        quiz_list.write('QuizSpecifications[%d]=[];\n' % i)
                         a = q.answer
                         if isinstance(a,mathquiz_xml.Answer):
                              quiz_list.write('QuizSpecifications[%d].value="%s";\n' % (i,a.value))
@@ -766,6 +769,7 @@ class MakeMathQuiz(object):
                               qTotal = self.qTotal,
                               dTotal = self.dTotal,
                               quiz_file = self.quiz_file,
+                              hide_side_menu = self.quiz.hide_side_menu
         )
 
     def add_quiz_header_and_questions(self):
@@ -777,9 +781,9 @@ class MakeMathQuiz(object):
         else:
             arrows = navigation_arrows.format(subheading='Question 1' if self.dTotal==0 else 'Discussion')
 
-        # specify the quiz header - this will be wrapped in <div class="question_header>...</div>
+        # specify the quiz header - this will be wrapped in <div class="question-header>...</div>
         self.quiz_header=quiz_header.format(title=self.title,
-                                            question_number=self.quiz.discussion_list[0].heading if len(self.quiz.discussion_list)>0 
+                                            question_number=self.quiz.discussion_list[0].heading if len(self.quiz.discussion_list)>0
                                                                  else 'Question 1' if len(self.quiz.question_list)>0 else '',
                                             arrows = arrows
         )
@@ -927,7 +931,7 @@ if __name__ == '__main__':
 
         # set the rcfile to be used
         if options.rcfile != '':
-            settings.read_mathquizrc(options.rc_file)
+            settings.read_mathquizrc(options.rcfile)
 
         # initialise and exit
         if options.initialise:
@@ -978,7 +982,7 @@ if __name__ == '__main__':
 
                 # now clean up unless debugging
                 if not options.debugging:
-                    for ext in [ '4ct', '4tc', 'dvi', 'idv', 'lg', 'log', 'ps', 'pdf', 'tmp', 'xref']:
+                    for ext in [ '4ct', '4tc', 'dvi', 'idv', 'lg', 'log', 'ps', 'pdf', 'tmp', 'xml', 'xref']:
                         if os.path.isfile(quiz_file +'.' +ext):
                             os.remove(quiz_file +'.' +ext)
 

@@ -3,12 +3,12 @@ r'''
     mathquiz_local | default layout of mathquiz web pages.
 -----------------------------------------------------------------------------
 
-    Copyright (C) Andrew Mathas and Donald Taylor, University of Sydney
+    Copyright (C) Andrew Mathas, University of Sydney
 
     Distributed under the terms of the GNU General Public License (GPL)
                   http://www.gnu.org/licenses/
 
-    This file is part of the Math_quiz system.
+    This file is part of the MathQuiz system.
 
     <Andrew.Mathas@sydney.edu.au>
     <Donald.Taylor@sydney.edu.au>
@@ -39,13 +39,14 @@ quiz_page = r'''<!DOCTYPE HTML>
 </head>
 
 <body>
-  {breadcrumbs}
   {no_script}
-  <div class="quiz_page">
+  {breadcrumbs}
+  <div class="quiz-page">
     {side_menu}
-    <div class="quiz_questions">
+    <div class="quiz-questions">
       {quiz_header}
       {quiz_questions}
+    </div>
   </div>
   {mathquiz_init}
 </body>

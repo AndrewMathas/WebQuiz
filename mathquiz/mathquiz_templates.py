@@ -3,12 +3,12 @@ r'''
     mathquiz_templates | html template file
 -----------------------------------------------------------------------
 
-    Copyright (C) Andrew Mathas and Donald Taylor, University of Sydney
+    Copyright (C) Andrew Mathas, University of Sydney
 
     Distributed under the terms of the GNU General Public License (GPL)
               http://www.gnu.org/licenses/
 
-    This file is part of the Math_quiz system.
+    This file is part of the MathQuiz system.
 
     <Andrew.Mathas@sydney.edu.au>
     <Donald.Taylor@sydney.edu.au>
@@ -39,37 +39,39 @@ questions_javascript = r'''  <script type="text/javascript" src="{mathquiz_url}/
 '''
 
 mathquiz_init=r'''<div style="display: none;">
-    <script type="text/javascript">MathQuizInit({qTotal}, {dTotal}, '{quiz_file}');</script>
+    <script type="text/javascript">MathQuizInit({qTotal}, {dTotal}, '{quiz_file}', '{hide_side_menu}');</script>
   </div>'''
 
 # Bread crumbs including a drop down menu for all of the quizzes for the unit.
-# The drop_down_menu is added by create_drop_down_menu() in maghquiz.js
-breadcrumb_line_text='        <li>{text}</li>\n'
-breadcrumb_line_url ='        <li><a href="{url}">{text}</a></li>\n'
-breadcrumb_quizlist = '''        <li><a href="{quizzes_url}">Quizzes</a>
-          <span onclick="toggle_quiz_menu();" id="quizzes_menu_icon"></span>
-          <ul id="drop_down_menu" onclick="toggle_quiz_menu();"></ul>
+# The drop-down-menu is added by create_drop_down_menu() in maghquiz.js
+breadcrumb_line_text='          <li>{text}</li>\n'
+breadcrumb_line_url ='          <li><a href="{url}">{text}</a></li>\n'
+breadcrumb_quizlist = '''          <li><a href="{quizzes_url}">Quizzes</a>
+          <span onclick="toggle_dropdown_menu();" id="quizzes-menu-icon"></span>
+          <ul id="drop-down-menu" onclick="toggle_dropdown_menu();"></ul>
         </li>
 '''
-breadcrumbs = r'''<nav class="breadcrumbs">
-    <ul>
+breadcrumbs = r'''<div class="breadcrumbs">
+    <nav>
+        <ul>
 {crumbs}
-    </ul>
-  </nav>
+        </ul>
+    </nav>
+  </div>
 '''
 
 # question buttons
 button  = r'        <div id="button{b}" class="button{cls}" content=" " onClick="gotoQuestion({b})">{b}</div>'
 discuss = r'        <li id="button-{b}" class="discussion" onClick="gotoQuestion(-{b})">{title}</li>'
-side_menu = r'''<div class="menu_icon" onclick="toggle_side_menu_display();">
-      &#8676;<span class="question_label">&nbsp;Questions&nbsp;</span>
+side_menu = r'''<div class="menu-icon">
+      <span class="sidelabelclosed question-label" onclick="toggle_side_menu();">&#10070;</span>
+      <span class="sidelabelopen question-label" onclick="toggle_side_menu();">&#10006;&nbsp;Questions</span>
     </div>
-    <div class="side_menu">{discussion_list}
+    <div id="sidemenu" class="side-menu">{discussion_list}
       <div class="buttons">
-        
         <br>{buttons}
       </div>
-      <table class="marking_key">
+      <table class="marking-key">
          <tr><td></td><td></td></tr>
          <tr><td style="color: #FFCC00; font-size:small;">&starf;</td><td>right first<br>attempt</td></tr>
          <tr><td style="color: green; font-size:medium;">&check;</td><td>right</td></tr>
@@ -83,19 +85,19 @@ side_menu = r'''<div class="menu_icon" onclick="toggle_side_menu_display();">
         <a href="http://www.maths.usyd.edu.au/u/MOW/MathQuiz/doc/credits.html">
            MathQuiz {version}
         </a>
-        <br>&copy; Copyright 2004-2017
+        <br>&copy; Copyright <span style="overflow: visible;">2004-2017</span>
       </div>
     </div>'''
 
 # quiz title and navigation arrows
-quiz_header='''<div class="quiz_header">
-        <div class="quiz_title">{title}</div><div></div>
-        <span id="question_number" class="question_label">{question_number}</span>
+quiz_header='''<div class="quiz-header">
+        <div class="quiz-title">{title}</div><div></div>
+        <span id="question-number" class="question-label">{question_number}</span>
         {arrows}
       </div>'''
 navigation_arrows='''<span class="arrows">
           <a onClick="nextQuestion(-1);" title="Previous unanswered question">&#x25c4;</a>
-          <span class="question_label">Questions</span>
+          <span class="question-label">Questions</span>
           <a onClick="nextQuestion(1);"  title="Next unanswered question">&#x25ba;</a>
         </span>'''
 
@@ -107,7 +109,7 @@ discussion='''<div id="question-{dnum}" class="question" {display}>
 input_button='<input type="button" name="next" value="Start quiz" onClick="return gotoQuestion(1);"/>\n'
 
 #quiz index
-quiz_list='''     <div class="quiz_list">
+quiz_list='''     <div class="quiz-list">
         <h2>{unit} Quizzes</h2>
         <ul>
           {quiz_index}
@@ -125,19 +127,19 @@ question_text='''  {question}
       <form id="Q{qnum}Form" onSubmit="return false;" class="question">
         {question_options}
         <p>
-          <input type="button" value="Check Answer" name="answer" class="input_button" onClick="checkAnswer();"/>
-          <input type="button" value="Next Question" class="input_button" title="Next unanswered question" name="next" onClick="nextQuestion(1);"/>
+          <input type="button" value="Check Answer" name="answer" class="input-button" onClick="checkAnswer();"/>
+          <input type="button" value="Next Question" class="input-button" title="Next unanswered question" name="next" onClick="nextQuestion(1);"/>
         </p>
       </form>
 '''
 
 # Questions and responses:
 input_answer='<input type="text"  onChange="checkAnswer();" size="5"/> {tag}'
-choice_answer='<table class="question_choices">{choices}</table>'
+choice_answer='<table class="question-choices">{choices}</table>'
 input_single='\n<input type="hidden" name="Q{qnum}hidden"/>'
 
-single_item='<td><input type="radio" name="Q{qnum}option"/></td><td class="brown" >{choice})</td><td><div class="question_choices">{answer}</div></td>\n'
-multiple_item='<td><input type="checkbox" name="Q{qnum}option{optnum}"/></td><td class="brown" >{choice})</td><td><div class="question_choices">{answer}</div></td>\n'
+single_item='<td><input type="radio" name="Q{qnum}option"/></td><td class="brown" >{choice})</td><td><div class="question-choices">{answer}</div></td>\n'
+multiple_item='<td><input type="checkbox" name="Q{qnum}option{optnum}"/></td><td class="brown" >{choice})</td><td><div class="question-choices">{answer}</div></td>\n'
 
 tf_response_text='''        <div id="q{choice}{response}" class="response"><em class="dazzle">{answer}</em> <em>{answer2}</em>
            <div>{text}</div>
@@ -162,7 +164,7 @@ multiple_response_answer='              <li><em>{answer}</em> {reason}</li>'
 
 # the remaining templates are used to prompt the user when initialising mathquiz
 initialise_introduction='''
-In order to work the on-line quizzes that MathQuiz constructs need to load some 
+In order to work the on-line quizzes that MathQuiz constructs need to load some
 javascript and CSS files that, for efficiency reasons, should be kept on your
 webserver. It does not matter whether these files are in "system" directory
 on your web server or in your own web directories.
@@ -170,7 +172,7 @@ on your web server or in your own web directories.
 In order to copy these files to the right place and access them MathQuiz needs:
 
   o A "web directory" on your file system that is visible from your web server
-    This is the name of a dorectory or folder on your web server where the MathQuiz 
+    This is the name of a dorectory or folder on your web server where the MathQuiz
     files can be copied to
   o The relative URL for accessing these files from the web
     This is the part of the URL that you have to add to your "root" URL to
@@ -228,6 +230,19 @@ web_initialise_warning='''
         to install the MathQuiz web files on your system.
         <button style="float: right" onclick="document.getElementById('initialisewarning').style.display='none'">OK</button>
       </div>
+'''
+
+rc_permission_error='''
+You do not have permission to write to {}.
+
+To write the MathQuiz rc-fils into this directory you may need to quit and
+rerun this command either using an administrator account, or using sudo
+on linux/macosx.
+
+Press:
+    1. To save to {}
+    2. To give a different filename for the rc-file
+    *. Anything elseto exit
 '''
 
 permission_error='''

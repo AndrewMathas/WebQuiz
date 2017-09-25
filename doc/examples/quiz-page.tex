@@ -1,0 +1,746 @@
+\documentclass[pst2pdf]{mathquiz}
+\usepackage[MATH1001]{sms-uos}
+\usepackage{pst-all,pst-3dplot}
+\title{Quiz 4: Curves and surfaces in 3-dimensional space}
+\begin{document}
+
+% Question 1
+\begin{question}
+What are suitable parametric equations for this plane curve?
+\begin{center}\psset{unit=6mm}\begin{pspicture}(-2.5,-1.5)(5,5.5)%
+    \psaxes[linecolor=red,linewidth=1pt]{->}(0,0)(-2.5,-1.5)(5,5)%
+    \psellipse[linecolor=blue,linewidth=2pt](1,2)(3,2)%
+\end{pspicture}\end{center}
+
+\begin{choice}[1]
+\incorrect $x=2\cos t + 1,\ y=3\sin t + 2$
+\response This is an ellipse with centre $(1,2)$ and with axes of
+length $4$ in the $x$--direction and $6$ in the $y$--direction.
+\begin{center}\psset{unit=6mm}\begin{pspicture}(-2.5,-0.5)(5,5.5)
+    \psaxes[linecolor=red,linewidth=1pt,labels=none]{->}(0,0)(-2.5,-1.5)(5,5)
+    \parametricplot[linecolor=blue,linewidth=2pt]{0}{360}%
+           { t cos 2 mul 1 add t sin 3 mul 2 add}
+\end{pspicture}\end{center}
+
+\correct $x=3\cos t + 1,\ y=2\sin t + 2$
+
+\response The curve is an ellipse centre (1,2) with axes length 6 in
+the $x$ direction and 4 in the $y$ direction.
+
+\incorrect $x=3\cos t - 1,\ y=2\sin t - 2$
+\response This is an ellipse with centre $(-1,-2)$ and with axes of
+length $6$ in the $x$--direction and $4$ in the $y$--direction.
+\begin{center}\psset{unit=6mm}\begin{pspicture}(-5,-4)(1,2)
+    \psaxes[linecolor=red,linewidth=1pt,labels=none]%
+            {<-}(0,0)(-4.5,-5.5)(1,2)
+    \parametricplot[linecolor=blue,linewidth=2pt]{0}{360}%
+           { t cos 3 mul 1 sub t sin 2 mul 2 sub}
+\end{pspicture}\end{center}
+
+\incorrect $x=2\cos t - 1,\ y=3\sin t - 2$
+\response This is an ellipse with centre $(-1,-2)$ and with axes of
+length $4$ in the $x$--direction and $6$ in the $y$--direction.
+\begin{center}\psset{unit=6mm}\begin{pspicture}(-4,-5)(1,2)
+    \psaxes[linecolor=red,linewidth=1pt,labels=none]%
+            {<-}(0,0)(-4.5,-5.5)(1,2)
+    \parametricplot[linecolor=blue,linewidth=2pt]{0}{360}%
+           { t cos 2 mul 1 sub t sin 3 mul 2 sub}
+\end{pspicture}\end{center}
+
+\end{choice}
+\end{question}
+
+% Question 2
+\begin{question}
+Which of the following could be the parametric equations for the
+following space curve? (You may assume that $t\ge 0$ and that the scales are the same on the $x,\,y$ and $z$ axes.)
+\begin{center}\psset{unit=6mm}\begin{pspicture}(-2,-1)(5,10)
+	\parametricplotThreeD[%
+		xPlotpoints=200,%
+		linecolor=blue,%
+		linewidth=1.5pt,%
+		plotstyle=curve](0,2.8){%
+			t 4 mul t 360 mul cos mul
+			t 4 mul t 360 mul sin mul
+			t 1.5 mul %
+	}
+	\pstThreeDCoor[linewidth=1pt,
+            xMin=-1,xMax=6,yMin=-1,yMax=6,zMin=-1,zMax=9.5]
+\end{pspicture}\end{center}
+
+\begin{choice}[1]
+\incorrect $x=\cos t,\ y=\sin t,\ z=t$
+\response This curve has the following graph.
+\begin{center}\psset{unit=6mm}\begin{pspicture}(-2,-1)(5,7)
+	\parametricplotThreeD[%
+		xPlotpoints=200,%
+		linecolor=blue,%
+		linewidth=1.5pt,%
+		plotstyle=curve](0,4.5){%
+			 t 360 mul cos
+			 t 360 mul sin
+			t %
+	}
+	\pstThreeDCoor[linewidth=1pt,
+              xMin=-1,xMax=6,yMin=-1,yMax=6,zMin=-1,zMax=8]
+\end{pspicture}\end{center}
+
+\incorrect $x=t \cos t,\ y=t \sin t,\ z=t^2$
+\response In this curve the $z$ values increase as the square of $t$, making the spiral much `steeper' than the curve shown in the question. The parametric equations given in
+this option correspond to the following graph.
+\begin{center}\psset{unit=6mm}\begin{pspicture}(-2,-1)(5,7)
+	\parametricplotThreeD[%
+		xPlotpoints=200,%
+		linecolor=blue,%
+		linewidth=1.5pt,%
+		plotstyle=curve](0,3){%
+			t t 360 mul cos mul
+			t t 360 mul sin mul
+			t dup mul%
+	}
+	\pstThreeDCoor[linewidth=1pt,
+             xMin=-1,xMax=6,yMin=-1,yMax=6,zMin=-1,zMax=8]
+\end{pspicture}\end{center}
+
+\incorrect $x=\cos t,\ y=\sin t,\ z=t^{2}$
+\response This curve has the following graph.
+\begin{center}\psset{unit=6mm}\begin{pspicture}(-2,-1)(5,7)
+	\parametricplotThreeD[%
+		xPlotpoints=200,%
+		linecolor=blue,%
+		linewidth=1.5pt,%
+		plotstyle=curve](0,3){%
+			t 360 mul cos
+			t 360 mul sin
+			t dup mul
+	}
+	\pstThreeDCoor[linewidth=1pt,
+             xMin=-1,xMax=6,yMin=-1,yMax=6,zMin=-1,zMax=8]
+\end{pspicture}\end{center}
+
+\correct $x=t\cos t,\ y=t\sin t,\ z=t$
+
+\response The curve circles around the $z$-axis and the distance of
+the curve from the $z$-axis increases \emph{linearly} with $t$ (and
+hence $z$).
+
+\end{choice}
+\end{question}
+
+% Question 3
+\begin{question}
+Which of the following could be the parametric equations for the
+following space curve?
+\begin{center}\psset{unit=12mm}\begin{pspicture}(-2,-3)(5,5)
+\psdot(0,-.8)\psdot(0,.8)\psdot(0.7,0.38)
+	\parametricplotThreeD[%
+		xPlotpoints=200,%
+		linecolor=blue,%
+		linewidth=1.5pt,%
+		plotstyle=curve](-1.5,2){%
+			t dup mul 1 sub
+			t 3 exp t sub
+			t 3 exp %
+	}
+	\pstThreeDCoor[linewidth=1pt,xMin=-2,xMax=4,yMin=-2,yMax=4,zMin=-2,zMax=5]
+\end{pspicture}\end{center}
+(Hint: look at the sign of $y$ as $t$ changes.)
+
+\begin{choice}
+\correct $x=t^{2}-1,\ y=t^{3}-t,\ z=t^{3}$
+
+\response  As $t$ increases from large negative values through zero to large positive values, $y$ starts out negative then becomes
+positive, then negative and finally positive again. This fits the curve shown. It is actually quite hard to ``see'' where in space this curve lies, from the diagram provided,
+so don't worry if you didn't
+get this one correct.
+
+\incorrect $x=\cos t,\ y=\sin t,\ z=t^{3}$
+\response
+The $\cos t$ and $\sin t$ terms make this curve wind around the $z$--axis,
+and the $z=t^3$ term makes the height of the curve above the $xy$--plane
+increase rapidly.
+\begin{center}\psset{unit=8mm}\begin{pspicture}(-2,-1)(5,3)
+	\parametricplotThreeD[%
+		xPlotpoints=200,%
+		linecolor=blue,%
+		linewidth=1.5pt,%
+		plotstyle=curve](-1.2,1.6){%
+			t 360 mul cos
+			t 360 mul sin
+			t 3 exp %
+	}
+	\pstThreeDCoor[linewidth=1pt,xMin=-2,xMax=4,yMin=-2,yMax=4,zMin=-2,zMax=5]
+\end{pspicture}\end{center}
+
+\incorrect $x=t^{2}-1,\ y=t^{2},\ z=t^{2}$
+\response This is a ``half'' straight line because $z=y=x+1$, for all
+$t$. (It is only half a line because $x\ge-1$, $y\ge0$ and $z\ge0$
+since $t^2\ge0$ for all $t$.)
+\begin{center}\psset{unit=8mm}\begin{pspicture}(-2,-4)(5,3)
+        \psset{Alpha=80,Beta=40}
+        {\psset{linewidth=1pt,linecolor=gray,linestyle=dotted}
+         \pstThreeDBox(0,0,0)(0,0,4)(3,0,0)(0,4,0)
+        }
+	\parametricplotThreeD[%
+		xPlotpoints=200,%
+		linecolor=blue,%
+		linewidth=2pt,%
+		plotstyle=curve](0,2.5){%
+			t dup mul 1 sub
+			t dup mul
+			t dup mul %
+	}
+\       \rput[l](3,1){\blue\boldmath $t=2 \equiv (3,4,4)$}
+        \pstThreeDDot(3,4,4)
+	\pstThreeDCoor[linewidth=1pt,xMin=-2,xMax=4,yMin=-2,yMax=4,zMin=-2,zMax=4]
+\end{pspicture}\end{center}
+(The box is there  to help visualize the line).
+
+\incorrect $x=t^{3}-t,\ y=t^{2}-1,\ z=t^{2}$
+\response
+\begin{center}\begin{pspicture*}(-4,-3)(5,4)
+     \psset{unit=12mm,Alpha=-10,Beta=10}
+     \parametricplotThreeD[%
+		xPlotpoints=200,%
+		linecolor=blue,%
+		linewidth=1.5pt,%
+		plotstyle=curve](-1.5,2){%
+			t 3 exp t sub
+			t dup mul 1 sub
+			t dup mul %
+	}
+	\pstThreeDCoor[linewidth=1pt,
+           xMin=-2,xMax=8,yMin=-2,yMax=4,zMin=-2,zMax=5]
+\end{pspicture*}\end{center}
+
+\end{choice}
+\end{question}
+
+% Question 4
+\begin{question}
+Let $f(x,y)=x^{2}+y^{2}-1$.
+Which of the following could be the graph of $z=f(x,y)$?
+\begin{choice}
+\incorrect\begin{center}\begin{pspicture}(-2,-2)(5,5)
+	\psset{unit=6mm}
+	\psplotThreeD[%
+		linecolor=blue,%
+		plotstyle=curve,%
+		drawStyle=yLines,% is the default anyway
+		yPlotpoints=50,xPlotpoints=50,%
+		linewidth=1pt](-1.6,1.6)(-1.6,1.6){%
+                1 x dup mul y dup mul add sub}
+	\pstThreeDCoor[linewidth=1pt,xMin=-5,xMax=5,yMin=-5,yMax=5,
+	               zMin=-2,zMax=3]
+\end{pspicture}\end{center}
+\response This
+cannot be the graph of $f(x,y)$. Look again at the formula for $f(x,y)$! It tells us that $f(x,y)\ge -1$ for all $x,y$. In fact, this option  is the graph of
+$z=1-(x^2+y^2)$.
+
+\incorrect\begin{center}\begin{pspicture}(-2,-2)(5,5)
+	\psset{unit=6mm}
+	\psplotThreeD[%
+		linecolor=blue,%
+		plotstyle=curve,%
+		drawStyle=yLines,% is the default anyway
+		yPlotpoints=50,xPlotpoints=50,%
+		linewidth=1pt](-1.6,1.6)(-1.6,1.6){%
+                x dup mul y dup mul add sqrt 2 mul 1 sub}
+	\pstThreeDCoor[linewidth=1pt,xMin=-5,xMax=5,yMin=-5,yMax=5,
+	               zMin=-2,zMax=5]
+\end{pspicture}\end{center}
+\response This is the graph of a regular cone (it has ``straight
+sides''), whereas $f(x,y)$ is a paraboloid. In fact, this is the graph
+of $z=\sqrt{x^2+y^2-1}$.
+
+
+\incorrect\begin{center}\begin{pspicture}(-2,-2)(5,5)
+	\psset{unit=6mm}
+	\psplotThreeD[%
+		linecolor=blue,%
+		plotstyle=curve,%
+		drawStyle=yLines,% is the default anyway
+		yPlotpoints=50,xPlotpoints=50,%
+		linewidth=1pt](-1.6,1.6)(-1.6,1.6){%
+                x dup mul y dup mul add}
+	\pstThreeDCoor[linewidth=1pt,xMin=-5,xMax=5,yMin=-5,yMax=5,zMin=-2,zMax=5]
+\end{pspicture}\end{center}
+\response Even though this is the graph of a paraboloid it cannot be
+the graph of $z=f(x,y)$ since $f(0,0)=-1$ whereas this graph goes
+through $(0,0,0)$. In fact, this is the graph of $z=x^2+y^2$.
+
+
+\correct\begin{center}\begin{pspicture}(-2,-2)(5,5)
+	\psset{unit=6mm}
+	\psplotThreeD[%
+		linecolor=blue,%
+		plotstyle=curve,%
+		drawStyle=yLines,% is the default anyway
+		yPlotpoints=50,xPlotpoints=50,%
+		linewidth=1pt](-1.6,1.6)(-1.6,1.6){%
+                x dup mul y dup mul add 1 sub}
+	\pstThreeDCoor[linewidth=1pt,xMin=-5,xMax=5,yMin=-5,yMax=5,
+	               zMin=-2,zMax=5]
+\end{pspicture}\end{center}
+\response This is the only graph listed which is paraboloid passing
+through $(0,0,-1)$.
+
+\end{choice}
+\end{question}
+
+% Question 5
+\begin{question}
+Which option could be the equation of the following surface?
+\begin{center}\begin{pspicture}(-2,-2)(5,5)
+	\psset{unit=8mm}
+	\psplotThreeD[%
+		linecolor=blue,%
+		plotstyle=line,%
+		drawStyle=xLines,% is the default anyway
+		yPlotpoints=25,xPlotpoints=25,%
+		linewidth=1pt](-2,2)(-3,3){%
+		x dup mul neg 4 add}
+	\pstThreeDCoor[linewidth=1pt,xMin=-5,xMax=5,yMin=-5,yMax=5,zMin=-2,zMax=5]
+\end{pspicture}\end{center}
+\begin{choice}
+\incorrect $z=4-x^{2}-y^{2}$
+\response The function $f(x,y)=4-(x^2+y^2)$ is an inverted paraboloid.
+It has the following graph.
+\begin{center}\begin{pspicture}(-2,-2)(5,5)
+	\psset{unit=8mm}
+	\psplotThreeD[%
+		linecolor=blue,%
+		plotstyle=curve,%
+		drawStyle=yLines,% is the default anyway
+		yPlotpoints=50,xPlotpoints=50,%
+		linewidth=1pt](-1.6,1.6)(-1.6,1.6){%
+		x dup mul y dup mul add neg 4 add}
+	\pstThreeDCoor[linewidth=1pt,xMin=-5,xMax=5,yMin=-5,yMax=5,zMin=-2,zMax=5]
+\end{pspicture}\end{center}
+
+\incorrect $z=y^{2}-2$
+\response This function does not depend on $x$. Its graph is:
+\begin{center}\begin{pspicture}(-2,-2)(5,5)
+	\psset{unit=8mm}
+	\psplotThreeD[%
+		linecolor=blue,%
+		plotstyle=line,%
+		drawStyle=yLines,%
+		yPlotpoints=25,xPlotpoints=25,%
+		linewidth=1pt](-2,2)(-2,2){%
+		y dup mul 2 sub}
+	\pstThreeDCoor[linewidth=1pt,xMin=-5,xMax=5,yMin=-5,yMax=5,zMin=-1,zMax=5]
+\end{pspicture}\end{center}
+
+\incorrect $z=-x^{2}$
+\response This surface lies entirely below the $xy$--plane so
+it cannot be the function pictured. Its graph is
+\begin{center}\begin{pspicture}(-5,-5)(1,1)
+	\psset{unit=8mm}
+	\psplotThreeD[%
+		linecolor=blue,%
+		plotstyle=curve,%
+		drawStyle=xLines,% is the default anyway
+		yPlotpoints=50,xPlotpoints=50,%
+		linewidth=1pt](-2,2)(-3,3){%
+		x dup mul neg }
+	\pstThreeDCoor[linewidth=1pt,xMin=-5,xMax=5,yMin=-5,yMax=5,zMin=-5,zMax=1]
+\end{pspicture}\end{center}
+
+\correct $z=4-x^{2}$
+
+\response This graph has a parabolic cross-section $z=-x^{2}$
+which does not depend on the value of $y$.
+
+\end{choice}
+\end{question}
+
+% Question 6
+\begin{question}
+Which of the following equations could describe this surface?
+\begin{center}\psset{unit=2mm}\begin{pspicture}(-4,-12)(4,12)
+  \psplotThreeD[%
+		linecolor=blue,%
+     plotstyle=ecurve,%
+     drawStyle=yLines,%
+     yPlotpoints=50,xPlotpoints=50,
+     linewidth=1pt](-20,20)(-20,20){%
+     x dup mul y dup mul add sqrt 45 mul cos 2 mul }
+   \pstThreeDCoor[linewidth=1pt,
+       xMin=-30,xMax=30,yMin=-30,yMax=30,zMin=-3,zMax=20]
+  \end{pspicture}
+\end{center}
+
+\begin{choice}
+\incorrect $z=\cos x \cos y$
+\response
+This surface looks like an egg carton, as shown below. %In particular, it is not
+%symmetric in $x^2+y^2$ so it cannot be the surface described by the equation in this option.
+The surface in the question can't be given by the equation $z=\cos x\cos y$ because in the plane $x=y$, for example, we have $z=\cos^2 x$ and so $z\ge 0$, which is not the case.
+\begin{center}\psset{unit=2mm}
+  \begin{pspicture}(-4,-12)(4,12)
+  \psplotThreeD[%
+		linecolor=blue,%
+     plotstyle=curve,%
+     drawStyle=yLines,%
+     yPlotpoints=80,xPlotpoints=80,
+     linewidth=1pt](-20,20)(-20,20){%
+     x 45 mul cos y 45 mul cos mul 1.5 mul}
+   \pstThreeDCoor[linewidth=1pt,xMin=-30,xMax=30,yMin=-30,yMax=30,zMin=-2,zMax=20]
+  \end{pspicture}
+\end{center}
+
+\incorrect $z=\sin x \sin y$
+\response
+As $\sin x\sin y=\cos(x+\frac\pi 2)\cos(y+\frac\pi2)$ this surface is
+just a shifted version of the surface $z=\cos x\cos y$.
+\begin{center}\psset{unit=2mm}\begin{pspicture}(-4,-12)(4,12)
+  \psplotThreeD[%
+		linecolor=blue,%
+     plotstyle=curve,%
+     drawStyle=yLines,%
+     yPlotpoints=80,xPlotpoints=80,
+     linewidth=1pt](-20,20)(-20,20){%
+     x 45 mul sin y 45 mul sin mul 1.5 mul}
+   \pstThreeDCoor[linewidth=1pt,xMin=-30,xMax=30,yMin=-30,yMax=30,zMin=-2,zMax=20]
+  \end{pspicture}
+\end{center}
+
+\incorrect $z=\cos x \sin y$
+\response As $\cos x\sin y=\cos(x)\cos(y+\frac\pi2)$ this surface is
+just another shifted version of the surface $z=\cos x\cos y$.
+\begin{center}\psset{unit=2mm}\begin{pspicture}(-4,-12)(4,12)
+  \psplotThreeD[%
+		linecolor=blue,%
+     plotstyle=curve,%
+     drawStyle=yLines,%
+     yPlotpoints=80,xPlotpoints=80,
+     linewidth=1pt](-20,20)(-20,20){%
+     x 45 mul cos y 45 mul cos mul 1.5 mul}
+   \pstThreeDCoor[linewidth=1pt,xMin=-30,xMax=30,yMin=-30,yMax=30,zMin=-2,zMax=20]
+  \end{pspicture}
+\end{center}
+\incorrect $z=\cos(x^2+y^2)$
+\response This function looks like it could be the
+graph in the question. However, the ripples in this function get
+closer together as $\sqrt{x^2+y^2}$ gets large, so it cannot be the
+right answer.
+\begin{center}\psset{unit=8mm}\begin{pspicture}(-4,-6)(4,6)
+  \psplotThreeD[%
+		linecolor=blue,%
+     plotstyle=ecurve,%
+     drawStyle=yLines,%
+     yPlotpoints=80,xPlotpoints=80,
+     linewidth=1pt](-6,6)(-6,6){%
+     x dup mul y dup mul add 45 mul cos 2 div}
+   \pstThreeDCoor[linewidth=1pt,xMin=-8,xMax=8,yMin=-8,yMax=8,zMin=-2,zMax=6]
+  \end{pspicture}
+\end{center}
+
+\correct $z=\cos\sqrt{x^{2}+y^{2}}$
+\response This matches the picture and in fact is the surface we obtain by  rotating $z=\cos x$ about the
+$z$-axis.
+
+\incorrect  $z=\sin\sqrt{x^{2}+y^{2}}$
+\response This is very similar to the graph in the question; however,
+this cannot be the right function because $z=0$ when $(x,y)=(0,0)$
+which does not agree with the graph in the question.
+\begin{center}\psset{unit=2mm}\begin{pspicture}(-4,-6)(4,20)
+  \psplotThreeD[%
+		linecolor=blue,%
+     plotstyle=ecurve,%
+     drawStyle=yLines,%
+     yPlotpoints=50,xPlotpoints=50,
+     linewidth=1pt](-20,20)(-20,20){%
+     x dup mul y dup mul add sqrt 45 mul sin 2 mul }
+   \pstThreeDCoor[linewidth=1pt,
+       xMin=-30,xMax=30,yMin=-30,yMax=30,zMin=-3,zMax=20]
+  \end{pspicture}
+\end{center}
+
+\end{choice}
+\end{question}
+
+% Question 7
+\begin{question}
+Which of the equations below could describe the following surface?
+\begin{center}
+\psset{unit=6mm}
+  \begin{pspicture*}(-6,-3)(6,6)
+     \pstThreeDCoor[linewidth=1pt,%
+       xMin=-8,xMax=8,yMin=-8,yMax=8,zMin=-2,zMax=6]
+     \psplotThreeD[%
+       linecolor=blue,%
+       %plotstyle=ecurve,%
+       drawStyle=yLines,%
+       yPlotpoints=80,xPlotpoints=31,
+       linewidth=1pt](-4,4)(-4,4)%
+       {1 x dup mul y dup mul add div }
+  \end{pspicture*}
+\end{center}
+
+
+\begin{choice}
+\incorrect \(\displaystyle z=\log(x^{2}+y^{2}) \)
+\response This cannot be the right graph because
+\(\displaystyle z\longrightarrow-\infty \) as \(\displaystyle (x,y)\longrightarrow(0,0) \).
+In fact, the function \(\displaystyle z=\log(x^{2}+y^{2}) \) has the graph:
+\begin{center}\psset{unit=6mm}\begin{pspicture*}(-6,-6)(6,6)
+  \psplotThreeD[%
+		linecolor=blue,%
+     plotstyle=line,%
+     drawStyle=yLines,%
+     yPlotpoints=40,xPlotpoints=40,
+     linewidth=1pt](-4,4)(-4,4){%
+     x dup mul y dup mul add log }
+   \pstThreeDCoor[linewidth=1pt,
+     xMin=-8,xMax=8,yMin=-8,yMax=8,zMin=-2,zMax=6]
+  \end{pspicture*}
+\end{center}
+
+\incorrect \(\displaystyle z=e^{x^{2}+y^{2}} \)
+\response This function has a very ``steep'' surface. It cannot be the function in the question
+because $z=1$ when $(x,y)=(0,0)$.
+In fact, \(\displaystyle z=e^{x^{2}+y^{2}} \) has the following
+graph.
+\begin{center}\psset{unit=7mm}\begin{pspicture*}(-4,-4)(4,4)
+  \psplotThreeD[%
+     linecolor=blue,%
+     plotstyle=curve,%
+     drawStyle=yLines,%
+     yPlotpoints=30,xPlotpoints=30,
+     linewidth=1pt](-4,1)(-4,1){%
+     1.52 x dup mul y dup mul add exp  }
+   \pstThreeDCoor[linewidth=1pt,
+     xMin=-4,xMax=4,yMin=-4,yMax=4,zMin=-2,zMax=6]
+  \end{pspicture*}
+\end{center}
+
+\incorrect \(\displaystyle z=1-e^{x^{2}+y^{2}} \)
+\response This function has a very ``steep'' inverted surface. It cannot be the function in this option
+because here, $z$ is always less than 1 and becomes very large and negative as $x^2+y^2$ increases. In fact,
+\(\displaystyle z=1-e^{x^{2}+y^{2}} \) has the following
+graph.
+\begin{center}\psset{unit=6mm}
+  \begin{pspicture*}(-4,-4)(4,4)
+  \psplotThreeD[%
+		linecolor=blue,%
+     plotstyle=line,%
+     drawStyle=yLines,%
+     yPlotpoints=30,xPlotpoints=30,
+     linewidth=1pt](-4,4)(-4,4){%
+     1.52 x dup mul y dup mul add exp neg 1 add}
+   \pstThreeDCoor[linewidth=1pt,
+       xMin=-4,xMax=4,yMin=-4,yMax=4,zMin=-2,zMax=6]
+  \end{pspicture*}
+\end{center}
+
+\correct \(z=\dfrac1{x^2+y^2}\)
+\response This surface is the
+only function listed which is consistent with the graph in the
+question, as
+$\frac1{x^{2}+y^{2}}\rightarrow\infty$ as $(x,y)\rightarrow(0,0).$
+
+\end{choice}
+\end{question}
+
+% Question 8
+\begin{question}
+    Which one of the following shows some of the
+    level curves for the function $z=x(x+y)$ ?
+\begin{choice}
+    \incorrect
+     \begin{center}\psset{unit=4mm}
+       \begin{pspicture}(-3.5,-4.5)(5,8.5)
+         \psaxes[linecolor=red,linewidth=1pt,labels=none]%
+                {->}(0,0)(-2.5,-4.5)(5,8)
+         \psellipse[linecolor=blue,linewidth=2pt](1,2)(1.5,1)
+         \psellipse[linecolor=blue,linewidth=2pt](1,2)(3,2)
+         \psellipse[linecolor=blue,linewidth=2pt](1,2)(4.5,3)
+        \end{pspicture}\end{center}
+	\response These level curves are ellipses with equations of the form $\frac{(x-1)^2}{a^2}+\frac{(y-2)^2}{b^2}=1$, which are not the same equations as the level curves
+	 for the
+	function with equation $z=x(x+y)$.
+
+    \correct
+     \begin{center}\psset{unit=4mm}
+        \begin{pspicture}(-2.5,-4.5)(5,6.5)
+          \psaxes[linecolor=red,linewidth=1pt,labels=none]%
+                {->}(0,0)(-5.5,-4.5)(5.5,6)
+          \psplot[linecolor=blue,plotstyle=curve,plotpoints=200,%
+                            linewidth=2pt]%
+	       {-4}{-0.5}{1 x div x sub}
+          \psplot[linecolor=blue,plotstyle=curve,plotpoints=200,%
+                            linewidth=2pt]%
+	       {0.5}{4}{1 x div x sub}
+          \psplot[linecolor=blue,plotstyle=curve,plotpoints=200,%
+                            linewidth=2pt]%
+	       {-4}{-0.5}{2 x div x sub}
+          \psplot[linecolor=blue,plotstyle=curve,plotpoints=200,%
+                            linewidth=2pt]%
+	       {0.5}{4}{3 x div x sub}
+          \psplot[linecolor=blue,plotstyle=curve,plotpoints=200,%
+                            linewidth=2pt]%
+	       {-4}{-0.5}{3 x div x sub}
+          \psplot[linecolor=blue,plotstyle=curve,plotpoints=200,%
+                            linewidth=2pt]%
+	       {0.5}{4}{2 x div x sub}
+	  \psline[linecolor=green,linestyle=dotted,linewidth=2pt]%
+	     (2,0)(2,0)
+        \end{pspicture}\end{center}
+    \response The level curve at height $z=c$ satisfies the
+    equation $c=x(x+y)$; that is,
+    \(\displaystyle y=\frac cx-x \).
+
+   \incorrect
+     \begin{center}\psset{unit=4mm}
+        \begin{pspicture}(-2.5,-4.5)(5,6.5)
+	  \psline[linecolor=green,linestyle=dotted,linewidth=2pt]%
+	     (2,-5)(2,5)
+          \psaxes[linecolor=red,linewidth=1pt,labels=none]%
+                {->}(0,0)(-5.5,-4.5)(5.5,6)
+          \psplot[linecolor=blue,plotstyle=curve,plotpoints=200,%
+                            linewidth=2pt]%
+	       {-4}{1.5}{1 x 2 sub div x 2 sub sub}
+          \psplot[linecolor=blue,plotstyle=curve,plotpoints=200,%
+                            linewidth=2pt]%
+	       {2.5}{5}{1 x 2 sub div x 2 sub sub}
+          \psplot[linecolor=blue,plotstyle=curve,plotpoints=200,%
+                            linewidth=2pt]%
+	       {-4}{1.5}{2 x 2 sub div x 2 sub sub}
+          \psplot[linecolor=blue,plotstyle=curve,plotpoints=200,%
+                            linewidth=2pt]%
+	       {2.5}{5}{3 x 2 sub div x 2 sub sub}
+          \psplot[linecolor=blue,plotstyle=curve,plotpoints=200,%
+                            linewidth=2pt]%
+	       {-4}{1.5}{3 x 2 sub div x 2 sub sub}
+          \psplot[linecolor=blue,plotstyle=curve,plotpoints=200,%
+                            linewidth=2pt]%
+	       {2.5}{5}{2 x 2 sub div x 2 sub sub}
+        \end{pspicture}\end{center}
+    \response These level curves appear to have an asymptote at $x=2$
+    whereas the level curves of $z=f(x,y)$ have an asymptote at $x=0$.
+
+    \incorrect
+     \begin{center}\psset{unit=4mm}
+        \begin{pspicture}(-2.5,-4.5)(5,8.5)
+          \psaxes[linecolor=red,linewidth=1pt,labels=none]%
+                  {->}(0,0)(-2.5,-4.5)(8,5)
+          \psellipse[linecolor=blue,linewidth=2pt](1,2)(1,1.5)
+          \psellipse[linecolor=blue,linewidth=2pt](1,2)(2,3)
+          \psellipse[linecolor=blue,linewidth=2pt](1,2)(3,4.5)
+        \end{pspicture}\end{center}
+	\response These level curves are ellipses with equations of the form $\frac{(x-1)^2}{a^2}+\frac{(y-2)^2}{b^2}=1$, which are not the same equations as the level curves
+	 for the
+	function with equation $z=x(x+y)$.
+
+    \end{choice}
+\end{question}
+
+% Question 9
+\begin{question}
+    Some of the level curves of an unknown function $z=f(x,y)$ are given
+    below.
+    \begin{center}\psset{unit=4mm}
+       \begin{pspicture}(-5,-2.5)(8,6.5)
+         \psaxes[linecolor=red,linewidth=1pt,labels=none]%
+                {->}(0,0)(-5.5,-1.5)(6.5,6)
+         \psellipse[linecolor=blue,linewidth=2pt](1,2)(1.5,1)
+         \psellipse[linecolor=blue,linewidth=2pt](1,2)(3,2)
+         \psellipse[linecolor=blue,linewidth=2pt](1,2)(4.5,3)
+        \end{pspicture}\end{center}
+    Which of the following functions could be $f(x,y)$ ?
+    (Note: we do not know the height of these level curves.)
+    \begin{choice}[1]
+
+    \incorrect $f(x,y)=x^2+y^2$.
+    \response The level curves of this function are circles centred at
+    the origin.
+
+    \incorrect $f(x,y)=4(x+1)^2+9(y+2)^2$.
+    \response The level curves of this function are ellipses centered
+    at $(-1,-2)$.  % and with the lengths of the $x$ and $y$ axes in the
+   % ratio $2:3$.
+
+
+
+    \incorrect $f(x,y)=9(x-1)^2+4(y-2)^2$.
+    \response The level curves of this function are ellipses centered
+    at $(1,2)$. The semi-major axis of each ellipse is vertical and the
+    semi-minor axis is horizontal. That is, the ellipses are taller than they are wide, and so
+     this option doesn't match the given set of curves.  %and with the lengths of the $x$ and $y$ axes in the
+    % ratio $3:2$.
+
+    \correct $f(x,y)=4(x-1)^2+9(y-2)^2$.
+    \response The level curves of this function are ellipses centered
+    at $(1,2)$. The semi-major axis of each ellipse is horizontal and the
+    semi-minor axis is vertical. The ratio of these two axes is $ 3:2$, matching that shown on the set of curves. %and with the lengths of the $x$ and $y$ axes in the
+    %ratio $3:2$.
+
+    \end{choice}
+\end{question}
+
+% Question 10
+\begin{question}
+    Which of the following graphs \textit{could be} part of the set of level
+    curves for some surface $z=f(x,y)$ ?
+   \begin{choice}[multiple]
+    \correct \begin{center}\psset{unit=4mm}
+       \begin{pspicture}(-5,-2.5)(8,6.5)
+         \psaxes[linecolor=red,linewidth=1pt,labels=none]%
+                {->}(0,0)(-5.5,-1.5)(6.5,6)
+         \psellipse[linecolor=blue,linewidth=2pt](1,2)(1.5,1)
+         \psellipse[linecolor=blue,linewidth=2pt](1,2)(3,2)
+         \psellipse[linecolor=blue,linewidth=2pt](1,2)(4.5,3)
+        \end{pspicture}\end{center}
+    \response For example, these could be some of the level curves of the
+    surface given by \[f(x,y)=\sqrt{3(x-1)^2+2(y-2)^2}.\]
+   % \correct \begin{center}\psset{unit=4mm}
+   %    \begin{pspicture}(-5,-2.5)(8,6.5)
+   %      \psaxes[linecolor=red,linewidth=1pt,labels=none]%
+   %             {->}(0,0)(-5.5,-1.5)(6.5,6)
+   %      \psline[linecolor=blue,linewidth=2pt](-5,-1)(5,4)
+   %      \psline[linecolor=blue,linewidth=2pt](-3,4)(7,-1)
+   %      \psline[linecolor=blue,linewidth=2pt](-5,2)(5,2)
+   %     \end{pspicture}\end{center}
+   % \response For example, these could be the level curves of the
+   % surface given by \[f(x,y)=\dfrac{x-1}{y-2}\].
+   \correct \begin{center}\psset{unit=4mm}
+       \begin{pspicture}(-5,-2.5)(8,6.5)
+         \psaxes[linecolor=red,linewidth=1pt,labels=none]%
+                {->}(0,0)(-5.5,-1.5)(6.5,6)
+         \psplot[linecolor=blue,plotstyle=curve,plotpoints=200,%
+	   linewidth=2pt]{-3}{5}{3 x sub}
+         \psplot[linecolor=blue,plotstyle=curve,plotpoints=200,%
+	   linewidth=2pt]{-3}{5}{1 x add}
+         \psplot[linecolor=blue,plotstyle=curve,plotpoints=200,%
+	   linewidth=2pt]{-3}{5}{2 x 1 sub dup mul 1 add sqrt add}
+         \psplot[linecolor=blue,plotstyle=curve,plotpoints=200,%
+	   linewidth=2pt]{-3}{5}{2 x 1 sub dup mul 2 add sqrt add}
+        \end{pspicture}\end{center}
+    \response  For example, these could be some of the level curves of the
+      surface given by \[f(x,y)=(x-1)^2-(y-2)^2.\]
+
+    \correct \begin{center}\psset{unit=4mm}
+       \begin{pspicture}(-5,-4.5)(8,6.5)
+         \psaxes[linecolor=red,linewidth=1pt,labels=none]%
+                {->}(0,0)(-5.5,-3.5)(6.5,6)
+         \psplot[linecolor=blue,plotstyle=curve,plotpoints=200,%
+	   linewidth=2pt]{-3}{5}{x}
+         \psplot[linecolor=blue,plotstyle=curve,plotpoints=200,%
+	   linewidth=2pt]{-3}{5}{1 x add}
+         \psplot[linecolor=blue,plotstyle=curve,plotpoints=200,%
+	   linewidth=2pt]{-3}{5}{2 x add}
+         \psplot[linecolor=blue,plotstyle=curve,plotpoints=200,%
+	   linewidth=2pt]{-3}{5}{3 x add}
+        \end{pspicture}\end{center}
+    \response  For example, these could be some of the level curves of the
+      surface given by \[f(x,y)=y-x.\]
+
+
+  \end{choice}
+\end{question}
+
+\end{document}
+
+

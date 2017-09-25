@@ -28,13 +28,18 @@
 \newif\ifTikz\Tikzfalse
 \DeclareOption{tikz}{\Tikztrue}
 
+\def\MQ@HideSideMenu{True}
+\DeclareOption{sidemenu}{% default
+  \def\MQ@HideSideMenu{False}
+}
+\DeclareOption{hidesidemenu}{
+  \def\MQ@SideMenu{True}
+}
+
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
 \PassOptionsToClass{a4paper}{article}
 \ProcessOptions\relax
-\RequirePackage{ifpdf}
-\ifpdf\LoadClass[showtrims]{article}
-\else\LoadClass{article}
-\fi
+\LoadClass{article}
 \RequirePackage{xparse}
 \RequirePackage{pgffor}
 \ifTikz
@@ -96,6 +101,7 @@
 \UnitName{}
 \UnitURL{}
 \QuizzesURL{}
+\BreadCrumb{}
 \BreadCrumbs{}
 \Department{}
 \DepartmentURL{}

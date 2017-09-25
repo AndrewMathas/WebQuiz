@@ -5,39 +5,35 @@
 # the images. We assume that everything is set up to access the files in the
 # via http://localhost/MathQuiz/doc/examples/*.html
 
-phantomLib="/usr/local/Cellar/phantomjs/2.1.1/share/phantomjs/examples"
-mathquiz_ex="http://localhost/MathQuiz/doc/examples/"
+examples="http://localhost/MathQuiz/doc/examples/"
 
-function phantom() {
-  echo "Extracting image from $2.html"
-  /usr/local/bin/phantomjs $phantomLib/$1.js $mathquiz_ex/$2.html $3 $4 $5 $6
+function extract_web_page() {
+      echo "Making web page image for $1"
+      mathquiz -qq "$page"
+      webkit2png -o "${2}.png" -F -W 300 --ignore-ssl-check $examples/${1}.html > /dev/null
+      mogrify -trim "${2}.png"
 }
-declare -A pages
 
-#pages[quiz-page]='quiz-page'
-pages[simple]='simple-html'
-#pages[simple-html]='simple-html'
-pages[discussion]='discussion'
-pages[index]='index'
-#pages[examples-breadcrumbs]='examples-breadcrumbs'
-#pages[quizlist-dropdown.png]='quizlist-dropdown.png'
-#pages[montypython]='montypython'
+if [[ $# -ne 0 ]] ; then
 
-pdflatex simple && pdflatex simple && convert simple.pdf simple-pdg.png
+else
 
+# extract simple-pdf from simple.tex
+(pdflatex simple && pdflatex simple && convert simple.pdf simple-pdf.png && mogrify -trim simple-pdf.png) > /dev/null
 echo "simple-pdf extracted"
 
-for page in *.tex
+# web pages to be extracted
+declare -A pages
+pages[discussion]='discussion'
+pages[index]='index'
+pages[quiz-page]='quiz-page'
+pages[simple]='simple-html'
+pages[breadcrumbs]='breadcrumbs'
+pages[choice-single]='choice-single'
+pages[choice-multiple]='choice-multiple'
+
+for page in "${!pages[@]}"
 do
-  case $page in
-    typical*.tex) 
-      echo "Skipping $page."
-      break ;;
-    *)
-      echo "Making $page."
-      mathquiz -qq $page
-      phantom viewport ${page/.tex/} ${page/.tex/}.png 300 300
-      #phantom rasterize $page ${page}-rast.png 300px*300px zoom
-      break ;;
-    esac
+    extract_web_page "$page" "${pages[$page]}"
 done
+/bin/rm *-full.png
