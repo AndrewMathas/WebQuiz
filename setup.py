@@ -133,10 +133,9 @@ class MathQuizCtan(build_py):
             # now add the files
             for (src, target) in [ ('README.rst',                       ''),
                                    ('doc/*.pdf',                        'doc'),
-                                   ('doc/*.tex',                        'doc'),
-                                   ('mathquiz/mathquiz.ini',            'doc'),
+                                   ('doc/m*.tex',                        'doc'),
                                    ('doc/examples/*.png',               'doc/examples'),
-                                   ('doc/examples/*.tex',               'doc/examples'),
+                                   ('mathquiz/mathquiz.ini',            'doc'),
                                    ('latex/mathquiz.c*',                'latex'),
                                    ('latex/pgfsys-tex4ht-mq-fixed.def', 'latex'),
                                    ('latex/mathquiz-doc.sty',           'latex'),

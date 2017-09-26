@@ -161,9 +161,9 @@ the on-line manual.}}
     diagrams.
 
     \MathQuiz makes it possible to write on-line quizzes using \LaTeX,
-    which is the typesetting language used by mathematicians and
-    educators use \LaTeX\ to write their research papers, books and
-    teaching materials.  In principle, the quiz can contain anything
+    which is the typesetting language used by mathematicians
+    who use \LaTeX\ to write their research papers, books and
+    teaching materials. In principle, a \MathQuiz quiz can contain anything
     that can be typeset using \LaTeX.  In practise, the \LaTeX\ is
     converted to HTML using
     \href{https://www.tug.org/applications/tex4ht/mn.html}{\TeX 4ht}
@@ -219,7 +219,7 @@ the on-line manual.}}
 
     The on-line version of the quiz displays one question at a time,
     with the question buttons serving the dual purpose of navigation
-    between questions and displaying how successful the student has been
+    between questions and displaying how successful the student was
     in answering the question. In fact, the decorations on the question
     buttons indicate whether the question has been attempted and, if so,
     whether it was answered correctly or incorrectly on the first of
@@ -251,7 +251,7 @@ the on-line manual.}}
     \MathQuiz can be used to ask the student a series of questions. In
     the on-line version of the quiz, one question is displayed at a
     time. Each question in a quiz, and each quiz itself, can be
-    attempted as many times as the student wants. \MathQuiz does not
+    attempted as many times as the student wants: \MathQuiz does not
     limit the number of times that questions can be attempted.
     The following three types of questions are supported:
     \begin{itemize}
@@ -261,7 +261,7 @@ the on-line manual.}}
     \end{itemize}
     Questions with symbolic answers are not supported.
     For example, if the answer to a question is $0$ then $\sin(0)$ will
-    not be accented as a correct answer and the only way to ask for the
+    not be accented as a correct answer. Consequently, the only way to ask for the
     indefinite integral of a function is as a multiple choice question.
 
     The quizzes made using \MathQuiz are intended to be used as a
@@ -353,7 +353,7 @@ the on-line manual.}}
   this, and other sections, can be found in the \textsf{examples}
   directory of the \MathQuiz web directory.%
   \footnote{Once \MathQuiz is initialised you can find this directory
-  using the command \textsf{mathquiz \ddash settings mathquiz\_www}.}
+  using the command: \mathquizopt{settings mathquiz\_www}.}
   More details and some examples can be found in the on-line manual,
   which is included as \autoref{S:online}.
 
@@ -364,28 +364,33 @@ the on-line manual.}}
   \noindent You should write your quizzes in the editor that you
   normally use to write \LaTeX. As you write your quiz, you should use
   \Verb|latex| or \Verb|pdflatex| to check that your quiz compiles and
-  that you are happy with the output, just as if you were writing a
-  normal \LaTeX{} document.  Once you are happy with the content of the
+  that you are satisfied with the output, just as if you were writing a
+  normal \LaTeX{} document.  Once you are satisified with the content of the
   quiz, say \texttt{quiz.tex}, then you can convert it to an on-line quiz using \MathQuiz
   by typing
   \begin{center}
      $>$ \texttt{mathquiz quiz}
   \end{center}
-  from the command-line. The reasons for using this workflow include:
+  from the command-line. The quiz file, \textsf{quiz.tex}, should be on
+  your web server because \MathQuiz creates a number of different
+  files and directories when it converts the file into an on-line quiz.
+
+  The reasons for using this workflow include:
   \begin{itemize}
     \item
     \textit{Every file that you give to \MathQuiz should be a valid \LaTeX{} file!}
 
     \item The \textsf{dvi} or \textsf{PDF} file produced by \LaTeX{}
-    will show all of the information about the questions \textit{on the
-    same page}. That is, the PDF file will display the question, the
-    answers and the feedback that you are giving to the students based
-    on each answers. In contrast, by design, the on-line version of the
-    quiz will hide most of this information.
+    will show all of the information about the questions
+    \textit{in an easy-to-read format}. That is, the PDF file will
+    display the question, the answers and the feedback that you are
+    giving to the students. In contrast, by design, the on-line version
+    of the quiz hides most of this information and displays it to the
+    student only when they need to see it.
 
     \item Typesetting the quiz file with \LaTeX{} is \textit{much
     faster} than processing it with \MathQuiz. In fact, \MathQuiz uses
-    \textsf{htlatex} to process the quiz file \textit{three times} in
+    \textsf{htlatex} to process the quiz file at least \textit{three times} in
     order to produce an \textsf{xml} file and it is only then that the
     \MathQuiz program kicks in to rewrite this data as an \textsf{HTML}
     file.
@@ -398,7 +403,8 @@ the on-line manual.}}
   information about the unit, department or institution. This
   information was included in previous releases of \MathQuiz, however, it
   is now omitted because this data can now be specified in the \mathquizrc
-  file (see \autoref{SS:rcfile}), in which case \LaTeX{} has incomplete information.
+  file (see \autoref{SS:rcfile}) and \LaTeX{} does not have access to
+  the \mathquizrc file.
 
   The next sections describe the different environments and commands
   provided by \MathQuiz. The last section in this chapter,
