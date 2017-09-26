@@ -7,21 +7,28 @@ Version 5.0:
     - updated to use html5, mathjax and mathml
     - images for buttons etc replaced by css
     - python and javascript streamlined and largely rewritten
-    - bash script wrapper replaced with python, making it more portable and more flexible
+    - bash script wrapper replaced with python, using argparser, making it more portable and more flexible
     - now using make4ht
     - option for pst2pdf preprocessing for quizzes using pstruicks/postscript
+    - option for tikz that fixes a few bugs of pgf/tikz
+    - "programable" breadcrumbs
+    - drop-down menu for quiz index file
     - program packaged for uploading to ctan and texlive
     - better installation support
-    - mathquizrc configuration file added
+    - system mathquizrc configuration file added wiith optional user .mathquizrc file
+    - various magthquiz defaults can be stored in the rc-file
     - replaced Choice environment with smarter choice environment
     - added button for hiding/showing question buttons
-    - changed from using optionparser to argparse
+    - side menu and breadcrumbs automatically disappear on small screens
     - using git and bitbucket for version management control
     - made compatible with setup tools, together with option to export to ctan
-    - allow user configuration via .mathquizrc file in HOME directory
     - implemented a suggestion of Michal Hoftich to workaround tikz/pgf bug
     - implemented a suggestion to Herbert Voss to fix a pstricks issue using pst2pdf
     - export to ctan
+    - added support for colour and listings in the quiz files
+    - new (off-line) manual with automatically generated images via makeimages script
+    - windows batch file
+    - all files converted to utf8  using codecs
 
 Version 4.6:
 ------------
