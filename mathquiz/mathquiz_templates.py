@@ -242,7 +242,7 @@ on linux/macosx.
 Press:
     1. To save to {}
     2. To give a different filename for the rc-file
-    *. Anything elseto exit
+    *. Any other key to exit
 '''
 
 permission_error='''

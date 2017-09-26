@@ -42,16 +42,18 @@
 \LoadClass{article}
 \RequirePackage{xparse}
 \RequirePackage{pgffor}
+
+% hack to fix two pgf bugs - apply only when when using tex4ht
+\ifdefined\HCode
+ \def\pgfsysdriver{pgfsys-tex4ht-mq-fixed.def}
+\fi
+
 \ifTikz
-   % hack to fix two pgf bugs - apply only when when using tex4ht
-   \ifdefined\HCode
-     \def\pgfsysdriver{pgfsys-tex4ht-mq-fixed.def}
-   \fi
    \RequirePackage{tikz}
    % from https://tex.stackexchange.com/questions/390592/
-   \ifdefined\HCode
-     \tikzset{every node/.style={/pgf/tex4ht node/escape=true}}
-   \fi
+   %\ifdefined\HCode
+   %  \tikzset{every node/.style={/pgf/tex4ht node/escape=true}}
+   %\fi
 \fi
 
 \def\MQ@error{\PackageError{mathquiz}}

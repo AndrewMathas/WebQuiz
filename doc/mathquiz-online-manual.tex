@@ -14,13 +14,10 @@
 \usepackage{mathquiz-doc}
 \usepackage{pst-plot}
 \usepackage{hyperref}
-\usepackage[T1]{fontenc}
 
 \usepackage{ifpdf}
 \ifpdf
-  \makeatletter
-  \@warning{This file should be compiled using latex, not pdflatex}
-  \makeatother
+  \PackageError{MathQuiz}{This file must be compiled using latex not pdflatex}
 \fi
 \newcommand{\C}{\mathbb C}
 \newcommand*{\vect}[1]{\mathbf{#1}}

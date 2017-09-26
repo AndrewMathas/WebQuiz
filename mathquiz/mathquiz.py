@@ -17,6 +17,7 @@ r'''
 '''
 
 import argparse
+import codecs
 import glob
 import os
 import re
@@ -162,9 +163,9 @@ class MathQuizSettings(object):
       mathquiz_format  = {
         'default'  : 'mathquiz_standard',
         'advanced' : True,
-        'help'     : 'Name python module that formats the quizzes',
+        'help'     : 'Name of python module that formats the quizzes',
       },
-      mathquiz_mk4 = {
+      make4ht = {
         'default'  : '',
         'advanced' : True,
         'help'     : 'Build file for make4ht',
@@ -173,6 +174,11 @@ class MathQuizSettings(object):
         'default'  : 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js',
         'advanced' : True,
         'help'     : 'URL for mathjax',
+      },
+      version  = {
+        'default': metadata.version,
+        'advanced' : True,
+        'help'     : 'MathQuiz version number for mathquizrc settings',
       }
     )
 
@@ -192,9 +198,14 @@ class MathQuizSettings(object):
         for key in self.settings:
             self.settings[key]['value'] = self.settings[key]['default']
             self.settings[key]['changed'] = False
+            if not 'editable' in self.settings[key]:
+                self.settings[key]['editable'] = False
+
 
         # define a user and system rc file and load the ones that exist
-        self.system_rc_file =  mathquiz_file('mathquizrc')
+
+        tex_local = subprocess.check_output('kpsewhich -var-value=TEXMFLOCAL',stderr=subprocess.STDOUT,shell=True).decode('ascii').strip()
+        self.system_rc_file =  os.path.join( tex_local, 'mathquizrc')
         self.read_mathquizrc( self.system_rc_file )
 
         self.user_rc_file = os.path.join(os.path.expanduser('~'),'.mathquizrc')
@@ -240,7 +251,7 @@ class MathQuizSettings(object):
         '''
         if os.path.isfile(rc_file):
             try:
-                with open(rc_file, 'r') as mathquizrc:
+                with codecs.open(rc_file, 'r', encoding='utf8') as mathquizrc:
                     for line in mathquizrc:
                         if '#' in line:  # remove comments
                             line = line[:line.index('#')]
@@ -281,13 +292,16 @@ class MathQuizSettings(object):
 
         while file_not_written:
             try:
-                with open(self.rc_file, 'w') as rcfile:
+                dir, file = os.path.split(self.rc_file)
+                if dir != '' and not os.path.isdir(dir):
+                    os.makedirs(dir, exist_ok=True)
+                with codecs.open(self.rc_file, 'w', encoding='utf8') as rcfile:
                     for key in self.settings:
                         # Only save settings in the rcfile if they have changed
                         # Note that changed means changed from the last read
                         # rcfile rather than from the default (of course, the
                         # defaults serve as the "initial rcfile")
-                        if self.settings[key]['changed']:
+                        if key == 'version' or self.settings[key]['changed']:
                             rcfile.write('# {}\n{:<15} = {}\n'.format(self.settings[key]['help'], key, self[key]))
 
                 print('\nNon-default MathQuiz settings saved in {}\n'.format(self.rc_file))
@@ -298,9 +312,9 @@ class MathQuizSettings(object):
                 # if writing to the system_rc_file then try to write to user_rc_file
                 print(rc_permission_error.format(self.rc_file, self.user_rc_file))
                 rc_file = input()
-                if a.startswith('1'):
+                if rc_file.startswith('1'):
                     self.rc_file = self.user_rc_file
-                elif a.startswith('2'):
+                elif rc_file.startswith('2'):
                     self.rc_file = os.path.expanduser(rc_file)
                 else:
                     sys.exit(1)
@@ -421,6 +435,10 @@ class MathQuizSettings(object):
                 while mq_url[-1] == '/':
                     mq_url = mu_url[:len(mq_url)-1]
 
+                if mq_url[0] != '/': # force URL to start with /
+                    print("  ** prepending '/' to mathquiz_url **")
+                    mq_url = '/' + mq_url
+
                 if not web_dir.endswith(mq_url):
                     print(mathquiz_url_warning)
                     input('Press return to continue... ')
@@ -430,13 +448,16 @@ class MathQuizSettings(object):
         self.settings['mathquiz_url']['changed'] = (self['mathquiz_url']!=self.settings['mathquiz_url']['default'])
 
         # read and save the rest of the settings and exit
-        self.edit_settings(ignored_settings = ['mathquiz_url', 'mathquiz_www'])
+        print(edit_settings)
+        input('Press return to continue... ')
+        self.edit_settings(ignored_settings = ['mathquiz_url', 'mathquiz_www', 'version'])
         print(initialise_ending.format(web_dir=self['mathquiz_www']))
         self.just_initialised = True
 
-    def edit_settings(self, ignored_settings = ['mathquiz_www']):
-        print(edit_settings)
-        input('Press return to continue... ')
+    def edit_settings(self, ignored_settings = ['mathquiz_www', 'version']):
+        r'''
+        Change current default values for the MathQuiz settings
+        '''
         for key in self.settings:
             if key not in ignored_settings:
                 if self.settings[key]['advanced']:
@@ -448,6 +469,16 @@ class MathQuizSettings(object):
                     '' if self[key] == '' else ' ['+self[key]+'] ')
                 )
                 if setting != '':
+                    if key == 'mathquiz_url' and setting[0] != '/':
+                        print("  ** prepending '/' to mathquiz_url **")
+                        setting = '/'+setting
+
+                    if key == 'mathquiz_format':
+                        setting = os.path.expanduser(setting)
+                        if setting.endswith('.py'):
+                            print("  ** removing .py extension from mathquiz_format **")
+                            setting = setting[:-3]
+
                     self[key] = setting
                     self.settings[key]['changed'] = True
 
@@ -558,7 +589,7 @@ class MakeMathQuiz(object):
             self.breadcrumbs = self.settings.initialise_warning + self.breadcrumbs
 
         # now write the quiz to the html file
-        with open(self.quiz_file+'.html', 'w') as file:
+        with codecs.open(self.quiz_file+'.html', 'w', encoding='utf8') as file:
             # write the quiz in the specified format
             file.write( self.options.write_web_page(self) )
 
@@ -597,7 +628,7 @@ class MakeMathQuiz(object):
         q_file = self.quiz_file
 
         # set pst2pdf = True if pst2pdf is given as an option to the mathquiz documentclass
-        with open(self.quiz_file+'.tex', 'r') as quiz_file:
+        with codecs.open(self.quiz_file+'.tex', 'r', encoding='utf8') as quiz_file:
             doc = quiz_file.read()
         try:
             brac = doc.index(r'\documentclass[') + 15 # start of class options
@@ -628,8 +659,8 @@ class MakeMathQuiz(object):
             # the svg images are in the q_file subdirectory but latex can't
             # find them so we update the tex file to look in the right place
             try:
-                with open(q_file+'-pdf.tex','r') as pst_file:
-                    with open(q_file+'-pdf-fixed.tex', 'w') as pst_fixed:
+                with codecs.open(q_file+'-pdf.tex', 'r', encoding='utf8') as pst_file:
+                    with codecs.open(q_file+'-pdf-fixed.tex', 'w', encoding='utf8') as pst_fixed:
                         # tell pst_fixed where it came from
                         pst_fixed.write(r'\makeatletter\def\MQ@quizfile{%s.tex}\makeatother' % self.quiz_file)
                         for line in pst_file:
@@ -641,9 +672,8 @@ class MakeMathQuiz(object):
 
         try:
             talk('Processing {}.tex with TeX4ht'.format(q_file))
-            cmd='make4ht --utf8 --config mathquiz.cfg {build} {escape} {q_file}.tex'.format(
-                    q_file = q_file,
-                    build  = '--build-file {} '.format(self.options.mathquiz_mk4) if self.options.mathquiz_mk4 !='' else '',
+            cmd='make4ht --utf8 --config mathquiz.cfg {make4ht_options} {escape} {q_file}.tex'.format(
+                    q_file = q_file, make4ht_options  = self.options.make4ht_options,
                     escape = '--shell-escape' if self.options.shell_escape else ''
             )
             run(cmd)
@@ -659,8 +689,8 @@ class MakeMathQuiz(object):
             # file being created but this doesn't seem to work ??
             try:
                 fix_img = re.compile(r'^src="('+q_file+r'[0-9]*x\....)" (alt="PIC" .*)$')
-                with open(q_file+'.html','r') as make4ht_file:
-                    with open(self.quiz_file+'.xml', 'w') as xml_file:
+                with codecs.open(q_file+'.html', 'r', encoding='utf8') as make4ht_file:
+                    with codecs.open(self.quiz_file+'.xml', 'w', encoding='utf8') as xml_file:
                         for line in make4ht_file:
                             match = fix_img.match(line)
                             if match is None:
@@ -749,7 +779,7 @@ class MakeMathQuiz(object):
 
         try:
             os.makedirs(self.quiz_file, exist_ok=True)
-            with open(os.path.join(self.quiz_file,'quiz_list.js'), 'w') as quiz_list:
+            with codecs.open(os.path.join(self.quiz_file,'quiz_list.js'), 'w', encoding='utf8') as quiz_list:
                 if self.qTotal>0:
                     for (i,d) in enumerate(self.quiz.discussion_list):
                         quiz_list.write('Discussion[{}]="{}";\n'.format(i, d.heading))
@@ -814,7 +844,7 @@ class MakeMathQuiz(object):
           )
           # write a javascript file for displaying the menu
           # quizmenu = the index file for the quizzes in this directory
-          with open('quiztitles.js','w') as quizmenu:
+          with codecs.open('quiztitles.js','w', encoding='utf8') as quizmenu:
              quizmenu.write('var QuizTitles = [\n{titles}\n];\n'.format(
                  titles = ',\n'.join("  ['{}', '{}/Quizzes/{}']".format(
                                      q['title'],
@@ -916,8 +946,8 @@ if __name__ == '__main__':
                             default='', help='Set rcfile')
         parser.add_argument('-p', '--pst2pdf', action='store_true', default=False,
                             help='Use pst2pdf to fix issues with images generated by pstricks')
-        parser.add_argument('--build', action='store', type=str, dest='mathquiz_mk4', default=settings['mathquiz_mk4'],
-                            help='Build file for make4ht'
+        parser.add_argument('--make4ht', action='store', type=str, dest='make4ht_options', default=settings['make4ht'],
+                            help='Options for make4ht'
         )
         parser.add_argument('--mathquiz_format', action='store', type=str, dest='mathquiz_format',
                             default=settings['mathquiz_format'],
@@ -960,7 +990,10 @@ if __name__ == '__main__':
             sys.exit(1)
 
         # import the local page formatter
-        options.write_web_page = __import__(options.mathquiz_format).write_web_page
+        mod_dir, mod_format = os.path.split(options.mathquiz_format)
+        if mod_dir !='':
+            sys.path.insert(0, mod_dir)
+        options.write_web_page = __import__(mod_format).write_web_page
 
         # run through the list of quizzes and make them
         for quiz_file in options.quiz_file:

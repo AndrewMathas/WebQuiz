@@ -18,10 +18,12 @@
 \parskip=1mm
 \hfuzz 5pt
 
+\usepackage{textcomp}
 \usepackage{pdfpages}
 \usepackage{etoolbox}% to patch l@section to remove extraneous spacing
 \def\sectionautorefname{Chapter}
 \def\subsectionautorefname{Section}
+\def\subsubsectionautorefname{\S\unskip}
 
 \usepackage[nonewpage]{imakeidx}
 \indexsetup{level=\section*,toclevel=section,noclearpage}
@@ -624,19 +626,19 @@ discussion.
     \CrossIndex*{BreadCrumb}*{title}
 
     \item[department] This expands to a link to your department, where
-    the deparment is set using \Verb|\Department| and its URL is set by
+    the department is set using \Verb|\Department| and its URL is set by
     \Verb|\DepartmentURL|
     \macroIndex{Department}\macroIndex{DepartmentURL}
 
     \item[institution] This expands to a link to your institution, where
-    the deparment is set using \Verb|\Institution| and its URL is set by
+    the department is set using \Verb|\Institution| and its URL is set by
     \Verb|\InstitutionURL|
     \macroIndex{Department}\macroIndex{DepartmentURL}
 
     \item[quiz\_index] This expands to ``Quizzes'', which is a link to
     the index page for your unit as given by \Verb|\QuizzesURL|. In
-    addition, a drop-down menu to the index page is added added to the
-    breadrumbs, which is accessed via {\large\color{red} $\equiv$}.
+    addition, a drop-down menu to the index page is added to the
+    breadcrumbs, which is accessed via {\large\color{red} $\equiv$}.
     \macroIndex{QuizzesURL}
 
     \item[unitcode] This expands to a link to the unit code, where
@@ -704,7 +706,7 @@ discussion.
   \Item{DepartmentURL}
     The \Verb|\DepartmentURL| command sets URL for the department. As
     described earlier in this section, by default the department URL is
-    the kilnk in the first breadcrumb on each web page.
+    the link in the first breadcrumb on each web page.
 
     The department URL can be set globally using \mathquizopt{edit-settings}.
 
@@ -714,7 +716,7 @@ discussion.
     The \Verb|\Institution| command sets the institution, or university.
     The \textsf{institution} appears below the question buttons in the
     left-hand navigation menu that appears on every quiz web page
-    (provided that the screensize is not too small).  As described
+    (provided that the screen size is not too small).  As described
     earlier in this section, the institution can also be used in the web
     page breadcrumbs.
 
@@ -723,7 +725,7 @@ discussion.
 
   \Item{InstitutionURL}
     The \Verb|\InstitutionURL| command sets the institution URL. This is
-    used as the link for the \textsf{instituion} in the left-hand
+    used as the link for the \textsf{institution} in the left-hand
     navigation menu that appears on every quiz page.  As described
     earlier in this section, the institution URL can also be used in the
     web page breadcrumbs.
@@ -755,19 +757,45 @@ discussion.
 
 \end{description}
 
-  \subsection{MathQuiz class options}\label{SS:classOptions}
+  \subsection{MathQuiz class options --- pstricks and tikz}\label{SS:classOptions}
 
 The two most commonly used packages for drawing pictures or diagrams in
-\LaTeX\ are \ctan{pstricks} and \ctan{tikz}. Unfortunately, both of
-these have issues when used with \TeX 4ht. The two \MathQuiz options try
-to mitigate for some of the known issues.
+\LaTeX{} are \ctan{pstricks} and \ctan[pgf]{tikz}. Unfortunately, both of
+these have issues when used with \TeX 4ht that \MathQuiz attempts to
+solve.
+
+
+\noindent\textbf{tikz}\index{tikz}
+Using the \Verb|tikz| document class option, instead of
+\Verb|\requirepackage{tikz}|, solves all of the known issues with
+\ctan[pgf]{tikz}. Of course, there  there may well be other problems
+that we are not aware of.
+
+\noindent\textbf{pstricks}\index{pstricks}
+Using \ctan{pstricks} is, in some sense, easier as it seems to work
+better with \ctan{tex4ht}. There is a significant caveat, however,
+because the conversion of \ctan{pstricks} images is done using
+\ctan{dvisvgm} so it is necessary to make sure that this package is
+correctly installed. At first sight this looks OK because \ctan{dvisvgm}
+is included in \TeX Live and Mik\TeX, however, , \ctan{dvisvgm} uses
+\href{https://www.ghostscript.com/}{Ghostscript} and this needs to be
+correctly configured and, as outlined in its
+\href{http://dvisvgm.bplaced.net/FAQ}{FAQ}, \ctan{dvisvgm} needs to know
+where to find the \href{https://www.ghostscript.com/}{Ghostscript}
+libraries. For example, to get \ctan{dvisvgm} to work on my system I
+needed to add the line
+\begin{verbatim}
+    export LIBGS=/usr/local/lib/libgs.dylib
+\end{verbatim}
+to my \verb|.bashrc| file. You may need to do something similar.
+
 
 \begin{description}
   \item[pst2pdf] \index{pst2pdf}\index{pstricks}
     For the most part \ctan{pstricks} drawings will display correctly and
     when they fail they can often be salvaged by using \ctan{pst2pdf}. The
     \Verb|pst2pdf| class option automates what needs to be done to apply
-    \ctan{pst2pdf} to a \MathQuiz file in order to to convert all postscript objects in the
+    \ctan{pst2pdf} to a \MathQuiz file in order to convert all postscript objects in the
     quiz into images. Whilst not guaranteed to work, this often fixes
     issues with \ctan{pstricks} diagrams. This class option is
     equivalent to using the \Verb|pst2pdf| command-line option; see
@@ -775,6 +803,11 @@ to mitigate for some of the known issues.
 
     \lstinputlisting[style=latexcode]{examples/pst2pdf}
 
+    \MathQuiz is unable to create this web page correctly without the \Verb|pst2pdf| class option, however, with it is produces:
+
+    \ScreenShot{Example requiring the pst2pdf document class option}{examples/pst2pdf}
+
+    \noindent
     \textbf{Note} According to the \ctan{pst2pdf} manual:
 
     \begin{quote}
@@ -790,11 +823,6 @@ to mitigate for some of the known issues.
     \textit{Try the pst3pdf class option if you are having trouble
     displaying an image created using \ctan{pstricks}. It is not
     guaranteed to work but it does sometimes fix the problem}.
-
-    \textit{25-09-2017: Recently \textsf{pst2pdf} has stopped working
-    for me. It used to make the example above display correctly,
-    however, it no longer does. I do not know whether the problem is
-    occurs only on my computer or whether it is more general.}
 
   \item[tikz]\index{tikz}
     Giving this class option both loads the \ctan[pgf]{tikz} package (so
@@ -870,6 +898,9 @@ by \texttt{mathquiz}.
     \begin{quote}
       \mathquizopt{initialise}
     \end{quote}
+    \textit{If you want to make the settings system wide then you need
+    to run this command using an administrator account or using
+    \textsf{sudo} on a UNIX or Mac OSX system.}
     In fact, it is enough to run \textsf{mathquiz} from the command-line
     without any options because it will keep asking you to initialise
     until you do so. \MathQuiz will work without being initialised,
@@ -1069,7 +1100,7 @@ option.
           List system settings for mathquiz stored in the  rc-file
           (\textit{run-time configuration file}); see the \textsf{\ddash
           rcfile} command-line option below. Optionally, a single
-          \textsf{SETTING} can be given inb which case the value of only that
+          \textsf{SETTING} can be given in which case the value of only that
           setting is returned. Typical settings returned by this
           command look like:
           \begin{verbatim}
@@ -1079,7 +1110,7 @@ option.
     mathquiz_url    = /MathQuiz
 
     # Breadcrumbs at the top of quiz page
-    breadcrumbs     = department|unitcode|Quuiz_index|breadcrumb
+    breadcrumbs     = department|unitcode|Quiz_index|breadcrumb
 
     # Department running quiz
     department      = School of Mathematics and Statistics
@@ -1108,7 +1139,7 @@ option.
 
        \item[\ddash edit-settings] \CrossIndex{command-line options}{edit-settings}
           Edit the mathquiz settings in the rc-file. The settings that
-          are marked as advacned should be changed only with care. To
+          are marked as advanced should be changed only with care. To
           change the \textsf{mathquiz\_www} and \textsf{mathquiz\_url}
           use: \mathquizopt{initialise}.
 
@@ -1121,7 +1152,7 @@ option.
        Suppress tex4ht messages: \textsf{\ddash q} is quiet and \textsf{\ddash qq} is  very quiet. If you use
        \textsf{mathquiz --qq texfile.tex} then almost no output will
        be printed by \MathQuiz when it is processing your quiz file. Be
-       warned, however, that both of these options csn make it harder to find and fix
+       warned, however, that both of these options can make it harder to find and fix
        errors, so using the \textsf{\ddash q} and \textsf{\ddash qq} options is not
        recommended if your file is not compiling.
 
@@ -1141,7 +1172,7 @@ option.
           read whenever you run \MathQuiz. This setting is only
           necessary if you want to override the default rc-file.
 
-          The rc-file can be editted by hand, however, it is
+          The rc-file can be edited by hand, however, it is
           recommended that you instead use
           \begin{center}
             \mathquizopt{edit-settings}
@@ -1156,13 +1187,15 @@ option.
           displaying an image created using \ctan{pstricks}. It is not
           guaranteed to work but it does sometimes fix the problem}
 
-       \item[\ddash build MATHQUIZ\_MK4] \CrossIndex{command-line options}{mk4 build file}
-          Build file for make4ht. This can be used to add local
-          customisations for make4ht. See the \ctan{make4ht} manual for
-          more information. This
-          option is equivalent to setting the \textsf{mathquiz\_mk4}
-          in the \mathquizrc file. For more detail see
-          \autoref{S:rcfile.}
+       \item[\ddash make4ht MAKE4HT\_OPTIONS] \CrossIndex{command-line options}{make4ht}
+          Options to be passed to \textsf{make4ht} when converting the \LaTeX{} to \textsf{xml}. This
+          option is equivalent to setting the \textsf{make4ht}
+          in the \mathquizrc file; see \autoref{SS:rcfile}. At least
+          under UNIX, multiple arguments should be enclosed in quotes.
+          For example, to give \textsf{make4ht} an mk4 file you would use
+          \begin{center}
+                    \texttt{mathquiz \ddash make4ht "-e file.mk4" quiz.tex}
+          \end{center}
 
           \advancedOption
 
@@ -1176,24 +1209,31 @@ option.
 
     \subsection{The \mathquizrc file}\label{SS:customisation}\label{SS:rcfile}\index{default settings}
 
-    \MathQuiz stores various \textit{run-time configuration settings} in the \mathquizrc file. The
-    system rc-file, which is in the \MathQuiz scripts directory, is read
-    first  followed by the rc-file \textsf{.mathquizrc} in the users home
-    directory, if it exists.  a different rc-file. When you use change
-    the \MathQuiz settings, using \mathquizopt{edit-settings}, the new
-    settings will be saved to the system rc-file, which is in the
-    \MathQuiz scripts directory. If you do not have permission to write
-    to this file then you will be given the option of saving the
-    settings to an rc-file \textsf{.mathquizrc}, in your home directory
-    or another file or to another directory of your choosing.
-    \textit{\MathQuiz will always read, and write to, the rc-file in
-    your home directory if it exists}.  Use
-   \begin{center}
-       \mathquizopt{rcfile RCFILE}
-   \end{center}
-   if you want \MathQuiz to read or write to a particular rc-file.
+    \MathQuiz stores various \textit{run-time configuration settings} in
+    the \mathquizrc file. The system rc-file is saved in the
+    \texttt{scripts/mathquiz} directory of the \textsf{TEXMFLOCAL}
+    directory. If you are using \TeX Live (and possibly Mik\TeX?) you can
+    find this directory using the command
+    \begin{center}
+            \textsf{kpsewhich -var-value=TEXMFLOCAL}
+    \end{center}
+    By default, the \MathQuiz settings are saved here so that you do not
+    need to reinitialise \MathQuiz whenever you update your \TeX[]
+    distribution.
 
-   The following settings may be used in a \MathQuiz rc-file:
+    Each time \MathQuiz is run it first reads the system rc-file, if it
+    exits, followed by the \textit{users rc-file}, which is the file
+    \textsf{.mathquizrc} in the users home directory -- again, the users
+    rc-file is read only if it exists. You can specify an arbitrary file
+    as an rc-file using command  \mathquizopt{rc-file}. When you change
+    the \MathQuiz settings, using \mathquizopt{edit-settings}, the new
+    settings are saved in the last rc-file that was read, which will
+    always be the rc-file given by \mathquizopt{rc-file} when this
+    command-line option is used.  If you do not have permission to write
+    to this file then you will be given the option of saving the
+    settings somewhere else.
+
+    The following settings may be used in a \MathQuiz rc-file:
 
     \begin{description}
         \item[mathquiz\_url] This is the relative URL for mathquiz web directory
@@ -1232,13 +1272,12 @@ option.
           loaded from. For example, if you install \textsf{mathjax} on
           your web server then you would replace this will the
           corresponding relative URL.
-        \item[mathquiz\_mk4]
-          Sets a default \textsf{mk4 build file}. This can be used to further
-          customise how \TeX4ht and \textsf{make4ht} convert \LaTeX.
-          This option was added to \MathQuiz to override how svg images
-          were handled but, currently, \MathQuiz does not use a  build
-          file. Most people will not need this option. See Chapter~2 of
-          the \ctan[make4ht]{make4ht manual} for more information.
+          \item[make4ht]\index{make4ht}
+          Options for \textsf{make4ht}. Rather than using \TeX4ht
+          directly, \MathQuiz uses \textsf{make4ht} to convert the
+          \LaTeX\ file to \textsf{xml}. Use this option to
+          customise how \textsf{make4ht} is called. See the
+          \ctan[make4ht]{make4ht manual} for more information.
         \item[mathquiz\_format]
           Sets the python file that writes the HTML file for the quiz.
           Most people will not need this option. The next subsection
@@ -1246,8 +1285,8 @@ option.
     \end{description}
 
     The values of \Verb|breadcrumbs|, \Verb|department|, \Verb|department_url|,
-    \Verb|institution| and \Verb|institution_url| can all be overridden
-    using the corresponding  \LaTeX{} commanbds in the quiz file; see
+    \Verb|institution| and \Verb|institution_url| can all be overwritten
+    using the corresponding  \LaTeX{} commands in the quiz file; see
     \autoref{SS:breadcrumbs} for more details.
 
 
@@ -1317,7 +1356,7 @@ option.
 
     When reporting a bug please provide a \textit{minimal working example}
     that clearly demonstrates your problem. This should be a compilable
-    LaTeX file that looks something like the following:
+    \LaTeX file that looks something like the following:
     \begin{latexcode}
        \documentclass{mathquiz}
        \begin{document}

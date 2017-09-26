@@ -139,7 +139,7 @@ class MathQuizCtan(build_py):
                                    ('doc/examples/*.tex',               'doc/examples'),
                                    ('latex/mathquiz.c*',                'latex'),
                                    ('latex/pgfsys-tex4ht-mq-fixed.def', 'latex'),
-                                   ('doc/mathquiz-doc.sty',             'latex'),
+                                   ('latex/mathquiz-doc.sty',           'latex'),
                                    ('LICENCE',                          'scripts'),
                                    ('mathquiz/mathquiz*.py',            'scripts'),
                                    ('mathquiz/mathquiz.ini',            'scripts'),

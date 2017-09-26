@@ -85,6 +85,7 @@ image_files = dict(
     index       = dict(src='html'),
     montypython = dict(src='html', delay=5),
     nounits     = dict(src='html', delay=5),
+    pst2pdf     = dict(src='html'),
     quizpage    = dict(src='html',
                        file_in='quiz-page',
                        js="document.forms['Q1Form'].elements[1].checked=true; setTimeout(checkAnswer, 4)",
