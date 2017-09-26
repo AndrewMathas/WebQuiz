@@ -142,6 +142,7 @@ class MathQuizCtan(build_py):
                                    ('LICENCE',                          'scripts'),
                                    ('mathquiz/mathquiz*.py',            'scripts'),
                                    ('mathquiz/mathquiz.ini',            'scripts'),
+                                   ('mathquiz/mathquiz.bat',            'scripts'),
                                    ('css/mathquiz.css',                 'scripts/www'),
                                    ('javascript/mathquiz.js',           'scripts/www'),
                                    ('doc/mathquiz-online-manual.tex',   'scripts/www/doc'),

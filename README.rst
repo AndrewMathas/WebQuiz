@@ -59,7 +59,7 @@ Since 2004 the program has been maintained and developed by Andrew
 Mathas. Although the program has changed substantially since 2004 some
 of Don's code and his idea of using TeX 4ht are still very much in use.
 
-Copyright (C) 2013-2017
+Copyright (C) 2004-2017
 
 GNU General Public License, Version 3, 29 June 2007
 

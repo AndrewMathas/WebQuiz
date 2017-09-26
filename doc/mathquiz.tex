@@ -969,21 +969,18 @@ by \texttt{mathquiz}.
     like \textsf{texdoc} to find them then you will need to put them
     into an appropriate place in the \LaTeX{} directory tree.
 
-    The \MathQuiz program itself lives in the script directory. On a UNIX
-    like system I recommend making a link to the file mathquiz.py, which is
-    the entry point to the code, using something like:
+    The \MathQuiz program itself lives in the script directory. On a
+    UNIX like system, which includes macs,  I recommend making a link to
+    the file mathquiz.py, which is the entry point to the code, using
+    something like:
     \begin{center}
         \Verb|ln -s <path to scripts directory>/mathquiz.py mathquiz|
     \end{center}
-    Of course, the \textsf{mathquiz} executable should be in
-    the system path. Under windows, \textit{I believe} that you need to create a
-    \textit{batch file}, \textsf{mathquiz.bat}, that contains something like this:
-    \begin{center}
-        \Verb|c:\python3\python.exe c:\MathQuiz\mathquiz.py %*|
-    \end{center}
-    You will almost certainly need to modify the paths in the batch
-    file. As I do not use, or have access to, windows I am not sure that
-    this will work but I think that it is the right idea.
+    Following \href{https://tex.stackexchange.com/questions/40937/how-to-publish-a-package-that-includes-scripts-and-or-executables/40971#40971}{How to publish a package that includes scripts and/or executables?}
+    a windows batch file \Verb|mathquiz.bat| is included as part of
+    \MathQuiz. \textit{I believe} that this match file will allow you to run \MathQuiz
+    on a windows computer. As I do not own or have access to a windows machine I am
+    unable to test to see if this works.
 
     It remains to install the web files used by \MathQuiz, which can be
     done using \MathQuiz.
