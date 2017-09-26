@@ -186,6 +186,13 @@ the on-line manual.}}
     wrong or to give further hints to the student to help them answer the
     question.
 
+    The on-line quizzes constructed using \MathQuiz can, in principle,
+    contain anything that can be typeset by \LaTeX. In particular, they
+    do not need to contain mathematics. In fact, the quizzes do not even
+    have to contain ``questions'' as it is possible for a \MathQuiz
+    ``quiz'' to contain only \textsf{discussion} environments; see
+    \autoref{S:documentclass}.
+
     This introduction outlines how to use \MathQuiz, however, the
     impatient reader may want to skip ahead directly to the
     \autoref{S:documentclass}, where the \LaTeX\ commands used by
@@ -507,8 +514,8 @@ with two correct answers:
 
 \ScreenShot{Multi-answer multiple choice question}{examples/choice-multiple}
 
-When option \Verb|multiple| is used the question is marked correct if
-and only if all of the correct responses are selected.
+When the optional argument \Verb|multiple| is used then the question is
+marked correct if and only if all of the correct responses are selected.
 
   \subsubsection{Discussion environments}
   \CrossIndex{environment}{discussion environment}
@@ -678,6 +685,8 @@ discussion.
   \lstinputlisting[style=latexcode]{examples/nounits}
   leads to the breadcrumbs:
   \ScreenShot{Breadcrumbs with no unit name}{examples/nounits}
+  This example shows you the breadcrumbs look like when you forget to
+  set the data that \MathQuiz needs to construct them.
 
   In more detail, here is the list of \MathQuiz commands that can be used to
   specify the contents of the breadcrumbs. Some of these can set
@@ -685,20 +694,20 @@ discussion.
 
   \newcommand\Item[1]{\item[\textbackslash#1]\CrossIndex{breadcrumbs}*{#1}}
 \begin{description}
-  \Item{BreadCrumb}
+  \Item{BreadCrumb}\macroIndex{BreadCrumb}
     The \Verb|\BreadCrumb| command sets the \textsf{breadcrumb}
-    variable, which by default is the last item in the breadcrumbs on
+    variable that, by default, is the last item in the breadcrumbs on
     the quiz web page. By default, \textsf{breadcrumb} is as set to be
     the part of the quiz title, as set by \verb!\title!, before the
     first colon. For example, the title
 
      \hspace*{20mm}\verb!\title{Quiz 1: Some interesting questions about frogs}!
 
-     sets the breadcrumb to ``Quiz 1''. Using the \Verb|\Breadcrumb|
+     sets \textsf{breadcrumb} to ``Quiz 1''. Using the \Verb|\BreadCrumb|
      command \textit{after} the \Verb|\title| command will override the
      value of \textsf{breadcrumb}.
 
-  \Item{Department}
+  \Item{Department}\macroIndex{Deoartment}
     The \Verb|\Department| command sets the name of the
     \textsf{department}. As described earlier in this section, by
     default, the \textsf{department} is the first item in the
@@ -709,7 +718,7 @@ discussion.
 
     Default value: \textit{Mathematics}
 
-  \Item{DepartmentURL}
+  \Item{DepartmentURL}\macroIndex{DepartmentURL}
     The \Verb|\DepartmentURL| command sets URL for the department. As
     described earlier in this section, by default the department URL is
     the link in the first breadcrumb on each web page.
@@ -718,7 +727,7 @@ discussion.
 
     Default value: \textit{/}
 
-  \Item{Institution}
+    \Item{Institution}\macroIndex{Institution}
     The \Verb|\Institution| command sets the institution, or university.
     The \textsf{institution} appears below the question buttons in the
     left-hand navigation menu that appears on every quiz web page
@@ -729,7 +738,7 @@ discussion.
     The institution can be set globally using \mathquizopt{edit-settings}.
 
 
-  \Item{InstitutionURL}
+    \Item{InstitutionURL}\macroIndex{InstitutionURL}
     The \Verb|\InstitutionURL| command sets the institution URL. This is
     used as the link for the \textsf{institution} in the left-hand
     navigation menu that appears on every quiz page.  As described
@@ -738,24 +747,28 @@ discussion.
 
     The institution URL can be set globally using \mathquizopt{edit-settings}.
 
-  \Item{QuizzesURL}
-    The \Verb|\QuizzesURL| command sets the URL for the suite of quizzes attached to this unit of study. As described earlier in this section,
-    this can be used in the breadcrumb at the top of the
-    quiz web page.
+    \Item{QuizzesURL}\macroIndex{QuizzesURL}
+    The \Verb|\QuizzesURL| command sets the URL for the suite of quizzes
+    attached to this unit of study. As described earlier in this
+    section, this can be used in the breadcrumb at the top of the quiz
+    web page.
 
-  \Item{UnitCode}
+    Default:  \texttt{QuizURL/Quizzes}, where \texttt{QuizURL} is set
+    using \Verb|\QuizURL|
+
+  \Item{UnitCode}\macroIndex{UnitCode}
     The \Verb|\UnitCode| command sets the unit of study code for the
     unit that the quiz is attached to. As described earlier in this
     section, this can be used in the breadcrumb at the top of the quiz
     web page.
 
-  \Item{UnitName}
+    \Item{UnitName}\macroIndex{UnitName}
     The \Verb|\UnitName| command sets the name of the unit of study for
     the unit that the quiz is attached to. As described earlier in this
     section, this can be used in the breadcrumb at the top of the quiz
     web page.
 
-  \Item{UnitURL}
+  \Item{UnitURL}\macroIndex{UnitURL}
     The \Verb|\UnitURL| command sets the URL for the unit of study code
     for the unit that the quiz is attached to. As described earlier in
     this section,this can be used in the breadcrumb at the top of the
@@ -766,24 +779,24 @@ discussion.
   \subsection{MathQuiz class options --- pstricks and tikz}\label{SS:classOptions}
 
 The two most commonly used packages for drawing pictures or diagrams in
-\LaTeX{} are \ctan{pstricks} and \ctan[pgf]{tikz}. Unfortunately, both of
-these have issues when used with \TeX 4ht that \MathQuiz attempts to
-solve.
-
+\LaTeX{} are \ctan{pstricks} and \ctan[pgf]{tikz}. Unfortunately, both
+of these packages have issues when used with \TeX 4ht. The good news is
+that \MathQuiz attempts to solve these problems for you.
 
 \noindent\textbf{tikz}\index{tikz}
 Using the \Verb|tikz| document class option, instead of
-\Verb|\requirepackage{tikz}|, solves all of the known issues with
+\Verb|\requirepackage{tikz}|, fixes several issues with
 \ctan[pgf]{tikz}. Of course, there  there may well be other problems
 that we are not aware of.
 
 \noindent\textbf{pstricks}\index{pstricks}
-Using \ctan{pstricks} is, in some sense, easier as it seems to work
-better with \ctan{tex4ht}. There is a significant caveat, however,
-because the conversion of \ctan{pstricks} images is done using
-\ctan{dvisvgm} so it is necessary to make sure that this package is
-correctly installed. At first sight this looks OK because \ctan{dvisvgm}
-is included in \TeX Live and Mik\TeX, however, , \ctan{dvisvgm} uses
+Using \ctan{pstricks} is, in some sense, easier that \ctan[pgf]{tikz}
+because it seems to work better with \ctan{tex4ht}. There is a
+significant caveat, however, because \ctan{tikz} uses  \ctan{dvisvgm} to
+convert the images created by \ctan{pstricks}, so it is necessary to
+make sure that this package is correctly installed. At first sight this
+looks OK because \ctan{dvisvgm} is included in \TeX Live and Mik\TeX,
+however, , \ctan{dvisvgm} uses
 \href{https://www.ghostscript.com/}{Ghostscript} and this needs to be
 correctly configured and, as outlined in its
 \href{http://dvisvgm.bplaced.net/FAQ}{FAQ}, \ctan{dvisvgm} needs to know
@@ -793,11 +806,15 @@ needed to add the line
 \begin{verbatim}
     export LIBGS=/usr/local/lib/libgs.dylib
 \end{verbatim}
-to my \verb|.bashrc| file. You may need to do something similar.
+to my \Verb|.bashrc| file. You may need to do something similar.
 
 
 \begin{description}
   \item[pst2pdf] \index{pst2pdf}\index{pstricks}
+    \textit{Try the pst3pdf class option if you are having trouble
+    displaying an image created using \ctan{pstricks}. It is not
+    guaranteed to work but it often fixes the problem}.
+
     For the most part \ctan{pstricks} drawings will display correctly and
     when they fail they can often be salvaged by using \ctan{pst2pdf}. The
     \Verb|pst2pdf| class option automates what needs to be done to apply
@@ -809,7 +826,9 @@ to my \verb|.bashrc| file. You may need to do something similar.
 
     \lstinputlisting[style=latexcode]{examples/pst2pdf}
 
-    \MathQuiz is unable to create this web page correctly without the \Verb|pst2pdf| class option, however, with it is produces:
+    \MathQuiz is unable to create this web page correctly without the
+    \Verb|pst2pdf| class option, however, when this option is used
+    \MathQuiz constructs the following web page:
 
     \ScreenShot{Example requiring the pst2pdf document class option}{examples/pst2pdf}
 
@@ -818,17 +837,14 @@ to my \verb|.bashrc| file. You may need to do something similar.
 
     \begin{quote}
       \textsf{pst2pdf} needs Ghostscript (>=9.14), perl (>=5.18), pdf2svg, pdftoppm
-      and pdftops (from poppler-utils or xpdf-utils) for the process file.
+      and pdftops (from poppler-utils or xpdf-utils) to process the file.
     \end{quote}
 
     Unfortunately, \textsf{pst2pdf} can fail silently without giving any warnings. If
     using \textsf{pst2pdf} does not produce an image then the problem
     might be that you have not installed all of the programs that
-    \textsf{pst2pdf} relies upon, so check the list above.
-
-    \textit{Try the pst3pdf class option if you are having trouble
-    displaying an image created using \ctan{pstricks}. It is not
-    guaranteed to work but it does sometimes fix the problem}.
+    \textsf{pst2pdf} relies upon, so look in your log files for error
+    messages and check the list of programs given above.
 
   \item[tikz]\index{tikz}
     Giving this class option both loads the \ctan[pgf]{tikz} package (so
@@ -1216,16 +1232,18 @@ option.
     \subsection{The \mathquizrc file}\label{SS:customisation}\label{SS:rcfile}\index{default settings}
 
     \MathQuiz stores various \textit{run-time configuration settings} in
-    the \mathquizrc file. The system rc-file is saved in the
-    \texttt{scripts/mathquiz} directory of the \textsf{TEXMFLOCAL}
-    directory. If you are using \TeX Live (and possibly Mik\TeX?) you can
-    find this directory using the command
+    the \mathquizrc file. The system rc-file, \textsf{mathquizrc}, is
+    saved in the \texttt{scripts/mathquiz} subdirectory of the
+    \textsf{TEXMFLOCAL} directory. If you are using \TeX Live (and
+    possibly Mik\TeX?) you can find this directory using the command
     \begin{center}
             \textsf{kpsewhich -var-value=TEXMFLOCAL}
     \end{center}
     By default, the \MathQuiz settings are saved here so that you do not
-    need to reinitialise \MathQuiz whenever you update your \TeX[]
-    distribution.
+    need to reinitialise \MathQuiz whenever you update your \TeX{}
+    distribution. If you do not have permission to write to this
+    directory then you will be asked if you would like to save the
+    rc-file somewhere else.
 
     Each time \MathQuiz is run it first reads the system rc-file, if it
     exits, followed by the \textit{users rc-file}, which is the file
@@ -1235,9 +1253,9 @@ option.
     the \MathQuiz settings, using \mathquizopt{edit-settings}, the new
     settings are saved in the last rc-file that was read, which will
     always be the rc-file given by \mathquizopt{rc-file} when this
-    command-line option is used.  If you do not have permission to write
-    to this file then you will be given the option of saving the
-    settings somewhere else.
+    command-line option is used.  As with the system rc-file, if you do
+    not have permission to write to the specified rc-file then you will
+    be asked for a different install location.
 
     The following settings may be used in a \MathQuiz rc-file:
 
@@ -1252,8 +1270,8 @@ option.
             \end{center}
             will take you to the \MathQuiz on-line \texttt{docs/} directory.
         \item[breadcrumbs]
-          Sets the default breadcrumbs at the top of quiz page; see \Verb|\Breadcrumbs| in \autoref{SS:breadcrumbs}
-          \macroIndex{Breadcrumbs}
+          Sets the default breadcrumbs at the top of quiz page; see \Verb|\BreadCrumbs| in \autoref{SS:breadcrumbs}
+          \macroIndex{BreadCrumbs}
         \item[department]
           Sets the default department name; see \Verb|\Department| in \autoref{SS:breadcrumbs}
           \macroIndex{Department}

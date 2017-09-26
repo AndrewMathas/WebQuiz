@@ -98,7 +98,7 @@ image_files = dict(
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description = 'script to extract images for the mathquiz manual')
     parser.add_argument('extract', nargs='*',type=str, default=None, help='pages to extract')
-    parser.add_argument('-c', '--cleaning', action='store_true', default=False, help='delete all extraneouis files on exirt')
+    parser.add_argument('-c', '--cleaning', action='store_true', default=False, help='delete all extraneous files on exit')
     parser.add_argument('-d', '--debugging', action='store_true', default=False, help='turn on debugging')
 
     args = parser.parse_args()
@@ -133,8 +133,9 @@ if __name__ == '__main__':
         convert(file_in, file_out, delay, js)
 
         if args.cleaning:
-            for ext in ['.log', '.xml', '-[ft]*.png', '/']:
+            for ext in ['.log', '.xml', '-[ft]*.png']:
                 for file in glob.glob(file_out+ext):
                     os.remove(file)
+            shutil.rmtree(file_out+'/')
 
 

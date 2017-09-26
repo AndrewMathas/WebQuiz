@@ -205,7 +205,7 @@ class MathQuizSettings(object):
         # define a user and system rc file and load the ones that exist
 
         tex_local = subprocess.check_output('kpsewhich -var-value=TEXMFLOCAL',stderr=subprocess.STDOUT,shell=True).decode('ascii').strip()
-        self.system_rc_file =  os.path.join( tex_local, 'mathquizrc')
+        self.system_rc_file =  os.path.join( tex_local, 'scripts', 'mathquiz', 'mathquizrc')
         self.read_mathquizrc( self.system_rc_file )
 
         self.user_rc_file = os.path.join(os.path.expanduser('~'),'.mathquizrc')
