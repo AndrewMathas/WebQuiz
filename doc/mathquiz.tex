@@ -451,14 +451,22 @@ For brevity, all of the examples in this chapter have only one question
 -- see the on-inline manual in the \MathQuiz web directory for a complete quiz file.
 
   \lstinputlisting[style=latexcode]{examples/question}
-
-  This example code shows how to use \Verb|\answer|
   \macroIndex{answer}\CrossIndex{question environment}*{answer}
   \CrossIndex*{answer}*{whenRight}
   \CrossIndex*{answer}*{whenWrong}
   \index{feedback!whenRight}
   \index{feedback!whenWrong}
   \SeeIndex{numeric answer}{\textbackslash answer}
+  This example code shows how to use \Verb|\answer|. The \Verb|\answer|
+  macro is used to ask for a numerical answer to a question. Then macros
+  \Verb|\whenRight| and \Verb|\whenWrong|, which are mandatory when
+  \Verb|\answer| is used, are used to give the student feedback, when
+  they are right, or further hints etc for approaching the question,
+  when they are wrong.
+
+  The web page created by this code-block looks something like this:
+
+  \ScreenShot{A question with a numeric answer}{examples/question}
 
 \subsubsection{Choice environments}
 \CrossIndex{environment}{choice environment}

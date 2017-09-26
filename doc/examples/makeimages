@@ -77,15 +77,16 @@ def pdf2png(file_in, file_out, dummy1, dummy2):
 #   js       javascript code, defaults to ''
 #   delay    delay before taking screenshot defaults to 3
 image_files = dict(
-    dropdown    = dict(src='html', js='toggle_dropdown_menu()', delay=10),
     breadcrumbs = dict(src='html', delay=10),
-    multiple    = dict(src='html', file_in='choice-multiple'),
-    single      = dict(src='html', file_in='choice-single'),
     discussion  = dict(src='html'),
+    dropdown    = dict(src='html', js='toggle_dropdown_menu()', delay=10),
     index       = dict(src='html'),
     montypython = dict(src='html', delay=5),
+    multiple    = dict(src='html', file_in='choice-multiple'),
     nounits     = dict(src='html', delay=5),
     pst2pdf     = dict(src='html'),
+    question    = dict(src='html'),
+    single      = dict(src='html', file_in='choice-single'),
     quizpage    = dict(src='html',
                        file_in='quiz-page',
                        js="document.forms['Q1Form'].elements[1].checked=true; setTimeout(checkAnswer, 4)",
