@@ -4,7 +4,7 @@ r'''
 -----------------------------------------------------------------------------------------
     setup | mathquiz setuptools configuration
 -----------------------------------------------------------------------------------------
-    Copyright (C) Andrew Mathas and Donald Taylor, University of Sydney
+    Copyright (C) Andrew Mathas, University of Sydney
 
     Distributed under the terms of the GNU General Public License (GPL)
                   http://www.gnu.org/licenses/
@@ -16,36 +16,16 @@ r'''
 -----------------------------------------------------------------------------------------
 '''
 
-#################################################################################
-#
-# (c) Copyright 2017 Andrew Mathas
-#
-#  This file is part of the MathQuiz package.
-#
-#  MathQuiz free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 3 of the License, or
-#  (at your option) any later version.
-#
-#  MathQuiz distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-#################################################################################
-
-# Update distribution on pypi: python setup.py sdist upload -r pypi
-
 # ctan: python setup.py ctan --> create zup file for upload to ctan
 
-import os, glob, sys
+import glob
+import os
+import subprocess
+import sys
+import zipfile
+
 from setuptools import setup, find_packages
 from setuptools.command.build_py import build_py
-import subprocess
-import zipfile
 
 class MetaData(dict):
     r"""

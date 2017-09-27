@@ -34,7 +34,7 @@ html_meta = r'''<meta http-equiv="Content-Type" content="text/html; charset=utf-
 
 # javascript for setting up the questions
 questions_javascript = r'''  <script type="text/javascript" src="{mathquiz_url}/mathquiz.js"></script>
-  <script type="text/javascript" src="quiztitles.js"></script>
+  script type="text/javascript" src="quiztitles.js"></script>
   <script type="text/javascript" src="{mathjax}?config=MML_CHTML"></script>
 '''
 
@@ -85,7 +85,7 @@ side_menu = r'''<div class="menu-icon">
         <a href="http://www.maths.usyd.edu.au/u/MOW/MathQuiz/doc/credits.html">
            MathQuiz {version}
         </a>
-        <br>&copy; Copyright <span style="overflow: visible;">2004-2017</span>
+        <br>&copy; Copyright<br><span style="overflow: visible;">2004-2017</span>
       </div>
     </div>'''
 
@@ -233,24 +233,25 @@ web_initialise_warning='''
 '''
 
 rc_permission_error='''
-You do not have permission to write to {}.
+Attempting to write the rc-file to {rc_file}
+resulted in the error:
+  {error}
 
-To write the MathQuiz rc-fils into this directory you may need to quit and
-rerun this command either using an administrator account, or using sudo
-on linux/macosx.
+To write the MathQuiz rc-file into this directory you may need to quit and run
+matghquiz either using an administrator account, or using sudo on linux/macosx.
 
-Press:
-    1. To save to {}
-    2. To give a different filename for the rc-file
+Press (and then r3eturn):
+    1. To try to save to {rc_file} again
+    2. To save to {alt_rc_file}
+    3. To give a different filename for the rc-file
     *. Any other key to exit
 '''
 
 permission_error='''
 You do not have permission to write to {}.
 
-To install MathQuiz files into this directory you may need to quit and
-rerun this command either using an administrator account, or using sudo
-on linux/macosx.
+To install MathQuiz files into this directory you may need to quit and run
+mathquiz using either an administrator account, or using sudo on linux/macosx.
 
 Alternatively, please give a different directory.
 '''
@@ -276,7 +277,7 @@ there are three "advanced user options":
 Incorrect values for these settings will break MathQuiZ so you would not
 normally change them.
 
-If in doubt about one of these options then just accept the default value by
+If in doubt about any of these options then just accept the default value by
 pressing return. You can change any of these settings later using the command
     mathquiz --edit-settings
 '''

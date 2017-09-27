@@ -205,19 +205,19 @@ an easily readable layout.
 \begin{latexcode}
    \begin{question}
      The shaded region in the graph
-     \begin{center}
-       \begin{pspicture}(-3,-1.5)(3,4)
-         \pscircle[linewidth=1pt,linestyle=dashed,%
-                   fillcolor=SkyBlue,fillstyle=solid](1,1){2}
-         \psaxes[linecolor=red,linewidth=1pt,labels=none]%
-         {->}(0,0)(-1.5,-1.5)(3.5,3.5)
-         \rput(3.75,0){$x$}
-         \rput(0,3.85){$iy$}
-         \rput(3,-0.4){3}
-         \rput(-0.4,3){3$i$}
-         \psdots(1,1)
-       \end{pspicture}
-     \end{center}
+%     \begin{center}
+%       \begin{pspicture}(-3,-1.5)(3,4)
+%         \pscircle[linewidth=1pt,linestyle=dashed,%
+%                   fillcolor=SkyBlue,fillstyle=solid](1,1){2}
+%         \psaxes[linecolor=red,linewidth=1pt,labels=none]%
+%         {->}(0,0)(-1.5,-1.5)(3.5,3.5)
+%         \rput(3.75,0){$x$}
+%         \rput(0,3.85){$iy$}
+%         \rput(3,-0.4){3}
+%         \rput(-0.4,3){3$i$}
+%         \psdots(1,1)
+%       \end{pspicture}
+%     \end{center}
      is equal to which of the following sets of complex numbers?
      \begin{choice}
        \incorrect $\{z \in \C : (z-1)^{2}+(z-(i+1))^{2}<2\}$
@@ -325,28 +325,28 @@ an easily readable layout.
 \begin{latexcode}
     \begin{question}
       What are suitable parametric equations for this plane curve?
-      \begin{center}
-        \psset{unit=.6cm}
-        \begin{pspicture}(-2.5,-0.5)(5,5.5)
-          \psaxes[linecolor=red,linewidth=1pt,labels=none]%
-          {->}(0,0)(-2.5,-1.5)(5,5)
-          \psellipse[linecolor=blue,linewidth=2pt](1,2)(3,2)
-        \end{pspicture}
-      \end{center}
+%      \begin{center}
+%        \psset{unit=.6cm}
+%        \begin{pspicture}(-2.5,-0.5)(5,5.5)
+%          \psaxes[linecolor=red,linewidth=1pt,labels=none]%
+%          {->}(0,0)(-2.5,-1.5)(5,5)
+%          \psellipse[linecolor=blue,linewidth=2pt](1,2)(3,2)
+%        \end{pspicture}
+%      \end{center}
 
       \begin{choice}{1}
         \incorrect $x=2\cos t + 1$, $y=3\sin t + 2$
         \response This is an ellipse with centre $(1,2)$ and with axes of
         length $4$ in the $x$-direction and $6$ in the $y$-direction.
-        \begin{center}
-          \psset{unit=.6cm}
-          \begin{pspicture}(-2.5,-0.5)(5,5.5)
-            \psaxes[linecolor=red,linewidth=1pt,labels=none]%
-            {->}(0,0)(-2.5,-1.5)(5,5)
-            \parametricplot[linecolor=blue,linewidth=2pt]{0}{360}%
-            {t cos 2 mul 1 add t sin 3 mul 2 add}
-          \end{pspicture}
-        \end{center}
+%        \begin{center}
+%          \psset{unit=.6cm}
+%          \begin{pspicture}(-2.5,-0.5)(5,5.5)
+%            \psaxes[linecolor=red,linewidth=1pt,labels=none]%
+%            {->}(0,0)(-2.5,-1.5)(5,5)
+%            \parametricplot[linecolor=blue,linewidth=2pt]{0}{360}%
+%            {t cos 2 mul 1 add t sin 3 mul 2 add}
+%          \end{pspicture}
+%        \end{center}
 
         \correct $x=3\cos t + 1$, $y=2\sin t + 2$
         \response The curve is an ellipse centre (1,2) with axes length 6
@@ -355,27 +355,27 @@ an easily readable layout.
         \incorrect $x=3\cos t - 1$, $y=2\sin t - 2$
         \response This is an ellipse with centre $(-1,-2)$ and with axes
         of length $6$ in the $x$-direction and $4$ in the $y$-direction.
-        \begin{center}
-          \psset{unit=.6cm}
-          \begin{pspicture}(-5,-4)(1,2)
-            \psaxes[linecolor=red,linewidth=1pt,labels=none]%
-            {<-}(0,0)(-4.5,-5.5)(1,2)
-            \parametricplot[linecolor=blue,linewidth=2pt]{0}{360}%
-            {t cos 3 mul 1 sub t sin 2 mul 2 sub}
-          \end{pspicture}
-        \end{center}
+%        \begin{center}
+%          \psset{unit=.6cm}
+%          \begin{pspicture}(-5,-4)(1,2)
+%            \psaxes[linecolor=red,linewidth=1pt,labels=none]%
+%            {<-}(0,0)(-4.5,-5.5)(1,2)
+%            \parametricplot[linecolor=blue,linewidth=2pt]{0}{360}%
+%            {t cos 3 mul 1 sub t sin 2 mul 2 sub}
+%          \end{pspicture}
+%        \end{center}
 
         \incorrect $x=2\cos t - 1$, $y=3\sin t - 2$
         \response This is an ellipse with centre $(-1,-2)$ and with axes
         of length $4$ in the $x$-direction and $6$ in the $y$-direction.
-        \begin{center}
-          \psset{unit=.6cm}
-          \begin{pspicture}(-4,-5)(1,2)
-            \psaxes[linecolor=red,linewidth=1pt,labels=none]%
-            {<-}(0,0)(-4.5,-5.5)(1,2)
-            \parametricplot[linecolor=blue,linewidth=2pt]{0}{360}%
-            { t cos 2 mul 1 sub t sin 3 mul 2 sub}
-          \end{pspicture}
+%        \begin{center}
+%          \psset{unit=.6cm}
+%          \begin{pspicture}(-4,-5)(1,2)
+%            \psaxes[linecolor=red,linewidth=1pt,labels=none]%
+%            {<-}(0,0)(-4.5,-5.5)(1,2)
+%            \parametricplot[linecolor=blue,linewidth=2pt]{0}{360}%
+%            { t cos 2 mul 1 sub t sin 3 mul 2 sub}
+%          \end{pspicture}
         \end{center}
       \end{choice}
     \end{question}
@@ -481,18 +481,18 @@ an easily readable layout.
 \begin{question}
   \label{question1}
   The shaded region in the graph
-  \begin{center}
-    \begin{pspicture}(-3,-1.5)(3,4)
-      \pscircle[linewidth=1pt,linestyle=dashed,fillcolor=SkyBlue,fillstyle=solid](1,1){2}
-      \psaxes[linecolor=red,linewidth=1pt,labels=none]%
-      {->}(0,0)(-1.5,-1.5)(3.5,3.5)
-      \rput(3.75,0){$x$}
-      \rput(0,3.85){$iy$}
-      \rput(3,-0.4){3}
-      \rput(-0.4,3){3$i$}
-      \psdots(1,1)
-    \end{pspicture}
-  \end{center}
+% \begin{center}
+%    \begin{pspicture}(-3,-1.5)(3,4)
+%      \pscircle[linewidth=1pt,linestyle=dashed,fillcolor=SkyBlue,fillstyle=solid](1,1){2}
+%      \psaxes[linecolor=red,linewidth=1pt,labels=none]%
+%      {->}(0,0)(-1.5,-1.5)(3.5,3.5)
+%      \rput(3.75,0){$x$}
+%      \rput(0,3.85){$iy$}
+%      \rput(3,-0.4){3}
+%      \rput(-0.4,3){3$i$}
+%      \psdots(1,1)
+%    \end{pspicture}
+% \end{center}
   is equal to which of the following sets of complex numbers?
   \begin{choice}
     \incorrect $\{z \in \C : (z-1)^{2}+(z-(i+1))^{2}<2\}$
@@ -546,28 +546,28 @@ an easily readable layout.
 \begin{question}
   \label{question3}
   What are suitable parametric equations for this plane curve?
-  \begin{center}
-    \psset{unit=.6cm}
-    \begin{pspicture}(-2.5,-0.5)(5,5.5)
-      \psaxes[linecolor=red,linewidth=1pt,labels=none]%
-      {->}(0,0)(-2.5,-1.5)(5,5)
-      \psellipse[linecolor=blue,linewidth=2pt](1,2)(3,2)
-    \end{pspicture}
-  \end{center}
+%  \begin{center}
+%    \psset{unit=.6cm}
+%    \begin{pspicture}(-2.5,-0.5)(5,5.5)
+%      \psaxes[linecolor=red,linewidth=1pt,labels=none]%
+%      {->}(0,0)(-2.5,-1.5)(5,5)
+%      \psellipse[linecolor=blue,linewidth=2pt](1,2)(3,2)
+%    \end{pspicture}
+%  \end{center}
 
   \begin{choice}[1]
     \incorrect $x=2\cos t + 1$, $y=3\sin t + 2$
     \response This is an ellipse with centre $(1,2)$ and with axes of
     length $4$ in the $x$-direction and $6$ in the $y$-direction.
-    \begin{center}
-      \psset{unit=.6cm}
-      \begin{pspicture}(-2.5,-0.5)(5,5.5)
-        \psaxes[linecolor=red,linewidth=1pt,labels=none]%
-        {->}(0,0)(-2.5,-1.5)(5,5)
-        \parametricplot[linecolor=blue,linewidth=2pt]{0}{360}%
-        {t cos 2 mul 1 add t sin 3 mul 2 add}
-      \end{pspicture}
-    \end{center}
+%    \begin{center}
+%      \psset{unit=.6cm}
+%      \begin{pspicture}(-2.5,-0.5)(5,5.5)
+%        \psaxes[linecolor=red,linewidth=1pt,labels=none]%
+%        {->}(0,0)(-2.5,-1.5)(5,5)
+%        \parametricplot[linecolor=blue,linewidth=2pt]{0}{360}%
+%        {t cos 2 mul 1 add t sin 3 mul 2 add}
+%      \end{pspicture}
+%    \end{center}
 
     \correct $x=3\cos t + 1$, $y=2\sin t + 2$
     \response The curve is an ellipse centre (1,2) with axes length 6
@@ -576,28 +576,28 @@ an easily readable layout.
     \incorrect $x=3\cos t - 1$, $y=2\sin t - 2$
     \response This is an ellipse with centre $(-1,-2)$ and with axes
     of length $6$ in the $x$-direction and $4$ in the $y$-direction.
-    \begin{center}
-      \psset{unit=.6cm}
-      \begin{pspicture}(-5,-4)(1,2)
-        \psaxes[linecolor=red,linewidth=1pt,labels=none]%
-        {<-}(0,0)(-4.5,-5.5)(1,2)
-        \parametricplot[linecolor=blue,linewidth=2pt]{0}{360}%
-        {t cos 3 mul 1 sub t sin 2 mul 2 sub}
-      \end{pspicture}
-    \end{center}
+%    \begin{center}
+%      \psset{unit=.6cm}
+%      \begin{pspicture}(-5,-4)(1,2)
+%        \psaxes[linecolor=red,linewidth=1pt,labels=none]%
+%        {<-}(0,0)(-4.5,-5.5)(1,2)
+%        \parametricplot[linecolor=blue,linewidth=2pt]{0}{360}%
+%        {t cos 3 mul 1 sub t sin 2 mul 2 sub}
+%      \end{pspicture}
+%    \end{center}
 
     \incorrect $x=2\cos t - 1$, $y=3\sin t - 2$
     \response This is an ellipse with centre $(-1,-2)$ and with axes
     of length $4$ in the $x$-direction and $6$ in the $y$-direction.
-    \begin{center}
-      \psset{unit=.6cm}
-      \begin{pspicture}(-4,-5)(1,2)
-        \psaxes[linecolor=red,linewidth=1pt,labels=none]%
-        {<-}(0,0)(-4.5,-5.5)(1,2)
-        \parametricplot[linecolor=blue,linewidth=2pt]{0}{360}%
-        { t cos 2 mul 1 sub t sin 3 mul 2 sub}
-      \end{pspicture}
-    \end{center}
+%    \begin{center}
+%      \psset{unit=.6cm}
+%      \begin{pspicture}(-4,-5)(1,2)
+%        \psaxes[linecolor=red,linewidth=1pt,labels=none]%
+%        {<-}(0,0)(-4.5,-5.5)(1,2)
+%        \parametricplot[linecolor=blue,linewidth=2pt]{0}{360}%
+%        { t cos 2 mul 1 sub t sin 3 mul 2 sub}
+%      \end{pspicture}
+%    \end{center}
   \end{choice}
 \end{question}
 

@@ -99,8 +99,8 @@ def MathQuizError(msg, err=None):
     if err is not None:
         trace = traceback.extract_tb(sys.exc_info()[2])
         filename, lineno, fn, text = trace[-1]
-        print('File: {}, line number: {}\nError in {}: {}'.format(
-                       filename, lineno, fn, text)
+        print('File: {}, line number: {}\nError {} in {}: {}'.format(
+                       filename, lineno, err, fn, text)
         )
 
     if hasattr(err, 'errno'):
@@ -308,22 +308,25 @@ class MathQuizSettings(object):
                 input('Press return to continue... ')
                 file_not_written = False
 
-            except PermissionError as err:
+            except (OSError, IOError, PermissionError) as err:
                 # if writing to the system_rc_file then try to write to user_rc_file
-                print(rc_permission_error.format(self.rc_file, self.user_rc_file))
-                rc_file = input()
-                if rc_file.startswith('1'):
-                    self.rc_file = self.user_rc_file
-                elif rc_file.startswith('2'):
+                alt_rc_file =self.user_rc_file if self.rc_file != self.user_rc_file else self.system_rc_file
+                response = input(rc_permission_error.format(
+                                  error = err,
+                                  rc_file = self.rc_file,
+                                  alt_rc_file = alt_rc_file
+                                )
+                )
+                if response.startswith('2'):
+                    self.rc_file = alt_rc_file
+                elif response.startswith('3'):
                     self.rc_file = os.path.expanduser(rc_file)
-                else:
+                elif not response.startswith('1'):
+                    print('exiting...')
                     sys.exit(1)
 
                 # if still here then try to write the rc-file again
                 self.write_mathquizrc()
-
-            except IOError as err:
-                MathQuizError('there was an error writing the mathquizrc file {}'.format(self.rc_file), err)
 
     def list_settings(self, setting='all'):
         r'''
