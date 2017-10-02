@@ -344,7 +344,7 @@ the on-line manual.}}
    Thanks are due to Bob Howlett for general help with CSS and to
    Michal Hoftich for invaluable technical advice on \TeX4ht.
 
- \section{The MathQuiz document class --- the \LaTeX{} commands}\label{S:documentclass}
+ \section{The MathQuiz document class --- \LaTeX{} commands}\label{S:documentclass}
 
   This chapter describes the commands and environments provided by the
   \MathQuiz document class. This assumes that you have already installed
@@ -869,11 +869,11 @@ to my \Verb|.bashrc| file. You may need to do something similar.
     \href{https://tex.stackexchange.com/questions/390421}{Make4ht, tikz
     and UTF 8 encoding question}.  }
 
-    \lstinputlisting[style=latexcode]{examples/tikz}
+    \lstinputlisting[style=latexcode]{examples/tikz-ex}
 
     This produces:
 
-    \ScreenShot{Tikz example}{examples/tikz}
+    \ScreenShot{Tikz example}{examples/tikz-ex}
 
   \item[hidesidemenu]\index{hide side menu}
     If this option is set the end the side menu is not displayed
@@ -1332,7 +1332,7 @@ option.
 
         \begin{htmlcode}
         quiz_page = r'''<!DOCTYPE HTML>
-        <html lang="en-AU">
+        <html lang="en">
         <head>
           <title> {title} </title>
           {include}

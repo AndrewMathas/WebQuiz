@@ -62,39 +62,48 @@ function WaitForQuizSpecifications() {
 
 // create the drop down menu dynamically using the QuizTitles array
 function create_drop_down_menu() {
+    var drop_down = document.getElementById("drop-down-menu");
     // add the menu icon for the quizzes menu if there is at least one quiz
     if (QuizTitles.length > 0) {
         document.getElementById("quizzes-menu-icon").innerHTML = " &#9776;";
     }
 
-    var drop_down = document.getElementById("drop-down-menu");
-    var max = 0, q, quiz_link;
+    var max = 0, q, quiz_link, menu = document.createDocumentFragment();
     for (q = 0; q < QuizTitles.length; q++) {
         quiz_link = document.createElement("li");
         quiz_link.innerHTML = '<a href="' + QuizTitles[q][1] + '">' + QuizTitles[q][0] + '</a>';
-        drop_down.appendChild(quiz_link);
+        menu.appendChild(quiz_link);
         max = Math.max(max, QuizTitles[q][0].length);
     }
     drop_down.style.width = Math.round(max) + "ex";
+    drop_down.appendChild(menu);
+}
+
+// create an event listener so that we can close the drop-down menu
+// whenever some one clicks outside of it
+function MenuEventListener(evnt) {
+    var drop_down = document.getElementById("drop-down-menu");
+    if (drop_down.contains(evnt.target)) {
+      return; // inside the menu so just return
+    } else {   // outside the menu so check the number of menu_clicks
+      evnt.stopPropagation();
+      drop_down.style.display = 'none';
+      window.removeEventListener('click', MenuEventListener);
+    }
 }
 
 function toggle_dropdown_menu() {
-    var quiz_menu = document.getElementById("drop-down-menu");
-    if (quiz_menu.style.display === "block") {
-        quiz_menu.style.display = "none";
-        //document.removeEventListener('click', close_drop_down);
+    var drop_down = document.getElementById("drop-down-menu");
+    if (drop_down.style.display === 'block') {
+      drop_down.style.display = 'none';
+      window.removeEventListener('click', MenuEventListener);
     } else {
-        //document.addEventListener('click', close_dropdown_menu, false);
-        quiz_menu.style.display = "block";
+      drop_down.style.display = 'block';
+      window.addEventListener('click', MenuEventListener, true);
     }
 }
 
-function close_drop_down(e) {
-    var quiz_menu = document.getElementById("drop-down-menu");
-    if ( quiz_menu.style.display === 'block') {
-        quiz_menu.style.display = "none";
-    }
-}
+// toggle the display of the side menu and its labels
 function toggle_side_menu() {
     var side_menu = document.getElementsByClassName('side-menu')[0];
     var side_open = document.getElementsByClassName('sidelabelopen')[0];
@@ -124,14 +133,14 @@ function showQuestion(newQ) { // newQ is an integer which is always in the corre
             }
         }
 
-        // now set curtentQ = newQ and display it
+        // now set currtentQ = newQ and display it
         currentQ = newQ;
         document.getElementById("question" + currentQ).style.display = "table";
         button = document.getElementById("button" + currentQ);
         button.classList.add("nolink");
         if (currentQ > 0) {
             button.classList.add("button-selected");
-            document.getElementById("question-number").innerHTML = "Question " + currentQ;
+            document.getElementById("question-number").innerHTML = QuizSpecifications[currentQ-1].label;
         } else if (Discussion[-1 - currentQ]) {
             document.getElementById("question-number").innerHTML = Discussion[-1 - currentQ];
         }
@@ -185,8 +194,7 @@ function updateQuestionMarker() {
     if (currentQ < 0) {
         return true;
     } // nothing to change in this case
-    var marker;
-    var button = document.getElementById("button" + currentQ);
+    var marker, button = document.getElementById("button" + currentQ);
     if (correct[qnum]) {
         if (wrongAnswers[qnum] === 0) {
             marker = star;
@@ -266,7 +274,7 @@ function MathQuizInit(questions, discussions, quizfile, hidesidemenu) {
     currentQuiz = quizfile;
 
     // read the question specifications for the quiz from <currentQuiz>/quiz_list.js
-    document.head.appendChild(document.createElement("script")).src = currentQuiz + "/quiz_list.js";
+    document.head.appendChild(document.createElement("script")).src = currentQuiz + "/" + currentQuiz + ".js";
     WaitForQuizSpecifications();
 
     // make the drop down menu if QuizTitles has some entries

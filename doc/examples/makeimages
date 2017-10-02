@@ -20,15 +20,11 @@ mathquiz manual. We first use
     - mathquiz to construct the web page
     - webkit2png to extract an image of the web page, sometimes with options
     - mogrify to trim the image down to size
-Optionally a png image of a PDF file can also be extracted
+Optionally a png image of a PDF file can also be extracted. For the full specs
+see the image_files dictionarty below
 '''
 
 import argparse, glob, os, shutil, subprocess
-#import selenium
-#print('Selenium verson: {}'.format(selenium.__version__))
-#from selenium import webdriver  # Import selenium web driver
-
-#driver = webdriver.PhantomJS()
 
 # location of the mathquiz example web pages on a development server
 examplesURL = "http://localhost/MathQuiz/doc/examples"
@@ -90,15 +86,18 @@ image_files = dict(
     quizpage    = dict(src='html',
                        file_in='quiz-page',
                        js="document.forms['Q1Form'].elements[1].checked=true; setTimeout(checkAnswer, 4)",
-                       delay=5),
+                       delay=5
+                  ),
     simplehtml  = dict(src='html', file_in='simple', file_out='simple-html'),
     simplepdf   = dict(src='pdf',  file_in='simple', file_out='simple-pdf'),
-    tikz        = dict(src='html')
+    tikzex      = dict(src='html', file_in='tikz-ex')
 )
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description = 'script to extract images for the mathquiz manual')
-    parser.add_argument('extract', nargs='*',type=str, default=None, help='pages to extract')
+    parser = argparse.ArgumentParser(description = 'Python script to extract images for the mathquiz manual',
+                                     epilog = 'Images for all pages are extracted if none are specifed'
+    )
+    parser.add_argument('image', nargs='*',type=str, default=None, help='images to extract')
     parser.add_argument('-c', '--cleaning', action='store_true', default=False, help='delete all extraneous files on exit')
     parser.add_argument('-d', '--debugging', action='store_true', default=False, help='turn on debugging')
 
@@ -109,11 +108,11 @@ if __name__ == '__main__':
         mathquiz_mode = '--debugging'
         webkit2png_mode = '--debug'
 
-    if args.extract == []:
+    if args.image == []:
         pages = image_files.keys()
     else:
         pages = []
-        for page in args.extract:
+        for page in args.image:
             if '.' in page:
                 page = page[:page.index('.')]
             page = page.replace('-','')

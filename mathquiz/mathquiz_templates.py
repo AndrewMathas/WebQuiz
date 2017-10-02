@@ -28,13 +28,13 @@ html_meta = r'''<meta http-equiv="Content-Type" content="text/html; charset=utf-
   <meta name="organization" content="{department}, {institution}">
   <meta name="Copyright" content="MathQuiz: {copyright}">
   <meta name="keywords" content="mathquiz, TeX4ht, make4ht, latex, python, quiz, mathematics">
-  <link href="{mathquiz_url}/mathquiz.css" type="text/css" rel="stylesheet">
+  <link href="{mathquiz_url}/{theme}.css" type="text/css" rel="stylesheet">
   <link href="{quiz_file}/{quiz_file}.css" type="text/css" rel="stylesheet">
 '''
 
 # javascript for setting up the questions
 questions_javascript = r'''  <script type="text/javascript" src="{mathquiz_url}/mathquiz.js"></script>
-  script type="text/javascript" src="quiztitles.js"></script>
+  <script type="text/javascript" src="quiztitles.js"></script>
   <script type="text/javascript" src="{mathjax}?config=MML_CHTML"></script>
 '''
 
@@ -43,10 +43,10 @@ mathquiz_init=r'''<div style="display: none;">
   </div>'''
 
 # Bread crumbs including a drop down menu for all of the quizzes for the unit.
-# The drop-down-menu is added by create_drop_down_menu() in maghquiz.js
+# The drop-down-menu is added by create_drop_down_menu() in mathquiz.js
 breadcrumb_line_text='          <li>{text}</li>\n'
 breadcrumb_line_url ='          <li><a href="{url}">{text}</a></li>\n'
-breadcrumb_quizlist = '''          <li><a href="{quizzes_url}">Quizzes</a>
+breadcrumb_quizlist = '''          <li><a href="{quizzes_url}">{quizzes}</a>
           <span onclick="toggle_dropdown_menu();" id="quizzes-menu-icon"></span>
           <ul id="drop-down-menu" onclick="toggle_dropdown_menu();"></ul>
         </li>
@@ -65,17 +65,16 @@ button  = r'        <div id="button{b}" class="button{cls}" content=" " onClick=
 discuss = r'        <li id="button-{b}" class="discussion" onClick="gotoQuestion(-{b})">{title}</li>'
 side_menu = r'''<div class="menu-icon">
       <span class="sidelabelclosed question-label" onclick="toggle_side_menu();">&#10070;</span>
-      <span class="sidelabelopen question-label" onclick="toggle_side_menu();">&#10006;&nbsp;Questions</span>
+      <span class="sidelabelopen question-label" onclick="toggle_side_menu();">&#10006;&nbsp;{questions}</span>
     </div>
     <div id="sidemenu" class="side-menu">{discussion_list}
       <div class="buttons">
         <br>{buttons}
       </div>
       <table class="marking-key">
-         <tr><td></td><td></td></tr>
-         <tr><td style="color: #FFCC00; font-size:small;">&starf;</td><td>right first<br>attempt</td></tr>
-         <tr><td style="color: green; font-size:medium;">&check;</td><td>right</td></tr>
-         <tr><td style="color: red; font-size:medium;">&cross;</td><td>wrong</td></tr>
+         <tr><td style="color: #FFCC00; font-size:small;">&starf;</td><td style="width: 14ex;">{side_menu_star}</td></tr>
+         <tr><td style="color: green; font-size:medium;">&check;</td><td>{side_menu_tick}</td></tr>
+         <tr><td style="color: red; font-size:medium;">&cross;</td><td>{side_menu_cross}</td></tr>
       </table>
       <div class="school">
         {department}<p>
@@ -96,9 +95,9 @@ quiz_header='''<div class="quiz-header">
         {arrows}
       </div>'''
 navigation_arrows='''<span class="arrows">
-          <a onClick="nextQuestion(-1);" title="Previous unanswered question">&#x25c4;</a>
-          <span class="question-label">Questions</span>
-          <a onClick="nextQuestion(1);"  title="Next unanswered question">&#x25ba;</a>
+          <a onClick="nextQuestion(-1);" title="{previous_unanswered_question}">&#x25c4;</a>
+          <span class="question-label">{questions}</span>
+          <a onClick="nextQuestion(1);"  title="{next_unanswered_question}">&#x25ba;</a>
         </span>'''
 
 # discussion item
@@ -109,8 +108,8 @@ discussion='''<div id="question-{dnum}" class="question" {display}>
 input_button='<input type="button" name="next" value="Start quiz" onClick="return gotoQuestion(1);"/>\n'
 
 #quiz index
-quiz_list='''     <div class="quiz-list">
-        <h2>{unit} Quizzes</h2>
+quiz_list_div='''     <div class="quiz-list">
+        <h2>{unit} {quizzes}</h2>
         <ul>
           {quiz_index}
         </ul>
@@ -123,12 +122,12 @@ question_wrapper='''<div id="question{qnum}" class="question" {display}>
       {response}
       </div>
 '''
-question_text='''  {question}
+question_text='''  {question_text}
       <form id="Q{qnum}Form" onSubmit="return false;" class="question">
         {question_options}
         <p>
-          <input type="button" value="Check Answer" name="answer" class="input-button" onClick="checkAnswer();"/>
-          <input type="button" value="Next Question" class="input-button" title="Next unanswered question" name="next" onClick="nextQuestion(1);"/>
+          <input type="button" value="{check_answer}" name="answer" class="input-button" onClick="checkAnswer();"/>
+          <input type="button" value="{next_question}" class="input-button" title="{next_unanswered_question}" name="next" onClick="nextQuestion(1);"/>
         </p>
       </form>
 '''
@@ -145,17 +144,16 @@ tf_response_text='''        <div id="q{choice}{response}" class="response"><em c
            <div>{text}</div>
         </div>'''
 single_response='''        <div id="q{qnum}response{part}" class="response">
-          <em>Choice ({alpha}) is <span class="dazzle">{answer}</span></em><div>{response}</div>
+              <em>{alpha_choice} <span class="dazzle">{answer}</span></em>
+              <div>{response}</div>
         </div>'''
-smiley='&#9786;'
-frowny='&#9785;'
 
 multiple_response='''        <div id="q{qnum}response{part}" class="response">
-            <em>There is at least one mistake.</em><br>For example, choice <span class="brown">({alpha})</span> should be <span class="dazzle">{answer}</span>.
+            <em>{one_mistake}</em><br><{multiple_choice_incorrect} <span class="dazzle">{answer}</span>.
             <div>{response}</div>
         </div>'''
 multiple_response_correct='''
-        <div id="q{qnum}response0" class="response"><em class="dazzle">Correct!</em>
+        <div id="q{qnum}response0" class="response"><em class="dazzle">{correct}</em>
             <ol>
 {responses}
             </ol>
@@ -238,7 +236,7 @@ resulted in the error:
   {error}
 
 To write the MathQuiz rc-file into this directory you may need to quit and run
-matghquiz either using an administrator account, or using sudo on linux/macosx.
+mathquiz again, either using an administrator account, or using sudo on linux/macosx.
 
 Press (and then r3eturn):
     1. To try to save to {rc_file} again

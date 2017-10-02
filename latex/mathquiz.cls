@@ -18,28 +18,31 @@
   [2017/03/21 v5.0
   MathQuiz LaTeX document class (based on article.cls)]
 
-\DeclareOption{pst2pdf}{
-   % this option tells mathquiz to use pst2pdf - but this is really done by mathquiz
-   \ifdefined\HCode\else
-     \AtBeginDocument{\textsc{MathQuiz} will process this quiz using \textbf{pst2pdf}.}
-   \fi
-}
 
-\newif\ifTikz\Tikzfalse
-\DeclareOption{tikz}{\Tikztrue}
+% initialise and then process document class options usng pgfopts
+\RequirePackage{pgfopts}
+\def\unknown@options{}%          unknown options are passed to article.cls
+\def\MQ@HideSideMenu{false}%     side menu visible by default
+\newif\ifTikz\Tikzfalse%         true if tikz a document class option
+\newif\ifpsttopdf\psttopdffalse% true if pst2pdf a document class option
 
-\def\MQ@HideSideMenu{false}
-\DeclareOption{sidemenu}{% default
-  \def\MQ@HideSideMenu{false}
+\pgfkeys{/latexquizoptions/.is family,
+  /latexquizoptions,
+      pst2pdf/.code      = {\global\psttopdftrue},
+      tikz/.code         = {\global\Tikztrue},
+      sidemenu/.code     = {\def\MQ@HideSideMenu{false}},
+      hidesidemenu/.code = {\def\MQ@HideSideMenu{true}},
+      language/.initial  = english,
+      theme/.initial     = webquiz,
+      .unknown/.code={\edef\unknown@options{\unknown@options,\pgfkeyscurrentname}}
 }
-\DeclareOption{hidesidemenu}{
-  \def\MQ@HideSideMenu{true}
-}
+\newcommand\latexquizOption[1]{\pgfkeysvalueof{/latexquizoptions/#1}}
 
-\DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
-\PassOptionsToClass{a4paper}{article}
-\ProcessOptions\relax
-\LoadClass{article}
+% now process the options
+\ProcessPgfOptions{/latexquizoptions}% process options
+\LoadClass[\unknown@options]{article}% load article class with options
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \RequirePackage{xparse}
 \RequirePackage{pgffor}
 
@@ -51,9 +54,9 @@
 \ifTikz
    \RequirePackage{tikz}
    % from https://tex.stackexchange.com/questions/390592/
-   %\ifdefined\HCode
-   %  \tikzset{every node/.style={/pgf/tex4ht node/escape=true}}
-   %\fi
+   %   \ifdefined\HCode
+   %     \tikzset{every node/.style={/pgf/tex4ht node/escape=true}}
+   %   \fi
 \fi
 
 \def\MQ@error{\PackageError{mathquiz}}
@@ -61,6 +64,7 @@
   \MQ@error{\noexpand#1 required in Question \number#2}\@ehc
 }
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \RequirePackage{amsfonts,amsmath}
 \RequirePackage{bbding}
 \setlength{\parindent}{0pt}
@@ -152,9 +156,14 @@
   \thispagestyle{firstpage}%
   \maketitle%
   \ifx\MQ@quizzesUrl\@empty\QuizzesURL{\uos@url/Quizzes/}\else\relax\fi%
+  \ifpsttopdf
+   \ifdefined\HCode\else
+     \textsc{MathQuiz} will process this quiz using \textbf{pst2pdf}.
+   \fi
+  \fi
 }
 
-% deifne a quiz counter for keeping track of the question numbers
+% define a quiz counter for keeping track of the question numbers
 \newcounter{quiz}
 \newcommand{\quiz}[2][\relax]{\refstepcounter{quiz}%
   \ifx#1\relax\def\MQ@url{./quiz\thequiz.html}%

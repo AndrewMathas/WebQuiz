@@ -16,7 +16,7 @@ r'''
 -----------------------------------------------------------------------------------------
 '''
 
-# ctan: python setup.py ctan --> create zup file for upload to ctan
+# ctan: python setup.py ctan --> create zup file for upload to ctan )
 
 import glob
 import os
@@ -38,7 +38,7 @@ class MetaData(dict):
                 if len(key.strip())>0:
                     setattr(self, key.strip().lower(), val.strip())
 
-settings = MetaData('mathquiz/mathquiz.ini')
+settings = MetaData('latex/mathquiz.ini')
 
 class MathQuizCtan(build_py):
     r"""
@@ -54,8 +54,8 @@ class MathQuizCtan(build_py):
                'email' : settings.author_email,
              'summary' : settings.description,
            'directory' : '/scripts/mathquiz, tex/latex/mathquiz and doc/latex/mathquiz',
-            'announce' : 'A latex system for writing on-line quizzes',
-               'notes' : 'TDS zipfile. See README file in tex/latex/mathquiz',
+            'announce' : settings.description,
+               'notes' : 'See README file in tex/latex/mathquiz',
              'license' : 'free',
          'freeversion' : 'gpl',
                 'file' : 'mathquiz.zip',
@@ -91,7 +91,7 @@ class MathQuizCtan(build_py):
         to ensure that they are correct for the ctan upload. We need to make
         mathquiz-manual.pdf first because it is included in mathquiz.pdf.
         '''
-        self.shell_command('cd css && sass mathquiz.scss mathquiz.css')
+        self.shell_command('sassmq')
         self.shell_command('cd doc && latex --interaction=batchmode mathquiz-online-manual && dvipdf mathquiz-online-manual')
         self.shell_command('cd doc && pdflatex --interaction=batchmode mathquiz')
 
@@ -111,24 +111,25 @@ class MathQuizCtan(build_py):
         with zipfile.ZipFile('mathquiz.zip', 'w', zipfile.ZIP_DEFLATED) as zfile:
 
             # now add the files
-            for (src, target) in [ ('README.rst',                       ''),
+            for (src, target) in [ ('README.md',                        ''),
                                    ('doc/*.pdf',                        'doc'),
-                                   ('doc/m*.tex',                        'doc'),
+                                   ('doc/m*.tex',                       'doc'),
                                    ('doc/examples/*.png',               'doc/examples'),
-                                   ('mathquiz/mathquiz.ini',            'doc'),
                                    ('latex/mathquiz.c*',                'latex'),
                                    ('latex/pgfsys-tex4ht-mq-fixed.def', 'latex'),
+                                   ('latex/mathquiz.ini',               'latex'),
                                    ('latex/mathquiz-doc.sty',           'latex'),
+                                   ('latex/webquiz-*.lang',             'latex'),
                                    ('LICENCE',                          'scripts'),
                                    ('mathquiz/mathquiz*.py',            'scripts'),
                                    ('mathquiz/mathquiz.ini',            'scripts'),
                                    ('mathquiz/mathquiz.bat',            'scripts'),
-                                   ('css/mathquiz.css',                 'scripts/www'),
+                                   ('css/webquiz-*.css',                'scripts/www'),
                                    ('javascript/mathquiz.js',           'scripts/www'),
                                    ('doc/mathquiz-online-manual.tex',   'scripts/www/doc'),
                                    ('mathquiz/mathquiz.ini',            'scripts/www/doc'),
                                    ('doc/examples/*.tex',               'scripts/www/doc/examples'),
-                                  ]:
+                ]:
                 for file in glob.glob(src):
                   if file != 'mathquiz/mathquiz_sms.py':
                     zfile.write(file, os.path.join('mathquiz', target, file.split('/')[-1]))
@@ -136,7 +137,7 @@ class MathQuizCtan(build_py):
 setup(name             = settings.program,
       version          = settings.version,
       description      = settings.description,
-      long_description = open('README.rst').read(),
+      long_description = open('README.md').read(),
       url              = settings.url,
       author           = settings.authors,
       author_email     = settings.author_email,

@@ -38,19 +38,27 @@ mathquiz_file = lambda file: os.path.join(os.path.dirname(os.path.realpath(__fil
 class MetaData(dict):
     r"""
     A dummy class for reading, accessing and storing key-value pairs from a file
+    Any internal spaces in the key name are replaced with underscores.
+
+    The key-value pairs are available as both attributes and items
 
     Usage: MetaData(filename)
     """
     def __init__(self, filename):
+        dict.__init__(self)
         with open(filename,'r') as meta:
             for line in meta:
                 if '=' in line:
                     key, val = line.strip().split('=')
                     if len(key.strip())>0:
-                        setattr(self, key.strip().lower(), val.strip())
+                        self.__setitem__(key.strip().lower().replace(' ','_'), val.strip())
+                        setattr(self, key.strip().lower().replace(' ','_'), val.strip())
+
+# short-cut to access kpsewhich output: usage: kpsewhich('-var-value=TEXMFLOCAL')
+kpsewhich = lambda search: subprocess.check_output('kpsewhich '+search,stderr=subprocess.STDOUT,shell=True).decode('ascii').strip()
 
 # read in basic meta data such as author, version, ...
-metadata = MetaData(mathquiz_file('mathquiz.ini'))
+metadata = MetaData( kpsewhich('mathquiz.ini') )
 metadata.debugging = False
 
 # used to label the parts of questions as a, b, c, ...
@@ -135,6 +143,16 @@ class MathQuizSettings(object):
         'advanced' : False,
         'help'     : 'Full path to MathQuiz web directory',
       },
+      language  = {
+        'default'  : 'english',
+        'advanced' : False,
+        'help'     : 'Default language used on web pages'
+      },
+      theme  = {
+        'default'  : 'webquiz',
+        'advanced' : False,
+        'help'     : 'Default colour theme used on web pages'
+      },
       breadcrumbs  = {
         'default'  : 'department|unitcode|quiz_index|breadcrumb',
         'advanced' : False,
@@ -204,7 +222,7 @@ class MathQuizSettings(object):
 
         # define a user and system rc file and load the ones that exist
 
-        tex_local = subprocess.check_output('kpsewhich -var-value=TEXMFLOCAL',stderr=subprocess.STDOUT,shell=True).decode('ascii').strip()
+        tex_local = kpsewhich('-var-value=TEXMFLOCAL')
         self.system_rc_file =  os.path.join( tex_local, 'scripts', 'mathquiz', 'mathquizrc')
         self.read_mathquizrc( self.system_rc_file )
 
@@ -524,6 +542,28 @@ class MakeMathQuiz(object):
 
         self.read_xml_file()
 
+        # determine language settings
+        language = self.quiz.language
+        if language == '':
+            language = self.settings['language']
+
+        print('Language  set to {}'.format(language))
+        try:
+            language_file = kpsewhich('webquiz-{}.lang'.format(language))
+        except subprocess.CalledProcessError:
+            try:
+                language_file = kpsewhich( language )
+            except subprocess.CalledProcessError:
+                MathQuizError('kpsewhich is unable to find language file for "{}"'.format(language))
+
+        print('Language file {}'.format(language_file))
+        self.language = MetaData( language_file )
+
+        self.theme = self.quiz.theme
+        if self.theme == '':
+            self.theme = self.settings['theme']
+
+        # initialise number of quiz and discussion items
         self.dTotal = len(self.quiz.discussion_list)
         self.qTotal = len(self.quiz.question_list)
 
@@ -572,7 +612,7 @@ class MakeMathQuiz(object):
                     )
                 elif crumb == 'quiz_index':
                     if len(self.quiz.quiz_list)==0:
-                        crumbs += breadcrumb_quizlist.format(quizzes_url = self.unit['quizzes_url'])
+                        crumbs += breadcrumb_quizlist.format(quizzes_url = self.unit['quizzes_url'], **self.language)
                     else:
                         crumbs += self.add_breadcrumb_line('Quizzes')
                 elif crumb == 'breadcrumb':
@@ -726,14 +766,16 @@ class MakeMathQuiz(object):
     def add_meta_data(self):
         """ add the meta data for the web page to self.header """
         # meta tags`
-        self.header += html_meta.format(version     = metadata.version,
-                                        authors     = metadata.authors,
+        self.header += html_meta.format(version      = metadata.version,
+                                        authors      = metadata.authors,
                                         mathquiz_url = self.mathquiz_url,
-                                        description = metadata.description,
-                                        copyright   = metadata.copyright,
-                                        department  = self.school['department'],
+                                        description  = metadata.description,
+                                        copyright    = metadata.copyright,
+                                        department   = self.school['department'],
                                         institution  = self.school['institution'],
-                                        quiz_file   = self.quiz_file)
+                                        quiz_file    = self.quiz_file,
+                                        theme     = self.theme
+        )
 
         # we don't need any of the links or metas from the latex file
         # self.header += ''.join('  <meta {}>\n'.format(' '.join('{}="{}"'.format(k,meta[k]) for k in meta)) for meta in self.quiz.meta_list)
@@ -766,6 +808,7 @@ class MakeMathQuiz(object):
                                           version=metadata.version,
                                           department=department,
                                           institution=institution,
+                                          **self.language
         )
 
     def add_question_javascript(self):
@@ -782,14 +825,15 @@ class MakeMathQuiz(object):
 
         try:
             os.makedirs(self.quiz_file, exist_ok=True)
-            with codecs.open(os.path.join(self.quiz_file,'quiz_list.js'), 'w', encoding='utf8') as quiz_list:
-                if self.qTotal>0:
+            with codecs.open(os.path.join(self.quiz_file,self.quiz_file+'.js'), 'w', encoding='utf8') as quiz_list:
+                if self.dTotal>0:
                     for (i,d) in enumerate(self.quiz.discussion_list):
                         quiz_list.write('Discussion[{}]="{}";\n'.format(i, d.heading))
                 if self.qTotal >0:
                     for (i,q) in enumerate(self.quiz.question_list):
-                        quiz_list.write('QuizSpecifications[%d]=[];\n' % i)
+                        quiz_list.write('QuizSpecifications[%d]=[];\n' % i)% QuizSpecifications is a 0-based array
                         a = q.answer
+                        quiz_list.write('QuizSpecifications[%d].label="%s %s";\n' % (i,self.language.question,i+1))
                         if isinstance(a,mathquiz_xml.Answer):
                              quiz_list.write('QuizSpecifications[%d].value="%s";\n' % (i,a.value))
                              quiz_list.write('QuizSpecifications[%d].type="input";\n' % i)
@@ -818,12 +862,12 @@ class MakeMathQuiz(object):
         if self.qTotal == 0:
             arrows = ''
         else:
-            arrows = navigation_arrows.format(subheading='Question 1' if self.dTotal==0 else 'Discussion')
+            arrows = navigation_arrows.format(**self.language)
 
         # specify the quiz header - this will be wrapped in <div class="question-header>...</div>
         self.quiz_header=quiz_header.format(title=self.title,
                                             question_number=self.quiz.discussion_list[0].heading if len(self.quiz.discussion_list)>0
-                                                                 else 'Question 1' if len(self.quiz.question_list)>0 else '',
+                                                else self.language.question+' 1' if len(self.quiz.question_list)>0 else '',
                                             arrows = arrows
         )
 
@@ -840,10 +884,11 @@ class MakeMathQuiz(object):
         # index for quiz
         if len(self.quiz.quiz_list)>0:
           # add index to the web page
-          self.quiz_questions+=quiz_list.format(
+          self.quiz_questions+=quiz_list_div.format(
                  unit=self.unit['name'],
                  quiz_index='\n          '.join(quiz_list_item.format(url=q['url'], title=q['title'])
-                                                for q in self.quiz.quiz_list)
+                                                for q in self.quiz.quiz_list),
+                 **self.language
           )
           # write a javascript file for displaying the menu
           # quizmenu = the index file for the quizzes in this directory
@@ -876,7 +921,7 @@ class MakeMathQuiz(object):
         else:
             options=choice_answer.format(choices='\n'.join(self.print_choices(Qnum, Q.answer.item_list, choice) for choice in range(len(Q.answer.item_list))))
                                         #hidden=input_single.format(qnum=Qnum) if Q.answer.type=="single" else '')
-        return question_text.format(qnum=Qnum, question=Q.question, question_options=options)
+        return question_text.format(qnum=Qnum, question_text=Q.question, question_options=options, **self.language)
 
     def print_choices(self, qnum, answers, choice):
         r'''
@@ -907,21 +952,44 @@ class MakeMathQuiz(object):
         '''
         if isinstance(question.answer,mathquiz_xml.Answer):
             s = question.answer
-            response  = tf_response_text.format(choice=qnum, response='true', answer='Correct!', answer2='', text=s.when_right)
-            response += tf_response_text.format(choice=qnum, response='false', answer='Incorrect.', answer2='Please try again.', text=s.when_wrong)
+            response  = tf_response_text.format(
+                                           choice=qnum,
+                                           response='true',
+                                           answer=self.language.correct,
+                                           answer2='',
+                                           text=s.when_right
+            )
+            response += tf_response_text.format(
+                                           choice=qnum,
+                                           response='false',
+                                           answer=self.language.incorrect,
+                                           answer2=self.language.try_again,
+                                           text=s.when_wrong)
         elif question.answer.type == "single":
-            response='\n'+'\n'.join(single_response.format(qnum=qnum, part=snum+1,
-                                                      answer='correct! ' if s.expect=='true' else 'incorrect ',
-                                                      alpha=alphabet[snum],
-                                                      response=s.response)
-                                for (snum, s) in enumerate(question.answer.item_list)
+            response='\n'+'\n'.join(single_response.format(
+                                             qnum=qnum, part=snum+1,
+                                             answer=self.language.correct if s.expect=='true' else self.language.incorrect,
+                                             alpha_choice = self.language.choice.format(alphabet[snum]),
+                                             response=s.response,
+                                             **self.language
+                                ) for (snum, s) in enumerate(question.answer.item_list)
             )
         else: # question.answer.type == "multiple":
-            response='\n'+'\n'.join(multiple_response.format(qnum=qnum, part=snum+1,alpha=alphabet[snum], answer=s.expect.capitalize(), response=s.response)
-                                for (snum, s) in enumerate(question.answer.item_list)
+            response='\n'+'\n'.join(multiple_response.format(
+                                      qnum=qnum,
+                                      part=snum+1,
+                                      answer=s.expect.capitalize(),
+                                      response=s.response,
+                                      multiple_choice_incorrect=self.language.multiple_choice_incorrect.format(alphabet[snum]),
+                                      **self.language
+                                ) for (snum, s) in enumerate(question.answer.item_list)
             )
-            response+=multiple_response_correct.format(qnum=qnum,
-                responses='\n'.join(multiple_response_answer.format(answer=s.expect.capitalize(), reason=s.response) for s in question.answer.item_list)
+            response+=multiple_response_correct.format(
+                qnum=qnum,
+                responses='\n'.join(multiple_response_answer.format(
+                                     answer=s.expect.capitalize(),
+                                     reason=s.response) for s in question.answer.item_list),
+                **self.language
             )
         return '<div class="answer">'+response+'</div>'
 

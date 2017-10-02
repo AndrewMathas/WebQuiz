@@ -32,7 +32,7 @@ def write_web_page(quiz):
     )
 
 quiz_page = r'''<!DOCTYPE HTML>
-<html lang="en-AU">
+<html lang="en">
 <head>
   <title> {title} </title>
   {include}

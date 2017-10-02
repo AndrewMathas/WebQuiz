@@ -1,10 +1,9 @@
 /*
-zindex: 999;
  * -----------------------------------------------------------------------
  *   mathquiz.css | css specifications
  * -----------------------------------------------------------------------
  *
- *   Copyright (C) Andrew Mathas and Donald Taylor, University of Sydney
+ *   Copyright (C) Andrew Mathas, University of Sydney
  *
  *   Distributed under the terms of the GNU General Public License (GPL)
  *               http://www.gnu.org/licenses/
@@ -12,7 +11,6 @@ zindex: 999;
  *   This file is part of the MathQuiz system.
  *
  *   <Andrew.Mathas@sydney.edu.au>
- *   <Donald.Taylor@sydney.edu.au>
  * ----------------------------------------------------------------------
  */
 
@@ -35,6 +33,17 @@ zindex: 999;
   $WarningBorder:  #5B2C6F;
   $WarningFG:      #FFCC00;
   $White:          #FFFFFF;
+
+  $BreadCrumb1BG:  $Heading;
+  $BreadCrumb1FG:  $White;
+  $BreadCrumb2BG:  $ButtonSelected;
+  $BreadCrumb2FG:  $White;
+  $BreadCrumb3BG:  $ButtonBorder;
+  $BreadCrumb3FG:  $White;
+  $BreadCrumb4BG:  $ButtonBG;
+  $BreadCrumb4FG:  $White;
+  $BreadCrumb5BG:  $White;
+  $BreadCrumb5FG:  $Text;
 
   $ListMarker:    '\027A3';
 
@@ -159,7 +168,10 @@ div.side-menu {
         clear: left;
     }
 
-    table.marking-key > tr td { padding-right: 2px !important; }
+    table.marking-key > tr td {
+      width: 8ex;
+      padding-right: 2px !important;
+    }
 
     div.school {
         font-family: arial, verdana, helvetica;
@@ -470,39 +482,46 @@ nav {
               padding-left: 4px;
         }
 
-        ul > li:nth-child(5n+1) { color: $White;
-                                  A { color: $White; }
+        ul > li:nth-child(5n+1) { color: $BreadCrumb1FG;
+                                  A { color: $BreadCrumb1FG; }
                                   ul li a { color: $ButtonSelected; }
-                                }
-        ul > li:nth-child(5n+1):after { border-left-color: $Heading; }
-
-        ul > li:nth-child(5n+2) { background: $ButtonSelected; color: $White;
-                                  A { color: $White; }
+        }
+        ul > li:nth-child(5n+1):after {
+                                  border-left-color: $BreadCrumb1BG;
+        }
+        ul > li:nth-child(5n+2) { background: $ButtonSelected;
+                                  color: $BreadCrumb1FG;
+                                  A { color: $BreadCrumb1FG; }
                                   ul li a { color: $ButtonSelected; }
-                                }
-        ul > li:nth-child(5n+2):after { border-left-color: $ButtonSelected; }
-
-        ul > li:nth-child(5n+3) { background: $ButtonBorder; color: $White;
-                                  A { color: $White; }
+        }
+        ul > li:nth-child(5n+2):after {
+                                 border-left-color: $BreadCrumb2BG;
+        }
+        ul > li:nth-child(5n+3) { background: $ButtonBorder;
+                                  color: $BreadCrumb3FG;
+                                  A { color: $BreadCrumb3FG; }
                                   ul li a { color: $ButtonSelected; }
-                                }
-        ul > li:nth-child(5n+3):after { border-left-color: $ButtonBorder; }
+        }
+        ul > li:nth-child(5n+3):after {
+                                  border-left-color: $BreadCrumb3BG; }
 
-        ul > li:nth-child(5n+4) { background: $ButtonBG; color: $Text;
-                                  A { color: $Text; }
+        ul > li:nth-child(5n+4) { background: $ButtonBG;
+                                  color: $BreadCrumb4FG;
+                                  A { color: $BreadCrumb4FG; }
                                   ul li a { color: $ButtonSelected; }
-                                }
-        ul > li:nth-child(5n+4):after { border-left-color: $ButtonBG; }
+        }
+        ul > li:nth-child(5n+4):after {
+                                  border-left-color: $BreadCrumb4BG;
+        }
 
-        ul > li:nth-child(5n+0) { background: $White; color: $Text;
-                                  A { color: $Text; }
+        ul > li:nth-child(5n+0) { background: $BreadCrumb1FG;
+                                  color: $BreadCrumb5FG;
+                                  A { color: $BreadCrumb5FG; }
                                   ul li a { color: $ButtonSelected; }
-                                }
-        ul > li:nth-child(5n+0):after { border-left-color: $White; }
-
-        /* Displays the drop-down menu on hover
-         * ul > li:hover ul { display: block; }
-         */
+        }
+        ul > li:nth-child(5n+0):after {
+                                  border-left-color: $BreadCrumb5BG;
+        }
     }
 }
 
