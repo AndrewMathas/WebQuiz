@@ -2,14 +2,14 @@
 
 r'''
 -----------------------------------------------------------------------------------------
-    mathquiz | Interactive on-line quizzes generated from LaTeX using python and TeX4ht
+    webquiz | Interactive on-line quizzes generated from LaTeX using python and TeX4ht
 -----------------------------------------------------------------------------------------
     Copyright (C) Andrew Mathas and Donald Taylor, University of Sydney
 
     Distributed under the terms of the GNU General Public License (GPL)
                   http://www.gnu.org/licenses/
 
-    This file is part of the MathQuiz system.
+    This file is part of the WebQuiz system.
 
     <Andrew.Mathas@sydney.edu.au>
     <Donald.Taylor@sydney.edu.au>
@@ -27,12 +27,12 @@ import subprocess
 import sys
 import traceback
 
-import mathquiz_xml
-from mathquiz_templates import *
+import webquiz_xml
+from webquiz_templates import *
 
 # ---------------------------------------------------------------------------------------
-# Return the full path for a file in the mathquiz directory
-mathquiz_file = lambda file: os.path.join(os.path.dirname(os.path.realpath(__file__)),file)
+# Return the full path for a file in the webquiz directory
+webquiz_file = lambda file: os.path.join(os.path.dirname(os.path.realpath(__file__)),file)
 
 # ---------------------------------------------------------------------------------------
 class MetaData(dict):
@@ -58,7 +58,7 @@ class MetaData(dict):
 kpsewhich = lambda search: subprocess.check_output('kpsewhich '+search,stderr=subprocess.STDOUT,shell=True).decode('ascii').strip()
 
 # read in basic meta data such as author, version, ...
-metadata = MetaData( kpsewhich('mathquiz.ini') )
+metadata = MetaData( kpsewhich('webquiz.ini') )
 metadata.debugging = False
 
 # used to label the parts of questions as a, b, c, ...
@@ -94,12 +94,12 @@ def copytree(src, dst, symlinks = False, ignore = None):
       shutil.copy2(s, d)
 
 #################################################################################
-def MathQuizError(msg, err=None):
+def WebQuizError(msg, err=None):
     r'''
     Consistent handling of errors in magthquiz: print the message `msg` and
     exist with error code `err.errno` if it is available.abs
     '''
-    print('MathQuiz error: {}'.format(msg))
+    print('WebQuiz error: {}'.format(msg))
 
     if metadata.debugging and err is not None:
         raise
@@ -117,31 +117,31 @@ def MathQuizError(msg, err=None):
     sys.exit(1)
 
 #################################################################################
-class MathQuizSettings(object):
+class WebQuizSettings(object):
     r'''
-    Class for initialising mathquiz. This covers both reading and writting the mathquizrc file and
+    Class for initialising webquiz. This covers both reading and writting the webquizrc file and
     copying files into the web directories during initialisation. The settings
     themselves are stored in attribute settings, which is a dictionary. The
-    class reads and writes the settings to the mathquizrc file and the
+    class reads and writes the settings to the webquizrc file and the
     vbalues of the settings are available as items:
-        >>> mq = MathQuizSettings()
-        >>> mq['mathquiz_url']
-        ... /MathQuiz
-        >>> mq['mathquiz_url'] = '/new_url'
+        >>> mq = WebQuizSettings()
+        >>> mq['webquiz_url']
+        ... /WebQuiz
+        >>> mq['webquiz_url'] = '/new_url'
     '''
 
-    # default of settings for the mathquizrc file - a dictionart of dictionaries
-    # the 'help' field is for printing descriptions in the mathquizrc file
+    # default of settings for the webquizrc file - a dictionart of dictionaries
+    # the 'help' field is for printing descriptions in the webquizrc file
     settings = dict(
-      mathquiz_url = {
+      webquiz_url = {
         'default'  : '',
         'advanced' : False,
-        'help'     : 'Relative URL for mathquiz web directory',
+        'help'     : 'Relative URL for webquiz web directory',
       },
-      mathquiz_www = {
+      webquiz_www = {
         'default'  : '',
         'advanced' : False,
-        'help'     : 'Full path to MathQuiz web directory',
+        'help'     : 'Full path to WebQuiz web directory',
       },
       language  = {
         'default'  : 'english',
@@ -178,8 +178,8 @@ class MathQuizSettings(object):
         'advanced' : False,
         'help'     : 'URL for institution or university',
       },
-      mathquiz_format  = {
-        'default'  : 'mathquiz_standard',
+      webquiz_format  = {
+        'default'  : 'webquiz_standard',
         'advanced' : True,
         'help'     : 'Name of python module that formats the quizzes',
       },
@@ -196,7 +196,7 @@ class MathQuizSettings(object):
       version  = {
         'default': metadata.version,
         'advanced' : True,
-        'help'     : 'MathQuiz version number for mathquizrc settings',
+        'help'     : 'WebQuiz version number for webquizrc settings',
       }
     )
 
@@ -205,13 +205,13 @@ class MathQuizSettings(object):
 
     def __init__(self):
         '''
-        First read the system mathquizrc file and then read the
-        user .mathquizrc file, if it exists. This allows the user
+        First read the system webquizrc file and then read the
+        user .webquizrc file, if it exists. This allows the user
         to use some system settings and to override others.
 
-        By default, there is no mathquiz initialisation file. We first
-        look for mathquizrc in the mathquiz source directory and then
-        for .mathquizrc file in the users home directory.
+        By default, there is no webquiz initialisation file. We first
+        look for webquizrc in the webquiz source directory and then
+        for .webquizrc file in the users home directory.
         '''
         for key in self.settings:
             self.settings[key]['value'] = self.settings[key]['default']
@@ -223,21 +223,21 @@ class MathQuizSettings(object):
         # define a user and system rc file and load the ones that exist
 
         tex_local = kpsewhich('-var-value=TEXMFLOCAL')
-        self.system_rc_file =  os.path.join( tex_local, 'scripts', 'mathquiz', 'mathquizrc')
-        self.read_mathquizrc( self.system_rc_file )
+        self.system_rc_file =  os.path.join( tex_local, 'scripts', 'webquiz', 'webquizrc')
+        self.read_webquizrc( self.system_rc_file )
 
-        self.user_rc_file = os.path.join(os.path.expanduser('~'),'.mathquizrc')
+        self.user_rc_file = os.path.join(os.path.expanduser('~'),'.webquizrc')
         if os.path.isfile( self.user_rc_file ):
-            self.read_mathquizrc( self.user_rc_file )
+            self.read_webquizrc( self.user_rc_file )
 
-        # if mathquiz_url is empty then assume that we need to initialise
+        # if webquiz_url is empty then assume that we need to initialise
         self.initialise_warning = ''
-        if self['mathquiz_url'] == '':
-            self['mathquiz_url'] = 'http://www.maths.usyd.edu.au/u/mathas/MathQuiz/'
+        if self['webquiz_url'] == '':
+            self['webquiz_url'] = 'http://www.maths.usyd.edu.au/u/mathas/WebQuiz/'
             self.initialise_warning = web_initialise_warning
-            initialise = input('Do you want to initialise MathQuiz [Y/n]? ')
+            initialise = input('Do you want to initialise WebQuiz [Y/n]? ')
             if initialise=='' or initialise.strip().lower()[0]=='y':
-                self.initialise_mathquiz()
+                self.initialise_webquiz()
 
     def __getitem__(self, key):
         r'''
@@ -248,7 +248,7 @@ class MathQuizSettings(object):
         if key in self.settings:
             return self.settings[key]['value']
 
-        MathQuizError('unknown setting {} in mathquizrc.'.format(key))
+        WebQuizError('unknown setting {} in webquizrc.'.format(key))
 
     def __setitem__(self, key, value):
         r'''
@@ -259,18 +259,18 @@ class MathQuizSettings(object):
         if key in self.settings:
             self.settings[key]['value'] = value
         else:
-            MathQuizError('unknown setting {} in mathquizrc'.format(key))
+            WebQuizError('unknown setting {} in webquizrc'.format(key))
 
-    def read_mathquizrc(self, rc_file, external = False):
+    def read_webquizrc(self, rc_file, external = False):
         r'''
-        Read the settings from the specified mathquizrc file - if it exists, in
+        Read the settings from the specified webquizrc file - if it exists, in
         which case set self.rc_file equal to this directory. If the file does
         not exist then return without changing the current settings.
         '''
         if os.path.isfile(rc_file):
             try:
-                with codecs.open(rc_file, 'r', encoding='utf8') as mathquizrc:
-                    for line in mathquizrc:
+                with codecs.open(rc_file, 'r', encoding='utf8') as webquizrc:
+                    for line in webquizrc:
                         if '#' in line:  # remove comments
                             line = line[:line.index('#')]
                         if '=' in line:
@@ -282,24 +282,24 @@ class MathQuizSettings(object):
                                     self[key] = value
                                     self.settings[key]['changed'] = True
                             elif len(key)>0:
-                                MathQuizError('unknown setting {} in {}'.format(key, rc_file))
+                                WebQuizError('unknown setting {} in {}'.format(key, rc_file))
 
                 # record the rc_file for later use
                 self.rc_file = rc_file
 
             except IOError as err:
-                MathQuizError('there was a problem reading the rc-file {}'.format(rc_file), err)
+                WebQuizError('there was a problem reading the rc-file {}'.format(rc_file), err)
 
             except Exception as err:
-                MathQuizError('there was an error reading the mathquizrc file,', err)
+                WebQuizError('there was an error reading the webquizrc file,', err)
 
         elif external:
             # this is only an error if we have been asked to read this file
-            MathQuizError('the rc-file {} does not exist'.format(rc_file))
+            WebQuizError('the rc-file {} does not exist'.format(rc_file))
 
-    def write_mathquizrc(self):
+    def write_webquizrc(self):
         r'''
-        Write the settings to the mathquizrc file, defaulting to the user
+        Write the settings to the webquizrc file, defaulting to the user
         rc_file if unable to write to the system rc_file
         '''
         if not hasattr(self, 'rc_file'):
@@ -322,7 +322,7 @@ class MathQuizSettings(object):
                         if key == 'version' or self.settings[key]['changed']:
                             rcfile.write('# {}\n{:<15} = {}\n'.format(self.settings[key]['help'], key, self[key]))
 
-                print('\nNon-default MathQuiz settings saved in {}\n'.format(self.rc_file))
+                print('\nNon-default WebQuiz settings saved in {}\n'.format(self.rc_file))
                 input('Press return to continue... ')
                 file_not_written = False
 
@@ -344,23 +344,23 @@ class MathQuizSettings(object):
                     sys.exit(1)
 
                 # if still here then try to write the rc-file again
-                self.write_mathquizrc()
+                self.write_webquizrc()
 
     def list_settings(self, setting='all'):
         r'''
-        Print the non-default settings for mathquiz from the mathquizrc
+        Print the non-default settings for webquiz from the webquizrc
         '''
         if not hasattr(self, 'rc_file'):
-            print('Please initialise MathQuiz using the command: mathquiz --initialise\n')
+            print('Please initialise WebQuiz using the command: webquiz --initialise\n')
 
         if setting != 'all':
             if setting in self.settings:
                 print(self.settings[setting]['value'])
             else:
-                MathQuizError('{} is an invalid setting'.format(setting))
+                WebQuizError('{} is an invalid setting'.format(setting))
 
         else:
-            print('MathQuiz settings from {}\n'.format(self.rc_file))
+            print('WebQuiz settings from {}\n'.format(self.rc_file))
             for key in self.settings:
                 if self[key] != '':
                     print('# {}{}\n{:<15} = {}\n'.format(
@@ -371,32 +371,32 @@ class MathQuizSettings(object):
                           )
                     )
 
-    def initialise_mathquiz(self):
+    def initialise_webquiz(self):
         r'''
-        Set the root for the MathQuiz web directory and copy the www files into
-        this directory. Once this is done save the settings to mathquizrc.
-        This method should only be used when MathQuiz is being set up.
+        Set the root for the WebQuiz web directory and copy the www files into
+        this directory. Once this is done save the settings to webquizrc.
+        This method should only be used when WebQuiz is being set up.
         '''
-        if self.just_initialised:  # stop initialising twice with mathquiz --initialise
+        if self.just_initialised:  # stop initialising twice with webquiz --initialise
             return
 
         print(initialise_introduction)
 
         # prompt for directory and copy files - are these reasonable defaults
         # for each OS?
-        if len(self['mathquiz_www']) > 0:
-            web_root = self['mathquiz_www']
+        if len(self['webquiz_www']) > 0:
+            web_root = self['webquiz_www']
         elif sys.platform == 'linux':
-            web_root = '/usr/local/httpd/MathQuiz'
+            web_root = '/usr/local/httpd/WebQuiz'
         elif sys.platform == 'darwin':
-            web_root = '/Library/WebServer/Documents/MathQuiz'
+            web_root = '/Library/WebServer/Documents/WebQuiz'
         else:
             web_root = '/Local/Library/WebServer'
 
         files_copied = False
         print(web_directory_message)
         while not files_copied:
-            web_dir = input('MathQuiz web directory [{}] '.format(web_root))
+            web_dir = input('WebQuiz web directory [{}] '.format(web_root))
             if web_dir == '':
                 web_dir = web_root
             else:
@@ -405,13 +405,13 @@ class MathQuizSettings(object):
             print('Web directory set to {}'.format(web_dir))
             if web_dir == 'SMS':
                 # undocumented: allow links to SMS web pages
-                self['mathquiz_www'] = 'SMS'
-                self['mathquiz_url'] =  'http://www.maths.usyd.edu.au/u/MOW/MathQuiz/'
+                self['webquiz_www'] = 'SMS'
+                self['webquiz_url'] =  'http://www.maths.usyd.edu.au/u/MOW/WebQuiz/'
 
             else:
                 try:
-                    # first delete files of the form mathquiz.* files in web_dir
-                    for file in glob.glob(os.path.join(web_dir, 'mathquiz.*')):
+                    # first delete files of the form webquiz.* files in web_dir
+                    for file in glob.glob(os.path.join(web_dir, 'webquiz.*')):
                         os.remove(file)
                     # ... now remove the doc directory
                     web_doc = os.path.join(web_dir, 'doc')
@@ -420,25 +420,25 @@ class MathQuizSettings(object):
                     elif os.path.isdir(web_doc):
                         shutil.rmtree(web_doc)
 
-                    print('**** About to copy www directory {} to {} ****'.format(mathquiz_file('www'), web_dir))
-                    if os.path.isdir(mathquiz_file('www')):
+                    print('**** About to copy www directory {} to {} ****'.format(webquiz_file('www'), web_dir))
+                    if os.path.isdir(webquiz_file('www')):
                         # if the www directory exists then copy it to web_dir
                         print('Copying files to {}...\n'.format(web_dir))
-                        copytree(mathquiz_file('www'), web_dir)
+                        copytree(webquiz_file('www'), web_dir)
                     else:
                         # assume this is a development version and add links
                         # from the web directory to the parent directory
                         if not os.path.exists(web_dir):
                             os.makedirs(web_dir)
                         # get the root directory of the source code
-                        mathquiz_src = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
-                        for (src, target) in [('javascript/mathquiz.js', 'mathquiz.js'),
-                                              ('css/mathquiz.css', 'mathquiz.css'),
+                        webquiz_src = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+                        for (src, target) in [('javascript/webquiz.js', 'webquiz.js'),
+                                              ('css/webquiz.css', 'webquiz.css'),
                                               ('doc', 'doc')]:
-                            os.symlink(os.path.join(mathquiz_src, src), os.path.join(web_dir, target))
+                            os.symlink(os.path.join(webquiz_src, src), os.path.join(web_dir, target))
 
-                    self['mathquiz_www'] = web_dir
-                    self.settings['mathquiz_www']['changed'] = True
+                    self['webquiz_www'] = web_dir
+                    self.settings['webquiz_www']['changed'] = True
                     files_copied = True
 
                 except PermissionError as err:
@@ -448,36 +448,36 @@ class MathQuizSettings(object):
                     print('There was a problem copying files to {}.\n  Error: {}]\n'.format(web_dir, err))
                     print('Please give a different directory.\n')
 
-        if self['mathquiz_www'] != 'SMS':
+        if self['webquiz_www'] != 'SMS':
             # now prompt for the relative url
-            mq_url = input(mathquiz_url_message.format(self['mathquiz_url']))
+            mq_url = input(webquiz_url_message.format(self['webquiz_url']))
             if mq_url != '':
                 # removing trailing slashes from mq_url
                 while mq_url[-1] == '/':
                     mq_url = mu_url[:len(mq_url)-1]
 
                 if mq_url[0] != '/': # force URL to start with /
-                    print("  ** prepending '/' to mathquiz_url **")
+                    print("  ** prepending '/' to webquiz_url **")
                     mq_url = '/' + mq_url
 
                 if not web_dir.endswith(mq_url):
-                    print(mathquiz_url_warning)
+                    print(webquiz_url_warning)
                     input('Press return to continue... ')
 
-                self['mathquiz_url'] = mq_url
+                self['webquiz_url'] = mq_url
 
-        self.settings['mathquiz_url']['changed'] = (self['mathquiz_url']!=self.settings['mathquiz_url']['default'])
+        self.settings['webquiz_url']['changed'] = (self['webquiz_url']!=self.settings['webquiz_url']['default'])
 
         # read and save the rest of the settings and exit
         print(edit_settings)
         input('Press return to continue... ')
-        self.edit_settings(ignored_settings = ['mathquiz_url', 'mathquiz_www', 'version'])
-        print(initialise_ending.format(web_dir=self['mathquiz_www']))
+        self.edit_settings(ignored_settings = ['webquiz_url', 'webquiz_www', 'version'])
+        print(initialise_ending.format(web_dir=self['webquiz_www']))
         self.just_initialised = True
 
-    def edit_settings(self, ignored_settings = ['mathquiz_www', 'version']):
+    def edit_settings(self, ignored_settings = ['webquiz_www', 'version']):
         r'''
-        Change current default values for the MathQuiz settings
+        Change current default values for the WebQuiz settings
         '''
         for key in self.settings:
             if key not in ignored_settings:
@@ -490,27 +490,27 @@ class MathQuizSettings(object):
                     '' if self[key] == '' else ' ['+self[key]+'] ')
                 )
                 if setting != '':
-                    if key == 'mathquiz_url' and setting[0] != '/':
-                        print("  ** prepending '/' to mathquiz_url **")
+                    if key == 'webquiz_url' and setting[0] != '/':
+                        print("  ** prepending '/' to webquiz_url **")
                         setting = '/'+setting
 
-                    if key == 'mathquiz_format':
+                    if key == 'webquiz_format':
                         setting = os.path.expanduser(setting)
                         if setting.endswith('.py'):
-                            print("  ** removing .py extension from mathquiz_format **")
+                            print("  ** removing .py extension from webquiz_format **")
                             setting = setting[:-3]
 
                     self[key] = setting
                     self.settings[key]['changed'] = True
 
         # save the settings, print them and exit
-        self.write_mathquizrc()
+        self.write_webquizrc()
         self.list_settings()
 
 #################################################################################
-class MakeMathQuiz(object):
+class MakeWebQuiz(object):
     """
-    Convert a mathquiz latex file to an on-line quiz.
+    Convert a webquiz latex file to an on-line quiz.
 
     There are several steps:
       1. If given a LaTeX file then run htlatex/make4ht on the latex file to generate an
@@ -518,7 +518,7 @@ class MakeMathQuiz(object):
       2. Read in the xml file version of the quiz
       3. Spit out the html version
 
-    The HTMl is contructed using the template strings in mathquiz_templates
+    The HTMl is contructed using the template strings in webquiz_templates
     """
     # attributes that will form part of the generated web page
     header=''         # everything printed in the page header: meta data, includes, javascript, CSS, ...
@@ -531,14 +531,14 @@ class MakeMathQuiz(object):
         self.options = options
         self.settings = settings
         self.quiz_file, extension = quiz_file.split('.')
-        self.mathquiz_url = settings['mathquiz_url']
+        self.webquiz_url = settings['webquiz_url']
 
         # run htlatex only if quiz_file has a .tex extension
         if extension == 'tex':
             self.htlatex_quiz_file()
 
         if self.options.quiet<2:
-            print('MathQuiz generating web page for {}'.format(self.quiz_file))
+            print('WebQuiz generating web page for {}'.format(self.quiz_file))
 
         self.read_xml_file()
 
@@ -554,7 +554,7 @@ class MakeMathQuiz(object):
             try:
                 language_file = kpsewhich( language )
             except subprocess.CalledProcessError:
-                MathQuizError('kpsewhich is unable to find language file for "{}"'.format(language))
+                WebQuizError('kpsewhich is unable to find language file for "{}"'.format(language))
 
         print('Language file {}'.format(language_file))
         self.language = MetaData( language_file )
@@ -670,7 +670,7 @@ class MakeMathQuiz(object):
         # as we may need to preprocess quiz_file with pst2pdf we allow ourselves to change it name
         q_file = self.quiz_file
 
-        # set pst2pdf = True if pst2pdf is given as an option to the mathquiz documentclass
+        # set pst2pdf = True if pst2pdf is given as an option to the webquiz documentclass
         with codecs.open(self.quiz_file+'.tex', 'r', encoding='utf8') as quiz_file:
             doc = quiz_file.read()
         try:
@@ -693,9 +693,9 @@ class MakeMathQuiz(object):
                 run(cmd)
             except OSError as err:
                 if err.errno == os.errno.ENOENT:
-                    MathQuizError('pst2pdf not found. You need to install pst2pdf to use the --pst2pdf option', err)
+                    WebQuizError('pst2pdf not found. You need to install pst2pdf to use the --pst2pdf option', err)
                 else:
-                    MathQuizError('error running pst2pdf on {}'.format(q_file), err)
+                    WebQuizError('error running pst2pdf on {}'.format(q_file), err)
 
             # match \includegraphics commands
             fix_svg = re.compile(r'(\\includegraphics\[scale=1\])\{('+ q_file+r'-fig-[0-9]*)\}')
@@ -709,13 +709,13 @@ class MakeMathQuiz(object):
                         for line in pst_file:
                             pst_fixed.write(fix_svg.sub(r'\1{%s/\2.svg}'%self.quiz_file, line))
             except IOError as err:
-                MathQuizError('there was an problem running pst2pdf for {}'.format(q_file), err)
+                WebQuizError('there was an problem running pst2pdf for {}'.format(q_file), err)
 
             q_file = q_file + '-pdf-fixed'
 
         try:
             talk('Processing {}.tex with TeX4ht'.format(q_file))
-            cmd='make4ht --utf8 --config mathquiz.cfg {make4ht_options} {escape} {q_file}.tex'.format(
+            cmd='make4ht --utf8 --config webquiz.cfg {make4ht_options} {escape} {q_file}.tex'.format(
                     q_file = q_file, make4ht_options  = self.options.make4ht_options,
                     escape = '--shell-escape' if self.options.shell_escape else ''
             )
@@ -745,30 +745,30 @@ class MakeMathQuiz(object):
                                 shutil.move(image, os.path.join(self.quiz_file, image))
 
             except IOError as err:
-                MathQuizError('there was a problem moving the image files for {}'.format(self.quiz_file), err)
+                WebQuizError('there was a problem moving the image files for {}'.format(self.quiz_file), err)
 
         except Exception as err:
-            MathQuizError('something whent wrong when running htlatex on {}'.format(self.quiz_file), err)
+            WebQuizError('something whent wrong when running htlatex on {}'.format(self.quiz_file), err)
 
     def read_xml_file(self):
         r'''
-        Read in the mathquiz xml file for the quiz and store the xml document
+        Read in the webquiz xml file for the quiz and store the xml document
         tree in ``self.quiz``.
         '''
         try:
             # read in the xml version of the quiz
             if not os.path.isfile(self.quiz_file+'.xml'):
-                MathQuizError('{}.xml does not exist!?'.format(self.quiz_file))
-            self.quiz = mathquiz_xml.ReadMathQuizXmlFile(self.quiz_file+'.xml', self.options.debugging)
+                WebQuizError('{}.xml does not exist!?'.format(self.quiz_file))
+            self.quiz = webquiz_xml.ReadWebQuizXmlFile(self.quiz_file+'.xml', self.options.debugging)
         except Exception as err:
-            MathQuizError('error reading the xml generated for {}. Please check your latex source.'.format(self.quiz_file), err)
+            WebQuizError('error reading the xml generated for {}. Please check your latex source.'.format(self.quiz_file), err)
 
     def add_meta_data(self):
         """ add the meta data for the web page to self.header """
         # meta tags`
         self.header += html_meta.format(version      = metadata.version,
                                         authors      = metadata.authors,
-                                        mathquiz_url = self.mathquiz_url,
+                                        webquiz_url = self.webquiz_url,
                                         description  = metadata.description,
                                         copyright    = metadata.copyright,
                                         department   = self.school['department'],
@@ -815,7 +815,7 @@ class MakeMathQuiz(object):
         """
         Add the javascript for the questions to self and write the javascript
         initialisation file, <quiz>/quiz_list.js, for the quiz.  When the quiz
-        page is loaded, MathQuizInit reads the quiz_list initialisation file to
+        page is loaded, WebQuizInit reads the quiz_list initialisation file to
         load the answers to the questions,  and the headers for the discussion
         items. We don't explicitly list quiz_list.js in the meta data for the
         quiz page because we want to hide this information from the student,
@@ -834,7 +834,7 @@ class MakeMathQuiz(object):
                         quiz_list.write('QuizSpecifications[%d]=[];\n' % i)# QuizSpecifications is a 0-based array
                         a = q.answer
                         quiz_list.write('QuizSpecifications[%d].label="%s %s";\n' % (i,self.language.question,i+1))
-                        if isinstance(a,mathquiz_xml.Answer):
+                        if isinstance(a,webquiz_xml.Answer):
                              quiz_list.write('QuizSpecifications[%d].value="%s";\n' % (i,a.value))
                              quiz_list.write('QuizSpecifications[%d].type="input";\n' % i)
                         else:
@@ -842,13 +842,13 @@ class MakeMathQuiz(object):
                              quiz_list.write(''.join('QuizSpecifications[%d][%d]=%s;\n' % (i,j,s.expect) for (j,s) in enumerate(a.item_list)))
 
         except Exception as err:
-            MathQuizError('error writing quiz specifications', err)
+            WebQuizError('error writing quiz specifications', err)
 
         self.javascript = questions_javascript.format(
-                              mathquiz_url = self.mathquiz_url,
+                              webquiz_url = self.webquiz_url,
                               mathjax = self.settings['mathjax']
         )
-        self.mathquiz_init = mathquiz_init.format(
+        self.webquiz_init = webquiz_init.format(
                               qTotal = self.qTotal,
                               dTotal = self.dTotal,
                               quiz_file = self.quiz_file,
@@ -916,7 +916,7 @@ class MakeMathQuiz(object):
             - Q is a class containing the question
             - Qnum is the number of the question
         '''
-        if isinstance(Q.answer,mathquiz_xml.Answer):
+        if isinstance(Q.answer,webquiz_xml.Answer):
             options=input_answer.format(tag=Q.answer.tag if Q.answer.tag else '')
         else:
             options=choice_answer.format(choices='\n'.join(self.print_choices(Qnum, Q.answer.item_list, choice) for choice in range(len(Q.answer.item_list))))
@@ -950,7 +950,7 @@ class MakeMathQuiz(object):
         Generate the HTML for displaying the response help text when the user
         answers a question.
         '''
-        if isinstance(question.answer,mathquiz_xml.Answer):
+        if isinstance(question.answer,webquiz_xml.Answer):
             s = question.answer
             response  = tf_response_text.format(
                                            choice=qnum,
@@ -996,21 +996,21 @@ class MakeMathQuiz(object):
 # =====================================================
 if __name__ == '__main__':
     try:
-        settings = MathQuizSettings()
+        settings = WebQuizSettings()
         if settings.just_initialised:
             sys.exit()
 
         # parse the command line options
         parser = argparse.ArgumentParser(description = metadata.description,
-                                         epilog      = mathquiz_help_message
+                                         epilog      = webquiz_help_message
         )
         parser.add_argument('quiz_file', nargs='*',type=str, default=None, help='latex quiz files')
         parser.add_argument('-i', '--initialise', action='store_true', default=False,
-                            help='Initialise files and setings for mathquiz')
+                            help='Initialise files and setings for webquiz')
         parser.add_argument('-q', '--quiet', action='count', default=0, help='suppress tex4ht messages (also -qq etc)')
         parser.add_argument('--settings', nargs='?', type=str, const='all', action='store', dest='setting',
-                            default='', help='List system settings for mathquiz')
-        parser.add_argument('--edit-settings', action='store_true', default=False, help='Edit mathquiz settings')
+                            default='', help='List system settings for webquiz')
+        parser.add_argument('--edit-settings', action='store_true', default=False, help='Edit webquiz settings')
         parser.add_argument('-s', '--shell-escape', action='store_true', default=False,
                             help='Shell escape for htlatex/make4ht')
         parser.add_argument('-r', '--rcfile', action='store', type=str, dest='rcfile',
@@ -1020,8 +1020,8 @@ if __name__ == '__main__':
         parser.add_argument('--make4ht', action='store', type=str, dest='make4ht_options', default=settings['make4ht'],
                             help='Options for make4ht'
         )
-        parser.add_argument('--mathquiz_format', action='store', type=str, dest='mathquiz_format',
-                            default=settings['mathquiz_format'],
+        parser.add_argument('--webquiz_format', action='store', type=str, dest='webquiz_format',
+                            default=settings['webquiz_format'],
                             help='Local python code for generating the quiz web page'
         )
 
@@ -1038,11 +1038,11 @@ if __name__ == '__main__':
 
         # set the rcfile to be used
         if options.rcfile != '':
-            settings.read_mathquizrc(options.rcfile, external=True)
+            settings.read_webquizrc(options.rcfile, external=True)
 
         # initialise and exit
         if options.initialise:
-            settings.initialise_mathquiz()
+            settings.initialise_webquiz()
             sys.exit()
 
         # initialise and exit
@@ -1061,7 +1061,7 @@ if __name__ == '__main__':
             sys.exit(1)
 
         # import the local page formatter
-        mod_dir, mod_format = os.path.split(options.mathquiz_format)
+        mod_dir, mod_format = os.path.split(options.webquiz_format)
         if mod_dir !='':
             sys.path.insert(0, mod_dir)
         options.write_web_page = __import__(mod_format).write_web_page
@@ -1075,11 +1075,11 @@ if __name__ == '__main__':
                 quiz_file += '.tex'
 
             if not os.path.isfile(quiz_file):
-                print('MathQuiz error: cannot read file {}'.format(quiz_file))
+                print('WebQuiz error: cannot read file {}'.format(quiz_file))
 
             else:
                 # the file exists and is readable so make the quiz
-                MakeMathQuiz(quiz_file, options, settings)
+                MakeWebQuiz(quiz_file, options, settings)
 
                 quiz_file = quiz_file[:quiz_file.index('.')]  # remove the extension
 
@@ -1112,6 +1112,6 @@ if __name__ == '__main__':
             print(text_initialise_warning)
 
     except Exception as err:
-        MathQuizError('unknown problem.\n\nIf you think this is a bug please report it by creating an issue at\n    {}\n'.format(
+        WebQuizError('unknown problem.\n\nIf you think this is a bug please report it by creating an issue at\n    {}\n'.format(
                        metadata.repository) , err
         )

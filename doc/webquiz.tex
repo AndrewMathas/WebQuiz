@@ -4,7 +4,7 @@
 %  Distributed under the terms of the GNU General Public License (GPL)
 %                  http://www.gnu.org/licenses/
 %
-% This file is part of the MathQuiz system.
+% This file is part of the WebQuiz system.
 %
 % <Andrew.Mathas@sydney.edu.au>
 %-----------------------------------------------------------------------------
@@ -28,10 +28,10 @@
 \usepackage[nonewpage]{imakeidx}
 \indexsetup{level=\section*,toclevel=section,noclearpage}
 \makeindex[intoc,noautomatic,columns=3]
-\indexprologue{\textit{This is an index only for the main \MathQuiz manual. It does not index
+\indexprologue{\textit{This is an index only for the main \WebQuiz manual. It does not index
 the on-line manual.}}
 
-\usepackage{mathquiz-doc}
+\usepackage{webquiz-doc}
 
 \setcounter{secnumdepth}{3}
 \setcounter{tocdepth}{3}
@@ -69,11 +69,11 @@ the on-line manual.}}
 \NewDocumentCommand\ctan{ O{pkg/#2} m}{\href{https://www.ctan.org/#1}{\texttt{#2}}}
 
 \newcommand\ddash{\texttt{\textemdash\textemdash}}
-\newcommand\mathquizopt[1]{\textsf{mathquiz \ddash#1}}
-\newcommand\mathquizrc{\index{mathquizrc}\textsf{mathquizrc}\xspace}
-\newcommand\advancedOption{\textit{This is an advanced option. An incorrect value for this setting may stop \MathQuiz from working.}}
+\newcommand\webquizopt[1]{\textsf{webquiz \ddash#1}}
+\newcommand\webquizrc{\index{webquizrc}\textsf{webquizrc}\xspace}
+\newcommand\advancedOption{\textit{This is an advanced option. An incorrect value for this setting may stop \WebQuiz from working.}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% MathQuiz title box for front page
+%% WebQuiz title box for front page
 \usepackage{tikz}
 \usetikzlibrary{shadows.blur}
 
@@ -96,50 +96,50 @@ the on-line manual.}}
      }
 }
 
-\def\MathQuizTitle{
+\def\WebQuizTitle{
   \begin{tikzpicture}[remember picture,overlay]
       \node[yshift=-3cm] at (current page.north west)
         {\begin{tikzpicture}[remember picture, overlay]
-          \draw[shadowed](30mm,0) rectangle node[Brown]{MathQuiz} (\paperwidth-30mm,16mm);
+          \draw[shadowed](30mm,0) rectangle node[Brown]{WebQuiz} (\paperwidth-30mm,16mm);
           \node[Sienna,font=\normalfont\small\itshape] at (\paperwidth/2,2mm)
-          {\small \mathquiz{description}};
-          \node[anchor=west,boxes] at (4cm,0cm) {\mathquiz{name}};
-          \node[anchor=east,boxes] at (\paperwidth-4cm,0) {Version \mathquiz{version}};
+          {\small \webquiz{description}};
+          \node[anchor=west,boxes] at (4cm,0cm) {\webquiz{name}};
+          \node[anchor=east,boxes] at (\paperwidth-4cm,0) {Version \webquiz{version}};
          \end{tikzpicture}
         };
    \end{tikzpicture}
 }
 
-\hypersetup{pdftitle={MathQuiz manual}}
+\hypersetup{pdftitle={WebQuiz manual}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% headers and footers
 \makeatletter
-\def\ps@mathquiz{
+\def\ps@webquiz{
   \ps@empty
-  \def\@oddfoot{\tiny\MathQuiz -- \mathquiz{version}\hfill%
-     \textsc{\ifodd\thepage The MathQuiz manual\else \mathquizheader\fi}\hfill\thepage}
+  \def\@oddfoot{\tiny\WebQuiz -- \webquiz{version}\hfill%
+     \textsc{\ifodd\thepage The WebQuiz manual\else \webquizheader\fi}\hfill\thepage}
 }
 % hijack section and subsectionmark for our headers
-\def\mathquizheader{\MathQuiz}
-\def\sectionmark#1{\def\mathquizheader{#1}}
-\def\subsectionmark#1{\def\mathquizheader{#1}}
-\pagestyle{mathquiz}
+\def\webquizheader{\WebQuiz}
+\def\sectionmark#1{\def\webquizheader{#1}}
+\def\subsectionmark#1{\def\webquizheader{#1}}
+\pagestyle{webquiz}
 \patchcmd\l@section{1.0em}{0.5em}{}{}
 \makeatother
 
 \begin{document}
 
-    \MathQuizTitle
+    \WebQuizTitle
 
     \begin{quote}
-      \MathQuiz makes it possible to write on-line quizzes using
+      \WebQuiz makes it possible to write on-line quizzes using
       \LaTeX, providing an easy way for anyone who knows \LaTeX\ to
       create an on-line quiz using \LaTeX\ file.  The
       allows the quiz author to concentrate on the content of quizzes,
       unencumbered by the technicalities of HTML and javascript.
 
-      \ScreenShot{Example \MathQuiz web page}{examples/quiz-page}
+      \ScreenShot{Example \WebQuiz web page}{examples/quiz-page}
 
       \begin{center}
         \hfil
@@ -160,10 +160,10 @@ the on-line manual.}}
     additional complications if the quiz involves mathematics or
     diagrams.
 
-    \MathQuiz makes it possible to write on-line quizzes using \LaTeX,
+    \WebQuiz makes it possible to write on-line quizzes using \LaTeX,
     which is the typesetting language used by mathematicians
     who use \LaTeX\ to write their research papers, books and
-    teaching materials. In principle, a \MathQuiz quiz can contain anything
+    teaching materials. In principle, a \WebQuiz quiz can contain anything
     that can be typeset using \LaTeX.  In practise, the \LaTeX\ is
     converted to HTML using
     \href{https://www.tug.org/applications/tex4ht/mn.html}{\TeX 4ht}
@@ -173,7 +173,7 @@ the on-line manual.}}
     graphics constructed using packages like \ctan{pstricks} and
     \ctan{tikz}; however, see \autoref{SS:classOptions}.
 
-    \MathQuiz supports the following three types of questions:
+    \WebQuiz supports the following three types of questions:
     \begin{itemize}
       \item Multiple choice questions with a unique correct answer
       \item Multiple choice questions zero or more correct answers
@@ -186,19 +186,19 @@ the on-line manual.}}
     wrong or to give further hints to the student to help them answer the
     question.
 
-    The on-line quizzes constructed using \MathQuiz can, in principle,
+    The on-line quizzes constructed using \WebQuiz can, in principle,
     contain anything that can be typeset by \LaTeX. In particular, they
     do not need to contain mathematics. In fact, the quizzes do not even
-    have to contain ``questions'' as it is possible for a \MathQuiz
+    have to contain ``questions'' as it is possible for a \WebQuiz
     ``quiz'' to contain only \textsf{discussion} environments; see
     \autoref{S:documentclass}.
 
-    This introduction outlines how to use \MathQuiz, however, the
+    This introduction outlines how to use \WebQuiz, however, the
     impatient reader may want to skip ahead directly to the
     \autoref{S:documentclass}, where the \LaTeX\ commands used by
-    \MathQuiz are described.
+    \WebQuiz are described.
 
-    The easiest way to explain how \MathQuiz works is by example. The
+    The easiest way to explain how \WebQuiz works is by example. The
     following \LaTeX\ file defines a quiz with a single multiple choice
     question that has four possible answers, each of which has a
     customised response.  (Responses to answers are optional, but they
@@ -216,9 +216,9 @@ the on-line manual.}}
 
     \ScreenShot[0.5]{Sample PDF output}{examples/simple-pdf}
 
-    Of course, the real reason for using \MathQuiz is that it is also
+    Of course, the real reason for using \WebQuiz is that it is also
     possible to make an on-line version of the quiz by processing the
-    quiz using the \texttt{mathquiz} command. If you do this, and then open
+    quiz using the \texttt{webquiz} command. If you do this, and then open
     the resulting web page in your favourite browser, you will see a web page
     that looks something like this:
 
@@ -230,35 +230,35 @@ the on-line manual.}}
     in answering the question. In fact, the decorations on the question
     buttons indicate whether the question has been attempted and, if so,
     whether it was answered correctly or incorrectly on the first of
-    subsequent attempts. One of the main points of \MathQuiz is that
+    subsequent attempts. One of the main points of \WebQuiz is that
     targeted feedback can be given to the person taking the quiz based
     on their responses.
 
-    The underlying engine used by \MathQuiz is \ctan{tikz} so, because
+    The underlying engine used by \WebQuiz is \ctan{tikz} so, because
     \ctan{tikz} is not able process all \LaTeX{} code, it is possible to
-    find \LaTeX{} code that \MathQuiz is not able to cope with.
-    This said, \MathQuiz has been used to write literally thousands of quiz
+    find \LaTeX{} code that \WebQuiz is not able to cope with.
+    This said, \WebQuiz has been used to write literally thousands of quiz
     questions without any problems. In particular, it is possible to use
-    \ctan[pgf]{tikz} and \ctan{pstricks} in \MathQuiz quizzes, although
+    \ctan[pgf]{tikz} and \ctan{pstricks} in \WebQuiz quizzes, although
     (very?) complicated drawings with these packages may fail; see
     \autoref{SS:classOptions}.
 
-\subsection{What MathQuiz does and does not do}
+\subsection{What WebQuiz does and does not do}
 
-    The \MathQuiz program was designed to be run from the command-line.
-    To process the file \texttt{quiz.tex} using \MathQuiz you would
+    The \WebQuiz program was designed to be run from the command-line.
+    To process the file \texttt{quiz.tex} using \WebQuiz you would
     type
 
-    $>$ \Verb|mathquiz quiz| \qquad or \qquad $>$ \Verb|mathquiz quiz.tex|
+    $>$ \Verb|webquiz quiz| \qquad or \qquad $>$ \Verb|webquiz quiz.tex|
 
-    \noindent from the command-line. It may be possible to run \MathQuiz
+    \noindent from the command-line. It may be possible to run \WebQuiz
     from inside programs like \TeX Shop by setting the compiler equal to
-    \textsf{mathquiz}.
+    \textsf{webquiz}.
 
-    \MathQuiz can be used to ask the student a series of questions. In
+    \WebQuiz can be used to ask the student a series of questions. In
     the on-line version of the quiz, one question is displayed at a
     time. Each question in a quiz, and each quiz itself, can be
-    attempted as many times as the student wants: \MathQuiz does not
+    attempted as many times as the student wants: \WebQuiz does not
     limit the number of times that questions can be attempted.
     The following three types of questions are supported:
     \begin{itemize}
@@ -271,20 +271,20 @@ the on-line manual.}}
     not be accented as a correct answer. Consequently, the only way to ask for the
     indefinite integral of a function is as a multiple choice question.
 
-    The quizzes made using \MathQuiz are intended to be used as a
+    The quizzes made using \WebQuiz are intended to be used as a
     revision resource rather than as an assessment tool. Consequently,
-    \MathQuiz does not provide a mechanism for recording the marks
+    \WebQuiz does not provide a mechanism for recording the marks
     obtained by the students taking the quiz. Technically, it probably
     would not be very hard to record marks but this introduces a
     significant amount of extra overhead in terms of student
     authentication and interfacing with a database. In addition, if
-    \MathQuiz were used as an assessment tool then there would be
+    \WebQuiz were used as an assessment tool then there would be
     additional ``security issues'' to ensure that the quiz content is
     secure. Currently, even though the solutions to the quiz questions
     do not appear in the HTML source code for the quiz it is possible to
     access the answers if you know when you are doing.
 
-    The questions in a \MathQuiz quiz are static. In particular, they do
+    The questions in a \WebQuiz quiz are static. In particular, they do
     not accept variables and exactly the same questions will appear in
     exactly the same order each time the quiz is taken. It would not be
     hard to make the questions appear in a random order. Randomising the
@@ -293,15 +293,15 @@ the on-line manual.}}
 
     The quizzes are not timed and do not have time-limits.
 
-    Finally, the point of \MathQuiz is to make it possible to write
-    on-line quizzes without knowing any HTML, so \MathQuiz provides
+    Finally, the point of \WebQuiz is to make it possible to write
+    on-line quizzes without knowing any HTML, so \WebQuiz provides
     almost no mechanisms for controlling the style and format of the
     quizzes that it creates (although see \autoref{SS:customisation}).
     In particular, the colour scheme of the quizzes is
     fixed.\footnote{In principle, adding support for different colour
     schemes would be easy to do, the only real difficulty is in finding
     compatible colours. There is another minor complication in that the
-    \MathQuiz CSS file, \textsf{mathquiz.css}, is written using
+    \WebQuiz CSS file, \textsf{webquiz.css}, is written using
     \href{http://sass-lang.com/}{sass}. This said, I would be happy to
     incorporate different colour schemes that are sent to me.}
     It is possible to add some styling using, for example, the
@@ -309,10 +309,10 @@ the on-line manual.}}
     to do this then you are probably better off writing
     \href{https://www.w3schools.com/css/}{CSS} directly.
 
-    Some of the ``missing features'' listed above may be added to \MathQuiz in a future release.
+    Some of the ``missing features'' listed above may be added to \WebQuiz in a future release.
 
 \subsection{Credits}
-    \MathQuiz{} was written and developed in the
+    \WebQuiz{} was written and developed in the
     \href{http://www.maths.usyd.edu.au/}{School of Mathematics and
     Statistics} at the \href{http://www.usyd.edu.au/}{University of
     Sydney}.  The system is built on \LaTeX{} with the conversion from
@@ -321,19 +321,19 @@ the on-line manual.}}
     and
     \href{https://github.com/michal-h21/make4ht}{make4ht}.
 
-    To write quizzes using \MathQuiz it is only necessary to know
-    \LaTeX, however, the underlying \MathQuiz system actually has three components:
+    To write quizzes using \WebQuiz it is only necessary to know
+    \LaTeX, however, the underlying \WebQuiz system actually has three components:
     \begin{itemize}
-      \item A \href{https://www.latex-project.org/}{\LaTeX} document class file, \texttt{mathquiz.cls}, and
-      a \ctan[tex4ht]{\TeX 4ht} configuration file, \texttt{mathquiz.cfg}, that enable the
+      \item A \href{https://www.latex-project.org/}{\LaTeX} document class file, \texttt{webquiz.cls}, and
+      a \ctan[tex4ht]{\TeX 4ht} configuration file, \texttt{webquiz.cfg}, that enable the
       quiz files to be processed by \LaTeX{} and \TeX 4ht, respectively.
-      \item A \href{https://www.python.org/}{python} program, \texttt{mathquiz}, that translates the
+      \item A \href{https://www.python.org/}{python} program, \texttt{webquiz}, that translates the
       \LaTeX{} into xml, using \TeX 4ht, and then into HTML.
       \item \href{https://www.w3schools.com/Js/}{Javascript} and \href{https://www.w3schools.com/css/}{css}
       code that works behind the screens to control and style the quiz web pages.
     \end{itemize}
 
-   The \LaTeX{} component of \MathQuiz{} was written by Andrew Mathas
+   The \LaTeX{} component of \WebQuiz{} was written by Andrew Mathas
    and the python, css and javascript code was written by Andrew Mathas
    (and Don Taylor), based on an initial prototype of Don Taylor's from
    2001.  Since 2004 the program has been maintained and developed by
@@ -344,27 +344,27 @@ the on-line manual.}}
    Thanks are due to Bob Howlett for general help with CSS and to
    Michal Hoftich for invaluable technical advice on \TeX4ht.
 
- \section{The MathQuiz document class --- \LaTeX{} commands}\label{S:documentclass}
+ \section{The WebQuiz document class --- \LaTeX{} commands}\label{S:documentclass}
 
   This chapter describes the commands and environments provided by the
-  \MathQuiz document class. This assumes that you have already installed
-  and configured \MathQuiz. If you have not done this yet then you
-  should either be brave and type \textsf{mathquiz} from the
-  command-line, and then follow the prompts to initialise \MathQuiz, or
+  \WebQuiz document class. This assumes that you have already installed
+  and configured \WebQuiz. If you have not done this yet then you
+  should either be brave and type \textsf{webquiz} from the
+  command-line, and then follow the prompts to initialise \WebQuiz, or
   follow the more detailed instructions given in
   \autoref{S:configuration}.
 
-  The aim of \MathQuiz is to write on-line quizzes using only \LaTeX.
-  This chapter describes the \MathQuiz commands and environments and how
+  The aim of \WebQuiz is to write on-line quizzes using only \LaTeX.
+  This chapter describes the \WebQuiz commands and environments and how
   they put material onto a web page.  All of the code examples given in
   this, and other sections, can be found in the \textsf{examples}
-  directory of the \MathQuiz web directory.%
-  \footnote{Once \MathQuiz is initialised you can find this directory
-  using the command: \mathquizopt{settings mathquiz\_www}.}
+  directory of the \WebQuiz web directory.%
+  \footnote{Once \WebQuiz is initialised you can find this directory
+  using the command: \webquizopt{settings webquiz\_www}.}
   More details and some examples can be found in the on-line manual,
   which is included as \autoref{S:online}.
 
-  A typical \MathQuiz quiz file is just a \LaTeX{} file of the form:
+  A typical \WebQuiz quiz file is just a \LaTeX{} file of the form:
 
     \lstinputlisting[style=latexcode]{examples/typicalquizfile}
 
@@ -373,19 +373,19 @@ the on-line manual.}}
   \Verb|latex| or \Verb|pdflatex| to check that your quiz compiles and
   that you are satisfied with the output, just as if you were writing a
   normal \LaTeX{} document.  Once you are satisified with the content of the
-  quiz, say \texttt{quiz.tex}, then you can convert it to an on-line quiz using \MathQuiz
+  quiz, say \texttt{quiz.tex}, then you can convert it to an on-line quiz using \WebQuiz
   by typing
   \begin{center}
-     $>$ \texttt{mathquiz quiz}
+     $>$ \texttt{webquiz quiz}
   \end{center}
   from the command-line. The quiz file, \textsf{quiz.tex}, should be on
-  your web server because \MathQuiz creates a number of different
+  your web server because \WebQuiz creates a number of different
   files and directories when it converts the file into an on-line quiz.
 
   The reasons for using this workflow include:
   \begin{itemize}
     \item
-    \textit{Every file that you give to \MathQuiz should be a valid \LaTeX{} file!}
+    \textit{Every file that you give to \WebQuiz should be a valid \LaTeX{} file!}
 
     \item The \textsf{dvi} or \textsf{PDF} file produced by \LaTeX{}
     will show all of the information about the questions
@@ -396,37 +396,37 @@ the on-line manual.}}
     student only when they need to see it.
 
     \item Typesetting the quiz file with \LaTeX{} is \textit{much
-    faster} than processing it with \MathQuiz. In fact, \MathQuiz uses
+    faster} than processing it with \WebQuiz. In fact, \WebQuiz uses
     \textsf{htlatex} to process the quiz file at least \textit{three times} in
     order to produce an \textsf{xml} file and it is only then that the
-    \MathQuiz program kicks in to rewrite this data as an \textsf{HTML}
+    \WebQuiz program kicks in to rewrite this data as an \textsf{HTML}
     file.
 
-    \item If \LaTeX{} produces errors then \MathQuiz will produce more
+    \item If \LaTeX{} produces errors then \WebQuiz will produce more
     errors. Further, \textit{\LaTeX{} error messages are much easier to read and
-    understand than those produced by \TeX4ht and \MathQuiz}.
+    understand than those produced by \TeX4ht and \WebQuiz}.
   \end{itemize}
   Note that the PDF version of a quiz does not contain any
   information about the unit, department or institution. This
-  information was included in previous releases of \MathQuiz, however, it
-  is now omitted because this data can now be specified in the \mathquizrc
+  information was included in previous releases of \WebQuiz, however, it
+  is now omitted because this data can now be specified in the \webquizrc
   file (see \autoref{SS:rcfile}) and \LaTeX{} does not have access to
-  the \mathquizrc file.
+  the \webquizrc file.
 
   The next sections describe the different environments and commands
-  provided by \MathQuiz. The last section in this chapter,
-  \autoref{SS:classOptions}, lists the class options for the \MathQuiz
+  provided by \WebQuiz. The last section in this chapter,
+  \autoref{SS:classOptions}, lists the class options for the \WebQuiz
   document class. You should read this section if you plan to use
   \ctan{pstricks} or \ctan[pgf]{tikz}.
 
-  Finally, if you want to use \MathQuiz for your students then you will
-  need to \textit{initialise} \MathQuiz using the command:
-  \mathquizopt{initialise}; see \autoref{S:configuration} for more
+  Finally, if you want to use \WebQuiz for your students then you will
+  need to \textit{initialise} \WebQuiz using the command:
+  \webquizopt{initialise}; see \autoref{S:configuration} for more
   details.
 
-\subsection{\MathQuiz environments}
+\subsection{\WebQuiz environments}
 
-The \MathQuiz document class defines the following four environments:
+The \WebQuiz document class defines the following four environments:
 \begin{quote}
   \begin{description}
     \item[question] Each quiz question needs to be inside a
@@ -448,7 +448,7 @@ Quizzes are composed of questions and each quiz question must to be
 placed inside a \Verb|question| environment. Typically, a quiz will have
 several questions, each wrapped in its own \Verb|question| environment.
 For brevity, all of the examples in this chapter have only one question
--- see the on-inline manual in the \MathQuiz web directory for a complete quiz file.
+-- see the on-inline manual in the \WebQuiz web directory for a complete quiz file.
 
   \lstinputlisting[style=latexcode]{examples/question}
   \macroIndex{answer}\CrossIndex{question environment}*{answer}
@@ -535,7 +535,7 @@ left-hand side. It is not possible to interleave discussion items and
 questions. Each quiz can have zero or more discussion environments and
 these environments can, in principle, contain arbitrary \LaTeX\ code.
 
-For example, running the \LaTeX\ file through \MathQuiz
+For example, running the \LaTeX\ file through \WebQuiz
 
   \lstinputlisting[style=latexcode]{examples/discussion}
 
@@ -584,7 +584,7 @@ discussion.
 
   \subsubsection{Breadcrumbs}\label{SS:breadcrumbs}\index{breadcrumbs}
 
-  \MathQuiz provides a straightforward way to place navigation breadcrumbs
+  \WebQuiz provides a straightforward way to place navigation breadcrumbs
   at the top of the quiz web page. By default these
   breadcrumbs look something like this:
 
@@ -605,9 +605,9 @@ discussion.
   \noindent
   The breadcrumbs for the quiz web page can be either be configured quiz-by-quiz, using the
   \Verb|\BreadCrumbs| macro \macroIndex{BreadCrumbs}, or by setting \textsf{breadcrumbs} ``globally'' in the
-  \mathquizrc file using the command-line option
+  \webquizrc file using the command-line option
   \begin{center}
-        \mathquizopt{edit-settings}\qquad (see \autoref{SS:commandline}).
+        \webquizopt{edit-settings}\qquad (see \autoref{SS:commandline}).
   \end{center}
 
   \noindent
@@ -619,7 +619,7 @@ discussion.
   \end{lstlisting}
 
   \noindent
-  or by setting \textsf{breadcrumbs} in the \mathquizrc file equal to the string
+  or by setting \textsf{breadcrumbs} in the \webquizrc file equal to the string
   \begin{center}
     \texttt{department | unitcode | quiz\_index | breadcrumb}
   \end{center}
@@ -634,7 +634,7 @@ discussion.
   breadcrumbs but, in practice, five is more than enough. Using
   \Verb|\BreadCrumbs{none}| will disable the breadcrumbs.
   \CrossIndex*{Breadcrumbs}{none}
-  Similarly, setting \textsf{breadcrumbs = none} in the \mathquizrc will
+  Similarly, setting \textsf{breadcrumbs = none} in the \webquizrc will
   also disable the breadcrumbs, unless there is a \Verb|\BreadCrumbs|
   command in the quiz file, which will overwrite the default settings in
   the rc-file.
@@ -694,11 +694,11 @@ discussion.
   leads to the breadcrumbs:
   \ScreenShot{Breadcrumbs with no unit name}{examples/nounits}
   This example shows you the breadcrumbs look like when you forget to
-  set the data that \MathQuiz needs to construct them.
+  set the data that \WebQuiz needs to construct them.
 
-  In more detail, here is the list of \MathQuiz commands that can be used to
+  In more detail, here is the list of \WebQuiz commands that can be used to
   specify the contents of the breadcrumbs. Some of these can set
-  globally in the \mathquizrc file.
+  globally in the \webquizrc file.
 
   \newcommand\Item[1]{\item[\textbackslash#1]\CrossIndex{breadcrumbs}*{#1}}
 \begin{description}
@@ -722,7 +722,7 @@ discussion.
     breadcrumbs that appear at the top of the web page.
 
     The department can be set globally using
-    \texttt{mathquiz \textemdash\textemdash edit-settings}.
+    \texttt{webquiz \textemdash\textemdash edit-settings}.
 
     Default value: \textit{Mathematics}
 
@@ -731,7 +731,7 @@ discussion.
     described earlier in this section, by default the department URL is
     the link in the first breadcrumb on each web page.
 
-    The department URL can be set globally using \mathquizopt{edit-settings}.
+    The department URL can be set globally using \webquizopt{edit-settings}.
 
     Default value: \textit{/}
 
@@ -743,7 +743,7 @@ discussion.
     earlier in this section, the institution can also be used in the web
     page breadcrumbs.
 
-    The institution can be set globally using \mathquizopt{edit-settings}.
+    The institution can be set globally using \webquizopt{edit-settings}.
 
 
     \Item{InstitutionURL}\macroIndex{InstitutionURL}
@@ -753,7 +753,7 @@ discussion.
     earlier in this section, the institution URL can also be used in the
     web page breadcrumbs.
 
-    The institution URL can be set globally using \mathquizopt{edit-settings}.
+    The institution URL can be set globally using \webquizopt{edit-settings}.
 
     \Item{QuizzesURL}\macroIndex{QuizzesURL}
     The \Verb|\QuizzesURL| command sets the URL for the suite of quizzes
@@ -784,12 +784,12 @@ discussion.
 
 \end{description}
 
-  \subsection{MathQuiz class options --- pstricks and tikz}\label{SS:classOptions}
+  \subsection{WebQuiz class options --- pstricks and tikz}\label{SS:classOptions}
 
 The two most commonly used packages for drawing pictures or diagrams in
 \LaTeX{} are \ctan{pstricks} and \ctan[pgf]{tikz}. Unfortunately, both
 of these packages have issues when used with \TeX 4ht. The good news is
-that \MathQuiz attempts to solve these problems for you.
+that \WebQuiz attempts to solve these problems for you.
 
 \noindent\textbf{tikz}\index{tikz}
 Using the \Verb|tikz| document class option, instead of
@@ -826,7 +826,7 @@ to my \Verb|.bashrc| file. You may need to do something similar.
     For the most part \ctan{pstricks} drawings will display correctly and
     when they fail they can often be salvaged by using \ctan{pst2pdf}. The
     \Verb|pst2pdf| class option automates what needs to be done to apply
-    \ctan{pst2pdf} to a \MathQuiz file in order to convert all postscript objects in the
+    \ctan{pst2pdf} to a \WebQuiz file in order to convert all postscript objects in the
     quiz into images. Whilst not guaranteed to work, this often fixes
     issues with \ctan{pstricks} diagrams. This class option is
     equivalent to using the \Verb|pst2pdf| command-line option; see
@@ -834,9 +834,9 @@ to my \Verb|.bashrc| file. You may need to do something similar.
 
     \lstinputlisting[style=latexcode]{examples/pst2pdf}
 
-    \MathQuiz is unable to create this web page correctly without the
+    \WebQuiz is unable to create this web page correctly without the
     \Verb|pst2pdf| class option, however, when this option is used
-    \MathQuiz constructs the following web page:
+    \WebQuiz constructs the following web page:
 
     \ScreenShot{Example requiring the pst2pdf document class option}{examples/pst2pdf}
 
@@ -884,9 +884,9 @@ to my \Verb|.bashrc| file. You may need to do something similar.
     given above.
 \end{description}
 
-All other class options that are given to the \MathQuiz document class
+All other class options that are given to the \WebQuiz document class
 are passed to the \texttt{article} class, which is the base class used
-by \texttt{mathquiz}.
+by \texttt{webquiz}.
 
 \section{System requirements, installation and configuration}\label{S:configuration}
   \index{system requirements}
@@ -898,21 +898,21 @@ by \texttt{mathquiz}.
     as that provided by \href{https://www.tug.org/texlive/}{\TeX live},
     as well as a recent version of \href{https://www.python.org/}{Python 3}
     (as of writing, python 3.6 is available). I have tested the
-    \MathQuiz system extensively on Linux and Mac operating systems.
-    Several people have used \MathQuiz on windows computers, but I
+    \WebQuiz system extensively on Linux and Mac operating systems.
+    Several people have used \WebQuiz on windows computers, but I
     have not tested the program on a window myself.
 
-    \subsection{\MathQuiz components --- \LaTeX, python, web, doc}
+    \subsection{\WebQuiz components --- \LaTeX, python, web, doc}
 
-    The \MathQuiz program has different four components:
+    The \WebQuiz program has different four components:
       \begin{itemize}
            \item \LaTeX\ files (a class file and \TeX4ht configuration files)
            \item Python3 executables that use \TeX4ht to convert \LaTeX\ files into web pages
            \item Web files (javascript, css and on-line documentation)
            \item Documentation
       \end{itemize}
-    Of course, to use the on-line quizzes created by \MathQuiz you will
-    also need a web server. To use \MathQuiz all of these files need to
+    Of course, to use the on-line quizzes created by \WebQuiz you will
+    also need a web server. To use \WebQuiz all of these files need to
     be in appropriate places.
     \ifCtan Fortunately, \ctan[/]{ctan} takes care of most of this but
     \else
@@ -923,23 +923,23 @@ by \texttt{mathquiz}.
 
     \subsection{Installation}\index{installation}\index{initialisation}
 
-    The easiest way to install the web-related files is to run \MathQuiz
+    The easiest way to install the web-related files is to run \WebQuiz
     from the command line using:
     \begin{quote}
-      \mathquizopt{initialise}
+      \webquizopt{initialise}
     \end{quote}
     \textit{If you want to make the settings system wide then you need
     to run this command using an administrator account or using
     \textsf{sudo} on a UNIX or Mac OSX system.}
-    In fact, it is enough to run \textsf{mathquiz} from the command-line
+    In fact, it is enough to run \textsf{webquiz} from the command-line
     without any options because it will keep asking you to initialise
-    until you do so. \MathQuiz will work without being initialised,
+    until you do so. \WebQuiz will work without being initialised,
     however, any web pages that are created before initialisation will
-    be emblazoned with a message reminding you to initialise \MathQuiz.
+    be emblazoned with a message reminding you to initialise \WebQuiz.
     As described in more detail below, initialisation copies the
-    javascript and CSS files used by \MathQuiz into the file space used
+    javascript and CSS files used by \WebQuiz into the file space used
     by your web server.
-    \ifCtan\else If you are installing \MathQuiz from the zip file then
+    \ifCtan\else If you are installing \WebQuiz from the zip file then
     you need to read the next section, otherwise
     \fi
 
@@ -949,23 +949,23 @@ by \texttt{mathquiz}.
 
     \ifCtan\else
 
-    \subsection{Installation of \MathQuiz from the zip file}
+    \subsection{Installation of \WebQuiz from the zip file}
 
     (\textit{This section of the manual will be removed when the
     package is put onto \ctan[/]{ctan}.})
 
-      The \MathQuiz zip file has three directories, or folders:
+      The \WebQuiz zip file has three directories, or folders:
 
       \begin{itemize}
-        \item[--] mathquiz/latex
-        \item[--] mathquiz/doc
-        \item[--] mathquiz/scripts
+        \item[--] webquiz/latex
+        \item[--] webquiz/doc
+        \item[--] webquiz/scripts
       \end{itemize}
 
       The files in the \textsf{latex} directory need to be put somewhere in the \LaTeX\
     search path. For example, on my computer I have these files in
     \begin{center}
-       \Verb|/usr/local/texlive/texmf-local/tex/latex/local/mathquiz|
+       \Verb|/usr/local/texlive/texmf-local/tex/latex/local/webquiz|
     \end{center}
     After you have moved these files to an appropriate place you will need to run
     something like texhash. The exact command that you need to run to
@@ -977,32 +977,32 @@ by \texttt{mathquiz}.
     like \textsf{texdoc} to find them then you will need to put them
     into an appropriate place in the \LaTeX{} directory tree.
 
-    The \MathQuiz program itself lives in the script directory. On a
+    The \WebQuiz program itself lives in the script directory. On a
     UNIX like system, which includes macs,  I recommend making a link to
-    the file mathquiz.py, which is the entry point to the code, using
+    the file webquiz.py, which is the entry point to the code, using
     something like:
     \begin{center}
-        \Verb|ln -s <path to scripts directory>/mathquiz.py mathquiz|
+        \Verb|ln -s <path to scripts directory>/webquiz.py webquiz|
     \end{center}
     Following \href{https://tex.stackexchange.com/questions/40937/how-to-publish-a-package-that-includes-scripts-and-or-executables/40971#40971}{How to publish a package that includes scripts and/or executables?}
-    a windows batch file \Verb|mathquiz.bat| is included as part of
-    \MathQuiz. \textit{I believe} that this batch file will allow you to run \MathQuiz
+    a windows batch file \Verb|webquiz.bat| is included as part of
+    \WebQuiz. \textit{I believe} that this batch file will allow you to run \WebQuiz
     on a windows computer. As I do not own or have access to a windows machine I am
     unable to test this.
 
-    It remains to install the web files used by \MathQuiz, which can be
-    done using \MathQuiz.
+    It remains to install the web files used by \WebQuiz, which can be
+    done using \WebQuiz.
     \fi
 
-    \subsection{Installing the web files used by \MathQuiz}
+    \subsection{Installing the web files used by \WebQuiz}
     \CrossIndex{command-line options}{initialise}
 
-     The quiz files created by \MathQuiz use
+     The quiz files created by \WebQuiz use
      \href{https://en.wikipedia.org/wiki/JavaScript}{javascript} and
      \href{https://www.w3schools.com/css/css_intro.asp}{cascading style
      sheets} (CSS) to render the quizzes. You do not need to understand
-     how this works but you do need to put the \MathQuiz javascript and
-     CSS files onto your web server.\footnote{In fact, \MathQuiz will work
+     how this works but you do need to put the \WebQuiz javascript and
+     CSS files onto your web server.\footnote{In fact, \WebQuiz will work
      even if you do not install these files on your web server, however,
      the quiz pages that it creates will have an annoying message at the
      top of the web page to remind you to install these files.} It is
@@ -1010,31 +1010,31 @@ by \texttt{mathquiz}.
      it does not matter whether they are in a ``system directory'' or in
      your personal web directories.
 
-     \MathQuiz provides a semi-automated way of moving these files into
+     \WebQuiz provides a semi-automated way of moving these files into
      place, so the short version of the installation process is to fun
      the following command from the command-line:
      \begin{center}
-        $>$ \mathquizopt{initialise}
+        $>$ \webquizopt{initialise}
      \end{center}
      You will be asked a series of questions that should be
-     straightforward to answer because \MathQuiz talks you through what
+     straightforward to answer because \WebQuiz talks you through what
      needs to be done. More details follows about the initialisation
      process in the hope that this might be useful.
 
-     When you run the \MathQuiz initialisation command you will be prompted for the
+     When you run the \WebQuiz initialisation command you will be prompted for the
      following:
      \begin{itemize}
-       \item The \MathQuiz web directory, which is a directory on your local file system that is visible
+       \item The \WebQuiz web directory, which is a directory on your local file system that is visible
              to your web server
        \item The relative URL for this directory, which tells your web browser where to find these files
      \end{itemize}
      For example, on my system the base directory for our web server is
-     \textsf{/usr/local/httpd/} and the \MathQuiz web
-     files are in \textsf{/usr/local/httpd/MathQuiz}. So, I set:
+     \textsf{/usr/local/httpd/} and the \WebQuiz web
+     files are in \textsf{/usr/local/httpd/WebQuiz}. So, I set:
      \begin{quote}
        \begin{tabular}{lll}
-         \MathQuiz web directory &=& \textsf{/usr/local/httpd/MathQuiz}\\
-         \MathQuiz relative URL  &=& \textsf{/MathQuiz}
+         \WebQuiz web directory &=& \textsf{/usr/local/httpd/WebQuiz}\\
+         \WebQuiz relative URL  &=& \textsf{/WebQuiz}
        \end{tabular}
      \end{quote}
      In addition, the initialisation command lets you set global defaults for the following:
@@ -1052,55 +1052,55 @@ by \texttt{mathquiz}.
      variables, which for most of these amounts to leaving them blank.
      You can come back and change these settings at any time using the command:
      \begin{center}
-        \mathquizopt{edit-settings}.
+        \webquizopt{edit-settings}.
      \end{center}
      In addition, these defaults can always be overwritten by commands
      in the individual quiz files.
 
      Finally, the initialisation command will ask you about some more
      advanced settings. It is very unlikely that you will need to change
-     these when you first use \MathQuiz, so I recommend that you hit
+     these when you first use \WebQuiz, so I recommend that you hit
      return to accept the default options for each of these settings.
 
     \bigskip
 
-    \MathQuiz is now ready to use!
+    \WebQuiz is now ready to use!
 
 
-\section{The MathQuiz program}
+\section{The WebQuiz program}
 \index{usage}
-    The \MathQuiz program was designed to be run from the command-line,
-    so to process the file \textsf{quiz.tex} using \MathQuiz type:
+    The \WebQuiz program was designed to be run from the command-line,
+    so to process the file \textsf{quiz.tex} using \WebQuiz type:
 
-    $>$ \Verb|mathquiz quiz| \qquad or \qquad $>$ \Verb|mathquiz quiz.tex|
+    $>$ \Verb|webquiz quiz| \qquad or \qquad $>$ \Verb|webquiz quiz.tex|
 
     \noindent (Here ``$>$'' is the command-line prompt.) Once useful
-    feature of \MathQuiz is that you can ask it to process more than one
+    feature of \WebQuiz is that you can ask it to process more than one
     quiz file at a time. For example, if you have quiz files
     \textsf{quiz1.tex}, ..., \textsf{quiz9.tex} in the current directory
     then, on a UNIX system, you can rebuild the web pages for all of
     these quizzes using the single command:
 
-    $>$ \Verb|mathquiz quiz[1-9].tex|
+    $>$ \Verb|webquiz quiz[1-9].tex|
 
     \noindent
     This is useful if some aspect of all of the quizzes has changed. In
     fact, one would probably use
 
-    $>$ \Verb|mathquiz --qq quiz[1-9].tex|
+    $>$ \Verb|webquiz --qq quiz[1-9].tex|
 
     \noindent
-    because the \mathquizopt{qq} command-line option suppresses almost all of
+    because the \webquizopt{qq} command-line option suppresses almost all of
     the output produced by \LaTeX\ and \TeX4ht. The next section
-    discusses the \MathQuiz command-line options.
+    discusses the \WebQuiz command-line options.
 
     \subsection{Command-line options}\label{SS:commandline}
 \index{command-line options}
 
 \begin{verbatim}
-usage: mathquiz [-h] [-i] [-q] [--settings] [--edit-settings  [SETTING]] [-s]
-                [-r RCFILE] [-p] [--build MATHQUIZ_MK4]
-                [--mathquiz_format MATHQUIZ_FORMAT]
+usage: webquiz [-h] [-i] [-q] [--settings] [--edit-settings  [SETTING]] [-s]
+                [-r RCFILE] [-p] [--build WEBQUIZ_MK4]
+                [--webquiz_format WEBQUIZ_FORMAT]
                 [quiz_file [quiz_file ...]]
 \end{verbatim}
 
@@ -1115,26 +1115,26 @@ option.
           list the command-line options and exit
 
        \item[-i, \ddash initialise] \CrossIndex{command-line options}{initialise}
-          Initialise files and settings for mathquiz. The command
-          \mathquizopt{initialise} should be run before using
-          \MathQuiz. This command will help you to copy the web files needed by
-          \MathQuiz into the directories used by your web server. See
+          Initialise files and settings for webquiz. The command
+          \webquizopt{initialise} should be run before using
+          \WebQuiz. This command will help you to copy the web files needed by
+          \WebQuiz into the directories used by your web server. See
           \autoref{S:configuration} for more details.
 
           \item[\ddash settings {[SETTING]}] \CrossIndex{command-line options}{settings}
-          \SeeIndex{rc file}{mathquizrc}
-          \SeeIndex{default settings}{mathquizrc}
-          List system settings for mathquiz stored in the  rc-file
+          \SeeIndex{rc file}{webquizrc}
+          \SeeIndex{default settings}{webquizrc}
+          List system settings for webquiz stored in the  rc-file
           (\textit{run-time configuration file}); see the \textsf{\ddash
           rcfile} command-line option below. Optionally, a single
           \textsf{SETTING} can be given in which case the value of only that
           setting is returned. Typical settings returned by this
           command look like:
           \begin{verbatim}
-  MathQuiz settings stored in /Users/andrew/.mathquizrc
+  WebQuiz settings stored in /Users/andrew/.webquizrc
 
-    # Relative URL for mathquiz web directory
-    mathquiz_url    = /MathQuiz
+    # Relative URL for webquiz web directory
+    webquiz_url    = /WebQuiz
 
     # Breadcrumbs at the top of quiz page
     breadcrumbs     = department|unitcode|Quiz_index|breadcrumb
@@ -1152,33 +1152,33 @@ option.
     institution_url = http://sydney.edu.au/
 
     # The python module that determines the format of the quiz web page (default)
-    mathquiz_format = mathquiz_standard
+    webquiz_format = webquiz_standard
 
     # Local URL for mathjax (default)
     mathjax         = https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/
           \end{verbatim}
 
           These settings are used by all of the quizzes created by
-          \MathQuiz unless the quiz overrides them. These defaults are
-          normally set when \MathQuiz is initialised, using the command:
-          \mathquizopt{initialise}. The defaults can be changed any time using:
-          \mathquizopt{edit-settings}.
+          \WebQuiz unless the quiz overrides them. These defaults are
+          normally set when \WebQuiz is initialised, using the command:
+          \webquizopt{initialise}. The defaults can be changed any time using:
+          \webquizopt{edit-settings}.
 
        \item[\ddash edit-settings] \CrossIndex{command-line options}{edit-settings}
-          Edit the mathquiz settings in the rc-file. The settings that
+          Edit the webquiz settings in the rc-file. The settings that
           are marked as advanced should be changed only with care. To
-          change the \textsf{mathquiz\_www} and \textsf{mathquiz\_url}
-          use: \mathquizopt{initialise}.
+          change the \textsf{webquiz\_www} and \textsf{webquiz\_url}
+          use: \webquizopt{initialise}.
 
-          \textit{You will be given the option of saving the \MathQuiz settings to an rc-file,
-          \textsf{.mathquizrc}, in your home directory or another file if you do
+          \textit{You will be given the option of saving the \WebQuiz settings to an rc-file,
+          \textsf{.webquizrc}, in your home directory or another file if you do
           not have permission to write to the system rc-file, which is in the
-          \MathQuiz scripts directory. }
+          \WebQuiz scripts directory. }
 
        \item[-q, -qq, \ddash quiet] \CrossIndex{command-line options}{quiet mode}
        Suppress tex4ht messages: \textsf{\ddash q} is quiet and \textsf{\ddash qq} is  very quiet. If you use
-       \textsf{mathquiz --qq texfile.tex} then almost no output will
-       be printed by \MathQuiz when it is processing your quiz file. Be
+       \textsf{webquiz --qq texfile.tex} then almost no output will
+       be printed by \WebQuiz when it is processing your quiz file. Be
        warned, however, that both of these options can make it harder to find and fix
        errors, so using the \textsf{\ddash q} and \textsf{\ddash qq} options is not
        recommended if your file is not compiling.
@@ -1186,23 +1186,23 @@ option.
        \item[-s,\ddash shell-escape] \CrossIndex{command-line options}{shell-escape}
           Shell escape for htlatex/make4ht
 
-       \item[-r RCFILE, \ddash rcfile RCFILE]\index{mathquizrc}
+       \item[-r RCFILE, \ddash rcfile RCFILE]\index{webquizrc}
           Specify the rc-file (\textit{run-time configuration file}), file
-          that \MathQuiz should read (and write to).
+          that \WebQuiz should read (and write to).
 
-          By default, \MathQuiz will first read the system rc-file (the
-          file \textsf{mathquizrc} in the \MathQuiz script directory),
+          By default, \WebQuiz will first read the system rc-file (the
+          file \textsf{webquizrc} in the \WebQuiz script directory),
           followed by the rc-file in your home directory (the file
-          \textsf{$\sim$/.mathquizrc}), if it exists. If it is unable to
-          write to the system rc-file then \MathQuiz will create an
+          \textsf{$\sim$/.webquizrc}), if it exists. If it is unable to
+          write to the system rc-file then \WebQuiz will create an
           rc-file in your home directory, which it will subsequently
-          read whenever you run \MathQuiz. This setting is only
+          read whenever you run \WebQuiz. This setting is only
           necessary if you want to override the default rc-file.
 
           The rc-file can be edited by hand, however, it is
           recommended that you instead use
           \begin{center}
-            \mathquizopt{edit-settings}
+            \webquizopt{edit-settings}
           \end{center}
        \item[-p, \ddash pst2pdf] \CrossIndex{command-line options}{pst2pdf}
           Use the \textsf{pst2pdf} command-line option to, \textit{potentially},
@@ -1217,63 +1217,63 @@ option.
        \item[\ddash make4ht MAKE4HT\_OPTIONS] \CrossIndex{command-line options}{make4ht}
           Options to be passed to \textsf{make4ht} when converting the \LaTeX{} to \textsf{xml}. This
           option is equivalent to setting the \textsf{make4ht}
-          in the \mathquizrc file; see \autoref{SS:rcfile}. At least
+          in the \webquizrc file; see \autoref{SS:rcfile}. At least
           under UNIX, multiple arguments should be enclosed in quotes.
           For example, to give \textsf{make4ht} an mk4 file you would use
           \begin{center}
-                    \texttt{mathquiz \ddash make4ht "-e file.mk4" quiz.tex}
+                    \texttt{webquiz \ddash make4ht "-e file.mk4" quiz.tex}
           \end{center}
 
           \advancedOption
 
-       \item[\ddash mathquiz\_format MATHQUIZ\_FORMAT] \CrossIndex{command-line options}{format}
+       \item[\ddash webquiz\_format WEBQUIZ\_FORMAT] \CrossIndex{command-line options}{format}
           Local python code for formatting the quiz web page. This
-          option is equivalent to setting the \textsf{mathquiz\_format}
-          in the \mathquizrc file.
+          option is equivalent to setting the \textsf{webquiz\_format}
+          in the \webquizrc file.
           \advancedOption
 
     \end{description}
 
-    \subsection{The \mathquizrc file}\label{SS:customisation}\label{SS:rcfile}\index{default settings}
+    \subsection{The \webquizrc file}\label{SS:customisation}\label{SS:rcfile}\index{default settings}
 
-    \MathQuiz stores various \textit{run-time configuration settings} in
-    the \mathquizrc file. The system rc-file, \textsf{mathquizrc}, is
-    saved in the \texttt{scripts/mathquiz} subdirectory of the
+    \WebQuiz stores various \textit{run-time configuration settings} in
+    the \webquizrc file. The system rc-file, \textsf{webquizrc}, is
+    saved in the \texttt{scripts/webquiz} subdirectory of the
     \textsf{TEXMFLOCAL} directory. If you are using \TeX Live (and
     possibly Mik\TeX?) you can find this directory using the command
     \begin{center}
             \textsf{kpsewhich -var-value=TEXMFLOCAL}
     \end{center}
-    By default, the \MathQuiz settings are saved here so that you do not
-    need to reinitialise \MathQuiz whenever you update your \TeX{}
+    By default, the \WebQuiz settings are saved here so that you do not
+    need to reinitialise \WebQuiz whenever you update your \TeX{}
     distribution. If you do not have permission to write to this
     directory then you will be asked if you would like to save the
     rc-file somewhere else.
 
-    Each time \MathQuiz is run it first reads the system rc-file, if it
+    Each time \WebQuiz is run it first reads the system rc-file, if it
     exits, followed by the \textit{users rc-file}, which is the file
-    \textsf{.mathquizrc} in the users home directory -- again, the users
+    \textsf{.webquizrc} in the users home directory -- again, the users
     rc-file is read only if it exists. You can specify an arbitrary file
-    as an rc-file using command  \mathquizopt{rc-file}. When you change
-    the \MathQuiz settings, using \mathquizopt{edit-settings}, the new
+    as an rc-file using command  \webquizopt{rc-file}. When you change
+    the \WebQuiz settings, using \webquizopt{edit-settings}, the new
     settings are saved in the last rc-file that was read, which will
-    always be the rc-file given by \mathquizopt{rc-file} when this
+    always be the rc-file given by \webquizopt{rc-file} when this
     command-line option is used.  As with the system rc-file, if you do
     not have permission to write to the specified rc-file then you will
     be asked for a different install location.
 
-    The following settings may be used in a \MathQuiz rc-file:
+    The following settings may be used in a \WebQuiz rc-file:
 
     \begin{description}
-        \item[mathquiz\_url] This is the relative URL for mathquiz web directory
-        \item[mathquiz\_www] This is the full path to the mathquiz web
+        \item[webquiz\_url] This is the relative URL for webquiz web directory
+        \item[webquiz\_www] This is the full path to the webquiz web
             directory. The on-line manual and other example code can be
             found in the \texttt{docs} subdirectory. If you use a \textsf{bash} shell
             then the command
             \begin{center}
-                    \texttt{cd \$(mathquiz \ddash settings mathquiz\_www)/docs}
+                    \texttt{cd \$(webquiz \ddash settings webquiz\_www)/docs}
             \end{center}
-            will take you to the \MathQuiz on-line \texttt{docs/} directory.
+            will take you to the \WebQuiz on-line \texttt{docs/} directory.
         \item[breadcrumbs]
           Sets the default breadcrumbs at the top of quiz page; see \Verb|\BreadCrumbs| in \autoref{SS:breadcrumbs}
           \macroIndex{BreadCrumbs}
@@ -1289,7 +1289,7 @@ option.
         \item[institution\_url]
           Sets the URL for the institution; see \Verb|\InstitutionURL| in \autoref{SS:breadcrumbs}
           \macroIndex{InstitutionURL}
-          \item[mathjax] \MathQuiz web pages use \href{https://www.mathjax.org/}{mathjax} to
+          \item[mathjax] \WebQuiz web pages use \href{https://www.mathjax.org/}{mathjax} to
           render the mathematics on the quiz web pages. By default this
           is done by loading \textsf{mathjax} from
           \begin{center}
@@ -1303,11 +1303,11 @@ option.
           corresponding relative URL.
           \item[make4ht]\index{make4ht}
           Options for \textsf{make4ht}. Rather than using \TeX4ht
-          directly, \MathQuiz uses \textsf{make4ht} to convert the
+          directly, \WebQuiz uses \textsf{make4ht} to convert the
           \LaTeX\ file to \textsf{xml}. Use this option to
           customise how \textsf{make4ht} is called. See the
           \ctan[make4ht]{make4ht manual} for more information.
-        \item[mathquiz\_format]
+        \item[webquiz\_format]
           Sets the python file that writes the HTML file for the quiz.
           Most people will not need this option. The next subsection
           describes how to do this in more detail.
@@ -1319,14 +1319,14 @@ option.
     \autoref{SS:breadcrumbs} for more details.
 
 
-  \subsubsection{Changing the format of the \MathQuiz web pages}\index{format}
+  \subsubsection{Changing the format of the \WebQuiz web pages}\index{format}
   The construction of the online quizzes is controlled by the python
-  file \verb!mathquiz_standard.py!. If you want to change the structure
+  file \verb!webquiz_standard.py!. If you want to change the structure
   of the web pages for the quizzes then the easiest way to do this is to make a
-  copy of \verb!mathquiz_standard.py!, say \textsf{mathquiz\_myformat.py}, and
+  copy of \verb!webquiz_standard.py!, say \textsf{webquiz\_myformat.py}, and
   then edit this file directly. This will require working knowledge of
   python and HTML. To give you an idea of what needs to be done,
-  the python file \textsf{mathquiz\_standard} contains a single
+  the python file \textsf{webquiz\_standard} contains a single
   function \texttt{write\_web\_page} that returns the HTML for the page
   as a string using the following:
 
@@ -1348,46 +1348,46 @@ option.
               {quiz_questions}
             </div>
           </div>
-          {mathquiz_init}
+          {webquiz_init}
         </body>
         </html>
         '''
         \end{htmlcode}
   By changing this output you can change the format of the quizzes
-  produced by \MathQuiz. For example, by adding code to the
+  produced by \WebQuiz. For example, by adding code to the
   \Verb|<head>...</head>| section of \Verb|quiz_page| it is easy to
   include new CSS code and by modifying \Verb|<body>....</body>| you can
   change the ``decorating HTML'' of the web page.  You may also want to
-  change the CSS style sheet for mathquiz, which is the file
-  \textsf{web/mathquiz.css}. More sophisticated versions of
-  \verb!mathquiz_standard.py!  where you change the underlying python
+  change the CSS style sheet for webquiz, which is the file
+  \textsf{web/webquiz.css}. More sophisticated versions of
+  \verb!webquiz_standard.py!  where you change the underlying python
   code are of course possible.  For example, at the University of Sydney
   our version of this python file calls our content management system
   directly and uses this to create the web page for the quiz.
 
   When experimenting with a new format can run
-  \MathQuiz using the command
+  \WebQuiz using the command
   \begin{center}
-    \textsf{mathquiz \ddash mathquiz\_format mathquiz\_myformat quizfile.tex}
+    \textsf{webquiz \ddash webquiz\_format webquiz\_myformat quizfile.tex}
   \end{center}
   Once you have finalised the new format you can make this the default
   format using
-  \mathquizopt{edit-settings}.\index{edit-settings}\index{mathquiz\_format}
+  \webquizopt{edit-settings}.\index{edit-settings}\index{webquiz\_format}
 
   If you do make modifications to any of these files it is advisable to
   create a version of the file \textit{with a different name}. This
   will make it easier for you to integrate your changes with any future
-  released of \MathQuiz.
+  released of \WebQuiz.
 
   \subsection{Bugs, issues and feature requests}\index{bug reports}
     Please report any bugs, issues or feature requests at
-    \href{https://\mathquiz{repository}}{\mathquiz{repository}}.
+    \href{https://\webquiz{repository}}{\webquiz{repository}}.
 
     When reporting a bug please provide a \textit{minimal working example}
     that clearly demonstrates your problem. This should be a compilable
     \LaTeX file that looks something like the following:
     \begin{latexcode}
-       \documentclass{mathquiz}
+       \documentclass{webquiz}
        \begin{document}
             ** insert problematic code here **
        \end{document}
@@ -1396,37 +1396,37 @@ option.
     hard to reproduce in which case it is not possible to fix them. Before
     submitting a bug export please check, if possible, to see if
     your problem is really an issue with \TeX4ht rather a bug in
-    \MathQuiz.
+    \WebQuiz.
 
-\section{The on-line MathQuiz manual}\label{S:online}
+\section{The on-line WebQuiz manual}\label{S:online}
 
-  \MathQuiz has an
-  \href{http://www.maths.usyd.edu.au/u/MOW/MathQuiz/doc/mathquiz-manual.html}{on-line
-  manual} that is a \LaTeX file written with the \textsf{mathquiz}
+  \WebQuiz has an
+  \href{http://www.maths.usyd.edu.au/u/MOW/WebQuiz/doc/webquiz-manual.html}{on-line
+  manual} that is a \LaTeX file written with the \textsf{webquiz}
   document class. The conversion of the manual from \LaTeX{} to HTML is
-  done by \MathQuiz. The PDF version of this manual is included here for
+  done by \WebQuiz. The PDF version of this manual is included here for
   your convenience. The source file for the on-line manual is included
-  in the documentation of \MathQuiz to allow you to create a local
+  in the documentation of \WebQuiz to allow you to create a local
   version of the on-line manual. Look for the file
-  \texttt{mathquiz-online-manual.tex} in the \textsf{mathquiz\_www/docs}
+  \texttt{webquiz-online-manual.tex} in the \textsf{webquiz\_www/docs}
   directory; see~\autoref{SS:rcfile}.
 
-  The on-line manual was written for ``internal use'' when \MathQuiz was
-  first written in 2004. \MathQuiz has evolved quite a lot since then.
+  The on-line manual was written for ``internal use'' when \WebQuiz was
+  first written in 2004. \WebQuiz has evolved quite a lot since then.
   There is quite a bit of overlap between the on-line manual and
   previous sections, however, the on-line manual only describes how to
   typeset questions and it does not cover some of the more recent
-  features of \MathQuiz or how to use the program.  If there are any
+  features of \WebQuiz or how to use the program.  If there are any
   discrepancies between the on-line manual and the earlier sections of
   this manual then the on-line manual should be discounted.
 
   The on-line manual has diagrams that are drawn using \ctan{pstricks}
   and, as a result, to create a PDF version of the on-line manual use
-  \Verb|latex mathquiz-online-manual| to create a \textsf{dvi file}. The
+  \Verb|latex webquiz-online-manual| to create a \textsf{dvi file}. The
   dvi file can be  converted to PDF using \Verb|dvipdf|. If you try to
   use \Verb|pdflatex| directly you will get an error.
 
-  \includepdf[pages=-,pagecommand={\pagestyle{mathquiz}}]{mathquiz-online-manual}
+  \includepdf[pages=-,pagecommand={\pagestyle{webquiz}}]{webquiz-online-manual}
 
 \section{Licence}
 
@@ -1446,13 +1446,13 @@ PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
 \vfil
 \begin{tabular}{@{}ll}
-Authors             & \mathquiz{authors}\\
-Description         & \mathquiz{description}\\
-Maintainer          & \mathquiz{name}\\
-System requirements & \mathquiz{requirements}\\
-Licence             & \mathquiz{licence}\\
-Release date        & \mathquiz{release date}\\
-Repository          & \href{https://\mathquiz{repository}}{\mathquiz{repository}}
+Authors             & \webquiz{authors}\\
+Description         & \webquiz{description}\\
+Maintainer          & \webquiz{name}\\
+System requirements & \webquiz{requirements}\\
+Licence             & \webquiz{licence}\\
+Release date        & \webquiz{release date}\\
+Repository          & \href{https://\webquiz{repository}}{\webquiz{repository}}
 \end{tabular}
 \eject
 

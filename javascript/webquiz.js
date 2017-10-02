@@ -1,6 +1,6 @@
 /*
  * -----------------------------------------------------------------------
- *   mathquiz.js | javascript for controlling mathquiz web pages
+ *   webquiz.js | javascript for controlling webquiz web pages
  * -----------------------------------------------------------------------
  *
  *   Copyright (C) Andrew Mathas and Donald Taylor, University of Sydney
@@ -8,7 +8,7 @@
  *   Distributed under the terms of the GNU General Public License (GPL)
  *               http://www.gnu.org/licenses/
  *
- *   This file is part of the MathQuiz system.
+ *   This file is part of the WebQuiz system.
  *
  *   <Andrew.Mathas@sydney.edu.au>
  *   <Donald.Taylor@sydney.edu.au>
@@ -267,8 +267,8 @@ function checkAnswer() {
     updateQuestionMarker();
 }
 
-// initialise the quiz, loading specifcations and setting up the first question
-function MathQuizInit(questions, discussions, quizfile, hidesidemenu) {
+// initialise the quiz, loading specifications and setting up the first question
+function WebQuizInit(questions, discussions, quizfile, hidesidemenu) {
     qTotal = questions;
     dTotal = discussions;
     currentQuiz = quizfile;

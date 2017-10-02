@@ -1,6 +1,6 @@
 r'''
 ----------------------------------------------------------------------
-    mathquiz_sms | sms layout of mathquiz web pages.
+    webquiz_sms | sms layout of webquiz web pages.
 ----------------------------------------------------------------------
 
     Copyright (C) Andrew Mathas and Donald Taylor, University of Sydney
@@ -18,10 +18,10 @@ r'''
 # -*- encoding: utf-8 -*-
 
 # -----------------------------------------------------
-from mathquiz_templates import no_script
+from webquiz_templates import no_script
 from wp import processtemplate as sms_write_page
-from mathquiz_templates import button, discuss
-from mathquiz import metadata
+from webquiz_templates import button, discuss
+from webquiz import metadata
 
 sms_quiz_specifications = '''  <script type="text/javascript">
     var QuizURI="{}/Quizzes";
@@ -50,7 +50,7 @@ sms_page_body=r'''
       {quiz_header}
       {quiz_questions}
   </div>
-  {mathquiz_init}
+  {webquiz_init}
 '''
 
 sms_side_menu = r'''<div class="side_menu">
@@ -70,8 +70,8 @@ sms_side_menu = r'''<div class="side_menu">
         {university}
       </div>
       <div class="copyright">
-        <a href="http://www.maths.usyd.edu.au/u/MOW/MathQuiz/doc/credits.html">
-           MathQuiz {version}
+        <a href="http://www.maths.usyd.edu.au/u/MOW/WebQuiz/doc/credits.html">
+           WebQuiz {version}
         </a>
         <br>&copy; Copyright 2004-2017
       </div>
@@ -96,7 +96,7 @@ def initialise_SMS_Menus(web_page):
   hd=sms_quiz_specifications.format(web_page.course['url'],content)
   if web_page.quiz_file=="index":
     hd += sms_research_menu+sms_qsubmenu
-  elif web_page.quiz_file in [ 'mathquiz-manual','credits']:
+  elif web_page.quiz_file in [ 'webquiz-manual','credits']:
     hd += sms_qsubmenu
   else:
     hd += sms_course_qsubmenu
@@ -105,7 +105,7 @@ def initialise_SMS_Menus(web_page):
 
 # breadcrumbs line
 def SMS_breadcrumbs(doc):
-  if doc.course['code']=="MathQuiz":
+  if doc.course['code']=="WebQuiz":
     level = 'MOW'
     year  = 'GEM'
   elif len(doc.course['code'])>4:
@@ -117,11 +117,11 @@ def SMS_breadcrumbs(doc):
     year=''
 
   bc = """<div class="breadcrumb moved"><b>You are here: &nbsp;&nbsp;</b><a href="/">Maths &amp; Stats Home</a> /"""
-  if doc.quiz_file=="mathquiz-manual":
-    bc += """<a href="/u/MOW/">GEM</a> / MathQuiz"""
+  if doc.quiz_file=="webquiz-manual":
+    bc += """<a href="/u/MOW/">GEM</a> / WebQuiz"""
   elif doc.quiz_file=="credits":
     bc += """<a href="/u/MOW/">GEM</a> /
-             <a href="/u/MOW/MathQuiz/doc/mathquiz-manual.html">MathQuiz</a> /
+             <a href="/u/MOW/WebQuiz/doc/webquiz-manual.html">WebQuiz</a> /
 	     Credits"""
   else:
     bc += """
@@ -148,11 +148,11 @@ def SMS_menu(doc):
     if len(doc.quiz.course['name'])>0:
         menu_name = ''
         if len(doc.quiz.quiz_list)==0:  # not on a quiz index page
-            if  doc.quiz_file in ["mathquiz-manual","credits"]:
+            if  doc.quiz_file in ["webquiz-manual","credits"]:
                 type="QSubmenu"
             else:
                 type="CourseQSubmenu"
-            heading = 'Manual' if doc.quiz_file=='mathquiz-manual' else ''
+            heading = 'Manual' if doc.quiz_file=='webquiz-manual' else ''
             menu = navigation_menu.format(menu=type, heading='' if heading=='' else '<li>{}</li>'.format(heading))
         else:
             menu = ''
@@ -190,7 +190,7 @@ def write_web_page(doc):
       page_body_string = sms_page_body.format(
                              quiz_header = doc.quiz_header,
                              quiz_questions = doc.quiz_questions,
-                             mathquiz_init = doc.mathquiz_init
+                             webquiz_init = doc.webquiz_init
                          ),
       nopreview = '',
       menu_icon = '<div class="menu_icon" onclick="toggle_side_menu_display();">&#9776;</div>'
@@ -199,8 +199,8 @@ def write_web_page(doc):
                          ('menuname', sms_menu_name),
                          ('pagetitle', doc.title),
                          ('title',''),
-                         ('extrajsmenu','mathquiztitles'),
-                         ('tablevel', 'internal' if doc.quiz_file in ['mathquiz-manual','credits'] else '')]:
+                         ('extrajsmenu','webquiztitles'),
+                         ('tablevel', 'internal' if doc.quiz_file in ['webquiz-manual','credits'] else '')]:
       page['UNIT_OF_STUDY,'+key] = value
 
     # doc.course['quizzes_url'][3:][:-1] looks like '/u/UG/JM/MATH1003/Quizzes/'

@@ -1,6 +1,6 @@
 /*
  * -----------------------------------------------------------------------
- *   mathquiz.css | main css specifications
+ *   webquiz.css | main css specifications
  * -----------------------------------------------------------------------
  *
  *   Copyright (C) Andrew Mathas, University of Sydney
@@ -8,7 +8,7 @@
  *   Distributed under the terms of the GNU General Public License (GPL)
  *               http://www.gnu.org/licenses/
  *
- *   This file is part of the MathQuiz system.
+ *   This file is part of the WebQuiz system.
  *
  *   <Andrew.Mathas@sydney.edu.au>
  * ----------------------------------------------------------------------
@@ -166,7 +166,7 @@ div.side-menu {
     }
     div.copyright A, div.copyright A:link, div.copyright A:visited {
         text-decoration: none;
-        color: $MathQuiz;
+        color: $WebQuiz;
         font-weight: bold;
     }
 }

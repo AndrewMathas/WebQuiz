@@ -4,33 +4,33 @@
 %  Distributed under the terms of the GNU General Public License (GPL)
 %                  http://www.gnu.org/licenses/
 %
-% This file is part of the MathQuiz system.
+% This file is part of the WebQuiz system.
 %
 % <Andrew.Mathas@sydney.edu.au>
 %-----------------------------------------------------------------------------
 
-%% This file is part of the MathQuiz class distribution
-\documentclass[svgnames]{mathquiz}
-\usepackage{mathquiz-doc}
+%% This file is part of the WebQuiz class distribution
+\documentclass[svgnames]{webquiz}
+\usepackage{webquiz-doc}
 \usepackage{pst-plot}
 \usepackage{hyperref}
 
 \usepackage{ifpdf}
 \ifpdf
-  \PackageError{MathQuiz}{This file must be compiled using latex not pdflatex}
+  \PackageError{WebQuiz}{This file must be compiled using latex not pdflatex}
 \fi
 \newcommand{\C}{\mathbb C}
 \newcommand*{\vect}[1]{\mathbf{#1}}
-\UnitCode{MathQuiz}
+\UnitCode{WebQuiz}
 
-\UnitName{MathQuiz Manual}
-\UnitURL{/u/MOW/MathQuiz/doc/mathquiz-manual.html}
-\BreadCrumb{MathQuiz on-line manual}
+\UnitName{WebQuiz Manual}
+\UnitURL{/u/MOW/WebQuiz/doc/webquiz-manual.html}
+\BreadCrumb{WebQuiz on-line manual}
 \University{University of Sydney}
 \Department{School of Mathematics and Statistics}
-\QuizzesURL{MOW/MathQuiz/doc/}
+\QuizzesURL{MOW/WebQuiz/doc/}
 
-\hypersetup{pdftitle={MathQuiz on-line manual}}
+\hypersetup{pdftitle={WebQuiz on-line manual}}
 
 \newcommand\qref[1]{%
   \ifdefined\HCode\relax
@@ -39,16 +39,16 @@
   \fi%
 }
 
-\title{MathQuiz: Web Quizzes using LaTeX}
+\title{WebQuiz: Web Quizzes using LaTeX}
 \begin{document}
 
 \begin{discussion}[Introduction]
-  \MathQuiz{} is a \LaTeX{} based system to create \textit{interactive}
+  \WebQuiz{} is a \LaTeX{} based system to create \textit{interactive}
   web quizzes.  The idea is that you write the quiz using \LaTeX{} and that
-  MathQuiz creates the web page from this file. Anything which you can
-  write using \LaTeX{} will be converted to HTML by MathQuiz. This
+  WebQuiz creates the web page from this file. Anything which you can
+  write using \LaTeX{} will be converted to HTML by WebQuiz. This
   includes, for example, mathematics and graphics written using
-  PSTricks.  \MathQuiz{} supports three different types of quiz
+  PSTricks.  \WebQuiz{} supports three different types of quiz
   questions:
 
   \begin{enumerate}
@@ -60,17 +60,17 @@
   \item Questions which require a \emph{numerical} answer.
  (See \qref{3})
   \end{enumerate}
-The use of \MathQuiz{} is described in the next section. Later
-sections describe how each of the \MathQuiz{} environments are used.
+The use of \WebQuiz{} is described in the next section. Later
+sections describe how each of the \WebQuiz{} environments are used.
 
-The \verb|discussion| environment in \MathQuiz{} can also be used to
+The \verb|discussion| environment in \WebQuiz{} can also be used to
 write Web Pages like this one (The pages you are reading here were
-written using \MathQuiz.)
+written using \WebQuiz.)
 \end{discussion}
 \begin{discussion}[Basic Usage]
-Once you have a \MathQuiz{} file, you can run it through \LaTeX, in
+Once you have a \WebQuiz{} file, you can run it through \LaTeX, in
 the usual way, to produce a readable version of your quiz. When you
-are happy with the quiz, use \verb|mathquiz| to create the HTML
+are happy with the quiz, use \verb|webquiz| to create the HTML
 version. Note that the printable version of the quiz does \emph{not}
 look like the web page; rather, it contains all of the information in
 an easily readable layout.
@@ -82,17 +82,17 @@ an easily readable layout.
       > pdflatex quiz1             % a PDF versio of the quiz
       > xdvi quiz1                 % view the quiz using xdvi
       > dvips quiz1                % print the quiz
-      > mathquiz quiz1             % converts the quiz to html
+      > webquiz quiz1             % converts the quiz to html
 \end{latexcode}
   Converting the quiz to html can take quite a long time, particularly
   if a large number of images need to be created.
 
 \end{discussion}
-\begin{discussion}[MathQuiz files]
+\begin{discussion}[WebQuiz files]
 
-  The basic structure of a \MathQuiz{} file is as follows:
+  The basic structure of a \WebQuiz{} file is as follows:
 \begin{latexcode}
-      \documentclass{mathquiz}
+      \documentclass{webquiz}
 
       \title{Quiz 1: Complex numbers}
 
@@ -160,7 +160,7 @@ an easily readable layout.
   Questions are set inside a \verb|question| environment. The text is
   followed by the answers.
 
-  \MathQuiz{} supports three types of questions:
+  \WebQuiz{} supports three types of questions:
   \begin{itemize}
   \item Multiple choice questions with \emph{precisely one} correct
     answer;
@@ -199,7 +199,7 @@ an easily readable layout.
   however, it is recommended that you use them as good feedback is
   very useful for the students.
   \par
-  For example, \qref{1} below was typed into \MathQuiz{}
+  For example, \qref{1} below was typed into \WebQuiz{}
   using the following commands:
 \begin{latexcode}
    \begin{question}
@@ -267,7 +267,7 @@ an easily readable layout.
   The only difference to the previous case is that multiple (or no)
   \verb|\correct| commands may be used.
   \par
-  For example, \qref{2} below was typed into MathQuiz
+  For example, \qref{2} below was typed into WebQuiz
   using the following commands:
 \begin{latexcode}
     \begin{question}
@@ -319,7 +319,7 @@ an easily readable layout.
   If the optional argument \verb|[multiple]| is not present, then the
   question admits precisely one correct answer.
   \par
-  For example, \qref{3} below was typed into \MathQuiz{}
+  For example, \qref{3} below was typed into \WebQuiz{}
   using the following commands:
 \begin{latexcode}
     \begin{question}
@@ -381,7 +381,7 @@ an easily readable layout.
 \end{latexcode}
 \end{discussion}
 \begin{discussion}[Question 4]
-  The final type of question that \MathQuiz{} supports is a question
+  The final type of question that \WebQuiz{} supports is a question
   which requires a \emph{numerical} as an answer. The numerical
   answer must be given in decimal form.
   The answer is typeset using the \verb|\answer| macro. That macro
@@ -403,7 +403,7 @@ an easily readable layout.
        \end{question}
 \end{latexcode}
   \par
-  For example, \qref{4} below was typed into \MathQuiz{}
+  For example, \qref{4} below was typed into \WebQuiz{}
   using the following commands:
 \begin{latexcode}
     \begin{question}
@@ -428,9 +428,9 @@ an easily readable layout.
 \end{latexcode}
 \end{discussion}
 \begin{discussion}[Index Files]
-  \MathQuiz{} also provides a mechanism for creating a web page
+  \WebQuiz{} also provides a mechanism for creating a web page
   containing an index of all quizzes for a given Unit of Study.
-  This is done with a \MathQuiz{} file which contains a |quizlist|
+  This is done with a \WebQuiz{} file which contains a |quizlist|
   environment. The syntax for this environment is as follows:
 \begin{latexcode}
     \begin{quizlist}
@@ -440,12 +440,12 @@ an easily readable layout.
     \end{quizlist}
 \end{latexcode}
   If no \textit{url} is given as an optional argument to |\quiz| then
-  \MathQuiz{} sets the url(s) to \verb|quiz1.html|, \verb|quiz2.html|
+  \WebQuiz{} sets the url(s) to \verb|quiz1.html|, \verb|quiz2.html|
   and so on.
 \end{discussion}
 
 \begin{discussion}[Credits]
-    \MathQuiz{} was written and developed in the
+    \WebQuiz{} was written and developed in the
     \href{http://www.maths.usyd.edu.au/}{School of Mathematics and
     Statistics} at the \href{http://www.usyd.edu.au/}{University of
     Sydney}.  The system is built on \LaTeX{} with the conversion from
@@ -454,18 +454,18 @@ an easily readable layout.
     and Michal Hoftich's
     \href{https://github.com/michal-h21/make4ht}{make4ht}.
 
-    To write quizzes using \MathQuiz it is only necessary to know
-    \LaTeX, however, the \MathQuiz system has three components:
+    To write quizzes using \WebQuiz it is only necessary to know
+    \LaTeX, however, the \WebQuiz system has three components:
     \begin{itemize}
-      \item A \LaTeX{} document class file, \texttt{mathquiz.cls}, and
-      a \TeX 4ht configuration file, \texttt{mathquiz.cfg}, that enable the
+      \item A \LaTeX{} document class file, \texttt{webquiz.cls}, and
+      a \TeX 4ht configuration file, \texttt{webquiz.cfg}, that enable the
       quiz files to be processed by \LaTeX{} and \TeX 4ht, respectively.
-      \item A python program, \texttt{mathquiz}, that translates the xml
+      \item A python program, \texttt{webquiz}, that translates the xml
       file that is produced by \TeX 4ht into  HTML.
       \item Some javascript and css that controls the quiz web page.
     \end{itemize}
 
-   The \LaTeX{} component of \MathQuiz{} was written by Andrew Mathas
+   The \LaTeX{} component of \WebQuiz{} was written by Andrew Mathas
    and the python, css and javascript code was written by Andrew Mathas
    (and Don Taylor), based on an initial protype of Don Taylor's from
    2001.  Since 2004 the program has been maintained and developed by
@@ -621,4 +621,4 @@ an easily readable layout.
 \end{document}
 \endinput
 %%
-%% End of file `mathquiz-manual.tex'.
+%% End of file `webquiz-manual.tex'.

@@ -2,14 +2,14 @@
 
 r'''
 -----------------------------------------------------------------------------------------
-    setup | mathquiz setuptools configuration
+    setup | webquiz setuptools configuration
 -----------------------------------------------------------------------------------------
     Copyright (C) Andrew Mathas, University of Sydney
 
     Distributed under the terms of the GNU General Public License (GPL)
                   http://www.gnu.org/licenses/
 
-    This file is part of the MathQuiz system.
+    This file is part of the WebQuiz system.
 
     <Andrew.Mathas@sydney.edu.au>
 -----------------------------------------------------------------------------------------
@@ -37,9 +37,9 @@ class MetaData(dict):
                 if len(key.strip())>0:
                     setattr(self, key.strip().lower(), val.strip())
 
-settings = MetaData('latex/mathquiz.ini')
+settings = MetaData('latex/webquiz.ini')
 
-class MathQuizCtan(build_py):
+class WebQuizCtan(build_py):
     r"""
     Create TDS zip file for submission to ctan/texlive.
 
@@ -52,12 +52,12 @@ class MathQuizCtan(build_py):
                 'name' : settings.authors,
                'email' : settings.author_email,
              'summary' : settings.description,
-           'directory' : '/scripts/mathquiz, tex/latex/mathquiz and doc/latex/mathquiz',
+           'directory' : '/scripts/webquiz, tex/latex/webquiz and doc/latex/webquiz',
             'announce' : settings.description,
-               'notes' : 'See README file in tex/latex/mathquiz',
+               'notes' : 'See README file in tex/latex/webquiz',
              'license' : 'free',
          'freeversion' : 'gpl',
-                'file' : 'mathquiz.zip',
+                'file' : 'webquiz.zip',
     }
 
     def run(self):
@@ -84,55 +84,55 @@ class MathQuizCtan(build_py):
     def build_files_for_zipping(self):
         r'''
         Rebuilds the documentation files and css for inclusion in the zip file:
-            - doc/mathquiz-manual.tex
-            - doc/mathquiz.tex
-            - css/mathquiz.css
+            - doc/webquiz-manual.tex
+            - doc/webquiz.tex
+            - css/webquiz.css
         to ensure that they are correct for the ctan upload. We need to make
-        mathquiz-manual.pdf first because it is included in mathquiz.pdf.
+        webquiz-manual.pdf first because it is included in webquiz.pdf.
         '''
         for css_file in glob.glob('webquiz-*.scss'):
             self.shell_command('sass --style compress {} {}.css'.format(css_file, css_file[:-4]))
-        self.shell_command('cd doc && latex --interaction=batchmode mathquiz-online-manual && dvipdf mathquiz-online-manual')
-        self.shell_command('cd doc && pdflatex --interaction=batchmode mathquiz')
+        self.shell_command('cd doc && latex --interaction=batchmode webquiz-online-manual && dvipdf webquiz-online-manual')
+        self.shell_command('cd doc && pdflatex --interaction=batchmode webquiz')
 
     def write_zip_file(self):
         r'''
-        Create a zip file for mathquiz that can be uploaded to ctan. To do
+        Create a zip file for webquiz that can be uploaded to ctan. To do
         this we use the zipfile module to write the zopfile with all files in
         their expected places.
         '''
         # if the ctan directory already exists then delete it
-        if os.path.isfile('mathquiz.zip'):
-            os.remove('mathquiz.zip')
+        if os.path.isfile('webquiz.zip'):
+            os.remove('webquiz.zip')
 
         self.build_files_for_zipping()
 
         # save the files as a TDS (Tex directory standard) zip file
-        with zipfile.ZipFile('mathquiz.zip', 'w', zipfile.ZIP_DEFLATED) as zfile:
+        with zipfile.ZipFile('webquiz.zip', 'w', zipfile.ZIP_DEFLATED) as zfile:
 
             # now add the files
             for (src, target) in [ ('README.md',                        ''),
                                    ('doc/*.pdf',                        'doc'),
                                    ('doc/m*.tex',                       'doc'),
                                    ('doc/examples/*.png',               'doc/examples'),
-                                   ('latex/mathquiz.c*',                'latex'),
+                                   ('latex/webquiz.c*',                'latex'),
                                    ('latex/pgfsys-tex4ht-mq-fixed.def', 'latex'),
-                                   ('latex/mathquiz.ini',               'latex'),
-                                   ('latex/mathquiz-doc.sty',           'latex'),
+                                   ('latex/webquiz.ini',               'latex'),
+                                   ('latex/webquiz-doc.sty',           'latex'),
                                    ('latex/webquiz-*.lang',             'latex'),
                                    ('LICENCE',                          'scripts'),
-                                   ('mathquiz/mathquiz*.py',            'scripts'),
-                                   ('mathquiz/mathquiz.ini',            'scripts'),
-                                   ('mathquiz/mathquiz.bat',            'scripts'),
+                                   ('webquiz/webquiz*.py',            'scripts'),
+                                   ('webquiz/webquiz.ini',            'scripts'),
+                                   ('webquiz/webquiz.bat',            'scripts'),
                                    ('css/webquiz-*.css',                'scripts/www'),
-                                   ('javascript/mathquiz.js',           'scripts/www'),
-                                   ('doc/mathquiz-online-manual.tex',   'scripts/www/doc'),
-                                   ('mathquiz/mathquiz.ini',            'scripts/www/doc'),
+                                   ('javascript/webquiz.js',           'scripts/www'),
+                                   ('doc/webquiz-online-manual.tex',   'scripts/www/doc'),
+                                   ('webquiz/webquiz.ini',            'scripts/www/doc'),
                                    ('doc/examples/*.tex',               'scripts/www/doc/examples'),
                 ]:
                 for file in glob.glob(src):
-                  if file != 'mathquiz/mathquiz_sms.py':
-                    zfile.write(file, os.path.join('mathquiz', target, file.split('/')[-1]))
+                  if file != 'webquiz/webquiz_sms.py':
+                    zfile.write(file, os.path.join('webquiz', target, file.split('/')[-1]))
 
 setup(name             = settings.program,
       version          = settings.version,
@@ -148,9 +148,9 @@ setup(name             = settings.program,
       include_package_data=True,
       package_data     = {'webfiles' : '/'},
 
-      cmdclass         = {'ctan'   : MathQuizCtan },
+      cmdclass         = {'ctan'   : WebQuizCtan },
 
-      entry_points     = { 'console_scripts': [ 'mathquiz=mathquiz.mathquiz:main' ], },
+      entry_points     = { 'console_scripts': [ 'webquiz=webquiz.webquiz:main' ], },
 
       license          = settings.licence,
       classifiers      = [

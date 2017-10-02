@@ -1,14 +1,14 @@
-MathQuiz: on-line quizzes using [LaTeX](https://www.latex-project.org/)
+WebQuiz: on-line quizzes using [LaTeX](https://www.latex-project.org/)
 =======================================================================
 
-[MathQuiz](https://bitbucket.org/AndrewsBucket/mathquiz) makes it
+[WebQuiz](https://bitbucket.org/AndrewsBucket/webquiz) makes it
 possible to use LaTeX to write interactive web based quizzes. The
 quizzes are first written in LaTeX and then converted into HTML files
-using [MathQuiz](https://bitbucket.org/AndrewsBucket/mathquiz), which is
+using [WebQuiz](https://bitbucket.org/AndrewsBucket/webquiz), which is
 written in python. The conversion from LaTeX to HTML is done behind the
 scenes using [TeX4ht](http://www.tug.org/tex4ht/).
 
-To use [MathQuiz](https://bitbucket.org/AndrewsBucket/mathquiz) you need to have the following programs installed:
+To use [WebQuiz](https://bitbucket.org/AndrewsBucket/webquiz) you need to have the following programs installed:
 
 :   -   [LaTeX](https://www.latex-project.org/)
     -   [TeX4ht](http://www.tug.org/tex4ht/) (available with latest
@@ -17,44 +17,44 @@ To use [MathQuiz](https://bitbucket.org/AndrewsBucket/mathquiz) you need to have
     -   [Python](https://www.python.org) (python3)
 
 Once the system is installed,
-[MathQuiz](https://bitbucket.org/AndrewsBucket/mathquiz) is used
+[WebQuiz](https://bitbucket.org/AndrewsBucket/webquiz) is used
 directly from the command line. For example, if quiz1.tex is a latex
 file for a quiz then: \* latex quiz1 produces a "readable" dvi file for
 the quiz \* pdflatex quiz1 produces a "readable" pdf file for the quiz
-\* mathquiz quiz1 creates the web page quiz1.html
+\* webquiz quiz1 creates the web page quiz1.html
 
 Installation
 ------------
 
-[MathQuiz](https://bitbucket.org/AndrewsBucket/mathquiz) has three
+[WebQuiz](https://bitbucket.org/AndrewsBucket/webquiz) has three
 different components that need to be installed:
 
-> -   LaTeX files: mathquiz.cls and mathquiz.cfg need to be in the LaTeX
+> -   LaTeX files: webquiz.cls and webquiz.cfg need to be in the LaTeX
 >     search path
-> -   python files: the main python is mathquiz.py. On unix systems
+> -   python files: the main python is webquiz.py. On unix systems
 >     create a link to it using something like ln -s &lt;path to
->     mathquiz directory&gt;/mathquiz.py /usr/local/bin/mathquiz
+>     webquiz directory&gt;/webquiz.py /usr/local/bin/webquiz
 > -   web files: although not strictly necessary, the files in the
 >     scripts web directory www should be put on the local web server
 
-Once [MathQuiz](https://bitbucket.org/AndrewsBucket/mathquiz) is
+Once [WebQuiz](https://bitbucket.org/AndrewsBucket/webquiz) is
 available from ctan only the web files will need to be installed and
 this can be done using the command:
 
-> mathquiz --initialise
+> webquiz --initialise
 
-[MathQuiz](https://bitbucket.org/AndrewsBucket/mathquiz) will still work
+[WebQuiz](https://bitbucket.org/AndrewsBucket/webquiz) will still work
 if the web files are not installed locally, however, the quiz pages will
 display a warning message. For more details about installation,
 configuration and use please see the
-[MathQuiz](https://bitbucket.org/AndrewsBucket/mathquiz) manual and the
-[MathQuiz](https://bitbucket.org/AndrewsBucket/mathquiz) on-line manual.
+[WebQuiz](https://bitbucket.org/AndrewsBucket/webquiz) manual and the
+[WebQuiz](https://bitbucket.org/AndrewsBucket/webquiz) on-line manual.
 
 Distrubution
 ------------
 
 To organisation of the the code in the
-[MathQuiz](https://bitbucket.org/AndrewsBucket/mathquiz) repository is
+[WebQuiz](https://bitbucket.org/AndrewsBucket/webquiz) repository is
 not suitable for distribution. To upload the package to ctan use:
 
 > python3 setup.py ctan
@@ -63,7 +63,7 @@ Authors
 =======
 
 The LaTeX component of
-[MathQuiz](https://bitbucket.org/AndrewsBucket/mathquiz) was written by
+[WebQuiz](https://bitbucket.org/AndrewsBucket/webquiz) was written by
 Andrew Mathas and the python, css and javascript code was written by
 Andrew Mathas (and Don Taylor), based on an initial protype of Don
 Taylor's from 2001. Since 2004 the program has been maintained and

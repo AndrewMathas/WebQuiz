@@ -1,6 +1,6 @@
 r'''
 -----------------------------------------------------------------------------
-    mathquiz_local | default layout of mathquiz web pages.
+    webquiz_local | default layout of webquiz web pages.
 -----------------------------------------------------------------------------
 
     Copyright (C) Andrew Mathas, University of Sydney
@@ -8,7 +8,7 @@ r'''
     Distributed under the terms of the GNU General Public License (GPL)
                   http://www.gnu.org/licenses/
 
-    This file is part of the MathQuiz system.
+    This file is part of the WebQuiz system.
 
     <Andrew.Mathas@sydney.edu.au>
     <Donald.Taylor@sydney.edu.au>
@@ -17,7 +17,7 @@ r'''
 
 # -*- encoding: utf-8 -*-
 
-from mathquiz_templates import no_script
+from webquiz_templates import no_script
 
 def write_web_page(quiz):
     return quiz_page.format(
@@ -28,7 +28,7 @@ def write_web_page(quiz):
                quiz_header    = quiz.quiz_header,                     # quiz title + navigation arrows
                quiz_questions = quiz.quiz_questions,                  # html for quiz
                no_script      = no_script,                            # error when javascript is not enabled
-               mathquiz_init  = quiz.mathquiz_init                    # parting javascript callsMathQuizInt
+               webquiz_init  = quiz.webquiz_init                    # parting javascript callsWebQuizInt
     )
 
 quiz_page = r'''<!DOCTYPE HTML>
@@ -48,7 +48,7 @@ quiz_page = r'''<!DOCTYPE HTML>
       {quiz_questions}
     </div>
   </div>
-  {mathquiz_init}
+  {webquiz_init}
 </body>
 </html>
 '''

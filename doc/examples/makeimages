@@ -2,7 +2,7 @@
 
 r'''
 -----------------------------------------------------------------------------
-    makeimages | extract images from mathquiz wev pages for the manual
+    makeimages | extract images from webquiz wev pages for the manual
 -----------------------------------------------------------------------------
 
     Copyright (C) Andrew Mathas, University of Sydney
@@ -10,14 +10,14 @@ r'''
     Distributed under the terms of the GNU General Public License (GPL)
                   http://www.gnu.org/licenses/
 
-    This file is part of the MathQuiz system.
+    This file is part of the WebQuiz system.
 
     <Andrew.Mathas@sydney.edu.au>
 -----------------------------------------------------------------------------
 
 Python script to extract png images for the various web pages that are in the
-mathquiz manual. We first use
-    - mathquiz to construct the web page
+webquiz manual. We first use
+    - webquiz to construct the web page
     - webkit2png to extract an image of the web page, sometimes with options
     - mogrify to trim the image down to size
 Optionally a png image of a PDF file can also be extracted. For the full specs
@@ -26,22 +26,22 @@ see the image_files dictionarty below
 
 import argparse, glob, os, shutil, subprocess
 
-# location of the mathquiz example web pages on a development server
-examplesURL = "http://localhost/MathQuiz/doc/examples"
+# location of the webquiz example web pages on a development server
+examplesURL = "http://localhost/WebQuiz/doc/examples"
 
 # lambda function for running shell commands: run( command )
 run  = lambda cmd: subprocess.call(cmd, shell=True)
 
-mathquiz_mode = '-qq'
+webquiz_mode = '-qq'
 webkit2png_mode = ''
 
-# extract and trim and image using mathquiz, webkit2png and mogrify
+# extract and trim and image using webquiz, webkit2png and mogrify
 def webkit2png(file_in, file_out, delay, javascript):
     if os.path.exists(file_out+'.png'): # remove png file if it already exists
         os.remove(file_out+'.png')
 
-    # run the quiz file through mathquiz
-    run('mathquiz {} {}'.format(mathquiz_mode, file_in))
+    # run the quiz file through webquiz
+    run('webquiz {} {}'.format(webquiz_mode, file_in))
 
     # extract a png image for the web page using webkit2png
     cmd = r"webkit2png {debug} --ignore-ssl-check -o {fout} -W 400 -F --delay={delay} {js} {URL}/{fin}.html".format(
@@ -94,7 +94,7 @@ image_files = dict(
 )
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description = 'Python script to extract images for the mathquiz manual',
+    parser = argparse.ArgumentParser(description = 'Python script to extract images for the webquiz manual',
                                      epilog = 'Images for all pages are extracted if none are specifed'
     )
     parser.add_argument('image', nargs='*',type=str, default=None, help='images to extract')
@@ -105,7 +105,7 @@ if __name__ == '__main__':
 
     # debugging mode
     if args.debugging:
-        mathquiz_mode = '--debugging'
+        webquiz_mode = '--debugging'
         webkit2png_mode = '--debug'
 
     if args.image == []:
