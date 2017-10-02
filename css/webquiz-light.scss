@@ -1,0 +1,52 @@
+/*
+ * -----------------------------------------------------------------------
+ *   mathquiz.css | colour specifications for light theme 
+ * -----------------------------------------------------------------------
+ *
+ *   Copyright (C) Andrew Mathas, University of Sydney
+ *
+ *   Distributed under the terms of the GNU General Public License (GPL)
+ *               http://www.gnu.org/licenses/
+ *
+ *   This file is part of the MathQuiz system.
+ *
+ *   <Andrew.Mathas@sydney.edu.au>
+ * ----------------------------------------------------------------------
+ */
+
+// sass variables for the colours used in the quizzes
+  $ArrowHover:     #990033;
+  $ButtonBG:       #FFF8DC;
+  $ButtonBorder:   #F2BB66;
+  $ButtonHover:    #5B2C6F;
+  $ButtonSelected: #B33C00;
+  $Dazzle:         #FF1A1A;
+  $Heading:        #CE1126;
+  $MathQuiz:       #0000FF;
+  $QuestionPart:   #CC3300;
+  $ResponseBG:     #E9E0D8;
+  $ResponseBorder: #C9A798;
+  $School:         #e63900;
+  $Subheading:     #FF0000;
+  $Text:           #000000;
+  $WarningBG:      #EC7063;
+  $WarningBorder:  #5B2C6F;
+  $WarningFG:      #FFCC00;
+  $White:          #FFFFFF;
+
+  $BreadCrumb1BG:  $Heading;
+  $BreadCrumb1FG:  $White;
+  $BreadCrumb2BG:  $ButtonSelected;
+  $BreadCrumb2FG:  $White;
+  $BreadCrumb3BG:  $ButtonBorder;
+  $BreadCrumb3FG:  $White;
+  $BreadCrumb4BG:  $ButtonBG;
+  $BreadCrumb4FG:  $Text;
+  $BreadCrumb5BG:  $White;
+  $BreadCrumb5FG:  $Text;
+
+  $ListMarker:    '\027A3';
+
+  $HeadingFont: Verdana, Arial, Helvetica, sans-serif;
+
+@import "webquiz";

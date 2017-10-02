@@ -274,7 +274,7 @@ function MathQuizInit(questions, discussions, quizfile, hidesidemenu) {
     currentQuiz = quizfile;
 
     // read the question specifications for the quiz from <currentQuiz>/quiz_list.js
-    document.head.appendChild(document.createElement("script")).src = currentQuiz + "/" + currentQuiz + ".js";
+    document.head.appendChild(document.createElement("script")).src = currentQuiz + "/wq-" + currentQuiz + ".js";
     WaitForQuizSpecifications();
 
     // make the drop down menu if QuizTitles has some entries

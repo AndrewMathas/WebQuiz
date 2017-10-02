@@ -731,7 +731,7 @@ class MakeMathQuiz(object):
             # time - in the cfg file, \Preamable{ext=xml} should lead to an xml
             # file being created but this doesn't seem to work ??
             try:
-                fix_img = re.compile(r'^src="('+q_file+r'[0-9]*x\....)" (alt="PIC" .*)$')
+                fix_img = re.compile(r'^src="(.*.svg)" (.*)$')
                 with codecs.open(q_file+'.html', 'r', encoding='utf8') as make4ht_file:
                     with codecs.open(self.quiz_file+'.xml', 'w', encoding='utf8') as xml_file:
                         for line in make4ht_file:
@@ -825,13 +825,13 @@ class MakeMathQuiz(object):
 
         try:
             os.makedirs(self.quiz_file, exist_ok=True)
-            with codecs.open(os.path.join(self.quiz_file,self.quiz_file+'.js'), 'w', encoding='utf8') as quiz_list:
+            with codecs.open(os.path.join(self.quiz_file,'wq-'+self.quiz_file+'.js'), 'w', encoding='utf8') as quiz_list:
                 if self.dTotal>0:
                     for (i,d) in enumerate(self.quiz.discussion_list):
                         quiz_list.write('Discussion[{}]="{}";\n'.format(i, d.heading))
                 if self.qTotal >0:
                     for (i,q) in enumerate(self.quiz.question_list):
-                        quiz_list.write('QuizSpecifications[%d]=[];\n' % i)% QuizSpecifications is a 0-based array
+                        quiz_list.write('QuizSpecifications[%d]=[];\n' % i)# QuizSpecifications is a 0-based array
                         a = q.answer
                         quiz_list.write('QuizSpecifications[%d].label="%s %s";\n' % (i,self.language.question,i+1))
                         if isinstance(a,mathquiz_xml.Answer):

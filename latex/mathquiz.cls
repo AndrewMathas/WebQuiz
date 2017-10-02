@@ -10,7 +10,6 @@
 %   This file is part of the Math_quiz system.
 %
 %   <Andrew.Mathas@sydney.edu.au>
-%   <Donald.Taylor@sydney.edu.au>
 % ----------------------------------------------------------------------
 
 \NeedsTeXFormat{LaTeX2e}[1996/12/01]

@@ -9,10 +9,9 @@ r'''
     Distributed under the terms of the GNU General Public License (GPL)
                   http://www.gnu.org/licenses/
 
-    This file is part of the Math_quiz system.
+    This file is part of the MathQuiz system.
 
     <Andrew.Mathas@sydney.edu.au>
-    <Donald.Taylor@sydney.edu.au>
 -----------------------------------------------------------------------------------------
 '''
 
@@ -91,7 +90,8 @@ class MathQuizCtan(build_py):
         to ensure that they are correct for the ctan upload. We need to make
         mathquiz-manual.pdf first because it is included in mathquiz.pdf.
         '''
-        self.shell_command('sassmq')
+        for css_file in glob.glob('webquiz-*.scss'):
+            self.shell_command('sass --style compress {} {}.css'.format(css_file, css_file[:-4]))
         self.shell_command('cd doc && latex --interaction=batchmode mathquiz-online-manual && dvipdf mathquiz-online-manual')
         self.shell_command('cd doc && pdflatex --interaction=batchmode mathquiz')
 
