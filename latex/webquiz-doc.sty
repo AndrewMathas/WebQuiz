@@ -4,7 +4,7 @@
 %  Distributed under the terms of the GNU General Public License (GPL)
 %                  http://www.gnu.org/licenses/
 %
-% This file is part of the MathQuiz system.
+% This file is part of the WebQuiz system.
 %
 % <Andrew.Mathas@sydney.edu.au>
 %-----------------------------------------------------------------------------
@@ -28,19 +28,19 @@
 \usepackage{xspace}
 \usepackage{xcolor}
 
-\def\MathQuiz{{\color{SaddleBrown}\textsc{MathQuiz}}\xspace}
+\def\WebQuiz{{\color{SaddleBrown}\textsc{WebQuiz}}\xspace}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Read the mathquiz.ini file into \pgfkeys for later use so that we
+%% Read the webquiz.ini file into \pgfkeys for later use so that we
 %% don't need to hard-code this information. We allow unknown keys so
 %% that we can slurp in all of the information in the file into
-%% \pgfkeys{/mathquiz}
+%% \pgfkeys{/webquiz}
 \usepackage{pgfkeys}
-\pgfkeys{/mathquiz/.is family, /mathquiz,
+\pgfkeys{/webquiz/.is family, /webquiz,
   % allow arbitrary unknown keys and set with \pgfkeyssetvalue
   .unknown/.code={\pgfkeyssetvalue{\pgfkeyscurrentpath/\pgfkeyscurrentname}{#1}},
 }
-\newcommand\mathquiz[1]{\pgfkeysvalueof{/mathquiz/#1}}
+\newcommand\webquiz[1]{\pgfkeysvalueof{/webquiz/#1}}
 
 % split input line into key-value pairs -- necessary as commas can appear in the value
 \usepackage{xparse}
@@ -48,15 +48,15 @@
 \NewDocumentCommand{\AddIniFileKeyValue}{ >{\SplitList{=}} m }{%
   \AddIniFileValue #1%
 }
-% put a key-value pair into \pgfkeys{/mathquiz}
+% put a key-value pair into \pgfkeys{/webquiz}
 % \AddIniFile{key}{value}  - note that value may contain commas
-\newcommand\AddIniFileValue[2]{\expandafter\pgfkeys\expandafter{/mathquiz,#1={#2}}}
+\newcommand\AddIniFileValue[2]{\expandafter\pgfkeys\expandafter{/webquiz,#1={#2}}}
 
-% read the mathquiz.ini file into \pgfkeys{/mathquiz}
+% read the webquiz.ini file into \pgfkeys{/webquiz}
 \newread\inifile% file handler
 \def\apar{\par}% \ifx\par won't work but \ifx\apar will
-\newcommand\AddEntry[1]{\expandafter\pgfkeys\expandafter{/mathquiz, #1}}
-\openin\inifile=mathquiz.ini% open file for reading
+\newcommand\AddEntry[1]{\expandafter\pgfkeys\expandafter{/webquiz, #1}}
+\openin\inifile=webquiz.ini% open file for reading
 \loop\unless\ifeof\inifile% loop until end of file
   \read\inifile to \iniline% read line from file
   \ifx\iniline\apar% test for, and ignore, \par
@@ -69,7 +69,7 @@
 \closein\inifile% close input file
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% listings code for python and latex examples in mathquiz documentation
+%% listings code for python and latex examples in webquiz documentation
 
 \usepackage{listings}
 \lstset{%
@@ -163,14 +163,14 @@
     colorlinks=true,
     linkcolor=SaddleBrown,
     urlcolor=Brown,
-    pdfauthor   = {\mathquiz{authors}                       },
-    pdfkeywords = {\mathquiz{keywords}                      },
-    pdfsubject  = {\mathquiz{description}                   },
+    pdfauthor   = {\webquiz{authors}                       },
+    pdfkeywords = {\webquiz{keywords}                      },
+    pdfsubject  = {\webquiz{description}                   },
     pdfinfo     = {%
-        copyright    = {\mathquiz{copyright}},
-        licence      = {\mathquiz{licence}},
-        release date = {\mathquiz{release date}},
-        url          = {\mathquiz{url}},
+        copyright    = {\webquiz{copyright}},
+        licence      = {\webquiz{licence}},
+        release date = {\webquiz{release date}},
+        url          = {\webquiz{url}},
     }
 }
 

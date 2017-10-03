@@ -1,0 +1,19 @@
+check answer                 = Kolla svar
+choice                       = Valet ({}) är
+correct                      = Rätta!
+incorrect                    = Felaktig.
+multiple choice incorrect    = Till exempel bör valet ({}) vara
+next question                = Nästa fråga
+next unanswered question     = nästa obesvarad fråga
+one mistake                  = Det finns minst ett misstag.
+previous unanswered question = tidigare obesvarad fråga
+question                     = Fråga
+questions                    = frågor
+quiz                         = frågesport
+quizzes                      = Frågesport
+side menu cross              = fel
+side menu star               = rätt första försök
+side menu tick               = höger
+single choice incorrect      = Det finns minst ett misstag. Till exempel bör valet ({}) vara
+try again                    = Var god försök igen
+

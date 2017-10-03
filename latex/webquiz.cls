@@ -1,5 +1,5 @@
 % -----------------------------------------------------------------------
-%   mathquiz.cls | mathquiz latex class file
+%   webquiz.cls | webquiz latex class file
 % -----------------------------------------------------------------------
 %
 %   Copyright (C) Andrew Mathas, University of Sydney
@@ -13,9 +13,9 @@
 % ----------------------------------------------------------------------
 
 \NeedsTeXFormat{LaTeX2e}[1996/12/01]
-\ProvidesClass{mathquiz}
+\ProvidesClass{webquiz}
   [2017/03/21 v5.0
-  MathQuiz LaTeX document class (based on article.cls)]
+  WebQuiz LaTeX document class (based on article.cls)]
 
 
 % initialise and then process document class options usng pgfopts
@@ -32,7 +32,7 @@
       sidemenu/.code     = {\def\MQ@HideSideMenu{false}},
       hidesidemenu/.code = {\def\MQ@HideSideMenu{true}},
       language/.initial  = english,
-      theme/.initial     = webquiz,
+      theme/.initial     = light,
       .unknown/.code={\edef\unknown@options{\unknown@options,\pgfkeyscurrentname}}
 }
 \newcommand\latexquizOption[1]{\pgfkeysvalueof{/latexquizoptions/#1}}
@@ -58,7 +58,7 @@
    %   \fi
 \fi
 
-\def\MQ@error{\PackageError{mathquiz}}
+\def\MQ@error{\PackageError{webquiz}}
 \def\MQ@complain#1#2{%
   \MQ@error{\noexpand#1 required in Question \number#2}\@ehc
 }
@@ -69,7 +69,7 @@
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{10pt}
 
-% Set the quiz filename for use in mathquiz -- can be set directly by mathquiz when
+% Set the quiz filename for use in webquiz -- can be set directly by webquiz when
 % doing pst2pdf preprocessing
 \ifdefined\MQ@quizfile\relax\else\xdef\MQ@quizfile{\jobname.tex}\fi
 
@@ -100,7 +100,7 @@
 \def\title#1{\def\@title{#1}\MQ@SetBreadCrumb#1:!}
 
 % Default values - the university and department defaults can also be
-% set in the mathquizrc file. The main purpose of these defaults is
+% set in the webquizrc file. The main purpose of these defaults is
 % to remind the user to set them.
 \UnitCode{}
 \UnitName{}
@@ -157,7 +157,7 @@
   \ifx\MQ@quizzesUrl\@empty\QuizzesURL{\uos@url/Quizzes/}\else\relax\fi%
   \ifpsttopdf
    \ifdefined\HCode\else
-     \textsc{MathQuiz} will process this quiz using \textbf{pst2pdf}.
+     \textsc{WebQuiz} will process this quiz using \textbf{pst2pdf}.
    \fi
   \fi
 }
@@ -276,4 +276,4 @@
 \def\whenWrong{\WhenWrongtrue\MQ@rightwrong{wrong}}
 \endinput
 %%
-%% End of file `mathquiz.cls'.
+%% End of file `webquiz.cls'.

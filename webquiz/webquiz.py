@@ -1,9 +1,9 @@
-#!/usr/bin/env python3
+!/usr/bin/env python3
 
 r'''
------------------------------------------------------------------------------------------
-    webquiz | Interactive on-line quizzes generated from LaTeX using python and TeX4ht
------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+    webquiz | On-line quizzes generated from LaTeX using python and TeX4ht
+------------------------------------------------------------------------------
     Copyright (C) Andrew Mathas and Donald Taylor, University of Sydney
 
     Distributed under the terms of the GNU General Public License (GPL)
@@ -13,7 +13,7 @@ r'''
 
     <Andrew.Mathas@sydney.edu.au>
     <Donald.Taylor@sydney.edu.au>
------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------
 '''
 
 import argparse
@@ -32,13 +32,13 @@ from webquiz_templates import *
 
 # ---------------------------------------------------------------------------------------
 # Return the full path for a file in the webquiz directory
-webquiz_file = lambda file: os.path.join(os.path.dirname(os.path.realpath(__file__)),file)
+webquiz_file = lambda file: os.path.join(os.path.dirname(os.path.realpath(__file__)), file)
 
 # ---------------------------------------------------------------------------------------
 class MetaData(dict):
     r"""
-    A dummy class for reading, accessing and storing key-value pairs from a file
-    Any internal spaces in the key name are replaced with underscores.
+    A dummy class for reading, accessing and storing key-value pairs from
+    a file Any internal spaces in the key name are replaced with underscores.
 
     The key-value pairs are available as both attributes and items
 
@@ -46,28 +46,44 @@ class MetaData(dict):
     """
     def __init__(self, filename):
         dict.__init__(self)
-        with open(filename,'r') as meta:
+        with open(filename, 'r') as meta:
             for line in meta:
                 if '=' in line:
                     key, val = line.strip().split('=')
-                    if len(key.strip())>0:
-                        self.__setitem__(key.strip().lower().replace(' ','_'), val.strip())
-                        setattr(self, key.strip().lower().replace(' ','_'), val.strip())
+                    if len(key.strip()) > 0:
+                        self.__setitem__(
+                                key.strip().lower().replace(' ', '_'),
+                                val.strip()
+                        )
+                        setattr(self,
+                                key.strip().lower().replace(' ', '_'),
+                                val.strip()
+                        )
 
-# short-cut to access kpsewhich output: usage: kpsewhich('-var-value=TEXMFLOCAL')
-kpsewhich = lambda search: subprocess.check_output('kpsewhich '+search,stderr=subprocess.STDOUT,shell=True).decode('ascii').strip()
 
 # read in basic meta data such as author, version, ...
-metadata = MetaData( kpsewhich('webquiz.ini') )
+metadata = MetaData(kpsewhich('webquiz.ini'))
 metadata.debugging = False
+
+
+def kpsewhich(search):
+    r'''short-cut to access kpsewhich output:
+    usage: kpsewhich('-var-value=TEXMFLOCAL')
+    '''
+    return subprocess.check_output('kpsewhich '+search,
+                                   stderr=subprocess.STDOUT,
+                                   shell=True
+                                   ).decode('ascii').strip()
+
 
 # used to label the parts of questions as a, b, c, ...
 alphabet = "abcdefghijklmnopqrstuvwxyz"
 
-#################################################################################
+
+###############################################################################
 # Recursivey copy directory tree, fixing shutil.copytree
 # from https://stackoverflow.com/questions/1868714
-def copytree(src, dst, symlinks = False, ignore = None):
+def copytree(src, dst, symlinks=False, ignore=None):
   if not os.path.exists(dst):
     os.makedirs(dst)
     shutil.copystat(src, dst)
@@ -117,6 +133,36 @@ def WebQuizError(msg, err=None):
     sys.exit(1)
 
 #################################################################################
+# Preprocess the latex file using pst2pdf. As we are preprocessing the file it
+# is not enough to have latex pass us a flag that tells us to use pst2pdf and,
+# instead, we have to extract the class file option from the tex file
+# INPUTL: quiz_file should be the name of the quiz file, WITHOUT the .tex extension
+def preprocess_with_pst2pdf(quiz_file):
+    talk('Preprocessing {} with pst2pdsf'.format(quiz_file))
+    try:
+        # pst2pdf converts pspicture environments to svg images and makes a
+        # new latex file quiz_file+'-pdf' that includes these
+        cmd='pst2pdf --svg --imgdir={q_file} {q_file}.tex'.format(q_file=quiz_file)
+        run(cmd)
+    except OSError as err:
+        if err.errno == os.errno.ENOENT:
+            WebQuizError('pst2pdf not found. You need to install pst2pdf to use the pst2pdf option', err)
+        else:
+            WebQuizError('error running pst2pdf on {}'.format(quiz_file), err)
+
+    # match \includegraphics commands
+    fix_svg = re.compile(r'(\\includegraphics\[scale=1\])\{('+ quiz_file+r'-fig-[0-9]*)\}')
+    # the svg images are in the quiz_file subdirectory but latex can't
+    # find them so we update the tex file to look in the right place
+    try:
+        with codecs.open(quiz_file+'-pdf.tex', 'r', encoding='utf8') as pst_file:
+            with codecs.open(quiz_file+'-pdf-fixed.tex', 'w', encoding='utf8') as pst_fixed:
+                for line in pst_file:
+                    pst_fixed.write(fix_svg.sub(r'\1{%s/\2.svg}' % quiz_file, line))
+    except IOError as err:
+        WebQuizError('there was an problem running pst2pdf for {}'.format(quiz_file), err)
+
+#################################################################################
 class WebQuizSettings(object):
     r'''
     Class for initialising webquiz. This covers both reading and writting the webquizrc file and
@@ -130,8 +176,9 @@ class WebQuizSettings(object):
         >>> mq['webquiz_url'] = '/new_url'
     '''
 
-    # default of settings for the webquizrc file - a dictionart of dictionaries
-    # the 'help' field is for printing descriptions in the webquizrc file
+    # default of settings for the webquizrc file - a dictionary of dictionaries
+    # the 'help' field is for printing descriptions of the settings to help the
+    # user - they are also printed in the webquizrc file
     settings = dict(
       webquiz_url = {
         'default'  : '',
@@ -149,7 +196,7 @@ class WebQuizSettings(object):
         'help'     : 'Default language used on web pages'
       },
       theme  = {
-        'default'  : 'webquiz',
+        'default'  : 'webquiz-light',
         'advanced' : False,
         'help'     : 'Default colour theme used on web pages'
       },
@@ -527,18 +574,16 @@ class MakeWebQuiz(object):
     quiz_questions='' # the main quiz page
     side_menu=''      # the left hand quiz menu
 
-    def __init__(self, quiz_file, options, settings):
+    def __init__(self, quiz_name, quiz_file, options, settings):
         self.options = options
         self.settings = settings
+        self.quiz_name = quiz_name.split('.')[0]
         self.quiz_file, extension = quiz_file.split('.')
         self.webquiz_url = settings['webquiz_url']
 
         # run htlatex only if quiz_file has a .tex extension
         if extension == 'tex':
             self.htlatex_quiz_file()
-
-        if self.options.quiet<2:
-            print('WebQuiz generating web page for {}'.format(self.quiz_file))
 
         self.read_xml_file()
 
@@ -547,7 +592,6 @@ class MakeWebQuiz(object):
         if language == '':
             language = self.settings['language']
 
-        print('Language  set to {}'.format(language))
         try:
             language_file = kpsewhich('webquiz-{}.lang'.format(language))
         except subprocess.CalledProcessError:
@@ -556,7 +600,6 @@ class MakeWebQuiz(object):
             except subprocess.CalledProcessError:
                 WebQuizError('kpsewhich is unable to find language file for "{}"'.format(language))
 
-        print('Language file {}'.format(language_file))
         self.language = MetaData( language_file )
 
         self.theme = self.quiz.theme
@@ -632,7 +675,7 @@ class MakeWebQuiz(object):
             self.breadcrumbs = self.settings.initialise_warning + self.breadcrumbs
 
         # now write the quiz to the html file
-        with codecs.open(self.quiz_file+'.html', 'w', encoding='utf8') as file:
+        with codecs.open(self.quiz_name+'.html', 'w', encoding='utf8') as file:
             # write the quiz in the specified format
             file.write( self.options.write_web_page(self) )
 
@@ -643,97 +686,39 @@ class MakeWebQuiz(object):
         if url == '':
             return breadcrumb_line_text.format(text=text if text != '' else '?? '+missing)
         else:
-            return  breadcrumb_line_url.format(url=url,text=text if text != '' else '?? '+missing)
+            return  breadcrumb_line_url.format(url=url, text=text if text != '' else '?? '+missing)
 
     def htlatex_quiz_file(self):
         r'''
         Process the file using htlatex/make4ht. This converts the quiz to an xml
         with markup specifying the different elements of the quiz page.
         '''
-        # run() is a shorthand for executing system commands depending on the quietness
-        #       we need to use shell=True because otherwise pst2pdf gives an error
-        # talk() is a shorthand for letting the user know what is happening
-        if self.options.quiet == 0:
-            run  = lambda cmd: subprocess.call(cmd, shell=True)
-            talk = lambda msg: print(msg)
-        elif self.options.quiet == 1:
-            run  = lambda cmd: subprocess.call(cmd, shell=True, stdout=open(os.devnull, 'wb'))
-            talk = lambda msg: print(msg)
-        else:
-            run  = lambda cmd: subprocess.call(cmd, shell=True, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
-            talk = lambda msg: None
-
-        # at the minimum we put a css file into a <quiz_file> subdirectory
-        if not os.path.exists(self.quiz_file):
-            os.makedirs(self.quiz_file)
-
-        # as we may need to preprocess quiz_file with pst2pdf we allow ourselves to change it name
-        q_file = self.quiz_file
-
-        # set pst2pdf = True if pst2pdf is given as an option to the webquiz documentclass
-        with codecs.open(self.quiz_file+'.tex', 'r', encoding='utf8') as quiz_file:
-            doc = quiz_file.read()
-        try:
-            brac = doc.index(r'\documentclass[') + 15 # start of class options
-            if 'pst2pdf' in [ opt.strip() for opt in doc[brac:brac+doc[brac:].index(']')].split(',')]:
-                self.options.pst2pdf = True
-        except ValueError:
-            pass
-
-        # preprocess the latex file with pst2pdf if requested. As we are
-        # preprocessing the file it is not enough to have latex pass us a flag
-        # that tells us to use pst2pdf and, instead, we have to extract the
-        # class file option from the tex file
-        if self.options.pst2pdf:
-            talk('Preprocessing {} with pst2pdsf'.format(q_file))
-            try:
-                # pst2pdf converts pspicture environments to svg images and makes a
-                # new latex file q_file+'-pdf' that includes these
-                cmd='pst2pdf --svg --imgdir={q_file} {q_file}.tex'.format(q_file=q_file)
-                run(cmd)
-            except OSError as err:
-                if err.errno == os.errno.ENOENT:
-                    WebQuizError('pst2pdf not found. You need to install pst2pdf to use the --pst2pdf option', err)
-                else:
-                    WebQuizError('error running pst2pdf on {}'.format(q_file), err)
-
-            # match \includegraphics commands
-            fix_svg = re.compile(r'(\\includegraphics\[scale=1\])\{('+ q_file+r'-fig-[0-9]*)\}')
-            # the svg images are in the q_file subdirectory but latex can't
-            # find them so we update the tex file to look in the right place
-            try:
-                with codecs.open(q_file+'-pdf.tex', 'r', encoding='utf8') as pst_file:
-                    with codecs.open(q_file+'-pdf-fixed.tex', 'w', encoding='utf8') as pst_fixed:
-                        # tell pst_fixed where it came from
-                        pst_fixed.write(r'\makeatletter\def\MQ@quizfile{%s.tex}\makeatother' % self.quiz_file)
-                        for line in pst_file:
-                            pst_fixed.write(fix_svg.sub(r'\1{%s/\2.svg}'%self.quiz_file, line))
-            except IOError as err:
-                WebQuizError('there was an problem running pst2pdf for {}'.format(q_file), err)
-
-            q_file = q_file + '-pdf-fixed'
+        # at the minimum we put a css file into a <quiz_name> subdirectory
+        if not os.path.exists(self.quiz_name):
+            os.makedirs(self.quiz_name)
 
         try:
-            talk('Processing {}.tex with TeX4ht'.format(q_file))
-            cmd='make4ht --utf8 --config webquiz.cfg {make4ht_options} {escape} {q_file}.tex'.format(
-                    q_file = q_file, make4ht_options  = self.options.make4ht_options,
+            talk('Processing {}.tex with TeX4ht'.format(self.quiz_name))
+            cmd='make4ht --utf8 --config webquiz.cfg {make4ht_options} {escape} {quiz_file}.tex'.format(
+                    quiz_file = self.quiz_file,
+                    make4ht_options  = self.options.make4ht_options,
                     escape = '--shell-escape' if self.options.shell_escape else ''
             )
             run(cmd)
 
             # move the css file into the quiz_file subdirectory
-            if os.path.exists(q_file+'.css'):
-                shutil.move(q_file+'.css', os.path.join(self.quiz_file, self.quiz_file+'.css'))
+            if os.path.exists(self.quiz_file+'.css'):
+                shutil.move(self.quiz_file+'.css', os.path.join(self.quiz_name, self.quiz_name+'.css'))
 
-            # Now move any images that were created into the quiz_file
+            # Now move any images that were created into the quiz_name
             # subdirectory and update the links in the html file As htlatex
             # generates an html file, we rename this as an xml file at the same
             # time - in the cfg file, \Preamable{ext=xml} should lead to an xml
             # file being created but this doesn't seem to work ??
             try:
-                fix_img = re.compile(r'^src="(.*.svg)" (.*)$')
-                with codecs.open(q_file+'.html', 'r', encoding='utf8') as make4ht_file:
-                    with codecs.open(self.quiz_file+'.xml', 'w', encoding='utf8') as xml_file:
+                fix_img = re.compile(r'^src="([0-9]a-za-z]*.svg)" (.*)$')
+                with codecs.open(self.quiz_file+'.html', 'r', encoding='utf8') as make4ht_file:
+                    with codecs.open(self.quiz_name+'.xml', 'w', encoding='utf8') as xml_file:
                         for line in make4ht_file:
                             match = fix_img.match(line)
                             if match is None:
@@ -741,14 +726,14 @@ class MakeWebQuiz(object):
                             else:
                                 # update html link and move file
                                 image, rest_of_line = match.groups()
-                                xml_file.write(r'src="{}/{}" {}'.format(self.quiz_file, image, rest_of_line))
-                                shutil.move(image, os.path.join(self.quiz_file, image))
+                                xml_file.write(r'src="{}/{}" {}'.format(self.quiz_name, image, rest_of_line))
+                                shutil.move(image, os.path.join(self.quiz_name, image))
 
             except IOError as err:
-                WebQuizError('there was a problem moving the image files for {}'.format(self.quiz_file), err)
+                WebQuizError('there was a problem moving the image files for {}'.format(self.quiz_name), err)
 
         except Exception as err:
-            WebQuizError('something whent wrong when running htlatex on {}'.format(self.quiz_file), err)
+            WebQuizError('something when wrong when running htlatex on {}'.format(self.quiz_file), err)
 
     def read_xml_file(self):
         r'''
@@ -757,35 +742,36 @@ class MakeWebQuiz(object):
         '''
         try:
             # read in the xml version of the quiz
-            if not os.path.isfile(self.quiz_file+'.xml'):
-                WebQuizError('{}.xml does not exist!?'.format(self.quiz_file))
-            self.quiz = webquiz_xml.ReadWebQuizXmlFile(self.quiz_file+'.xml', self.options.debugging)
+            print('quiz name = {}, quiz file = {}'.format(self.quiz_name, self.quiz_file))
+            if not os.path.isfile(self.quiz_name+'.xml'):
+                WebQuizError('{}.xml does not exist!?'.format(self.quiz_name))
+            self.quiz = webquiz_xml.ReadWebQuizXmlFile(self.quiz_name+'.xml', self.options.debugging)
         except Exception as err:
-            WebQuizError('error reading the xml generated for {}. Please check your latex source.'.format(self.quiz_file), err)
+            WebQuizError('error reading the xml generated for {}. Please check your latex source.'.format(self.quiz_name), err)
 
     def add_meta_data(self):
         """ add the meta data for the web page to self.header """
         # meta tags`
         self.header += html_meta.format(version      = metadata.version,
                                         authors      = metadata.authors,
-                                        webquiz_url = self.webquiz_url,
+                                        webquiz_url  = self.webquiz_url,
                                         description  = metadata.description,
                                         copyright    = metadata.copyright,
                                         department   = self.school['department'],
                                         institution  = self.school['institution'],
-                                        quiz_file    = self.quiz_file,
-                                        theme     = self.theme
+                                        quiz_file    = self.quiz_name,
+                                        theme        = self.theme
         )
 
         # we don't need any of the links or metas from the latex file
-        # self.header += ''.join('  <meta {}>\n'.format(' '.join('{}="{}"'.format(k,meta[k]) for k in meta)) for meta in self.quiz.meta_list)
-        # self.header += ''.join('  <link {}>\n'.format(' '.join('{}="{}"'.format(k,link[k]) for k in link)) for link in self.quiz.link_list)
+        # self.header += ''.join('  <meta {}>\n'.format(' '.join('{}="{}"'.format(k, meta[k]) for k in meta)) for meta in self.quiz.meta_list)
+        # self.header += ''.join('  <link {}>\n'.format(' '.join('{}="{}"'.format(k, link[k]) for k in link)) for link in self.quiz.link_list)
 
     def add_side_menu(self):
         """ construct the left hand quiz menu """
         if len(self.quiz.discussion_list)>0: # links for discussion items
             discussion_list = '\n       <ul>\n   {}\n       </ul>'.format(
-                  '\n   '.join(discuss.format(b=q+1, title=d.short_heading) for (q,d) in enumerate(self.quiz.discussion_list)))
+                  '\n   '.join(discuss.format(b=q+1, title=d.short_heading) for (q, d) in enumerate(self.quiz.discussion_list)))
         else:
             discussion_list = ''
 
@@ -824,22 +810,22 @@ class MakeWebQuiz(object):
         """
 
         try:
-            os.makedirs(self.quiz_file, exist_ok=True)
-            with codecs.open(os.path.join(self.quiz_file,'wq-'+self.quiz_file+'.js'), 'w', encoding='utf8') as quiz_list:
+            os.makedirs(self.quiz_name, exist_ok=True)
+            with codecs.open(os.path.join(self.quiz_name,'wq-'+self.quiz_name+'.js'), 'w', encoding='utf8') as quiz_list:
                 if self.dTotal>0:
-                    for (i,d) in enumerate(self.quiz.discussion_list):
+                    for (i, d) in enumerate(self.quiz.discussion_list):
                         quiz_list.write('Discussion[{}]="{}";\n'.format(i, d.heading))
                 if self.qTotal >0:
-                    for (i,q) in enumerate(self.quiz.question_list):
+                    for (i, q) in enumerate(self.quiz.question_list):
                         quiz_list.write('QuizSpecifications[%d]=[];\n' % i)# QuizSpecifications is a 0-based array
                         a = q.answer
-                        quiz_list.write('QuizSpecifications[%d].label="%s %s";\n' % (i,self.language.question,i+1))
-                        if isinstance(a,webquiz_xml.Answer):
-                             quiz_list.write('QuizSpecifications[%d].value="%s";\n' % (i,a.value))
+                        quiz_list.write('QuizSpecifications[%d].label="%s %s";\n' % (i, self.language.question, i+1))
+                        if isinstance(a, webquiz_xml.Answer):
+                             quiz_list.write('QuizSpecifications[%d].value="%s";\n' % (i, a.value))
                              quiz_list.write('QuizSpecifications[%d].type="input";\n' % i)
                         else:
-                             quiz_list.write('QuizSpecifications[%d].type="%s";\n' % (i,a.type))
-                             quiz_list.write(''.join('QuizSpecifications[%d][%d]=%s;\n' % (i,j,s.expect) for (j,s) in enumerate(a.item_list)))
+                             quiz_list.write('QuizSpecifications[%d].type="%s";\n' % (i, a.type))
+                             quiz_list.write(''.join('QuizSpecifications[%d][%d]=%s;\n' % (i, j, s.expect) for (j, s) in enumerate(a.item_list)))
 
         except Exception as err:
             WebQuizError('error writing quiz specifications', err)
@@ -851,7 +837,7 @@ class MakeWebQuiz(object):
         self.webquiz_init = webquiz_init.format(
                               qTotal = self.qTotal,
                               dTotal = self.dTotal,
-                              quiz_file = self.quiz_file,
+                              quiz_file = self.quiz_name,
                               hide_side_menu = self.quiz.hide_side_menu
         )
 
@@ -894,7 +880,7 @@ class MakeWebQuiz(object):
           # quizmenu = the index file for the quizzes in this directory
           with codecs.open('quiztitles.js','w', encoding='utf8') as quizmenu:
              quizmenu.write('var QuizTitles = [\n{titles}\n];\n'.format(
-                 titles = ',\n'.join("  ['{}', '{}/Quizzes/{}']".format(
+                 titles = ',\n'.join("  ['{}', '/{}/Quizzes/{}']".format(
                                      q['title'],
                                      self.unit['url'],
                                      q['url']) for q in self.quiz.quiz_list
@@ -906,9 +892,9 @@ class MakeWebQuiz(object):
         if len(self.quiz.question_list)>0:
           self.quiz_questions+=''.join(question_wrapper.format(qnum=qnum+1,
                                                 display='style="display: table;"' if qnum==0 and len(self.quiz.discussion_list)==0 else '',
-                                                question=self.print_question(q,qnum+1),
-                                                response=self.print_responses(q,qnum+1))
-                                for (qnum,q) in enumerate(self.quiz.question_list)
+                                                question=self.print_question(q, qnum+1),
+                                                response=self.print_responses(q, qnum+1))
+                                for (qnum, q) in enumerate(self.quiz.question_list)
           )
 
     def print_question(self, Q, Qnum):
@@ -916,7 +902,7 @@ class MakeWebQuiz(object):
             - Q is a class containing the question
             - Qnum is the number of the question
         '''
-        if isinstance(Q.answer,webquiz_xml.Answer):
+        if isinstance(Q.answer, webquiz_xml.Answer):
             options=input_answer.format(tag=Q.answer.tag if Q.answer.tag else '')
         else:
             options=choice_answer.format(choices='\n'.join(self.print_choices(Qnum, Q.answer.item_list, choice) for choice in range(len(Q.answer.item_list))))
@@ -945,12 +931,12 @@ class MakeWebQuiz(object):
             item+= '   </tr><!-- choice={}, cols={}, # answers = {} -->\n'.format(choice, ans.parent.cols, len(answers))
         return item
 
-    def print_responses(self,question,qnum):
+    def print_responses(self, question, qnum):
         r'''
         Generate the HTML for displaying the response help text when the user
         answers a question.
         '''
-        if isinstance(question.answer,webquiz_xml.Answer):
+        if isinstance(question.answer, webquiz_xml.Answer):
             s = question.answer
             response  = tf_response_text.format(
                                            choice=qnum,
@@ -980,7 +966,7 @@ class MakeWebQuiz(object):
                                       part=snum+1,
                                       answer=s.expect.capitalize(),
                                       response=s.response,
-                                      multiple_choice_incorrect=self.language.multiple_choice_incorrect.format(alphabet[snum]),
+                                      multiple_choice_opener=self.language.multiple_choice_incorrect.format(alphabet[snum]),
                                       **self.language
                                 ) for (snum, s) in enumerate(question.answer.item_list)
             )
@@ -1004,7 +990,7 @@ if __name__ == '__main__':
         parser = argparse.ArgumentParser(description = metadata.description,
                                          epilog      = webquiz_help_message
         )
-        parser.add_argument('quiz_file', nargs='*',type=str, default=None, help='latex quiz files')
+        parser.add_argument('quiz_file', nargs='*', type=str, default=None, help='latex quiz files')
         parser.add_argument('-i', '--initialise', action='store_true', default=False,
                             help='Initialise files and setings for webquiz')
         parser.add_argument('-q', '--quiet', action='count', default=0, help='suppress tex4ht messages (also -qq etc)')
@@ -1015,8 +1001,6 @@ if __name__ == '__main__':
                             help='Shell escape for htlatex/make4ht')
         parser.add_argument('-r', '--rcfile', action='store', type=str, dest='rcfile',
                             default='', help='Set rcfile')
-        parser.add_argument('-p', '--pst2pdf', action='store_true', default=False,
-                            help='Use pst2pdf to fix issues with images generated by pstricks')
         parser.add_argument('--make4ht', action='store', type=str, dest='make4ht_options', default=settings['make4ht'],
                             help='Options for make4ht'
         )
@@ -1066,6 +1050,20 @@ if __name__ == '__main__':
             sys.path.insert(0, mod_dir)
         options.write_web_page = __import__(mod_format).write_web_page
 
+        # run() is a shorthand for executing system commands depending on the quietness
+        #       - we need to use shell=True because otherwise pst2pdf gives an error
+        # talk() is a shorthand for letting the user know what is happening
+        if options.quiet == 0:
+            run  = lambda cmd: subprocess.call(cmd, shell=True)
+            talk = lambda msg: print(msg)
+        elif options.quiet == 1:
+            run  = lambda cmd: subprocess.call(cmd, shell=True, stdout=open(os.devnull, 'wb'))
+            talk = lambda msg: print(msg)
+        else:
+            run  = lambda cmd: subprocess.call(cmd, shell=True, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
+            talk = lambda msg: None
+
+
         # run through the list of quizzes and make them
         for quiz_file in options.quiz_file:
             if len(options.quiz_file)>1 and options.quiet<3:
@@ -1078,35 +1076,54 @@ if __name__ == '__main__':
                 print('WebQuiz error: cannot read file {}'.format(quiz_file))
 
             else:
-                # the file exists and is readable so make the quiz
-                MakeWebQuiz(quiz_file, options, settings)
 
-                quiz_file = quiz_file[:quiz_file.index('.')]  # remove the extension
+                quiz_name = quiz_file # the quiz name and the quiz_file will be if pst2pdf is used
+                if options.quiet<2:
+                    print('WebQuiz generating web page for {}'.format( quiz_file))
+
+                # set options.pst2pdf = True if pst2pdf is given as an option to the webquiz documentclass
+                with codecs.open(quiz_file, 'r', encoding='utf8') as q_file:
+                    doc = q_file.read()
+
+                options.pst2pdf = False
+                try:
+                    brac = doc.index(r'\documentclass[') + 15 # start of class options
+                    if 'pst2pdf' in [ opt.strip() for opt in doc[brac:brac+doc[brac:].index(']')].split(',')]:
+                        preprocess_with_pst2pdf( quiz_file[:-4] )
+                        options.pst2pdf = True
+                        quiz_file = quiz_file[:-4] + '-pdf-fixed.tex' # now run webquiz on modified tex file
+                except ValueError:
+                    pass
+
+                # the file exists and is readable so make the quiz
+                MakeWebQuiz(quiz_name, quiz_file, options, settings)
+
+                quiz_name = quiz_name[:quiz_name.index('.')]  # remove the extension
 
                 # move the css file into the directory for the quiz
-                css_file = os.path.join(quiz_file, quiz_file+'.css')
-                if os.path.isfile(quiz_file +'.css'):
+                css_file = os.path.join(quiz_name, quiz_name+'.css')
+                if os.path.isfile(quiz_name +'.css'):
                     if os.path.isfile(css_file):
                         os.remove(css_file)
-                    shutil.move(quiz_file+'.css', css_file)
+                    shutil.move(quiz_name+'.css', css_file)
 
                 # now clean up unless debugging
                 if not options.debugging:
                     for ext in [ '4ct', '4tc', 'dvi', 'idv', 'lg', 'log', 'ps', 'pdf', 'tmp', 'xml', 'xref']:
-                        if os.path.isfile(quiz_file +'.' +ext):
-                            os.remove(quiz_file +'.' +ext)
+                        if os.path.isfile(quiz_name +'.' +ext):
+                            os.remove(quiz_name +'.' +ext)
 
                     # files created when using pst2pdf
                     if options.pst2pdf:
-                        for file in glob.glob(quiz_file+'-pdf.*'):
+                        for file in glob.glob(quiz_name+'-pdf.*'):
                             os.remove(file)
-                        for file in glob.glob(quiz_file+'-pdf-fixed.*'):
+                        for file in glob.glob(quiz_name+'-pdf-fixed.*'):
                             os.remove(file)
                         for extra in ['.preamble', '.plog', '-tmp.tex', '-pst.tex', '-fig.tex']:
-                            if os.path.isfile(quiz_file+extra):
-                                os.remove(quiz_file+extra)
-                        if os.path.isdir(os.path.join(quiz_file,quiz_file)):
-                            shutil.rmtree(os.path.join(quiz_file,quiz_file))
+                            if os.path.isfile(quiz_name+extra):
+                                os.remove(quiz_name+extra)
+                        if os.path.isdir(os.path.join(quiz_name, quiz_name)):
+                            shutil.rmtree(os.path.join(quiz_name, quiz_name))
 
         if settings.initialise_warning != '':
             print(text_initialise_warning)

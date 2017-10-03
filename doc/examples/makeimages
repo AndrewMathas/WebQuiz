@@ -2,7 +2,7 @@
 
 r'''
 -----------------------------------------------------------------------------
-    makeimages | extract images from webquiz wev pages for the manual
+    makeimages | extract images from webquiz web pages for the manual
 -----------------------------------------------------------------------------
 
     Copyright (C) Andrew Mathas, University of Sydney
@@ -20,8 +20,8 @@ webquiz manual. We first use
     - webquiz to construct the web page
     - webkit2png to extract an image of the web page, sometimes with options
     - mogrify to trim the image down to size
-Optionally a png image of a PDF file can also be extracted. For the full specs
-see the image_files dictionarty below
+Alternatively, it is possible to ecxtract a png image of the PDF file created by wevquiz.
+For the full extraction specifications see the image_files dictionary below
 '''
 
 import argparse, glob, os, shutil, subprocess
@@ -123,7 +123,7 @@ if __name__ == '__main__':
 
     # run through pages and extract the corresponding images
     for page in pages:
-        print('Extracting image file for {}...'.format(page))
+        print('\nExtracting image file for {}...'.format(page))
         extract=image_files[page]
         convert  = globals()['webkit2png' if extract['src']=='html' else 'pdf2png']
         file_in  = extract['file_in']     if 'file_in'  in extract else page

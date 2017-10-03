@@ -83,12 +83,14 @@ function create_drop_down_menu() {
 // whenever some one clicks outside of it
 function MenuEventListener(evnt) {
     var drop_down = document.getElementById("drop-down-menu");
+    var menu_icon = document.getElementsByClassName("menu-icon")[0];
     if (drop_down.contains(evnt.target)) {
       return; // inside the menu so just return
     } else {   // outside the menu so check the number of menu_clicks
-      evnt.stopPropagation();
-      drop_down.style.display = 'none';
-      window.removeEventListener('click', MenuEventListener);
+      if (drop_down.style.display === 'block' || menu_icon.contains(evnt.target)) {
+        evnt.stopPropagation();
+        toggle_dropdown_menu();
+      }
     }
 }
 
@@ -96,7 +98,6 @@ function toggle_dropdown_menu() {
     var drop_down = document.getElementById("drop-down-menu");
     if (drop_down.style.display === 'block') {
       drop_down.style.display = 'none';
-      window.removeEventListener('click', MenuEventListener);
     } else {
       drop_down.style.display = 'block';
       window.addEventListener('click', MenuEventListener, true);

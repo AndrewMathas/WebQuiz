@@ -115,8 +115,8 @@ class QuizHandler(xml.sax.ContentHandler):
         self.position.breadcrumb=attrs.get('breadcrumb','')
         self.position.hide_side_menu=attrs.get('hidesidemenu', False)
         self.position.src=attrs.get('src','')
-        self.position.language=attrs.get('language','') # defaults to rc-file setting
-        self.position.theme=attrs.get('theme','')    # defaults to rc-file setting
+        self.position.language=attrs.get('language','') # defaults to the rc-file setting
+        self.position.theme=attrs.get('theme','')       # defaults to the rc-file setting
 
   def meta_start( self,  attrs ):
       r'''

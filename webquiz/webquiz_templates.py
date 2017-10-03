@@ -28,7 +28,7 @@ html_meta = r'''<meta http-equiv="Content-Type" content="text/html; charset=utf-
   <meta name="organization" content="{department}, {institution}">
   <meta name="Copyright" content="WebQuiz: {copyright}">
   <meta name="keywords" content="webquiz, TeX4ht, make4ht, latex, python, quiz, mathematics">
-  <link href="{webquiz_url}/{theme}.css" type="text/css" rel="stylesheet">
+  <link href="{webquiz_url}/webquiz-{theme}.css" type="text/css" rel="stylesheet">
   <link href="{quiz_file}/{quiz_file}.css" type="text/css" rel="stylesheet">
 '''
 
@@ -149,7 +149,7 @@ single_response='''        <div id="q{qnum}response{part}" class="response">
         </div>'''
 
 multiple_response='''        <div id="q{qnum}response{part}" class="response">
-            <em>{one_mistake}</em><br><{multiple_choice_incorrect} <span class="dazzle">{answer}</span>.
+            <em>{one_mistake}</em><br><{multiple_choice_opener} <span class="dazzle">{answer}</span>.
             <div>{response}</div>
         </div>'''
 multiple_response_correct='''
