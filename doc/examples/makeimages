@@ -76,6 +76,7 @@ image_files = dict(
     breadcrumbs = dict(src='html', delay=10),
     discussion  = dict(src='html'),
     dropdown    = dict(src='html', js='toggle_dropdown_menu()', delay=10),
+    french      = dict(src='html'),
     index       = dict(src='html'),
     montypython = dict(src='html', delay=5),
     multiple    = dict(src='html', file_in='choice-multiple'),

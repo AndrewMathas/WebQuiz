@@ -95,9 +95,9 @@ quiz_header='''<div class="quiz-header">
         {arrows}
       </div>'''
 navigation_arrows='''<span class="arrows">
-          <a onClick="nextQuestion(-1);" title="{previous_unanswered_question}">&#x25c4;</a>
+          <a onClick="nextQuestion(-1);" title="{previous_question}">&#x25c4;</a>
           <span class="question-label">{questions}</span>
-          <a onClick="nextQuestion(1);"  title="{next_unanswered_question}">&#x25ba;</a>
+          <a onClick="nextQuestion(1);"  title="{next_question}">&#x25ba;</a>
         </span>'''
 
 # discussion item
@@ -127,7 +127,7 @@ question_text='''  {question_text}
         {question_options}
         <p>
           <input type="button" value="{check_answer}" name="answer" class="input-button" onClick="checkAnswer();"/>
-          <input type="button" value="{next_question}" class="input-button" title="{next_unanswered_question}" name="next" onClick="nextQuestion(1);"/>
+          <input type="button" value="{next_question}" class="input-button" title="{next_question}" name="next" onClick="nextQuestion(1);"/>
         </p>
       </form>
 '''

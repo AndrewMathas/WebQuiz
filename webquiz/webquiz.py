@@ -1,4 +1,4 @@
-!/usr/bin/env python3
+#!/usr/bin/env python3
 
 r'''
 ------------------------------------------------------------------------------
@@ -61,11 +61,6 @@ class MetaData(dict):
                         )
 
 
-# read in basic meta data such as author, version, ...
-metadata = MetaData(kpsewhich('webquiz.ini'))
-metadata.debugging = False
-
-
 def kpsewhich(search):
     r'''short-cut to access kpsewhich output:
     usage: kpsewhich('-var-value=TEXMFLOCAL')
@@ -75,6 +70,10 @@ def kpsewhich(search):
                                    shell=True
                                    ).decode('ascii').strip()
 
+
+# read in basic meta data such as author, version, ...
+metadata = MetaData(kpsewhich('webquiz.ini'))
+metadata.debugging = False
 
 # used to label the parts of questions as a, b, c, ...
 alphabet = "abcdefghijklmnopqrstuvwxyz"
@@ -966,7 +965,7 @@ class MakeWebQuiz(object):
                                       part=snum+1,
                                       answer=s.expect.capitalize(),
                                       response=s.response,
-                                      multiple_choice_opener=self.language.multiple_choice_incorrect.format(alphabet[snum]),
+                                      multiple_choice_opener=self.language.multiple_incorrect.format(alphabet[snum]),
                                       **self.language
                                 ) for (snum, s) in enumerate(question.answer.item_list)
             )

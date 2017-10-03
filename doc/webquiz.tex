@@ -25,6 +25,9 @@
 \def\subsectionautorefname{Section}
 \def\subsubsectionautorefname{\S\unskip}
 
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
 \usepackage[nonewpage]{imakeidx}
 \indexsetup{level=\section*,toclevel=section,noclearpage}
 \makeindex[intoc,noautomatic,columns=3]
@@ -818,7 +821,58 @@ to my \Verb|.bashrc| file. You may need to do something similar.
 
 
 \begin{description}
-  \item[pst2pdf] \index{pst2pdf}\index{pstricks}
+  \item[language=<lang>] \CrossIndex{document class options}{language}
+  Set the language used by the \textit{webpages} construted by \WebQuiz.
+  The currently supported languages are:
+
+    \begin{quote}
+        \input{languages}
+    \end{quote}
+
+    The languages files are used to print the various buttons and text
+    that is generated on the web pages constructed by \WebQuiz. The
+    \textsf{language} option does not affect the DVI or PDF versions of
+    the quiz and it does not load language packages like \ctan{babel} or
+    \ctan{polyglossia}.
+
+    Typical usage of gthe \textsf{language} option is the following:
+    \lstinputlisting[style=latexcode,extendedchars=false]{examples/french}
+    This produces a web page like this:
+    \ScreenShot{A web page with \textsf{language=french}}{examples/french}
+
+    The language files were created largely using google translate so
+    they may well need fine-tuning. You can use \textsf{kpsewhich} to
+    look at the language files, which all have names of the form
+    \texttt{webquiz-}\textit{language}\texttt{.lang}.
+    For example, the \textit{english} file file, which is the default,
+    can be found using the command:
+    \begin{quote}
+         \textsf{kpsewhich} webquiz-english.lang
+    \end{quote}
+    This file contains the following:
+    \lstinputlisting[extendedchars=false]{webquiz-english.lang} In these
+    files, the material to the left of the equals signs should
+    effectively variables, and so should not be changed, whereas
+    anything the right of the equals signs is written as text in the
+    \WebQuiz web pages. To add language support for a new language, say
+    \textsf{XXX}, copy this file and translate the material to the right
+    of the equals signs and then save the file as
+    \texttt{webquiz-XXX.lang}, and put it anywhere in the \LaTeX{}
+    search path. Note that the expressions \Verb|({})| in the language
+    files should be kept because when used in the web pages they expand
+    to expressions like \textsf(a), \textsf(b) etc. Once the new
+    language file \texttt{webquiz-XXX.lang} is in the \LaTeX{} search
+    path it can be used by \WebQuiz in the obvious way:
+    \begin{latexcode}
+       \documentclass[language=XXX]{webquiz}
+       \begin{document}
+            ** insert quiz code
+       \end{document}
+    \end{latexcode}
+    Please submit any new language files, or corrections to existing
+    language files, to \href{https://\webquiz{repository}}{\webquiz{repository}}.
+
+    \item[pst2pdf] \index{pstricks}\CrossIndex{document class options}{pst2pdf}
     \textit{Try the pst3pdf class option if you are having trouble
     displaying an image created using \ctan{pstricks}. It is not
     guaranteed to work but it often fixes the problem}.
@@ -854,7 +908,10 @@ to my \Verb|.bashrc| file. You may need to do something similar.
     \textsf{pst2pdf} relies upon, so look in your log files for error
     messages and check the list of programs given above.
 
-  \item[tikz]\index{tikz}
+  \item[theme]\CrossIndex{document class options}{theme}
+
+
+  \item[tikz]\CrossIndex{document class options}{tikz}
     Giving this class option both loads the \ctan[pgf]{tikz} package (so
     you do not need to have \Verb|\usepackage{tikz}| in your \LaTeX\ file)
     and, as a bonus, fixes several issues with PGF that prevent it from
@@ -875,7 +932,7 @@ to my \Verb|.bashrc| file. You may need to do something similar.
 
     \ScreenShot{Tikz example}{examples/tikz-ex}
 
-  \item[hidesidemenu]\index{hide side menu}
+    \item[hidesidemenu]\CrossIndex{document class options}{hide side menu}
     If this option is set the end the side menu is not displayed
     initially.  By default, the side menu appears unless the screen size
     is too small.
