@@ -92,7 +92,7 @@ class WebQuizCtan(build_py):
         '''
         for css_file in glob.glob('webquiz-*.scss'):
             self.shell_command('sass --style compress {} {}.css'.format(css_file, css_file[:-4]))
-        self.shell_command('cd doc && latex --interaction=batchmode webquiz-online-manual && dvipdf webquiz-online-manual')
+        self.shell_command('cd doc && ./mklanguages && latex --interaction=batchmode webquiz-online-manual && dvipdf webquiz-online-manual')
         self.shell_command('cd doc && pdflatex --interaction=batchmode webquiz')
 
     def write_zip_file(self):
@@ -111,27 +111,28 @@ class WebQuizCtan(build_py):
         with zipfile.ZipFile('webquiz.zip', 'w', zipfile.ZIP_DEFLATED) as zfile:
 
             # now add the files
-            for (src, target) in [ ('README.md',                        ''),
-                                   ('doc/*.pdf',                        'doc'),
-                                   ('doc/m*.tex',                       'doc'),
-                                   ('doc/examples/*.png',               'doc/examples'),
+            for (src, target) in [ ('README.md',                       ''),
+                                   ('doc/webquiz*.tex',                'doc'),
+                                   ('doc/webquiz.lang',                'doc'),
+                                   ('doc/webquiz*.pdf',                'doc'),
+                                   ('doc/examples/*.png',              'doc/examples'),
                                    ('latex/webquiz.c*',                'latex'),
-                                   ('latex/pgfsys-tex4ht-mq-fixed.def', 'latex'),
+                                   ('latex/pgfsys-tex4ht-mq-fixed.def','latex'),
                                    ('latex/webquiz.ini',               'latex'),
                                    ('latex/webquiz-doc.sty',           'latex'),
-                                   ('latex/webquiz-*.lang',             'latex'),
-                                   ('LICENCE',                          'scripts'),
-                                   ('webquiz/webquiz*.py',            'scripts'),
-                                   ('webquiz/webquiz.ini',            'scripts'),
-                                   ('webquiz/webquiz.bat',            'scripts'),
-                                   ('css/webquiz-*.css',                'scripts/www'),
+                                   ('latex/webquiz-*.lang',            'latex'),
+                                   ('LICENCE',                         'scripts'),
+                                   ('webquiz/webquiz*.py',             'scripts'),
+                                   ('webquiz/webquiz.ini',             'scripts'),
+                                   ('webquiz/webquiz.bat',             'scripts'),
+                                   ('css/webquiz-*.css',               'scripts/www'),
                                    ('javascript/webquiz.js',           'scripts/www'),
                                    ('doc/webquiz-online-manual.tex',   'scripts/www/doc'),
-                                   ('webquiz/webquiz.ini',            'scripts/www/doc'),
-                                   ('doc/examples/*.tex',               'scripts/www/doc/examples'),
+                                   ('webquiz/webquiz.ini',             'scripts/www/doc'),
+                                   ('doc/examples/*.tex',              'scripts/www/doc/examples')
                 ]:
                 for file in glob.glob(src):
-                  if file != 'webquiz/webquiz_sms.py':
+                    print('{} --> {}'.format(file, target))
                     zfile.write(file, os.path.join('webquiz', target, file.split('/')[-1]))
 
 setup(name             = settings.program,

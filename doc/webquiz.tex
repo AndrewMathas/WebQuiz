@@ -25,9 +25,6 @@
 \def\subsectionautorefname{Section}
 \def\subsubsectionautorefname{\S\unskip}
 
-\usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
-
 \usepackage[nonewpage]{imakeidx}
 \indexsetup{level=\section*,toclevel=section,noclearpage}
 \makeindex[intoc,noautomatic,columns=3]
@@ -445,7 +442,7 @@ This section describes these environments and gives examples
 of their use.
 
 \subsubsection{Question environments}
-\CrossIndex{environment}{question environment}
+\CrossIndex{environment}{question}
 
 Quizzes are composed of questions and each quiz question must to be
 placed inside a \Verb|question| environment. Typically, a quiz will have
@@ -472,7 +469,7 @@ For brevity, all of the examples in this chapter have only one question
   \ScreenShot{A question with a numeric answer}{examples/question}
 
 \subsubsection{Choice environments}
-\CrossIndex{environment}{choice environment}
+\CrossIndex{environment}{choice}
 \CrossIndex{question environment}{choice environment}
 \SeeIndex{multiple choice}{choice environment}
 
@@ -529,7 +526,7 @@ When the optional argument \Verb|multiple| is used then the question is
 marked correct if and only if all of the correct responses are selected.
 
   \subsubsection{Discussion environments}
-  \CrossIndex{environment}{discussion environment}
+  \CrossIndex{environment}{discussion}
 
 In addition to asking questions it is possible to have revision, or
 discussion, material at the \textit{start} of the quiz.  The discussion
@@ -555,7 +552,7 @@ discussion.
   \subsubsection{Quiz indexes}
 
   \index{quizlist environment}
-  \CrossIndex{environment}{quizlist environment}
+  \CrossIndex{environment}{quizlist}
 
   Most quizzes occur in sets that cover related material, for example
   for a particular unit of study. The \Verb|quizlist| environment can be
@@ -636,7 +633,7 @@ discussion.
   In principle, there can be arbitrarily many crumbs in your
   breadcrumbs but, in practice, five is more than enough. Using
   \Verb|\BreadCrumbs{none}| will disable the breadcrumbs.
-  \CrossIndex*{Breadcrumbs}{none}
+  \CrossIndex*{BreadCrumbs}{none}
   Similarly, setting \textsf{breadcrumbs = none} in the \webquizrc will
   also disable the breadcrumbs, unless there is a \Verb|\BreadCrumbs|
   command in the quiz file, which will overwrite the default settings in
@@ -718,7 +715,7 @@ discussion.
      command \textit{after} the \Verb|\title| command will override the
      value of \textsf{breadcrumb}.
 
-  \Item{Department}\macroIndex{Deoartment}
+  \Item{Department}\macroIndex{Department}
     The \Verb|\Department| command sets the name of the
     \textsf{department}. As described earlier in this section, by
     default, the \textsf{department} is the first item in the
@@ -787,7 +784,7 @@ discussion.
 
 \end{description}
 
-  \subsection{WebQuiz class options --- pstricks and tikz}\label{SS:classOptions}
+  \subsection{Including graphics}\index{graphics}
 
 The two most commonly used packages for drawing pictures or diagrams in
 \LaTeX{} are \ctan{pstricks} and \ctan[pgf]{tikz}. Unfortunately, both
@@ -819,6 +816,7 @@ needed to add the line
 \end{verbatim}
 to my \Verb|.bashrc| file. You may need to do something similar.
 
+  \subsection{WebQuiz class options --- pstricks and tikz}\label{SS:classOptions}
 
 \begin{description}
   \item[language=<lang>] \CrossIndex{document class options}{language}
@@ -826,7 +824,7 @@ to my \Verb|.bashrc| file. You may need to do something similar.
   The currently supported languages are:
 
     \begin{quote}
-        \input{languages}
+        \input{webquiz.lang}
     \end{quote}
 
     The languages files are used to print the various buttons and text
@@ -835,7 +833,7 @@ to my \Verb|.bashrc| file. You may need to do something similar.
     the quiz and it does not load language packages like \ctan{babel} or
     \ctan{polyglossia}.
 
-    Typical usage of gthe \textsf{language} option is the following:
+    Typical usage of the \textsf{language} option is the following:
     \lstinputlisting[style=latexcode,extendedchars=false]{examples/french}
     This produces a web page like this:
     \ScreenShot{A web page with \textsf{language=french}}{examples/french}
@@ -844,20 +842,20 @@ to my \Verb|.bashrc| file. You may need to do something similar.
     they may well need fine-tuning. You can use \textsf{kpsewhich} to
     look at the language files, which all have names of the form
     \texttt{webquiz-}\textit{language}\texttt{.lang}.
-    For example, the \textit{english} file file, which is the default,
+    For example, the \textit{English} language file, which is the default,
     can be found using the command:
     \begin{quote}
          \textsf{kpsewhich} webquiz-english.lang
     \end{quote}
     This file contains the following:
     \lstinputlisting[extendedchars=false]{webquiz-english.lang} In these
-    files, the material to the left of the equals signs should
-    effectively variables, and so should not be changed, whereas
-    anything the right of the equals signs is written as text in the
-    \WebQuiz web pages. To add language support for a new language, say
-    \textsf{XXX}, copy this file and translate the material to the right
+    files, the material to the left of the equals signs are
+    effectively variables, and so they should never be changed, whereas
+    anything the right of the equals signs is the text that is written
+    to the \WebQuiz web pages. To make \WebQuiz support for a new language, say
+    \textsf{XXX}, copy any \WebQuiz language file and translate the material to the right
     of the equals signs and then save the file as
-    \texttt{webquiz-XXX.lang}, and put it anywhere in the \LaTeX{}
+    \texttt{webquiz-XXX.lang}, and then put this file anywhere in the \LaTeX{}
     search path. Note that the expressions \Verb|({})| in the language
     files should be kept because when used in the web pages they expand
     to expressions like \textsf(a), \textsf(b) etc. Once the new
@@ -870,7 +868,8 @@ to my \Verb|.bashrc| file. You may need to do something similar.
        \end{document}
     \end{latexcode}
     Please submit any new language files, or corrections to existing
-    language files, to \href{https://\webquiz{repository}}{\webquiz{repository}}.
+    language files, as a \textit{new issue} at:
+      \href{https://\webquiz{repository}}{\webquiz{repository}}.
 
     \item[pst2pdf] \index{pstricks}\CrossIndex{document class options}{pst2pdf}
     \textit{Try the pst3pdf class option if you are having trouble
@@ -1261,15 +1260,6 @@ option.
           \begin{center}
             \webquizopt{edit-settings}
           \end{center}
-       \item[-p, \ddash pst2pdf] \CrossIndex{command-line options}{pst2pdf}
-          Use the \textsf{pst2pdf} command-line option to, \textit{potentially},
-          fix issues with images generated by pstricks.  This option is
-          equivalent to using the \Verb|pst2pdf| document class option;
-          see \autoref{SS:classOptions}.
-          \newline
-          \textit{Try this command-line option if you are having trouble
-          displaying an image created using \ctan{pstricks}. It is not
-          guaranteed to work but it does sometimes fix the problem}
 
        \item[\ddash make4ht MAKE4HT\_OPTIONS] \CrossIndex{command-line options}{make4ht}
           Options to be passed to \textsf{make4ht} when converting the \LaTeX{} to \textsf{xml}. This
@@ -1331,7 +1321,7 @@ option.
                     \texttt{cd \$(webquiz \ddash settings webquiz\_www)/docs}
             \end{center}
             will take you to the \WebQuiz on-line \texttt{docs/} directory.
-        \item[breadcrumbs]
+        \item[breadcrumbs]\index{breadcrumbs}
           Sets the default breadcrumbs at the top of quiz page; see \Verb|\BreadCrumbs| in \autoref{SS:breadcrumbs}
           \macroIndex{BreadCrumbs}
         \item[department]
@@ -1346,7 +1336,12 @@ option.
         \item[institution\_url]
           Sets the URL for the institution; see \Verb|\InstitutionURL| in \autoref{SS:breadcrumbs}
           \macroIndex{InstitutionURL}
-          \item[mathjax] \WebQuiz web pages use \href{https://www.mathjax.org/}{mathjax} to
+        \item[language]\index{language}
+          Sets the default language for the \WebQuiz web pages. This can
+          be overridden in the quiz file by using the document class
+          \textsf{language} option: \Verb|language=XXX|
+          See \autoref{SS:classOptions}.
+        \item[mathjax] \WebQuiz web pages use \href{https://www.mathjax.org/}{mathjax} to
           render the mathematics on the quiz web pages. By default this
           is done by loading \textsf{mathjax} from
           \begin{center}
@@ -1364,6 +1359,11 @@ option.
           \LaTeX\ file to \textsf{xml}. Use this option to
           customise how \textsf{make4ht} is called. See the
           \ctan[make4ht]{make4ht manual} for more information.
+        \item[theme]\index{theme}
+          Sets the default colour theme for the \WebQuiz web pages. This can
+          be overridden in the quiz file by using the document class
+          \textsf{theme} option: \Verb|theme=XXX|.
+          See \autoref{SS:classOptions}.
         \item[webquiz\_format]
           Sets the python file that writes the HTML file for the quiz.
           Most people will not need this option. The next subsection

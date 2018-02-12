@@ -272,7 +272,12 @@ class WebQuizSettings(object):
         self.system_rc_file =  os.path.join( tex_local, 'scripts', 'webquiz', 'webquizrc')
         self.read_webquizrc( self.system_rc_file )
 
-        self.user_rc_file = os.path.join(os.path.expanduser('~'),'.webquizrc')
+        # the user rc file defaults to ~/.config/webquizrc if the .config directory exists
+        # and otherwise to ~/.webquizrc
+        if os.path.isdir( os.path.join(os.path.expanduser('~'), '.config'):
+            self.user_rc_file = os.path.join(os.path.expanduser('~'),'.config', 'webquizrc')
+        else:
+            self.user_rc_file = os.path.join(os.path.expanduser('~'),'.webquizrc')
         if os.path.isfile( self.user_rc_file ):
             self.read_webquizrc( self.user_rc_file )
 

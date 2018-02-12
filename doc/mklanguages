@@ -1,5 +1,11 @@
 #!/bin/bash
 
-/bin/rm -f languages
+# Script to generate the list of languages that is currently supported
+# by WebQuiz, together with code to produce index entries for them in
+# the manual. The manual, webquiz.tex, reads in this list to display 
+# the list of supported languages
 
-ls ../latex/*.lang | sed 's@.*-\([^.]*\).lang@\1@g' > languages
+LANG="webquiz.lang"
+/bin/rm -f languages
+echo "% List of languages currently supported by WebQuiz -- $(date '+%Y-%m-%d')" > $LANG
+ls ../latex/*.lang | sed -e 's@.*webquiz-\(.*\).lang@\u\1\\CrossIndex{language}{\1}@'   >> $LANG
