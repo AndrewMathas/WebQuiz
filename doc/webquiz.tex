@@ -1,4 +1,4 @@
-%-----------------------------------------------------------------------------
+%------------------------------------------ -----------------------------------
 %  Copyright (C) 2004-2017 Andrew Mathas, University of Sydney
 %
 %  Distributed under the terms of the GNU General Public License (GPL)
@@ -17,9 +17,11 @@
 \parindent=4mm
 \parskip=1mm
 \hfuzz 5pt
+\synctex=1
 
 \usepackage{textcomp}
 \usepackage{pdfpages}
+
 \usepackage{etoolbox}% to patch l@section to remove extraneous spacing
 \def\sectionautorefname{Chapter}
 \def\subsectionautorefname{Section}
@@ -61,17 +63,23 @@ the on-line manual.}}
 \newcommand{\See}[2]{\unskip\emph{see } #1}
 \newcommand\SeeIndex[2]{\index{#1!zzzz@\protect\gobbleone|See{#2}}}
 
-\newif\ifCtan\Ctanfalse % condition compilation for ctan distribution
+\newif\ifCtan\Ctantrue % condition compilation for ctan distribution
 
 \renewcommand*\contentsname{\relax}
 
 % hyperref links to ctan
 \NewDocumentCommand\ctan{ O{pkg/#2} m}{\href{https://www.ctan.org/#1}{\texttt{#2}}}
+\csdef{TeX4ht}{\ctan[tex4ht]{\TeX 4ht}}
+\newcommand\TeXLive{\ctan[/]{\TeX Live}}
 
 \newcommand\ddash{\texttt{\textemdash\textemdash}}
 \newcommand\webquizopt[1]{\textsf{webquiz \ddash#1}}
 \newcommand\webquizrc{\index{webquizrc}\textsf{webquizrc}\xspace}
-\newcommand\advancedOption{\textit{This is an advanced option. An incorrect value for this setting may stop \WebQuiz from working.}}
+\newcommand\advancedOption{%
+  \textit{This is an advanced option. An incorrect value for this setting
+  may stop \WebQuiz from working.}%
+}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% WebQuiz title box for front page
 \usepackage{tikz}
@@ -135,9 +143,12 @@ the on-line manual.}}
     \begin{quote}
       \WebQuiz makes it possible to write on-line quizzes using
       \LaTeX, providing an easy way for anyone who knows \LaTeX\ to
-      create an on-line quiz using \LaTeX\ file.  The
-      allows the quiz author to concentrate on the content of quizzes,
-      unencumbered by the technicalities of HTML and javascript.
+      create an on-line quiz using \LaTeX\ file. \WebQuiz allows
+      the quiz author to concentrate on the content of quizzes, written
+      in \LaTeX, unencumbered by the technicalities of HTML and
+      javascript. \WebQuiz was originally developed for writing
+      mathematics quizzes, however, the content of the quizzes can
+      anything that can be reasonably typeset in \LaTeX.
 
       \ScreenShot{Example \WebQuiz web page}{examples/quiz-page}
 
@@ -161,16 +172,15 @@ the on-line manual.}}
     diagrams.
 
     \WebQuiz makes it possible to write on-line quizzes using \LaTeX,
-    which is the typesetting language used by mathematicians
-    who use \LaTeX\ to write their research papers, books and
-    teaching materials. In principle, a \WebQuiz quiz can contain anything
-    that can be typeset using \LaTeX.  In practise, the \LaTeX\ is
-    converted to HTML using
-    \href{https://www.tug.org/applications/tex4ht/mn.html}{\TeX 4ht}
-    (and \href{https://github.com/michal-h21/make4ht}{make4ht}), so the
-    quizzes can contain any \LaTeX commands that are understood by \TeX 4ht,
-    which is almost everything. In particular, it is possible to use
-    graphics constructed using packages like \ctan{pstricks} and
+    which is the typesetting language used by mathematicians who use
+    \LaTeX\ to write their research papers, books and teaching
+    materials. In principle, a \WebQuiz quiz can contain anything that
+    can be typeset using \LaTeX.  In practise, the \LaTeX\ is converted
+    to HTML using \TeX4ht (and
+    \href{https://github.com/michal-h21/make4ht}{make4ht}), so the
+    quizzes can contain any \LaTeX commands that are understood by \TeX
+    4ht, which is almost everything. In particular, it is possible to
+    use graphics constructed using packages like \ctan{pstricks} and
     \ctan{tikz}; however, see \autoref{SS:classOptions}.
 
     \WebQuiz supports the following three types of questions:
@@ -255,20 +265,20 @@ the on-line manual.}}
     from inside programs like \TeX Shop by setting the compiler equal to
     \textsf{webquiz}.
 
-    \WebQuiz can be used to ask the student a series of questions. In
-    the on-line version of the quiz, one question is displayed at a
-    time. Each question in a quiz, and each quiz itself, can be
+    \WebQuiz can be used to ask students a series of ``quiz'' questions. In
+    the on-line version of the quiz, the quiz question are displayed one
+    at a time. Each question in a quiz, and each quiz itself, can be
     attempted as many times as the student wants: \WebQuiz does not
     limit the number of times that questions can be attempted.
-    The following three types of questions are supported:
+    The following three types of questions are currently supported:
     \begin{itemize}
       \item Multiple choice questions with a unique correct answer
       \item Multiple choice questions zero or more correct answers
       \item Questions with a numerical answer.
     \end{itemize}
-    Questions with symbolic answers are not supported.
-    For example, if the answer to a question is $0$ then $\sin(0)$ will
-    not be accented as a correct answer. Consequently, the only way to ask for the
+    Questions with symbolic answers are not supported.  For example, if
+    the answer to a question is~$0$ then $\sin(0)$ will not be accepted
+    as a correct answer. Consequently, the only way to ask for the
     indefinite integral of a function is as a multiple choice question.
 
     The quizzes made using \WebQuiz are intended to be used as a
@@ -305,7 +315,7 @@ the on-line manual.}}
     \href{http://sass-lang.com/}{sass}. This said, I would be happy to
     incorporate different colour schemes that are sent to me.}
     It is possible to add some styling using, for example, the
-    \Verb|\Css| command from \ctan{tex4ht}, however, if you really want
+    \Verb|\Css| command from \TeX4ht, however, if you really want
     to do this then you are probably better off writing
     \href{https://www.w3schools.com/css/}{CSS} directly.
 
@@ -784,38 +794,6 @@ discussion.
 
 \end{description}
 
-  \subsection{Including graphics}\index{graphics}
-
-The two most commonly used packages for drawing pictures or diagrams in
-\LaTeX{} are \ctan{pstricks} and \ctan[pgf]{tikz}. Unfortunately, both
-of these packages have issues when used with \TeX 4ht. The good news is
-that \WebQuiz attempts to solve these problems for you.
-
-\noindent\textbf{tikz}\index{tikz}
-Using the \Verb|tikz| document class option, instead of
-\Verb|\requirepackage{tikz}|, fixes several issues with
-\ctan[pgf]{tikz}. Of course, there  there may well be other problems
-that we are not aware of.
-
-\noindent\textbf{pstricks}\index{pstricks}
-Using \ctan{pstricks} is, in some sense, easier that \ctan[pgf]{tikz}
-because it seems to work better with \ctan{tex4ht}. There is a
-significant caveat, however, because \ctan{tikz} uses  \ctan{dvisvgm} to
-convert the images created by \ctan{pstricks}, so it is necessary to
-make sure that this package is correctly installed. At first sight this
-looks OK because \ctan{dvisvgm} is included in \TeX Live and Mik\TeX,
-however, , \ctan{dvisvgm} uses
-\href{https://www.ghostscript.com/}{Ghostscript} and this needs to be
-correctly configured and, as outlined in its
-\href{http://dvisvgm.bplaced.net/FAQ}{FAQ}, \ctan{dvisvgm} needs to know
-where to find the \href{https://www.ghostscript.com/}{Ghostscript}
-libraries. For example, to get \ctan{dvisvgm} to work on my system I
-needed to add the line
-\begin{verbatim}
-    export LIBGS=/usr/local/lib/libgs.dylib
-\end{verbatim}
-to my \Verb|.bashrc| file. You may need to do something similar.
-
   \subsection{WebQuiz class options --- pstricks and tikz}\label{SS:classOptions}
 
 \begin{description}
@@ -852,19 +830,20 @@ to my \Verb|.bashrc| file. You may need to do something similar.
     files, the material to the left of the equals signs are
     effectively variables, and so they should never be changed, whereas
     anything the right of the equals signs is the text that is written
-    to the \WebQuiz web pages. To make \WebQuiz support for a new language, say
-    \textsf{XXX}, copy any \WebQuiz language file and translate the material to the right
-    of the equals signs and then save the file as
-    \texttt{webquiz-XXX.lang}, and then put this file anywhere in the \LaTeX{}
-    search path. Note that the expressions \Verb|({})| in the language
-    files should be kept because when used in the web pages they expand
-    to expressions like \textsf(a), \textsf(b) etc. Once the new
-    language file \texttt{webquiz-XXX.lang} is in the \LaTeX{} search
-    path it can be used by \WebQuiz in the obvious way:
+    to the \WebQuiz web pages. To add \WebQuiz support for a new
+    language, say \textsf{XXX}, copy any \WebQuiz language file and
+    translate the material to the right of the equals signs and then
+    save the file as \texttt{webquiz-XXX.lang}, and then put this file
+    anywhere in the \LaTeX{} search path. Note that the expressions
+    \Verb|({})| in the language files should be not be removed because
+    they expand to expressions like \textsf(a), \textsf(b) etc. when
+    used in the on-line quizzes. Once the new language file
+    \texttt{webquiz-XXX.lang} is in the \LaTeX{} search path it can be
+    used by \WebQuiz in the obvious way:
     \begin{latexcode}
        \documentclass[language=XXX]{webquiz}
        \begin{document}
-            ** insert quiz code
+            insert quiz code
        \end{document}
     \end{latexcode}
     Please submit any new language files, or corrections to existing
@@ -944,46 +923,87 @@ All other class options that are given to the \WebQuiz document class
 are passed to the \texttt{article} class, which is the base class used
 by \texttt{webquiz}.
 
-\section{System requirements, installation and configuration}\label{S:configuration}
+\subsection{Configuring commands and environments for \TeX4ht}
+
+\section{System requirements, installation and configuration}
+  \label{S:configuration}
   \index{system requirements}
   \CrossIndex{system requirements}{tex4ht}
   \CrossIndex{system requirements}{make4ht}
   \CrossIndex{system requirements}{python}
 
-    It is advisable to have an up-to-date \LaTeX{} distribution, such
-    as that provided by \href{https://www.tug.org/texlive/}{\TeX live},
-    as well as a recent version of \href{https://www.python.org/}{Python 3}
-    (as of writing, python 3.6 is available). I have tested the
-    \WebQuiz system extensively on Linux and Mac operating systems.
-    Several people have used \WebQuiz on windows computers, but I
-    have not tested the program on a window myself.
+    \WebQuiz takes a \LaTeX\ file and translates it into a functional
+    web page. To use \WebQuiz the quiz author only needs to know how to
+    use \LaTeX\ \textit{and} to have all of the programs used by \WebQuiz
+    installed. Fortunately, most of the system requirements will already
+    be installed on a system with an up-to-date installation of
+    \TeXLive, however, some tweaking may still be necessary.
 
-    \subsection{\WebQuiz components --- \LaTeX, python, web, doc}
-
+    Behind the scenes, \WebQuiz uses \TeX4ht, python, javascript and
+    several other tools to construct and operate the on-line quizzes.
     The \WebQuiz program has different four components:
       \begin{itemize}
            \item \LaTeX\ files (a class file and \TeX4ht configuration files)
-           \item Python3 executables that use \TeX4ht to convert \LaTeX\ files into web pages
+           \item Python3 executables that use \TeX4ht to convert \LaTeX\
+           files into web pages
            \item Web files (javascript, css and on-line documentation)
            \item Documentation
       \end{itemize}
     Of course, to use the on-line quizzes created by \WebQuiz you will
     also need a web server. To use \WebQuiz all of these files need to
-    be in appropriate places.
-    \ifCtan Fortunately, \ctan[/]{ctan} takes care of most of this but
-    \else
-    You will need to install the \LaTeX{} files somewhere in the
-    \LaTeX{} search path and
-    \fi
-    the web-related files still need to be put onto your web server.
+    be in appropriate places.  Fortunately, \ctan[/]{ctan} takes care of
+    most of this but the web-related files still need to be put onto
+    your web server.
 
-    \subsection{Installation}\index{installation}\index{initialisation}
+    \WebQuiz has been tested extensively on Linux and Mac operating
+    systems. Several people have used \WebQuiz on windows computers,
+    but I have not tested the program on a windows computer myself.
+
+    \subsection{System requirements}\index{system requirements}
+
+    In order to work \WebQuiz needs the following programs to be
+    installed on your system:
+    \begin{itemize}
+       \item An up-to-date \LaTeX{} distribution, such as that provided.
+       by \TeXLive. In particular, you need to have \TeX4ht{} installed.
+       It is recommend that you have the equivalent of \TeXLive{} 2018,
+       or later, installed, because of recent changes to \TeX4ht{}.
+        \item \href{https://www.python.org/}{Python 3}. As of writing
+        python 3.6 is available.
+        \item Javascript
+        \item If your quizzes incorporate graphics using \ctan{pstricks}
+        you need to ensure that
+        \href{https://www.ghostscript.com/}{Ghostscript} and
+        \ctan{dvisvgm} are installed and properly configured; see
+        \autoref{SS:graphics} for more details.
+        \item A web server
+    \end{itemize}
+
+
+    \subsection{Installing the web files used by \WebQuiz}
+    \CrossIndex{command-line options}{initialise}
+    \index{installation}\index{initialisation}
+
+     The quiz files created by \WebQuiz use
+     \href{https://en.wikipedia.org/wiki/JavaScript}{javascript} and
+     \href{https://www.w3schools.com/css/css_intro.asp}{cascading style
+     sheets} (CSS) to render the quizzes. You do not need to understand
+     how this works but you do need to put the \WebQuiz javascript and
+     CSS files onto your web server. It is necessary that these files
+     are accessible to your web server, but it does not matter whether
+     they are in a ``system directory'' or in your personal web
+     directories.
 
     The easiest way to install the web-related files is to run \WebQuiz
     from the command line using:
     \begin{quote}
       \webquizopt{initialise}
     \end{quote}
+
+    I recommend running this initialisation command and follow the
+    prompts. More detail about what this command does, and what
+    information is required, is given for those who want it.
+
     \textit{If you want to make the settings system wide then you need
     to run this command using an administrator account or using
     \textsf{sudo} on a UNIX or Mac OSX system.}
@@ -995,94 +1015,15 @@ by \texttt{webquiz}.
     As described in more detail below, initialisation copies the
     javascript and CSS files used by \WebQuiz into the file space used
     by your web server.
-    \ifCtan\else If you are installing \WebQuiz from the zip file then
-    you need to read the next section, otherwise
-    \fi
 
-    I recommend that the TLDR-crowd just run the initialisation command
-    and follow the prompts. More detail about what is required appears
-    below for those who want it.
-
-    \ifCtan\else
-
-    \subsection{Installation of \WebQuiz from the zip file}
-
-    (\textit{This section of the manual will be removed when the
-    package is put onto \ctan[/]{ctan}.})
-
-      The \WebQuiz zip file has three directories, or folders:
-
-      \begin{itemize}
-        \item[--] webquiz/latex
-        \item[--] webquiz/doc
-        \item[--] webquiz/scripts
-      \end{itemize}
-
-      The files in the \textsf{latex} directory need to be put somewhere in the \LaTeX\
-    search path. For example, on my computer I have these files in
-    \begin{center}
-       \Verb|/usr/local/texlive/texmf-local/tex/latex/local/webquiz|
-    \end{center}
-    After you have moved these files to an appropriate place you will need to run
-    something like texhash. The exact command that you need to run to
-    tell \LaTeX\ that you have installed some latex files depends on the
-    \TeX distribution that you are using.
-
-    The files in the \textsf{doc} directory are the documentation. You can
-    put these files where ever you like, although if you want programs
-    like \textsf{texdoc} to find them then you will need to put them
-    into an appropriate place in the \LaTeX{} directory tree.
-
-    The \WebQuiz program itself lives in the script directory. On a
-    UNIX like system, which includes macs,  I recommend making a link to
-    the file webquiz.py, which is the entry point to the code, using
-    something like:
-    \begin{center}
-        \Verb|ln -s <path to scripts directory>/webquiz.py webquiz|
-    \end{center}
-    Following \href{https://tex.stackexchange.com/questions/40937/how-to-publish-a-package-that-includes-scripts-and-or-executables/40971#40971}{How to publish a package that includes scripts and/or executables?}
-    a windows batch file \Verb|webquiz.bat| is included as part of
-    \WebQuiz. \textit{I believe} that this batch file will allow you to run \WebQuiz
-    on a windows computer. As I do not own or have access to a windows machine I am
-    unable to test this.
-
-    It remains to install the web files used by \WebQuiz, which can be
-    done using \WebQuiz.
-    \fi
-
-    \subsection{Installing the web files used by \WebQuiz}
-    \CrossIndex{command-line options}{initialise}
-
-     The quiz files created by \WebQuiz use
-     \href{https://en.wikipedia.org/wiki/JavaScript}{javascript} and
-     \href{https://www.w3schools.com/css/css_intro.asp}{cascading style
-     sheets} (CSS) to render the quizzes. You do not need to understand
-     how this works but you do need to put the \WebQuiz javascript and
-     CSS files onto your web server.\footnote{In fact, \WebQuiz will work
-     even if you do not install these files on your web server, however,
-     the quiz pages that it creates will have an annoying message at the
-     top of the web page to remind you to install these files.} It is
-     necessary that these files are accessible to your web server, but
-     it does not matter whether they are in a ``system directory'' or in
-     your personal web directories.
-
-     \WebQuiz provides a semi-automated way of moving these files into
-     place, so the short version of the installation process is to fun
-     the following command from the command-line:
-     \begin{center}
-        $>$ \webquizopt{initialise}
-     \end{center}
-     You will be asked a series of questions that should be
-     straightforward to answer because \WebQuiz talks you through what
-     needs to be done. More details follows about the initialisation
-     process in the hope that this might be useful.
-
-     When you run the \WebQuiz initialisation command you will be prompted for the
-     following:
+    When you run the \WebQuiz initialisation command,
+     \webquizopt{initialise},  you will be prompted for the following:
      \begin{itemize}
-       \item The \WebQuiz web directory, which is a directory on your local file system that is visible
-             to your web server
-       \item The relative URL for this directory, which tells your web browser where to find these files
+       \item The location of the \WebQuiz web directory, which needs to
+       be a directory on your local file system that is visible to your
+       web server
+       \item The relative URL for this directory, which tells your web
+       browser where to find these files
      \end{itemize}
      For example, on my system the base directory for our web server is
      \textsf{/usr/local/httpd/} and the \WebQuiz web
@@ -1104,14 +1045,13 @@ by \texttt{webquiz}.
      These settings are mainly used in the \textit{breadcrumbs} on the
      quiz web pages; see \autoref{S:documentclass} for
      details.\index{breadcrumbs}
-     If in doubt just hit return to accept the default values for these
-     variables, which for most of these amounts to leaving them blank.
-     You can come back and change these settings at any time using the command:
+     If in doubt just press return to accept the default values for
+     these variables. You can come back and change these settings at
+     any time using the command:
      \begin{center}
         \webquizopt{edit-settings}.
      \end{center}
-     In addition, these defaults can always be overwritten by commands
-     in the individual quiz files.
+     In addition, you can override the system defaults in any quiz file.
 
      Finally, the initialisation command will ask you about some more
      advanced settings. It is very unlikely that you will need to change
@@ -1120,11 +1060,48 @@ by \texttt{webquiz}.
 
     \bigskip
 
-    \WebQuiz is now ready to use!
+    \WebQuiz is now ready to use! You can test your \WebQuiz
+    installation by compiling the on-line manual, however, please note
+    that the on-line manual will compile only if
+    \href{https://www.ghostscript.com/}{Ghostscript} and \ctan{dvisvgm}
+    are installed and properly configured; see \autoref{SS:graphics} for
+    more details.
 
+\subsection{Special graphics configuration }
+\label{SS:graphics}\index{graphics}
 
-\section{The WebQuiz program}
-\index{usage}
+The two most commonly used packages for drawing pictures or diagrams in
+\LaTeX{} are \ctan{pstricks} and \ctan[pgf]{tikz}. Unfortunately, both
+of these packages have issues when used with \TeX 4ht. The good news is
+that \WebQuiz attempts to solve these problems for you.
+
+\noindent\textbf{tikz}\index{tikz}
+Using the \Verb|tikz| document class option, instead of
+\Verb|\requirepackage{tikz}|, fixes several issues with
+\ctan[pgf]{tikz}. Of course, there  there may well be other problems
+that we are not aware of.
+
+\noindent\textbf{pstricks}\index{pstricks}
+Using \ctan{pstricks} is, in some sense, easier that \ctan[pgf]{tikz}
+because it seems to work better with \ctan{tex4ht}. There is a
+significant caveat, however, because \ctan{tikz} uses  \ctan{dvisvgm} to
+convert the images created by \ctan{pstricks}, so it is necessary to
+make sure that this package is correctly installed. At first sight this
+looks OK because \ctan{dvisvgm} is included in \TeX Live and Mik\TeX,
+however, , \ctan{dvisvgm} uses
+\href{https://www.ghostscript.com/}{Ghostscript} and this needs to be
+correctly configured and, as outlined in its
+\href{http://dvisvgm.bplaced.net/FAQ}{FAQ}, \ctan{dvisvgm} needs to know
+where to find the \href{https://www.ghostscript.com/}{Ghostscript}
+libraries. For example, to get \ctan{dvisvgm} to work on my system I
+needed to add the line
+\begin{verbatim}
+    export LIBGS=/usr/local/lib/libgs.dylib
+\end{verbatim}
+to my \Verb|.bashrc| file. You may need to do something similar.
+
+\section{The WebQuiz program} \index{usage}
+
     The \WebQuiz program was designed to be run from the command-line,
     so to process the file \textsf{quiz.tex} using \WebQuiz type:
 

@@ -38,7 +38,8 @@ webquiz_file = lambda file: os.path.join(os.path.dirname(os.path.realpath(__file
 class MetaData(dict):
     r"""
     A dummy class for reading, accessing and storing key-value pairs from
-    a file Any internal spaces in the key name are replaced with underscores.
+    a file. Any internal spaces in the key name are replaced with underscores
+    and lines without a key-value pair are ignored.
 
     The key-value pairs are available as both attributes and items
 
