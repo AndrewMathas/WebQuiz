@@ -73,6 +73,10 @@
 % doing pst2pdf preprocessing
 \ifdefined\MQ@quizfile\relax\else\xdef\MQ@quizfile{\jobname.tex}\fi
 
+% Macro to define a picture variant of \<command>. The latex version does
+% nothing but the cfg version converts \<command> into an image
+\newcommand\DisplayAsImage[2][]{\relax}
+
 % Macros for defining the university and department
 \newcommand*{\DepartmentURL}[1]{\def\MQ@departmentURL{#1}}
 \newcommand*{\Department}[1]{\def\MQ@department{#1}}

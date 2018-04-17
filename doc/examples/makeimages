@@ -20,8 +20,8 @@ webquiz manual. We first use
     - webquiz to construct the web page
     - webkit2png to extract an image of the web page, sometimes with options
     - mogrify to trim the image down to size
-Alternatively, it is possible to ecxtract a png image of the PDF file created by wevquiz.
-For the full extraction specifications see the image_files dictionary below
+Alternatively, it is possible to extract a png image of the PDF file created by webquiz.
+For the full extraction specifications see the pages array below
 '''
 
 import argparse, glob, os, shutil, subprocess
@@ -35,70 +35,123 @@ run  = lambda cmd: subprocess.call(cmd, shell=True)
 webquiz_mode = '-qq'
 webkit2png_mode = ''
 
-# extract and trim and image using webquiz, webkit2png and mogrify
-def webkit2png(file_in, file_out, delay, javascript):
-    if os.path.exists(file_out+'.png'): # remove png file if it already exists
-        os.remove(file_out+'.png')
+class Convert:
+    r'''
+    Convert a webquiz example file into the a png image for use in the
+    manual. The following paramters are accepted:
+      - page     =  name of the page to be produced
+      - src      = either pdf, html or ps which corresponds to the image
+                   being generated starting with pdflatex, webkit2png or latex
+      - page_out = output file                                         (default: file_in)
+      - delay    = time to wait in second before taking the screenshot (default: 3)
+      - js       = javascript commands                                 (default: '')
+    The actual conversion is done by using the write_image method of the class.
+    '''
+    def __init__(self, page, src='html', page_out=None, delay=3, js=''):
+        self.page = page
+        self.page_out = page_out if page_out is not None else self.page
+        self.delay = delay
+        self.javascript = js
 
-    # run the quiz file through webquiz
-    run('webquiz {} {}'.format(webquiz_mode, file_in))
+        # set conversion mechanism
+        if src == 'html':
+            self.convert = self.webkit2png
+        elif src == 'pdf':
+            self.convert = self.pdf2png
+        elif src == 'ps':
+            self.convert = self.ps2png
+        else:
+            raise ValueError('unknown src={} for {}'.format(src, page))
 
-    # extract a png image for the web page using webkit2png
-    cmd = r"webkit2png {debug} --ignore-ssl-check -o {fout} -W 400 -F --delay={delay} {js} {URL}/{fin}.html".format(
-                    URL=examplesURL,
-                    debug = webkit2png_mode,
-                    delay=delay,
-                    fin=file_in,
-                    fout=file_out,
-                    js='--js="{java};"'.format(java=javascript) if javascript != '' else ''
-                )
-    if webkit2png_mode == '--debug':
-        print(cmd)
-    run(cmd)
-    if os.path.exists(file_out+'-full.png'): # remove png file if it already exists
-        shutil.move(file_out+'-full.png', file_out+'.png')
-        run('mogrify -trim -gravity center {}.png'.format(file_out))
-    else:
-        print('makeimages error: weblit2png failed because {}-full.png does not exist'.format(file_out))
+    def write_image(self, cleaning):
+        r'''
+          Convert self.page to self.page_out.
 
-# extract and trim an image of the pdf file using pdflatex, convert and mogrify
-def pdf2png(file_in, file_out, dummy1, dummy2):
-    run('pdflatex {fin} > /dev/null'.format(fin=file_in))
-    run('convert {fin}.pdf {fout}.png && mogrify -trim {fout}.png'.format(fin=file_in, fout=file_out))
+          If `cleaning` is `True` then all unnecessary files are deleted
+          once after the image is created
+        '''
+        print('\nExtracting image file for {}...'.format(self.page))
 
-# specify how to construct each image:
-#   src      isource, either html or pdf
-#   file_in  input fileo, defaults to the page key
-#   file_out output file, defaults to file_in
-#   js       javascript code, defaults to ''
-#   delay    delay before taking screenshot defaults to 3
-image_files = dict(
-    breadcrumbs = dict(src='html', delay=10),
-    discussion  = dict(src='html'),
-    dropdown    = dict(src='html', js='toggle_dropdown_menu()', delay=10),
-    french      = dict(src='html'),
-    index       = dict(src='html'),
-    montypython = dict(src='html', delay=5),
-    multiple    = dict(src='html', file_in='choice-multiple'),
-    nounits     = dict(src='html', delay=5),
-    pst2pdf     = dict(src='html'),
-    question    = dict(src='html'),
-    single      = dict(src='html', file_in='choice-single'),
-    quizpage    = dict(src='html',
-                       file_in='quiz-page',
-                       js="document.forms['Q1Form'].elements[1].checked=true; setTimeout(checkAnswer, 4)",
-                       delay=5
-                  ),
-    simplehtml  = dict(src='html', file_in='simple', file_out='simple-html'),
-    simplepdf   = dict(src='pdf',  file_in='simple', file_out='simple-pdf'),
-    tikzex      = dict(src='html', file_in='tikz-ex')
-)
+        if os.path.exists(self.page_out+'.png'): 
+            # remove png file if it already exists
+            os.remove(self.page_out+'.png')
+
+        self.convert() # the actual conversion
+
+        if cleaning:
+            for ext in ['.log', '.xml', '-[ft]*.png']:
+                for file in glob.glob(self.page_out+ext):
+                    os.remove(file)
+            shutil.rmtree(self.page_out+'/')
+
+    def webkit2png(self):
+        r'''
+            Extract and trim and image using webquiz, webkit2png and mogrify
+        '''
+        # run the quiz file through webquiz
+        run('webquiz {} {}'.format(webquiz_mode, self.page))
+
+        # extract a png image for the web page using webkit2png
+        cmd = r"webkit2png {debug} --ignore-ssl-check -o {fout} -W 400 -F --delay={delay} {js} {URL}/{fin}.html".format(
+                        URL=examplesURL,
+                        debug = webkit2png_mode,
+                        delay=self.delay,
+                        fin=self.page,
+                        fout=self.page_out,
+                        js='--js="{java};"'.format(java=self.javascript)
+                    )
+        if webkit2png_mode == '--debug':
+            print(cmd)
+        run(cmd)
+        if os.path.exists(self.page_out+'-full.png'): # remove png file if it already exists
+            shutil.move(self.page_out+'-full.png', self.page_out+'.png')
+            run('mogrify -trim -gravity center {}.png'.format(self.page_out))
+        else:
+            print('makeimages error: weblit2png failed because {}-full.png does not exist'.format(self.page_out))
+
+    def pdf2png(self):
+        r'''
+            Extract and trim an image of the pdf file using pdflatex, convert and mogrify
+        '''
+        run('pdflatex {fin} > /dev/null'.format(fin=self.page))
+        run('convert {fin}.pdf {fout}.png && mogrify -trim {fout}.png'.format(fin=self.page, fout=self.page_out))
+
+    def ps2png(self):
+        r'''
+            Extract and trim an image of the pdf file using pdflatex, convert and mogrify
+        '''
+        run('latex {fin} > /dev/null'.format(fin=self.page))
+        run('dvips {fin} > /dev/null'.format(fin=self.page))
+        run('convert {fin}.ps {fout}.png && mogrify -trim {fout}.png'.format(fin=self.page, fout=self.page_out))
+
+
+# Specify the pages to construct using the Convert class:
+pages = [
+    Convert("breadcrumbs", delay=10),
+    Convert("choice-multiple"),
+    Convert("choice-single"),
+    Convert("discussion"),
+    Convert("dropdown", js='toggle_dropdown_menu()', delay=10),
+    Convert("french"),
+    Convert("index"),
+    Convert("montypython", delay=5),
+    Convert("newconfigure"),
+    Convert("nounits", delay=5),
+    Convert("pst2pdf"),
+    Convert("pstricks-ex"),
+    Convert("question"),
+    Convert("quiz-page", js="document.forms['Q1Form'].elements[1].checked=true; setTimeout(checkAnswer, 4)", delay=5),
+    Convert("display-as-image"),
+    Convert("simple", page_out='simple-html'),
+    Convert("simple", src='pdf',  page_out='simple-pdf'),
+    Convert("tikz-ex")
+]
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description = 'Python script to extract images for the webquiz manual',
                                      epilog = 'Images for all pages are extracted if none are specifed'
     )
-    parser.add_argument('image', nargs='*',type=str, default=None, help='images to extract')
+    parser.add_argument('images', nargs='*',type=str, default=None, help='list of one or images to extract')
     parser.add_argument('-c', '--cleaning', action='store_true', default=False, help='delete all extraneous files on exit')
     parser.add_argument('-d', '--debugging', action='store_true', default=False, help='turn on debugging')
 
@@ -109,34 +162,24 @@ if __name__ == '__main__':
         webquiz_mode = '--debugging'
         webkit2png_mode = '--debug'
 
-    if args.image == []:
-        pages = image_files.keys()
+    # By default all images are generated unless one or more output
+    # image file names are given on the command line. The is_good_page
+    # lambda function determines whether an image should be generated
+    # for the page
+    if args.images == []:
+        # generate all images
+        is_good_page = lambda page: True
     else:
-        pages = []
-        for page in args.image:
-            if '.' in page:
-                page = page[:page.index('.')]
-            page = page.replace('-','')
-            if page not in image_files:
-                print('makeimages error: unrecognised image'.format(page))
-            else:
-                pages.append(page)
+        # only generate images with specified page_out file names
+        is_good_page = lambda page: page.page_out in args.images
+
+        # remove extensions from output file names
+        for page in range(len(args.images)):
+            name = args.images[page] 
+            if '.' in name:
+                args.images[page] = name[:name.index('.')]
 
     # run through pages and extract the corresponding images
     for page in pages:
-        print('\nExtracting image file for {}...'.format(page))
-        extract=image_files[page]
-        convert  = globals()['webkit2png' if extract['src']=='html' else 'pdf2png']
-        file_in  = extract['file_in']     if 'file_in'  in extract else page
-        file_out = extract['file_out']    if 'file_out' in extract else file_in
-        delay    = extract['delay']       if 'delay' in extract else 3
-        js       = extract['js']  if 'js' in extract else ''
-        convert(file_in, file_out, delay, js)
-
-        if args.cleaning:
-            for ext in ['.log', '.xml', '-[ft]*.png']:
-                for file in glob.glob(file_out+ext):
-                    os.remove(file)
-            shutil.rmtree(file_out+'/')
-
-
+        if is_good_page(page):
+            page.write_image(args.cleaning)

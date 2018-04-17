@@ -925,6 +925,14 @@ by \texttt{webquiz}.
 
 \subsection{Configuring commands and environments for \TeX4ht}
 
+  \WebQuiz uses \TeX4ht{} to convert the quiz content from \LaTeX{} to
+  HTML. If \TeX4ht{} has not been configured to for some of the commands
+  or environments that you are using then they may not display correctly
+  in your on-line quizzes. The ``correct'' way to fix such problems is
+  to write appropriate \TeX4ht{} configuration commands, however, this
+  can sometimes be tricky to do. An easy work-around that usually
+  produces good results is to
+
 \section{System requirements, installation and configuration}
   \label{S:configuration}
   \index{system requirements}
@@ -1099,6 +1107,21 @@ needed to add the line
     export LIBGS=/usr/local/lib/libgs.dylib
 \end{verbatim}
 to my \Verb|.bashrc| file. You may need to do something similar.
+
+The short version is you should look at the output of:
+
+    dvisvgm -h
+    dvisvgm -l
+
+There are three options:
+
+    ghostscript was linked at build time if the -h output does not contain -libgs and the -l output contains ps
+    postscript support is enabled but ghostscript is not linked if the -h output contains -libgs and the -l output does not contain ps
+    dvisgm weas not built with postscript support if the -h output does not contain -libgs and the -l output does not contain ps
+
+My guess is that you are in either the second or third case. In the second case you just need to locate the ghoshtscipt library libgs.so or libgs.dylib and set the LIBGS environment variable.
+
+
 
 \section{The WebQuiz program} \index{usage}
 

@@ -275,7 +275,7 @@ class WebQuizSettings(object):
 
         # the user rc file defaults to ~/.config/webquizrc if the .config directory exists
         # and otherwise to ~/.webquizrc
-        if os.path.isdir( os.path.join(os.path.expanduser('~'), '.config'):
+        if os.path.isdir( os.path.join(os.path.expanduser('~'), '.config')):
             self.user_rc_file = os.path.join(os.path.expanduser('~'),'.config', 'webquizrc')
         else:
             self.user_rc_file = os.path.join(os.path.expanduser('~'),'.webquizrc')
@@ -747,7 +747,6 @@ class MakeWebQuiz(object):
         '''
         try:
             # read in the xml version of the quiz
-            print('quiz name = {}, quiz file = {}'.format(self.quiz_name, self.quiz_file))
             if not os.path.isfile(self.quiz_name+'.xml'):
                 WebQuizError('{}.xml does not exist!?'.format(self.quiz_name))
             self.quiz = webquiz_xml.ReadWebQuizXmlFile(self.quiz_name+'.xml', self.options.debugging)
