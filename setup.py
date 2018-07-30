@@ -137,7 +137,7 @@ class WebQuizCtan(build_py):
 
 setup(name             = settings.program,
       version          = settings.version,
-      description      = settings.description,
+      desription       = settings.description,
       long_description = open('README.md').read(),
       url              = settings.url,
       author           = settings.authors,

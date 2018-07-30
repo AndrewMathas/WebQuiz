@@ -1,0 +1,55 @@
+\documentclass{webquiz}
+\usepackage{pst-all}
+\usepackage{ifpdf}
+\ifpdf
+  \PackageError{WebQuiz}{This file must be compiled using latex not pdflatex}
+\fi
+\newcommand\C{\mathbb{C}}
+\title{A pstricks example}
+
+\begin{document}
+
+  \begin{question}
+     The shaded region in the graph
+     \begin{center}
+       \begin{pspicture}(-3,-1.5)(3,4)
+         \pscircle[linewidth=1pt,linestyle=dashed,%
+                   fillcolor=blue,fillstyle=solid](1,1){2}
+         \psaxes[linecolor=red,linewidth=1pt,labels=none]%
+         {->}(0,0)(-1.5,-1.5)(3.5,3.5)
+         \rput(3.75,0){$x$}
+         \rput(0,3.85){$iy$}
+         \rput(3,-0.4){3}
+         \rput(-0.4,3){3$i$}
+         \psdots(1,1)
+       \end{pspicture}
+     \end{center}
+     is equal to which of the following sets of complex numbers?
+     \begin{choice}
+       \incorrect $\{z \in \C : (z-1)^{2}+(z-(i+1))^{2}<2\}$
+       \response  The equation of a circle in the complex plane with
+       centre $a+ib$ and radius $r$ is
+       \begin{displaymath}
+         \{z\in\C : |z-(a+ib)|<r \}.
+       \end{displaymath}
+
+       \incorrect $\{z \in \C : z+(i+1)<2\}$
+       \response  You want the set of points whose \textit{distance}
+       from $1+i$ is less than $2$.
+
+       \correct   $\{z \in \C : |z-(i+1)|<2\}$
+       \response  The graph shows the set of complex numbers whose
+       distance from $1+i$ is less than $2$.
+
+       \incorrect $\{z \in \C : |z-2|<|i+1-2|\}$
+       \response  As $|i+1-2|=\sqrt 2$, this is the set of complex
+       numbers whose distance from $2$ is less than
+       $\sqrt 2$.
+
+       \incorrect None of the above.
+       \response The graph shows the set of complex numbers whose
+       distance from the centre of the circle is less than $2$.
+     \end{choice}
+   \end{question}
+
+\end{document}
