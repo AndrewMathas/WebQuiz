@@ -43,8 +43,8 @@ class WebQuizCtan(build_py):
     r"""
     Create TDS zip file for submission to ctan/texlive.
 
-    It is necessary to subclass setuptools.command but, in fact, we do not use
-    anything from setuptools.
+    It is necessary to subclass setuptools.command.build_py but, in fact,
+    we do not use anything from setuptools.
     """
     ctan_data = {
         'contribution' : settings.program,
@@ -137,7 +137,7 @@ class WebQuizCtan(build_py):
 
 setup(name             = settings.program,
       version          = settings.version,
-      description      = settings.description,
+      desription       = settings.description,
       long_description = open('README.md').read(),
       url              = settings.url,
       author           = settings.authors,
@@ -155,7 +155,7 @@ setup(name             = settings.program,
 
       license          = settings.licence,
       classifiers      = [
-        'Development Status :: 5 - Alpha',
+        'Development Status :: 4 - beta',
         'Intended Audience :: Science/Research',
         'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
         'Programming Language :: Python :: 3',

@@ -1,0 +1,14 @@
+*.html
+css/*.css
+css/*.css.map
+css/.sass-cache/
+doc/credits/
+doc/credits.xml
+doc/examples/*/
+doc/examples/*.png
+doc/examples/*.svg
+doc/examples/*.xml
+doc/examples/*.css
+doc/examples/*.html
+doc/examples/quiztitles.js
+doc/webquiz.lang
