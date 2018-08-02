@@ -155,7 +155,7 @@ setup(name             = settings.program,
 
       license          = settings.licence,
       classifiers      = [
-        'Development Status :: 4 - beta',
+        'Development Status :: 4 - Beta',
         'Intended Audience :: Science/Research',
         'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
         'Programming Language :: Python :: 3',
