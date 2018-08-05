@@ -15,24 +15,30 @@
  */
 
 // sass variables for the colours used in the quizzes
-  $ArrowHover:     #990033;
+
+  $Heading:        #CE1126;
+  $Subheading:     #FF0000;
+  $QuestionPart:   #CC3300;
+
+  $Copyright:      #3352ff;
+  $School:         lighten($Copyright, 10%);
+
   $ButtonBG:       #FFF8DC;
   $ButtonBorder:   #F2BB66;
   $ButtonHover:    #5B2C6F;
   $ButtonSelected: #B33C00;
   $Dazzle:         #FF1A1A;
-  $Heading:        #CE1126;
-  $WebQuiz:       #0000FF;
-  $QuestionPart:   #CC3300;
   $ResponseBG:     #E9E0D8;
   $ResponseBorder: #C9A798;
-  $School:         #e63900;
-  $Subheading:     #FF0000;
-  $Text:           #000000;
+  $SideMenuText:   #000000;
   $WarningBG:      #EC7063;
   $WarningBorder:  #5B2C6F;
   $WarningFG:      #FFCC00;
   $White:          #FFFFFF;
+
+  $BreadCrumbBG:   red;
+  
+  $BreadCrumbFG:   $White;
 
   $BreadCrumb1BG:  $Heading;
   $BreadCrumb1FG:  $White;
@@ -41,9 +47,9 @@
   $BreadCrumb3BG:  $ButtonBorder;
   $BreadCrumb3FG:  $White;
   $BreadCrumb4BG:  $ButtonBG;
-  $BreadCrumb4FG:  $Text;
+  $BreadCrumb4FG:  $SideMenuText;
   $BreadCrumb5BG:  $White;
-  $BreadCrumb5FG:  $Text;
+  $BreadCrumb5FG:  $SideMenuText;
 
   $ListMarker:    '\027A3';
 

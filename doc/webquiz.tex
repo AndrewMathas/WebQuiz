@@ -181,7 +181,7 @@ the on-line manual.}}
     quizzes can contain any \LaTeX commands that are understood by \TeX
     4ht, which is almost everything. In particular, it is possible to
     use graphics constructed using packages like \ctan{pstricks} and
-    \ctan{tikz}; however, see \autoref{SS:classOptions}.
+    \ctan{tikz}; however, see \autoref{SS:graphics}.
 
     \WebQuiz supports the following three types of questions:
     \begin{itemize}
@@ -251,7 +251,7 @@ the on-line manual.}}
     questions without any problems. In particular, it is possible to use
     \ctan[pgf]{tikz} and \ctan{pstricks} in \WebQuiz quizzes, although
     (very?) complicated drawings with these packages may fail; see
-    \autoref{SS:classOptions}.
+    \autoref{SS:graphics}.
 
 \subsection{What WebQuiz does and does not do}
 
@@ -425,7 +425,7 @@ the on-line manual.}}
 
   The next sections describe the different environments and commands
   provided by \WebQuiz. The last section in this chapter,
-  \autoref{SS:classOptions}, lists the class options for the \WebQuiz
+  \autoref{SS:graphics}, lists the class options for the \WebQuiz
   document class. You should read this section if you plan to use
   \ctan{pstricks} or \ctan[pgf]{tikz}.
 
@@ -523,10 +523,11 @@ example more compact. This results in the following web page:
 
 \ScreenShot{Single answer multiple choice question}{examples/choice-single}
 
-Her is an example of a multiple choice question
-with two correct answers:
+Here is an example of a multiple choice question that has
+two correct answers:
 
   \lstinputlisting[style=latexcode]{examples/choice-multiple}
+  \label{choice-multiple}
 
 \noindent which gives:
 
@@ -794,11 +795,39 @@ discussion.
 
 \end{description}
 
-  \subsection{WebQuiz class options --- pstricks and tikz}\label{SS:classOptions}
+\subsection{WebQuiz class options}
+\label{SS:classOptions}
+
+The \textbf{mathquiz} document class: currently supports the following
+five document class options:
+
+    \begin{latexcode}
+       \documentclass[language=XXX]{webquiz} % set the language for the on-line quiz
+
+       \documentclass[theme=XXX]{webquiz} % set the theme for the on-line quiz
+
+       \documentclass[hidesidemenu]{webquiz} % hide the quiz side menu by default
+
+       \documentclass[tikz]{webquiz} % use \ctan{tikz}
+
+       \documentclass[pst2pd]{webquiz} % automatically apply \ctan{pst2pdf}
+    \end{latexcode}
+
+    All other class options that are given to the \WebQuiz document class
+    are passed to the \texttt{article} class, which is the base class used
+    by \texttt{webquiz}.
+
+    The section describes the three \textit{stylistic} class options,
+    \Verb|language|, \Verb|theme| and \Verb|hidesidemenu|.
+    Both the \Verb|language| and the \Verb|theme| can be set globally in
+    the \webquizrc; see \autoref{SS:rcfile}.
+
+    The next section discusses the \Verb|tikz| and \Verb|pst2pdf| class
+    options and how to include graphics in a quiz.
 
 \begin{description}
   \item[language=<lang>] \CrossIndex{document class options}{language}
-  Set the language used by the \textit{webpages} construted by \WebQuiz.
+  Set the language used by the \textit{webpages} constructed by \WebQuiz.
   The currently supported languages are:
 
     \begin{quote}
@@ -850,6 +879,42 @@ discussion.
     language files, as a \textit{new issue} at:
       \href{https://\webquiz{repository}}{\webquiz{repository}}.
 
+  \item[theme]\CrossIndex{document class options}{theme}
+
+     \WebQuiz\ has a \Verb|light| and a \Verb|dark| theme for styling
+     the quiz web pages, which can be set as options to the document
+     class or in the \webquizrc file. All of the examples so far have
+     used the \Verb|light| theme, which is the default. As an example,
+     if we use
+
+    \lstinputlisting[style=latexcode]{examples/choice-multiple-dark}
+
+    then the quiz page looks like:
+
+    \ScreenShot{Multiple choice with light theme}{examples/choice-multiple-dark}
+
+    This should be compared with the corresponding screenshot in section
+    \autoref{choice-multiple}, which uses the default theme.
+
+    \item[hidesidemenu]\CrossIndex{document class options}{hide side menu}
+    If this option is set the end the side menu is not displayed
+    initially.  By default, the side menu appears unless the screen size
+    is too small.
+
+    Examples of the \textsf{hidesidemenu} class option have already been
+    given above.
+\end{description}
+
+\subsection{Including graphics and using pstricks and tikz}\label{SS:graphics}
+
+Diagrams and graphics in \LaTeX\ documents are often included using
+either \ctan{graphicx}, \ctan{tikz} or \ctan{pstricks}. These packages
+can also be used in \WebQuiz quizzes although, unfortunately, both of
+these packages have issues when used with \TeX 4ht. The good news is
+that \WebQuiz attempts to solve these problems for you if you use the
+appropriate document class options.
+
+\begin{description}
     \item[pst2pdf] \index{pstricks}\CrossIndex{document class options}{pst2pdf}
     \textit{Try the pst3pdf class option if you are having trouble
     displaying an image created using \ctan{pstricks}. It is not
@@ -877,7 +942,8 @@ discussion.
 
     \begin{quote}
       \textsf{pst2pdf} needs Ghostscript (>=9.14), perl (>=5.18), pdf2svg, pdftoppm
-      and pdftops (from poppler-utils or xpdf-utils) to process the file.
+      and pdftops (from poppler-utils or xpdf-utils) to process a file
+      using \ctan{pst2pdf}.
     \end{quote}
 
     Unfortunately, \textsf{pst2pdf} can fail silently without giving any warnings. If
@@ -886,21 +952,20 @@ discussion.
     \textsf{pst2pdf} relies upon, so look in your log files for error
     messages and check the list of programs given above.
 
-  \item[theme]\CrossIndex{document class options}{theme}
-
-
   \item[tikz]\CrossIndex{document class options}{tikz}
     Giving this class option both loads the \ctan[pgf]{tikz} package (so
-    you do not need to have \Verb|\usepackage{tikz}| in your \LaTeX\ file)
-    and, as a bonus, fixes several issues with PGF that prevent it from
-    working with \TeX 4ht. Thanks are due to Michal Hoftich for supplying
-    both fixes!\footnote{The first issue is a bug that has been reported
-    to the PGF developers, together with a one-line solution, but for
-    reasons unknown they have not fixed the problem; see
-    \href{https://tex.stackexchange.com/questions/386757}{Work around for
-    bug in pgf when used with htlatex}.  The second issue is that the PGF
-    files hard code \textsf{ISO-8859-1} encoding, which is a problem if
-    you use UTF-8; see
+    you do not need to have, and should not have,
+    \Verb|\usepackage{tikz}| in your \LaTeX\ file). As a bonus, thjis
+    \Verb|tikz| document option fixes several issues with PGF that
+    prevent it from working with \TeX 4ht. Thanks are due to Michal
+    Hoftich for supplying both fixes!\footnote{The first issue is a bug
+    that has been reported to the PGF developers, together with a
+    one-line solution, but for reasons unknown they have not fixed the
+    problem; see
+    \href{https://tex.stackexchange.com/questions/386757}{Work around
+    for bug in pgf when used with htlatex}.  The second issue is that
+    the PGF files hard code \textsf{ISO-8859-1} encoding, which is a
+    problem if you use UTF-8; see
     \href{https://tex.stackexchange.com/questions/390421}{Make4ht, tikz
     and UTF 8 encoding question}.  }
 
@@ -909,19 +974,10 @@ discussion.
     This produces:
 
     \ScreenShot{Tikz example}{examples/tikz-ex}
-
-    \item[hidesidemenu]\CrossIndex{document class options}{hide side menu}
-    If this option is set the end the side menu is not displayed
-    initially.  By default, the side menu appears unless the screen size
-    is too small.
-
-    Examples of the \textsf{hidesidemenu} class option have already been
-    given above.
 \end{description}
 
-All other class options that are given to the \WebQuiz document class
-are passed to the \texttt{article} class, which is the base class used
-by \texttt{webquiz}.
+Most people use either\ctan{pstricks} or \ctan{tik}. A quiz that tries
+to use both \ctan{pstrick} and  \ctan{tik} will probably compile.
 
 \subsection{Configuring commands and environments for \TeX4ht}
 
@@ -977,15 +1033,49 @@ by \texttt{webquiz}.
        It is recommend that you have the equivalent of \TeXLive{} 2018,
        or later, installed, because of recent changes to \TeX4ht{}.
         \item \href{https://www.python.org/}{Python 3}. As of writing
-        python 3.6 is available.
+        python 3.7 is available.
         \item Javascript
         \item If your quizzes incorporate graphics using \ctan{pstricks}
         you need to ensure that
         \href{https://www.ghostscript.com/}{Ghostscript} and
         \ctan{dvisvgm} are installed and properly configured; see
-        \autoref{SS:graphics} for more details.
+        below for more details.
         \item A web server
     \end{itemize}
+
+    \subsection{Pstricks configuration and the on-line manual}
+
+\noindent\textbf{pstricks}\index{pstricks}
+Using \ctan{pstricks} is, in some sense, easier that \ctan[pgf]{tikz}
+because it seems to work better with \ctan{tex4ht}. There is a
+significant caveat, however, because \ctan{tikz} uses  \ctan{dvisvgm} to
+convert the images created by \ctan{pstricks}, so it is necessary to
+make sure that this package is correctly installed. At first sight this
+looks OK because \ctan{dvisvgm} is included in \TeX Live and Mik\TeX,
+however, , \ctan{dvisvgm} uses
+\href{https://www.ghostscript.com/}{Ghostscript} and this needs to be
+correctly configured and, as outlined in its
+\href{http://dvisvgm.bplaced.net/FAQ}{FAQ}, \ctan{dvisvgm} needs to know
+where to find the \href{https://www.ghostscript.com/}{Ghostscript}
+libraries. For example, to get \ctan{dvisvgm} to work on my system I
+needed to add the line
+\begin{verbatim}
+    export LIBGS=/usr/local/lib/libgs.dylib
+\end{verbatim}
+to my \Verb|.bashrc| file. You may need to do something similar.
+
+The short version is you should look at the output of:
+
+    dvisvgm -h
+    dvisvgm -l
+
+There are three options:
+
+    ghostscript was linked at build time if the -h output does not contain -libgs and the -l output contains ps
+    postscript support is enabled but ghostscript is not linked if the -h output contains -libgs and the -l output does not contain ps
+    dvisgm weas not built with postscript support if the -h output does not contain -libgs and the -l output does not contain ps
+
+My guess is that you are in either the second or third case. In the second case you just need to locate the ghoshtscipt library libgs.so or libgs.dylib and set the LIBGS environment variable.
 
 
     \subsection{Installing the web files used by \WebQuiz}
@@ -1074,52 +1164,6 @@ by \texttt{webquiz}.
     \href{https://www.ghostscript.com/}{Ghostscript} and \ctan{dvisvgm}
     are installed and properly configured; see \autoref{SS:graphics} for
     more details.
-
-\subsection{Special graphics configuration }
-\label{SS:graphics}\index{graphics}
-
-The two most commonly used packages for drawing pictures or diagrams in
-\LaTeX{} are \ctan{pstricks} and \ctan[pgf]{tikz}. Unfortunately, both
-of these packages have issues when used with \TeX 4ht. The good news is
-that \WebQuiz attempts to solve these problems for you.
-
-\noindent\textbf{tikz}\index{tikz}
-Using the \Verb|tikz| document class option, instead of
-\Verb|\requirepackage{tikz}|, fixes several issues with
-\ctan[pgf]{tikz}. Of course, there  there may well be other problems
-that we are not aware of.
-
-\noindent\textbf{pstricks}\index{pstricks}
-Using \ctan{pstricks} is, in some sense, easier that \ctan[pgf]{tikz}
-because it seems to work better with \ctan{tex4ht}. There is a
-significant caveat, however, because \ctan{tikz} uses  \ctan{dvisvgm} to
-convert the images created by \ctan{pstricks}, so it is necessary to
-make sure that this package is correctly installed. At first sight this
-looks OK because \ctan{dvisvgm} is included in \TeX Live and Mik\TeX,
-however, , \ctan{dvisvgm} uses
-\href{https://www.ghostscript.com/}{Ghostscript} and this needs to be
-correctly configured and, as outlined in its
-\href{http://dvisvgm.bplaced.net/FAQ}{FAQ}, \ctan{dvisvgm} needs to know
-where to find the \href{https://www.ghostscript.com/}{Ghostscript}
-libraries. For example, to get \ctan{dvisvgm} to work on my system I
-needed to add the line
-\begin{verbatim}
-    export LIBGS=/usr/local/lib/libgs.dylib
-\end{verbatim}
-to my \Verb|.bashrc| file. You may need to do something similar.
-
-The short version is you should look at the output of:
-
-    dvisvgm -h
-    dvisvgm -l
-
-There are three options:
-
-    ghostscript was linked at build time if the -h output does not contain -libgs and the -l output contains ps
-    postscript support is enabled but ghostscript is not linked if the -h output contains -libgs and the -l output does not contain ps
-    dvisgm weas not built with postscript support if the -h output does not contain -libgs and the -l output does not contain ps
-
-My guess is that you are in either the second or third case. In the second case you just need to locate the ghoshtscipt library libgs.so or libgs.dylib and set the LIBGS environment variable.
 
 
 
@@ -1273,7 +1317,7 @@ option.
 
           \advancedOption
 
-       \item[\ddash webquiz\_format WEBQUIZ\_FORMAT] \CrossIndex{command-line options}{format}
+       \item[\ddash webquiz\_format WEBQUIZ\_FORMAT] \CrossIndex{command-line options}{layout}
           Local python code for formatting the quiz web page. This
           option is equivalent to setting the \textsf{webquiz\_format}
           in the \webquizrc file.
@@ -1376,7 +1420,7 @@ option.
     \autoref{SS:breadcrumbs} for more details.
 
 
-  \subsubsection{Changing the format of the \WebQuiz web pages}\index{format}
+  \subsubsection{Changing the layout of the \WebQuiz web pages}\index{layout}
   The construction of the online quizzes is controlled by the python
   file \verb!webquiz_standard.py!. If you want to change the structure
   of the web pages for the quizzes then the easiest way to do this is to make a

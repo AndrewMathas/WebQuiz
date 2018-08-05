@@ -15,35 +15,31 @@
  */
 
 // sass variables for the colours used in the quizzes
-  $ArrowHover:     #990033;
+  $Heading:        #0000ff;
+  $Subheading:     lighten($Heading, 20%);
+
+  $QuestionPart:   ligthen($Heading, 8%);
+
+  $Copyright:      #3352ff;
+  $School:         lighten($Copyright, 10%);
+
   $ButtonBG:       #FFF8DC;
-  $ButtonBorder:   #F2BB66;
-  $ButtonHover:    #5B2C6F;
-  $ButtonSelected: #B33C00;
+  $ButtonBorder:   darken($ButtonBG, 20%);
+  $ButtonHover:    lighten($ButtonBG, 20%);
+  $ButtonSelected: lighten($ButtonBG, 30%);
+
   $Dazzle:         #261868;
-  $Heading:        #261868;
-  $WebQuiz:       #0000FF;
-  $QuestionPart:   #CC3300;
+
   $ResponseBG:     #E9E0D8;
   $ResponseBorder: #C9A798;
-  $School:         #e63900;
-  $Subheading:     #FF0000;
-  $Text:           #000000;
+  $SideMenuText:   #0479cc;
   $WarningBG:      #EC7063;
   $WarningBorder:  #5B2C6F;
   $WarningFG:      #FFCC00;
-  $White:          #FFFFFF;
+  $White:          #e9f5ff;
 
-  $BreadCrumb1BG:  $Heading;
-  $BreadCrumb1FG:  $White;
-  $BreadCrumb2BG:  $ButtonSelected;
-  $BreadCrumb2FG:  $White;
-  $BreadCrumb3BG:  $ButtonBorder;
-  $BreadCrumb3FG:  $White;
-  $BreadCrumb4BG:  $ButtonBG;
-  $BreadCrumb4FG:  $White;
-  $BreadCrumb5BG:  $White;
-  $BreadCrumb5FG:  $Text;
+  $BreadCrumbBG:  $Heading;
+  $BreadCrumbFG:  $White;
 
   $ListMarker:    '\027A3';
 

@@ -129,6 +129,8 @@ class Convert:
 pages = [
     Convert("breadcrumbs", delay=10),
     Convert("choice-multiple"),
+    Convert("choice-multiple-light"),
+    Convert("choice-multiple-dark"),
     Convert("choice-single"),
     Convert("discussion"),
     Convert("dropdown", js='toggle_dropdown_menu()', delay=10),

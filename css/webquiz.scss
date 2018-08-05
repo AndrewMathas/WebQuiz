@@ -16,7 +16,7 @@
 
 // Included by theme files
 
-.dazzle      {
+.dazzle {
   color: $Dazzle;
 }
 
@@ -53,7 +53,7 @@ div.side-menu {
         padding-bottom: 10px;
 
         li {
-            color: $Text;
+            color: $SideMenuText;
             font-size: 14px;
             text-align: left;
             word-wrap: break-word;
@@ -82,7 +82,7 @@ div.side-menu {
         div.button {
             background-color: $ButtonBG;
             border-radius: 5px;
-            color: $Text;
+            color: $SideMenuText;
             border: solid $ButtonBorder 2px;
             display: table-cell;
             float: left;
@@ -105,7 +105,7 @@ div.side-menu {
          * this way.
          */
         div.button span {
-            color: $Text;
+            color: $SideMenuText;
             text-decoration: none;
         }
 
@@ -142,7 +142,7 @@ div.side-menu {
     div.school {
         font-family: arial, verdana, helvetica;
         font-weight: normal;
-        font-size: x-small;
+        font-size: xx-small;
         color: $School;
         text-align: center;
         padding: 10px 0px 0px 0px;
@@ -150,7 +150,7 @@ div.side-menu {
         A, A:link, A:visited {
             font-family: arial, verdana, helvetica;
             font-weight: normal;
-            font-size: x-small;
+            font-size: xx-small;
             color: $School;
             text-align: center;
             padding: 10px 0px 0px 0px;
@@ -159,14 +159,14 @@ div.side-menu {
 
     div.copyright {
         font-family: arial, verdana, helvetica;
-        font-size: x-small;
+        font-size: xx-small;
         font-weight: normal;
         text-align: center;
-        color: $Text;
+        color: darken($Copyright, 10);
     }
     div.copyright A, div.copyright A:link, div.copyright A:visited {
         text-decoration: none;
-        color: $WebQuiz;
+        color: $Copyright;
         font-weight: bold;
     }
 }
@@ -213,7 +213,7 @@ div.quiz-questions {
             font-size: 12px;
         }
         span.arrows A:hover {
-            color: $ArrowHover;
+            color: darken($Subheading, 20%);
             text-decoration: underline;
         }
     }
@@ -278,7 +278,7 @@ div.quiz-questions {
 
             div {
                 text-align: left;
-                color: $Text;
+                color: $SideMenuText;
             }
 
             ol {
@@ -297,7 +297,7 @@ div.quiz-questions {
 
                 li {
                     text-align: left;
-                    color: $Text;
+                    color: $SideMenuText;
                     padding-right: 2em;
 
                     em { color: $Dazzle; }
@@ -366,7 +366,7 @@ nav {
                     display: contents;
                     -webkit-transition: all 0.5s;
                 }
-                span { color: $Heading; }
+                span { color: $BreadCrumbFG; }
 
                 ul {
                     display: none;  /* Hides the drop-down menu */
@@ -444,50 +444,67 @@ nav {
 
         // We only have five levels of crumbs so we can style them individuality
         ul > li:nth-child(1){
-              background: $Heading;
               padding-left: 4px;
         }
 
-        ul > li:nth-child(5n+1) { color: $BreadCrumb1FG;
-                                  A { color: $BreadCrumb1FG; }
-                                  ul li a { color: $ButtonSelected; }
-        }
-        ul > li:nth-child(5n+1):after {
-                                  border-left-color: $BreadCrumb1BG;
-        }
-        ul > li:nth-child(5n+2) { background: $ButtonSelected;
-                                  color: $BreadCrumb1FG;
-                                  A { color: $BreadCrumb1FG; }
-                                  ul li a { color: $ButtonSelected; }
-        }
-        ul > li:nth-child(5n+2):after {
-                                 border-left-color: $BreadCrumb2BG;
-        }
-        ul > li:nth-child(5n+3) { background: $ButtonBorder;
-                                  color: $BreadCrumb3FG;
-                                  A { color: $BreadCrumb3FG; }
-                                  ul li a { color: $ButtonSelected; }
-        }
-        ul > li:nth-child(5n+3):after {
-                                  border-left-color: $BreadCrumb3BG; }
+        $step: 0; // Set the initial step value
 
-        ul > li:nth-child(5n+4) { background: $ButtonBG;
-                                  color: $BreadCrumb4FG;
-                                  A { color: $BreadCrumb4FG; }
-                                  ul li a { color: $ButtonSelected; }
-        }
-        ul > li:nth-child(5n+4):after {
-                                  border-left-color: $BreadCrumb4BG;
+        @while $step <=6  {
+            ul >  li:nth-child(#{$step+1}) {
+                    background: lighten($BreadCrumbBG, ($step*8%));
+                    color: $BreadCrumbFG;
+                    font-family: Arial, Verdana, sans-serif !important;
+                    a { color: $BreadCrumbFG; }
+                    ul li a { color: $BreadCrumbFG; }
+            }
+            ul > li:nth-child(#{$step+1}):after {
+                    border-left-color: lighten($BreadCrumbBG, ($step*8%));
+            }
+
+            // Increment the step up by 1
+            $step: $step + 1;
         }
 
-        ul > li:nth-child(5n+0) { background: $BreadCrumb1FG;
-                                  color: $BreadCrumb5FG;
-                                  A { color: $BreadCrumb5FG; }
-                                  ul li a { color: $ButtonSelected; }
-        }
-        ul > li:nth-child(5n+0):after {
-                                  border-left-color: $BreadCrumb5BG;
-        }
+//        ul > li:nth-child(5n+1) { color: $BreadCrumb1FG;
+//                                  A { color: $BreadCrumb1FG; }
+//                                  ul li a { color: $ButtonSelected; }
+//        }
+//        ul > li:nth-child(5n+1):after {
+//                                  border-left-color: $BreadCrumb1BG;
+//        }
+//        ul > li:nth-child(5n+2) { background: $ButtonSelected;
+//                                  color: $BreadCrumb1FG;
+//                                  A { color: $BreadCrumb1FG; }
+//                                  ul li a { color: $ButtonSelected; }
+//        }
+//        ul > li:nth-child(5n+2):after {
+//                                 border-left-color: $BreadCrumb2BG;
+//        }
+//        ul > li:nth-child(5n+3) { background: $ButtonBorder;
+//                                  color: $BreadCrumb3FG;
+//                                  A { color: $BreadCrumb3FG; }
+//                                  ul li a { color: $ButtonSelected; }
+  //        }
+  //        ul > li:nth-child(5n+3):after {
+  //                                  border-left-color: $BreadCrumb3BG; }
+  //
+  //        ul > li:nth-child(5n+4) { background: $ButtonBG;
+  //                                  color: $BreadCrumb4FG;
+  //                                  A { color: $BreadCrumb4FG; }
+  //                                  ul li a { color: $ButtonSelected; }
+  //        }
+  //        ul > li:nth-child(5n+4):after {
+  //                                  border-left-color: $BreadCrumb4BG;
+  //        }
+  //
+  //        ul > li:nth-child(5n+0) { background: $BreadCrumb1FG;
+  //                                  color: $BreadCrumb5FG;
+  //                                  A { color: $BreadCrumb5FG; }
+  //                                  ul li a { color: $ButtonSelected; }
+  //        }
+  //        ul > li:nth-child(5n+0):after {
+  //                                  border-left-color: $BreadCrumb5BG;
+  //        }
     }
 }
 

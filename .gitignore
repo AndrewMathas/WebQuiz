@@ -12,3 +12,5 @@ doc/examples/*.css
 doc/examples/*.html
 doc/examples/quiztitles.js
 doc/webquiz.lang
+bin/*
+install/*
