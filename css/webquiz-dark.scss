@@ -23,22 +23,24 @@
   $Copyright:      #3352ff;
   $School:         lighten($Copyright, 10%);
 
-  $ButtonBG:       #FFF8DC;
-  $ButtonBorder:   darken($ButtonBG, 20%);
+  $ButtonBG:       #cfd5fc;
+  $ButtonBorder:   darken($ButtonBG, 40%);
   $ButtonHover:    lighten($ButtonBG, 20%);
   $ButtonSelected: lighten($ButtonBG, 30%);
 
   $Dazzle:         #261868;
 
-  $ResponseBG:     #E9E0D8;
-  $ResponseBorder: #C9A798;
+  $ResponseBG:     #A8D0E6;
+  $ResponseBorder: darken($ResponseBG, 40);
+
   $SideMenuText:   #0479cc;
+
   $WarningBG:      #EC7063;
   $WarningBorder:  #5B2C6F;
   $WarningFG:      #FFCC00;
   $White:          #e9f5ff;
 
-  $BreadCrumbBG:  $Heading;
+  $BreadCrumbBG:  #0C0032;
   $BreadCrumbFG:  $White;
 
   $ListMarker:    '\027A3';

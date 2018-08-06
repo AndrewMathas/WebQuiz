@@ -356,7 +356,7 @@ nav {
                 text-align: center;  /* All text is placed in the center of the box */
                 margin: 0;
                 -webkit-transition: all 0.2s;
-                padding: 2px 4px 2px 18px;
+                padding: 4px 4px 4px 18px;
                 background-color: $Heading;
                 position: relative;
                 float: left;
@@ -373,7 +373,7 @@ nav {
                     padding-left: 4px;
                     margin: 0; /* Aligns drop-down box underneath the menu item */
                     -webkit-transition: all 1s;
-                    border: solid $ButtonBorder 2px;
+                    border: solid $ButtonBorder 4px;
                     border-radius: 5px;
                     background-color: $ButtonBG;
 
@@ -386,7 +386,7 @@ nav {
                     }
 
                     li::after { content:none;}
-                    li:first-child { padding-top: 2px; }
+                    li:first-child { padding-top: 4px; }
 
                     // turn off "triangle" colouring inside the ul
                     li:nth-child(n) {
@@ -415,12 +415,12 @@ nav {
               display: block;
               width: 0;
               height: 0;
-              border-top: 7px solid transparent;
-              border-bottom: 7px solid transparent;
-              border-left: 14px solid $Heading;
+              border-top: 8px solid transparent;
+              border-bottom: 8px solid transparent;
+              border-left: 15px solid $Heading;
               position: absolute;
               top: 50%;
-              margin-top: -7px;
+              margin-top: -8px;
               left: 100%;
               z-index: 99;
         }
@@ -431,13 +431,13 @@ nav {
               display: block;
               width: 0;
               height: 0;
-              border-top: 7px solid transparent;
-              border-bottom: 7px solid transparent;
-              border-left: 14px solid white;
+              border-top: 8px solid transparent;
+              border-bottom: 8px solid transparent;
+              border-left: 15px solid white;
               position: absolute;
               top: 50%;
-              margin-top: -7px;
-              margin-left: 2px;
+              margin-top: -8px;
+              margin-left: 4px;
               left: 100%;
               z-index: 98;
         }
