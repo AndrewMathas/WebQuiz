@@ -37,7 +37,7 @@ class MetaData(dict):
                 if len(key.strip())>0:
                     setattr(self, key.strip().lower(), val.strip())
 
-settings = MetaData('latex/webquiz.ini')
+settings = MetaData('webquiz.ini')
 
 class WebQuizCtan(build_py):
     r"""
@@ -118,17 +118,17 @@ class WebQuizCtan(build_py):
                                    ('doc/examples/*.png',              'doc/examples'),
                                    ('latex/webquiz.c*',                'latex'),
                                    ('latex/pgfsys-tex4ht-mq-fixed.def','latex'),
-                                   ('latex/webquiz.ini',               'latex'),
+                                   ('webquiz.ini',                     'latex'),
                                    ('latex/webquiz-doc.sty',           'latex'),
                                    ('latex/webquiz-*.lang',            'latex'),
                                    ('LICENCE',                         'scripts'),
                                    ('webquiz/webquiz*.py',             'scripts'),
-                                   ('webquiz/webquiz.ini',             'scripts'),
+                                   ('webquiz.ini',                     'scripts'),
                                    ('webquiz/webquiz.bat',             'scripts'),
                                    ('css/webquiz-*.css',               'scripts/www'),
                                    ('javascript/webquiz.js',           'scripts/www'),
                                    ('doc/webquiz-online-manual.tex',   'scripts/www/doc'),
-                                   ('webquiz/webquiz.ini',             'scripts/www/doc'),
+                                   ('webquiz.ini',                     'scripts/www/doc'),
                                    ('doc/examples/*.tex',              'scripts/www/doc/examples')
                 ]:
                 for file in glob.glob(src):

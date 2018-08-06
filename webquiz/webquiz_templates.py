@@ -238,7 +238,7 @@ resulted in the error:
 To write the WebQuiz rc-file into this directory you may need to quit and run
 webquiz again, either using an administrator account, or using sudo on linux/macosx.
 
-Press (and then r3eturn):
+Press the following key, followed by return. to:
     1. To try to save to {rc_file} again
     2. To save to {alt_rc_file}
     3. To give a different filename for the rc-file

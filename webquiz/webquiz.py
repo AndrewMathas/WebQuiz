@@ -73,7 +73,14 @@ def kpsewhich(search):
 
 
 # read in basic meta data such as author, version, ...
-metadata = MetaData(kpsewhich('webquiz.ini'))
+try:
+    metadata = MetaData(kpsewhich('webquiz.ini'))
+except subprocess.CalledProcessError:
+    try:
+        metadata = MetaData('webquiz.ini')
+    except FileNotFoundError:
+        print('webquiz installation error: unable to find webquiz.ini')
+        sys.exit(1)
 metadata.debugging = False
 
 # used to label the parts of questions as a, b, c, ...
