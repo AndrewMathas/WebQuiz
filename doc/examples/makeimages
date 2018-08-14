@@ -151,7 +151,7 @@ pages = [
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description = 'Python script to extract images for the webquiz manual',
-                                     epilog = 'Images for all pages are extracted if none are specifed'
+                                     epilog = 'Images for all pages are extracted if none are specified'
     )
     parser.add_argument('images', nargs='*',type=str, default=None, help='list of one or images to extract')
     parser.add_argument('-c', '--cleaning', action='store_true', default=False, help='delete all extraneous files on exit')
