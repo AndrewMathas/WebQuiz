@@ -23,8 +23,7 @@ import subprocess
 import sys
 import zipfile
 
-from setuptools import setup, find_packages
-from setuptools.command.build_py import build_py
+from setuptools import setup, find_packages, Command
 
 class MetaData(dict):
     r"""
@@ -39,13 +38,14 @@ class MetaData(dict):
 
 settings = MetaData('webquiz.ini')
 
-class WebQuizCtan(build_py):
+class WebQuizCtan(Command):
     r"""
     Create TDS zip file for submission to ctan/texlive.
-
-    It is necessary to subclass setuptools.command.build_py but, in fact,
-    we do not use anything from setuptools.
     """
+
+    description = 'Build and publish the package.'
+    user_options = []
+
     ctan_data = {
         'contribution' : settings.program,
              'version' : settings.version,
@@ -59,6 +59,17 @@ class WebQuizCtan(build_py):
          'freeversion' : 'gpl',
                 'file' : 'webquiz.zip',
     }
+
+    @staticmethod
+    def status(s):
+        """Prints things in bold."""
+        print('\033[1m{0}\033[0m'.format(s))
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
 
     def run(self):
         # write the zip file for uploading to ctan
@@ -132,13 +143,14 @@ class WebQuizCtan(build_py):
                                    ('doc/examples/*.tex',              'scripts/www/doc/examples')
                 ]:
                 for file in glob.glob(src):
-                    print('{} --> {}'.format(file, target))
+                    print('{} --> {}'.format(file, target if target !='' else '.'))
                     zfile.write(file, os.path.join('webquiz', target, file.split('/')[-1]))
 
 setup(name             = settings.program,
       version          = settings.version,
-      desription       = settings.description,
+      description      = settings.description,
       long_description = open('README.md').read(),
+      long_description_content_type='text/markdown',
       url              = settings.url,
       author           = settings.authors,
       author_email     = settings.author_email,
@@ -151,13 +163,26 @@ setup(name             = settings.program,
 
       cmdclass         = {'ctan'   : WebQuizCtan },
 
+      provides         = 'webquiz',
       entry_points     = { 'console_scripts': [ 'webquiz=webquiz.webquiz:main' ], },
 
       license          = settings.licence,
+
       classifiers      = [
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
+        'Environment :: Console',
+        'Environment :: Web Environment',
+        'Intended Audience :: Education',
+        'Intended Audience :: Information Technology',
         'Intended Audience :: Science/Research',
         'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
+        'Operating System :: OS Independent',
         'Programming Language :: Python :: 3',
+        'Topic :: Education :: Testing',
+        'Topic :: Internet :: WWW/HTTP',
+        'Topic :: Scientific/Engineering',
+        'Topic :: Text Processing :: Markup :: HTML',
+        'Topic :: Text Processing :: Markup :: LaTeX',
+        'Topic :: Text Processing :: Markup :: XML',
       ]
 )
