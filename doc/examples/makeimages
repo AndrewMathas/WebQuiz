@@ -131,6 +131,7 @@ pages = [
     Convert("choice-multiple"),
     Convert("choice-multiple-light"),
     Convert("choice-multiple-dark"),
+    Convert("theme-dark"),
     Convert("choice-single"),
     Convert("discussion"),
     Convert("dropdown", js='toggle_dropdown_menu()', delay=10),
