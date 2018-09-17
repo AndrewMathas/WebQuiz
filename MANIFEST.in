@@ -1,6 +1,6 @@
 include  AUTHORS README.rst MANIFEST.in LICENCE changes.rst
-recursive-include mathquiz *.py
-exclude mathquiz/mathquizSMS.py mathquiz/writepage*.py
+recursive-include webquiz *.py
+exclude webquiz/webquiz.py webquiz/writepage*.py
 recursive-include doc *.tex  *.png
 recursive-include latex *.cfg  *.cls *.mk4
 recursive-include css *.css

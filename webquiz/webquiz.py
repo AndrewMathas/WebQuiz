@@ -51,7 +51,7 @@ class MetaData(dict):
             for line in meta:
                 if '=' in line:
                     key, val = line.strip().split('=')
-                    if len(key.strip()) > 0:
+                    if key.strip() != '':
                         self.__setitem__(
                                 key.strip().lower().replace(' ', '_'),
                                 val.strip()
@@ -282,7 +282,7 @@ class WebQuizSettings(object):
 
         # the user rc file defaults to ~/.config/webquizrc if the .config directory exists
         # and otherwise to ~/.webquizrc
-        if os.path.isdir( os.path.join(os.path.expanduser('~'), '.config')):
+        if os.path.isdir(os.path.join(os.path.expanduser('~'), '.config')):
             self.user_rc_file = os.path.join(os.path.expanduser('~'),'.config', 'webquizrc')
         else:
             self.user_rc_file = os.path.join(os.path.expanduser('~'),'.webquizrc')
@@ -340,7 +340,7 @@ class WebQuizSettings(object):
                                 if value != self[key]:
                                     self[key] = value
                                     self.settings[key]['changed'] = True
-                            elif len(key)>0:
+                            elif key != '':
                                 WebQuizError('unknown setting {} in {}'.format(key, rc_file))
 
                 # record the rc_file for later use
@@ -443,7 +443,7 @@ class WebQuizSettings(object):
 
         # prompt for directory and copy files - are these reasonable defaults
         # for each OS?
-        if len(self['webquiz_www']) > 0:
+        if self['webquiz_www'] != '':
             web_root = self['webquiz_www']
         elif sys.platform == 'linux':
             web_root = '/usr/local/httpd/WebQuiz'
@@ -666,7 +666,7 @@ class MakeWebQuiz(object):
                                                        missing='unit name'
                     )
                 elif crumb == 'quiz_index':
-                    if len(self.quiz.quiz_list)==0:
+                    if self.quiz.quiz_list == []:
                         crumbs += breadcrumb_quizlist.format(quizzes_url = self.unit['quizzes_url'], **self.language)
                     else:
                         crumbs += self.add_breadcrumb_line('Quizzes')
@@ -780,13 +780,13 @@ class MakeWebQuiz(object):
 
     def add_side_menu(self):
         """ construct the left hand quiz menu """
-        if len(self.quiz.discussion_list)>0: # links for discussion items
+        if self.quiz.discussion_list != []: # links for discussion items
             discussion_list = '\n       <ul>\n   {}\n       </ul>'.format(
                   '\n   '.join(discuss.format(b=q+1, title=d.short_heading) for (q, d) in enumerate(self.quiz.discussion_list)))
         else:
             discussion_list = ''
 
-        buttons = '\n'+'\n'.join(button.format(b=q, cls=' button-selected' if len(self.quiz.discussion_list)==0 and q==1 else '')
+        buttons = '\n'+'\n'.join(button.format(b=q, cls=' button-selected' if self.quiz.discussion_list==[] and q==1 else '')
                                    for q in range(1, self.qTotal+1))
 
         if self.school['department_url']=='':
@@ -863,23 +863,23 @@ class MakeWebQuiz(object):
 
         # specify the quiz header - this will be wrapped in <div class="question-header>...</div>
         self.quiz_header=quiz_header.format(title=self.title,
-                                            question_number=self.quiz.discussion_list[0].heading if len(self.quiz.discussion_list)>0
-                                                else self.language.question+' 1' if len(self.quiz.question_list)>0 else '',
-                                            arrows = arrows
+            question_number=self.quiz.discussion_list[0].heading if self.quiz.discussion_list!=[]
+                else self.language.question+' 1' if self.quiz.question_list>[] else '',
+            arrows = arrows
         )
 
         # now comes the main page text
         # discussion(s) masquerade as negative questions
-        if len(self.quiz.discussion_list)>0:
+        if self.quiz.discussion_list != []:
           dnum = 0
           for d in self.quiz.discussion_list:
             dnum+=1
             self.quiz_questions+=discussion.format(dnum=dnum, discussion=d,
                                display='style="display: table;"' if dnum==1 else '',
-                               input_button=input_button if len(self.quiz.question_list)>0 and dnum==len(self.quiz.discussion_list) else '')
+                               input_button=input_button if self.quiz.question_list>[] and dnum==len(self.quiz.discussion_list) else '')
 
         # index for quiz
-        if len(self.quiz.quiz_list)>0:
+        if self.quiz.quiz_list != []:
           # add index to the web page
           self.quiz_questions+=quiz_list_div.format(
                  unit=self.unit['name'],
@@ -900,9 +900,9 @@ class MakeWebQuiz(object):
              )
 
         # finally we print the questions
-        if len(self.quiz.question_list)>0:
+        if self.quiz.question_list != []:
           self.quiz_questions+=''.join(question_wrapper.format(qnum=qnum+1,
-                                                display='style="display: table;"' if qnum==0 and len(self.quiz.discussion_list)==0 else '',
+                                                display='style="display: table;"' if qnum==0 and self.quiz.discussion_list==[] else '',
                                                 question=self.print_question(q, qnum+1),
                                                 response=self.print_responses(q, qnum+1))
                                 for (qnum, q) in enumerate(self.quiz.question_list)

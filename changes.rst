@@ -4,6 +4,7 @@ Changes
 
 Version 5.0:
 ------------
+    - changed name from mathquiz to webquiz
     - "programable" breadcrumbs
     - added button for hiding/showing question buttons
     - added colour theme support

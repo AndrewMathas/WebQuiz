@@ -272,7 +272,7 @@ there are three "advanced user options":
     webquiz_mk4
     mathjax
     webquiz_format
-Incorrect values for these settings will break MathQuiZ so you would not
+Incorrect values for these settings will break WebQuiZ so you would not
 normally change them.
 
 If in doubt about any of these options then just accept the default value by
