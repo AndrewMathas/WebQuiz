@@ -38,14 +38,14 @@ questions_javascript = r'''  <script type="text/javascript" src="{webquiz_url}/w
   <script type="text/javascript" src="{mathjax}?config=MML_CHTML"></script>
 '''
 
-webquiz_init=r'''<div style="display: none;">
-    <script type="text/javascript">WebQuizInit({qTotal}, {dTotal}, '{quiz_file}', {hide_side_menu});</script>
+webquiz_init = r'''<div style="display: none;">
+    <script type="text/javascript">WebQuizInit({number_quizzes}, {number_discussions}, '{quiz_file}', {hide_side_menu});</script>
   </div>'''
 
 # Bread crumbs including a drop down menu for all of the quizzes for the unit.
 # The drop-down-menu is added by create_drop_down_menu() in webquiz.js
-breadcrumb_line_text='          <li>{text}</li>\n'
-breadcrumb_line_url ='          <li><a href="{url}">{text}</a></li>\n'
+breadcrumb_line_text = '          <li>{text}</li>\n'
+breadcrumb_line_url = '          <li><a href="{url}">{text}</a></li>\n'
 breadcrumb_quizlist = '''          <li><a href="{quizzes_url}">{quizzes}</a>
           <span onclick="toggle_dropdown_menu();" id="quizzes-menu-icon"></span>
           <ul id="drop-down-menu" onclick="toggle_dropdown_menu();"></ul>
@@ -61,7 +61,7 @@ breadcrumbs = r'''<div class="breadcrumbs">
 '''
 
 # question buttons
-button  = r'        <div id="button{b}" class="button{cls}" content=" " onClick="gotoQuestion({b})">{b}</div>'
+button = r'        <div id="button{b}" class="button{cls}" content=" " onClick="gotoQuestion({b})">{b}</div>'
 discuss = r'        <li id="button-{b}" class="discussion" onClick="gotoQuestion(-{b})">{title}</li>'
 side_menu = r'''<div class="menu-icon">
       <span class="sidelabelclosed question-label" onclick="toggle_side_menu();">&#10070;</span>
@@ -89,40 +89,40 @@ side_menu = r'''<div class="menu-icon">
     </div>'''
 
 # quiz title and navigation arrows
-quiz_header='''<div class="quiz-header">
+quiz_header = '''<div class="quiz-header">
         <div class="quiz-title">{title}</div><div></div>
         <span id="question-number" class="question-label">{question_number}</span>
         {arrows}
       </div>'''
-navigation_arrows='''<span class="arrows">
+navigation_arrows = '''<span class="arrows">
           <a onClick="nextQuestion(-1);" title="{previous_question}">&#x25c4;</a>
           <span class="question-label">{questions}</span>
           <a onClick="nextQuestion(1);"  title="{next_question}">&#x25ba;</a>
         </span>'''
 
 # discussion item
-discussion='''<div id="question-{dnum}" class="question" {display}>
+discussion = '''<div id="question-{dnum}" class="question" {display}>
         <p>{discussion.discussion}</p>{input_button}
       </div>
 '''
-input_button='<input type="button" name="next" value="Start quiz" onClick="return gotoQuestion(1);"/>\n'
+input_button = '<input type="button" name="next" value="Start quiz" onClick="return gotoQuestion(1);"/>\n'
 
 #quiz index
-quiz_list_div='''     <div class="quiz-list">
+quiz_list_div = '''     <div class="quiz-list">
         <h2>{unit} {quizzes}</h2>
         <ul>
           {quiz_index}
         </ul>
       </div>'''
-quiz_list_item='''<li><a href={url}>{title}</a></li>'''
+quiz_list_item = '''<li><a href={url}>{title}</a></li>'''
 
 # now we come to the question wrappers
-question_wrapper='''<div id="question{qnum}" class="question" {display}>
+question_wrapper = '''<div id="question{qnum}" class="question" {display}>
       {question}
       {response}
       </div>
 '''
-question_text='''  {question_text}
+question_text = '''  {question_text}
       <form id="Q{qnum}Form" onSubmit="return false;" class="question">
         {question_options}
         <p>
@@ -133,35 +133,35 @@ question_text='''  {question_text}
 '''
 
 # Questions and responses:
-input_answer='<input type="text"  onChange="checkAnswer();" size="5"/> {tag}'
-choice_answer='<table class="question-choices">{choices}</table>'
-input_single='\n<input type="hidden" name="Q{qnum}hidden"/>'
+input_answer = '<input type="text"  onChange="checkAnswer();" size="5"/> {tag}'
+choice_answer = '<table class="question-choices">{choices}</table>'
+input_single = '\n<input type="hidden" name="Q{qnum}hidden"/>'
 
-single_item='<td><input type="radio" name="Q{qnum}option"/></td><td class="brown" >{choice})</td><td><div class="question-choices">{answer}</div></td>\n'
-multiple_item='<td><input type="checkbox" name="Q{qnum}option{optnum}"/></td><td class="brown" >{choice})</td><td><div class="question-choices">{answer}</div></td>\n'
+single_item = '<td><input type="radio" name="Q{qnum}option"/></td><td class="brown" >{choice})</td><td><div class="question-choices">{answer}</div></td>\n'
+multiple_item = '<td><input type="checkbox" name="Q{qnum}option{optnum}"/></td><td class="brown" >{choice})</td><td><div class="question-choices">{answer}</div></td>\n'
 
-tf_response_text='''        <div id="q{choice}{response}" class="response"><em class="dazzle">{answer}</em> <em>{answer2}</em>
+tf_response_text = '''        <div id="q{choice}{response}" class="response"><em class="dazzle">{answer}</em> <em>{answer2}</em>
            <div>{text}</div>
         </div>'''
-single_response='''        <div id="q{qnum}response{part}" class="response">
+single_response = '''        <div id="q{qnum}response{part}" class="response">
               <em>{alpha_choice} <span class="dazzle">{answer}</span></em>
               <div>{response}</div>
         </div>'''
 
-multiple_response='''        <div id="q{qnum}response{part}" class="response">
+multiple_response = '''        <div id="q{qnum}response{part}" class="response">
             <em>{one_mistake}</em><br><{multiple_choice_opener} <span class="dazzle">{answer}</span>.
             <div>{response}</div>
         </div>'''
-multiple_response_correct='''
+multiple_response_correct = '''
         <div id="q{qnum}response0" class="response"><em class="dazzle">{correct}</em>
             <ol>
 {responses}
             </ol>
         </div>'''
-multiple_response_answer='              <li><em>{answer}</em> {reason}</li>'
+multiple_response_answer = '              <li><em>{answer}</em> {reason}</li>'
 
 # the remaining templates are used to prompt the user when initialising webquiz
-initialise_introduction='''
+initialise_introduction = '''
 In order to work the on-line quizzes that WebQuiz constructs need to load some
 javascript and CSS files that, for efficiency reasons, should be kept on your
 webserver. It does not matter whether these files are in "system" directory
@@ -181,7 +181,7 @@ In order to copy these files to the right place and access them WebQuiz needs:
     then the relative URL for the WebQuiz files is /u/MOW/WebQuiz
 '''
 
-web_directory_message='''The location of the files on your web server will depend on your operating system.
+web_directory_message = '''The location of the files on your web server will depend on your operating system.
 It is recommended that you have a separate directory for the WebQuiz files.
 Common locations for the WebQuiz web directory are:
      /Library/WebServer/Documents/WebQuiz     (for mac os x)
@@ -192,12 +192,12 @@ Common locations for the WebQuiz web directory are:
 WARNING: any files of the form webquiz.* in these directories will be deleted.
 '''
 
-webquiz_url_message='''Please give the relative URL for the WebQuiz web directory.
+webquiz_url_message = '''Please give the relative URL for the WebQuiz web directory.
 In all of the examples above the relative URL for WebQuiz would be /WebQuiz
 
 WebQuiz relative URL [{}]: '''
 
-initialise_ending ='''
+initialise_ending = '''
 You should now be able to build web pages using webquiz! As an initial test
 you can try to build the on-line version of the webquiz manual pages by going
 to the directory
@@ -213,13 +213,13 @@ page please use
 to install the WebQuiz javascript and css files.
 '''
 
-text_initialise_warning='''
+text_initialise_warning = '''
 WebQuiz has not yet been initialised. To remove this warning please use
       webquiz --initialise
 to install the WebQuiz web files onto your system.
 '''
 
-web_initialise_warning='''
+web_initialise_warning = '''
       <div id="initialisewarning" class="warning">
         WebQuiz has not yet been initialised. To remove this warning box please use
         <blockquote>
@@ -230,7 +230,7 @@ web_initialise_warning='''
       </div>
 '''
 
-rc_permission_error='''
+rc_permission_error = '''
 Attempting to write the rc-file to {rc_file}
 resulted in the error:
   {error}
@@ -245,7 +245,7 @@ Press the following key, followed by return. to:
     *. Any other key to exit
 '''
 
-permission_error='''
+permission_error = '''
 You do not have permission to write to {}.
 
 To install WebQuiz files into this directory you may need to quit and run
@@ -254,14 +254,14 @@ webquiz using either an administrator account, or using sudo on linux/macosx.
 Alternatively, please give a different directory.
 '''
 
-webquiz_url_warning='''
+webquiz_url_warning = '''
 WARNING: most of the time, but not always, the relative URL will be a suffix of
 the web directory name, which is not the case with your settings. Your URL may
 well be correct, however, if you have made a mistake then you can change this
 at any time using the command: webquiz --edit-settings
 '''
 
-edit_settings='''
+edit_settings = '''
 In the webquizrc file you can set global defaults for the following:
     department
     department_url
@@ -281,7 +281,7 @@ pressing return. You can change any of these settings later using the command
 '''
 
 # no script error when javascript is not enabled
-no_script='''<noscript>
+no_script = '''<noscript>
     <div class="warning">
       If you are reading this message either your browser does not support
       JavaScript or because JavaScript is not enabled. You will need to enable
@@ -290,6 +290,6 @@ no_script='''<noscript>
   </noscript>'''
 
 # and now for the webquiz help message
-webquiz_help_message=r'''
+webquiz_help_message = r'''
 WebQuiz allows you to write writing on-line quizzes starting from a latex file.
 '''

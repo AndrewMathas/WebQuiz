@@ -1,7 +1,7 @@
-check answer       = ontrolla la risposta
+check answer       = Controlla la risposta
 choice             = La scelta ({}) è
 correct            = Corretta!
-incorrect          = Non corretto.
+incorrect          = Non corretta.
 multiple incorrect = Ad esempio, dovrebbe essere scelta ({})
 next question      = la prossima domanda senza risposta
 next question      = Prossima domanda
