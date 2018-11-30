@@ -17,7 +17,7 @@ r'''
 
 # -*- encoding: utf-8 -*-
 
-import sys, getopt
+import sys
 import xml.sax
 
 DEBUG = False
