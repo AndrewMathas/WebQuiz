@@ -22,7 +22,7 @@ r'''
 # html meta statements
 html_meta = r'''<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width">
-  <meta name="generator" content="WebQuiz {version} (http://www.maths.usyd.edu.au/u/MOW/WebQuiz/doc/webquiz-manual.html)">
+  <meta name="generator" content="WebQuiz {version} (http://www.maths.usyd.edu.au/u/mathas/WebQuiz/webquiz-online-manual.html)">
   <meta name="description" content="{description}">
   <meta name="authors" content="WebQuiz: {authors}">
   <meta name="organization" content="{department}, {institution}">
@@ -34,8 +34,8 @@ html_meta = r'''<meta http-equiv="Content-Type" content="text/html; charset=utf-
 
 # javascript for setting up the questions
 questions_javascript = r'''  <script type="text/javascript" src="{webquiz_url}/webquiz.js"></script>
-  <script type="text/javascript" src="quiztitles.js"></script>
-  <script type="text/javascript" src="{mathjax}?config=MML_CHTML"></script>
+  <script src="quiztitles.js"></script>
+  <script src="{mathjax}?config=MML_CHTML"></script>
 '''
 
 webquiz_init = r'''<div style="display: none;">
@@ -81,7 +81,7 @@ side_menu = r'''<div class="menu-icon">
         {institution}
       </div>
       <div class="copyright">
-        <a href="http://www.maths.usyd.edu.au/u/MOW/WebQuiz/doc/credits.html">
+        <a href="http://www.maths.usyd.edu.au/u/mathas/WebQuiz/credits.html">
            WebQuiz {version}
         </a>
         <br>&copy; Copyright<br><span style="overflow: visible;">2004-2017</span>
@@ -102,7 +102,7 @@ navigation_arrows = '''<span class="arrows">
 
 # discussion item
 discussion = '''<div id="question-{dnum}" class="question" {display}>
-        <p>{discussion.discussion}</p>{input_button}
+        {discussion.discussion}{input_button}
       </div>
 '''
 input_button = '<input type="button" name="next" value="Start quiz" onClick="return gotoQuestion(1);"/>\n'
@@ -149,7 +149,7 @@ single_response = '''        <div id="q{qnum}response{part}" class="response">
         </div>'''
 
 multiple_response = '''        <div id="q{qnum}response{part}" class="response">
-            <em>{one_mistake}</em><br><{multiple_choice_opener} <span class="dazzle">{answer}</span>.
+            <em>{one_mistake}</em><br>{multiple_choice_opener} <span class="dazzle">{answer}</span>.
             <div>{response}</div>
         </div>'''
 multiple_response_correct = '''

@@ -324,8 +324,7 @@ class WebQuizSettings:
         # if webquiz_url is empty then assume that we need to initialise
         self.initialise_warning = ''
         if self['webquiz_url'] == '':
-            self[
-                'webquiz_url'] = 'http://www.maths.usyd.edu.au/u/mathas/WebQuiz/'
+            self['webquiz_url'] = 'http://www.maths.usyd.edu.au/u/mathas/WebQuiz/'
             self.initialise_warning = webquiz_templates.web_initialise_warning
             initialise = input('Do you want to initialise WebQuiz [Y/n]? ')
             if initialise == '' or initialise.strip().lower()[0] == 'y':
@@ -503,8 +502,7 @@ class WebQuizSettings:
             if web_dir == 'SMS':
                 # undocumented: allow links to SMS web pages
                 self['webquiz_www'] = 'SMS'
-                self[
-                    'webquiz_url'] = 'http://www.maths.usyd.edu.au/u/MOW/WebQuiz/'
+                self['webquiz_url'] = 'http://www.maths.usyd.edu.au/u/mathas/WebQuiz'
 
             else:
                 try:
@@ -645,6 +643,8 @@ class MakeWebQuiz(object):
         self.quiz_name = quiz_name.split('.')[0]
         self.quiz_file, extension = quiz_file.split('.')
         self.webquiz_url = settings['webquiz_url']
+        if  self.webquiz_url[-1] == '/':
+            self.webquiz_url =  self.webquiz_url[:len(self.webquiz_url)-1]
 
         # run htlatex only if quiz_file has a .tex extension
         if extension == 'tex':

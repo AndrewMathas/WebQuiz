@@ -122,19 +122,19 @@ an easily readable layout.
   name of the unit of study, the location of the homepage for the
   unit and the index file for the quizzes for this unit; this is
   done using the commands
-  \verb|\UnitCode|,
-  \verb|\UnitName|,
-  \verb|\UnitURL| and
-  \verb|\QuizzesURL| respectively. If the
-  command \verb|\QuizzesURL| is omitted then the URL for the quiz
-  index file is set to \verb|\UnitURL/|Quizzes. (Within the School of
+  \lstinline[style=latexcode]|\UnitCode|,
+  \lstinline[style=latexcode]|\UnitName|,
+  \lstinline[style=latexcode]|\UnitURL| and
+  \lstinline[style=latexcode]|\QuizzesURL| respectively. If the
+  command \lstinline[style=latexcode]|\QuizzesURL| is omitted then the URL for the quiz
+  index file is set to \lstinline[style=latexcode]|\UnitURL/|Quizzes. (Within the School of
   Mathematics and Statistics, there is also a package
   \href{smsquiz.html}{smsquiz.sty} which sets the default
   parameters from the unit code.)
 
   The title of the quiz should also be set in the preamble using the
-  \verb|\title| command. Note that the \verb|\title|
-  command \emph{must} appear before the \verb|\begin{document}| command.
+  \lstinline[style=latexcode]|\title| command. Note that the \lstinline[style=latexcode]|\title|
+  command \emph{must} appear before the \lstinline[style=latexcode]|\begin{document}| command.
   In the preamble you can also define macros and load
   any packages that you want in the usual way .
 
@@ -192,10 +192,10 @@ an easily readable layout.
     \end{question}
 \end{latexcode}
   The multiple choice responses for each question go inside a choice environment.
-  The correct answer goes after \verb|\correct|, incorrect answers
-  after \verb|\incorrect|. Either can be followed by a
-  \verb|\response|, providing comments on the students choice when
-  checking their answers.  The \verb|\reponse| commands are optional;
+  The correct answer goes after \lstinline[style=latexcode]|\correct|, incorrect answers
+  after \lstinline[style=latexcode]|\incorrect|. Either can be followed by a
+  \lstinline[style=latexcode]|\response|, providing comments on the students choice when
+  checking their answers.  The \lstinline[style=latexcode]|\response| commands are optional;
   however, it is recommended that you use them as good feedback is
   very useful for the students.
   \par
@@ -265,7 +265,7 @@ an easily readable layout.
     \end{question}
 \end{latexcode}
   The only difference to the previous case is that multiple (or no)
-  \verb|\correct| commands may be used.
+  \lstinline[style=latexcode]|\correct| commands may be used.
   \par
   For example, \qref{2} below was typed into WebQuiz
   using the following commands:
@@ -384,14 +384,14 @@ an easily readable layout.
   The final type of question that \WebQuiz{} supports is a question
   which requires a \emph{numerical} as an answer. The numerical
   answer must be given in decimal form.
-  The answer is typeset using the \verb|\answer| macro. That macro
+  The answer is typeset using the \lstinline[style=latexcode]|\answer| macro. That macro
   takes two arguments, some text appearing in an answer box after the
   question and the actual numerical answer. The text is optional. The
-  syntax is \verb|\answer[text after answer box]{numerical answer}|.
+  syntax is \lstinline[style=latexcode]|\answer[text after answer box]{numerical answer}|.
   Then there is a mechanism for providing feedback for correct and
-  incorrect answers. This is done using \verb|\whenRight| and
-  \verb|\whenWrong|.  Unlike the \verb|\response| commands, the two
-  reponses \verb|\whenRight| and \verb|\whenWrong| are both mandatory
+  incorrect answers. This is done using \lstinline[style=latexcode]|\whenRight| and
+  \lstinline[style=latexcode]|\whenWrong|.  Unlike the \lstinline[style=latexcode]|\response| commands, the two
+  responses \lstinline[style=latexcode]|\whenRight| and \lstinline[style=latexcode]|\whenWrong| are both mandatory
   for questions of this type.  The syntax is for such questions is as
   follows:
 \begin{latexcode}
@@ -439,7 +439,8 @@ an easily readable layout.
       . . .
     \end{quizlist}
 \end{latexcode}
-  If no \textit{url} is given as an optional argument to |\quiz| then
+If no \textit{URL} is given as an optional argument to
+\lstinline[style=latexcode]|\quiz| then
   \WebQuiz{} sets the url(s) to \verb|quiz1.html|, \verb|quiz2.html|
   and so on.
 \end{discussion}
@@ -454,8 +455,8 @@ an easily readable layout.
     and Michal Hoftich's
     \href{https://github.com/michal-h21/make4ht}{make4ht}.
 
-    To write quizzes using \WebQuiz it is only necessary to know
-    \LaTeX, however, the \WebQuiz system has three components:
+    To write quizzes using \WebQuiz{} it is only necessary to know
+    \LaTeX, however, the \WebQuiz{} system has three components:
     \begin{itemize}
       \item A \LaTeX{} document class file, \texttt{webquiz.cls}, and
       a \TeX 4ht configuration file, \texttt{webquiz.cfg}, that enable the
