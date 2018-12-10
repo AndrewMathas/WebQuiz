@@ -36,20 +36,10 @@
   $WarningFG:      #FFCC00;
   $White:          #FFFFFF;
 
-  $BreadCrumbBG:   red;
-  
+  $BreadCrumbBG:   #994d00;
   $BreadCrumbFG:   $White;
 
-  $BreadCrumb1BG:  $Heading;
-  $BreadCrumb1FG:  $White;
-  $BreadCrumb2BG:  $ButtonSelected;
-  $BreadCrumb2FG:  $White;
-  $BreadCrumb3BG:  $ButtonBorder;
-  $BreadCrumb3FG:  $White;
-  $BreadCrumb4BG:  $ButtonBG;
-  $BreadCrumb4FG:  $SideMenuText;
-  $BreadCrumb5BG:  $White;
-  $BreadCrumb5FG:  $SideMenuText;
+  $DropDownFG:     $BreadCrumbBG;
 
   $ListMarker:    '\027A3';
 

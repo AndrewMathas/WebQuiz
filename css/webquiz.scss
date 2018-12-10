@@ -16,10 +16,6 @@
 
 // Included by theme files
 
-.dazzle {
-  color: $Dazzle;
-}
-
 /* container for the full quiz page */
 div.quiz-page {
     position: absolute;
@@ -315,6 +311,7 @@ input.input-button {
     margin-right: 40px;
     padding: 0 4px 0 4px;
 }
+
 /* warning messages - for the noscript error */
 div.warning {
     background-color: $WarningBG;
@@ -331,6 +328,7 @@ div.breadcrumbs {
   float: left;
   clear: both;
   display: block;
+}
 
 /* Drop down menu for quiz list modified from http://www.mrc-productivity.com/techblog/?p=1049 */
 nav {
@@ -356,7 +354,7 @@ nav {
                 text-align: center;  /* All text is placed in the center of the box */
                 margin: 0;
                 -webkit-transition: all 0.2s;
-                padding: 4px 4px 4px 18px;
+                padding: 2px 4px 2px 18px;
                 background-color: $Heading;
                 position: relative;
                 float: left;
@@ -373,7 +371,7 @@ nav {
                     padding-left: 4px;
                     margin: 0; /* Aligns drop-down box underneath the menu item */
                     -webkit-transition: all 1s;
-                    border: solid $ButtonBorder 4px;
+                    border: solid $ButtonBorder 2px;
                     border-radius: 5px;
                     background-color: $ButtonBG;
 
@@ -382,11 +380,14 @@ nav {
                         text-align: left;
                         -webkit-transition: height 0.5s;
                         padding: 1px 0 0 4px;
-
+                        color: black;
+                        a {
+                            color: $DropDownFG !important;
+                        }
                     }
 
                     li::after { content:none;}
-                    li:first-child { padding-top: 4px; }
+                    li:first-child { padding-top: 2px; }
 
                     // turn off "triangle" colouring inside the ul
                     li:nth-child(n) {
@@ -415,12 +416,12 @@ nav {
               display: block;
               width: 0;
               height: 0;
-              border-top: 8px solid transparent;
-              border-bottom: 8px solid transparent;
-              border-left: 15px solid $Heading;
+              border-top: 7px solid transparent;
+              border-bottom: 7px solid transparent;
+              border-left: 14px solid $Heading;
               position: absolute;
               top: 50%;
-              margin-top: -8px;
+              margin-top: -7px;
               left: 100%;
               z-index: 99;
         }
@@ -431,13 +432,13 @@ nav {
               display: block;
               width: 0;
               height: 0;
-              border-top: 8px solid transparent;
-              border-bottom: 8px solid transparent;
-              border-left: 15px solid white;
+              border-top: 7px solid transparent;
+              border-bottom: 7px solid transparent;
+              border-left: 14px solid white;
               position: absolute;
               top: 50%;
-              margin-top: -8px;
-              margin-left: 4px;
+              margin-top: -7px;
+              margin-left: 2px;
               left: 100%;
               z-index: 98;
         }
@@ -465,47 +466,6 @@ nav {
             $step: $step + 1;
         }
 
-//        ul > li:nth-child(5n+1) { color: $BreadCrumb1FG;
-//                                  A { color: $BreadCrumb1FG; }
-//                                  ul li a { color: $ButtonSelected; }
-//        }
-//        ul > li:nth-child(5n+1):after {
-//                                  border-left-color: $BreadCrumb1BG;
-//        }
-//        ul > li:nth-child(5n+2) { background: $ButtonSelected;
-//                                  color: $BreadCrumb1FG;
-//                                  A { color: $BreadCrumb1FG; }
-//                                  ul li a { color: $ButtonSelected; }
-//        }
-//        ul > li:nth-child(5n+2):after {
-//                                 border-left-color: $BreadCrumb2BG;
-//        }
-//        ul > li:nth-child(5n+3) { background: $ButtonBorder;
-//                                  color: $BreadCrumb3FG;
-//                                  A { color: $BreadCrumb3FG; }
-//                                  ul li a { color: $ButtonSelected; }
-  //        }
-  //        ul > li:nth-child(5n+3):after {
-  //                                  border-left-color: $BreadCrumb3BG; }
-  //
-  //        ul > li:nth-child(5n+4) { background: $ButtonBG;
-  //                                  color: $BreadCrumb4FG;
-  //                                  A { color: $BreadCrumb4FG; }
-  //                                  ul li a { color: $ButtonSelected; }
-  //        }
-  //        ul > li:nth-child(5n+4):after {
-  //                                  border-left-color: $BreadCrumb4BG;
-  //        }
-  //
-  //        ul > li:nth-child(5n+0) { background: $BreadCrumb1FG;
-  //                                  color: $BreadCrumb5FG;
-  //                                  A { color: $BreadCrumb5FG; }
-  //                                  ul li a { color: $ButtonSelected; }
-  //        }
-  //        ul > li:nth-child(5n+0):after {
-  //                                  border-left-color: $BreadCrumb5BG;
-  //        }
-    }
 }
 
 div.menu-icon {
