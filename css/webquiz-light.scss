@@ -1,6 +1,6 @@
 /*
  * -----------------------------------------------------------------------
- *   webquiz.css | colour specifications for light theme 
+ *   webquiz.css | colour specifications for dark theme 
  * -----------------------------------------------------------------------
  *
  *   Copyright (C) Andrew Mathas, University of Sydney
@@ -16,30 +16,37 @@
 
 // sass variables for the colours used in the quizzes
 
-  $Heading:        #CE1126;
-  $Subheading:     #FF0000;
-  $QuestionPart:   #CC3300;
+  $Text:           #8E8D8A;
+  $BackGround:     #EAE7DC;
 
-  $Copyright:      #3352ff;
+  $Heading:        #E98074;
+  $Subheading:     lighten($Heading, 20%);
+
+  $QuestionPart:   lighten($Heading, 8%);
+
+  $ButtonBG:       #D8C3A5;
+  $ButtonBorder:   darken($ButtonBG, 40%);
+  $ButtonHover:    lighten($ButtonBG, 20%);
+  $ButtonSelected: lighten($ButtonBG, 30%);
+
+  $Dazzle:         yellow;
+
+  $ResponseBG:     $ButtonBG;
+  $ResponseBorder: darken($ResponseBG, 40%);
+  $ResponseText:   lighten($ResponseBG, 20%);
+
+  $SideMenuText:   lighten($Text, 10%);
+
+  $WarningBG:      red;
+  $WarningBorder:  darken($WarningBG, 60%);
+  $WarningFG:      lighten($WarningBG, 90%);
+
+  $BreadCrumbBG:   darken($Heading, 50%);
+  $BreadCrumbFG:   lighten($BackGround, 30%);
+  $DropDownFG:     lighten($ButtonBG, 40%);
+
+  $Copyright:      $BreadCrumbBG;
   $School:         lighten($Copyright, 10%);
-
-  $ButtonBG:       #FFF8DC;
-  $ButtonBorder:   #F2BB66;
-  $ButtonHover:    #5B2C6F;
-  $ButtonSelected: #B33C00;
-  $Dazzle:         #FF1A1A;
-  $ResponseBG:     #E9E0D8;
-  $ResponseBorder: #C9A798;
-  $SideMenuText:   #000000;
-  $WarningBG:      #EC7063;
-  $WarningBorder:  #5B2C6F;
-  $WarningFG:      #FFCC00;
-  $White:          #FFFFFF;
-
-  $BreadCrumbBG:   #994d00;
-  $BreadCrumbFG:   $White;
-
-  $DropDownFG:     $BreadCrumbBG;
 
   $ListMarker:    '\027A3';
 

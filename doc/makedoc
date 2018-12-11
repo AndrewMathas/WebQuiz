@@ -1,11 +1,127 @@
 #!/bin/bash
 
-# Script to generate the list of languages that is currently supported
-# by WebQuiz, together with code to produce index entries for them in
-# the manual. The manual, webquiz.tex, reads in this list to display 
-# the list of supported languages
+# Script to generate all of the automatic input for the main web quiz manual.
+# That is, update the lists supported languages and themes and generate all of
+# the images used by webquiz.tex
 
-LANG="webquiz.lang"
-/bin/rm -f languages
-echo "% List of languages currently supported by WebQuiz -- $(date '+%Y-%m-%d')" > $LANG
-ls ../latex/*.lang | sed -e 's@.*webquiz-\(.*\).lang@\u\1\\CrossIndex{language}{\1}@'   >> $LANG
+WEBQUIZDOC="$PWD"
+
+function message() {
+  if [ "$quiet" = false ]; then
+     echo -e "$@"
+  fi
+}
+function make_languages() {
+  message "Generating list of supported languages"
+  LANG="webquiz.languages"
+  /bin/rm -f $LANG
+  echo -e "% List of languages currently supported by WebQuiz -- generated $(date '+%Y-%m-%d')\n" > $LANG
+  (cd ../latex && ls -1 *.lang | sort | xargs \
+              | sed 's@ \([^ ]*\)$@and\n\1@' \
+              | sed -e 's@\s*webquiz-\([a-z]*\).lang@\u\1,\\CrossIndex{language}{\1}\n@g' \
+              ) >> $LANG
+}
+
+function make_themes () {
+  message "Generating list of supported css themes"
+
+  # next generate code to include screenshots for each theme in the appendix
+  THEMESCREENSHOT="$WEBQUIZDOC/webquiz-themes.tex"
+  /bin/rm -f $THEMESCREENSHOT
+  MAKEIMAGES="$WEBQUIZDOC/examples/makeimages"
+  echo -e "% Include screen shots for each theme supported by WebQuiz -- generated $(date '+%Y-%m-%d')\n" > $THEMESCREENSHOT
+  ( cd ../css
+    for theme in webquiz-*.scss ; do
+        sass --style compressed $theme ${theme/scss/css}
+        name=${theme/webquiz-/}
+        name=${name/.scss/}
+        echo -e "\\ScreenShot[0.7]{Example of the \\\textbf{$name} theme}{examples/theme-$name}" >> $THEMESCREENSHOT
+        echo -e "\\index{theme!$name}\n" >> $THEMESCREENSHOT
+        if [ ! -e "$WEBQUIZDOC/examples/choice-multiple-$name.tex" ]; then
+          ( cd $WEBQUIZDOC/examples
+            sed "s@documentclass@&[theme=$name]@" choice-multiple.tex > "theme-$name.tex"
+            #git add "choice-multiple-$name.tex"
+            sed -i 's@    Convert("theme-default"),@&\n    Convert("theme-'"$name"'", question="1:2"),@' $MAKEIMAGES
+          )
+        fi
+    done
+  )
+
+  THEME="webquiz.themes"
+  /bin/rm -f $THEME
+  echo -e "% List of themes currently supported by WebQuiz -- generated $(date '+%Y-%m-%d')\n" > $THEME
+  # first generate a list of themes for the documentclass options section
+  (cd ../css && ls -1 webquiz-*.css | sort | xargs \
+              | sed 's@ \([^ ]*\)$@and\n\1@' \
+              | sed -e 's@\s*webquiz-\([a-z]*\).css@\1,\\CrossIndex{theme}{\1}\n@g' \
+              ) >> $THEME
+}
+
+function make_examples() {
+  message "Generating example images"
+  (cd examples
+   if [ "$quiet" = true ]; then
+     ./makeimages > /dev/null
+   else ./makeimages
+   fi
+   )
+}
+
+function make_all() {
+  make_languages
+  make_themes
+  make_examples
+}
+
+function make_online_manual() {
+  message "Making pdf for online manual"
+  latex webquiz-online-manual && dvipdf webquiz-online-manual
+}
+
+function make_manual() {
+  message "Making pdf for manual"
+  make_languages 
+  make_themes
+  if  [[ "$fast" = false ]] ; then
+      make_examples
+      make_online_manual
+      pdflatex --interaction=batchmode webquiz
+      pdflatex --interaction=batchmode webquiz
+  fi
+  pdflatex --interaction=batchmode webquiz
+}
+
+function usage() {
+  message "make [--fast|--quiet] [--examples|--languages|--manual|--online|--themes|]"
+}
+
+fast=false
+quiet=false # TODO
+
+if [ $# -eq 0 ]; then
+  make_all
+else
+  while [ $# -gt 0 ]
+  do
+     case $1 in
+       -a|--a*) make_all
+                shift ;;
+       -e|--e*) make_examples
+                shift ;;
+       -f|--f*) fast=true
+                shift ;;
+       -l|--l*) make_languages
+                shift ;;
+       -m|--m*) make_manual
+                shift ;;
+       -o|--o*) make_online_manual
+                shift ;;
+       -q|--q*) quiet=true
+                shift ;;
+       -t|--t*) make_themes
+                shift ;;
+       *)       usage && exit
+                shift ;;
+     esac
+   done
+fi

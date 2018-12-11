@@ -15,34 +15,38 @@
  */
 
 // sass variables for the colours used in the quizzes
-  $Heading:        #0000ff;
+
+  $Text:           #C5C6C7;
+  $BackGround:     #0B0C10;
+
+  $Heading:        #66FcF1;
   $Subheading:     lighten($Heading, 20%);
 
-  $QuestionPart:   ligthen($Heading, 8%);
+  $QuestionPart:   lighten($Heading, 8%);
 
-  $Copyright:      #3352ff;
-  $School:         lighten($Copyright, 10%);
-
-  $ButtonBG:       #cfd5fc;
+  $ButtonBG:       #45A29E;
   $ButtonBorder:   darken($ButtonBG, 40%);
   $ButtonHover:    lighten($ButtonBG, 20%);
   $ButtonSelected: lighten($ButtonBG, 30%);
 
-  $Dazzle:         #261868;
+  $Dazzle:         yellow;
 
-  $ResponseBG:     #A8D0E6;
-  $ResponseBorder: darken($ResponseBG, 40);
+  $ResponseBG:     $ButtonBG;
+  $ResponseBorder: darken($ResponseBG, 40%);
+  $ResponseText:   lighten($ResponseBG, 20%);
 
-  $SideMenuText:   #0479cc;
+  $SideMenuText:   lighten($Text, 10%);
 
-  $WarningBG:      #EC7063;
-  $WarningBorder:  #5B2C6F;
-  $WarningFG:      #FFCC00;
-  $White:          #e9f5ff;
+  $WarningBG:      red;
+  $WarningBorder:  darken($WarningBG, 60%);
+  $WarningFG:      lighten($WarningBG, 90%);
 
-  $BreadCrumbBG:   #0C0032;
-  $BreadCrumbFG:   $White;
-  $DropDownFG:     #804000;
+  $BreadCrumbBG:   darken($Heading, 50%);
+  $BreadCrumbFG:   lighten($BackGround, 30%);
+  $DropDownFG:     lighten($ButtonBG, 40%);
+
+  $Copyright:      $BreadCrumbBG;
+  $School:         lighten($Copyright, 10%);
 
   $ListMarker:    '\027A3';
 

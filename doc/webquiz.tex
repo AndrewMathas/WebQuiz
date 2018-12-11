@@ -821,7 +821,6 @@ five document class options:
     \Verb|language|, \Verb|theme| and \Verb|hidesidemenu|.
     Both the \Verb|language| and the \Verb|theme| can be set globally in
     the \webquizrc; see \autoref{SS:rcfile}.
-
     The next section discusses the \Verb|tikz| and \Verb|pst2pdf| class
     options and how to include graphics in a quiz.
 
@@ -831,7 +830,7 @@ five document class options:
   The currently supported languages are:
 
     \begin{quote}
-        \input{webquiz.lang}
+        \input{webquiz.languages}
     \end{quote}
 
     The languages files are used to print the various buttons and text
@@ -881,26 +880,29 @@ five document class options:
 
   \item[theme]\CrossIndex{document class options}{theme}
 
-     \WebQuiz\ has a \Verb|light| and a \Verb|dark| theme for styling
-     the quiz web pages, which can be set as options to the document
-     class or in the \webquizrc file. All of the examples so far have
-     used the \Verb|light| theme, which is the default. As an example,
-     if we use
+     \WebQuiz\ has a small number of different themes for setting the
+     colours on the quiz web pages. The theme can be set as an option to
+     the document class or in the \webquizrc file. All of the examples
+     so far have used the \Verb|light| theme, which is the default. As
+     an example, if we use
 
-    \lstinputlisting[style=latexcode]{examples/choice-multiple-dark}
+    \lstinputlisting[style=latexcode]{examples/theme-dark}
 
     then the quiz page looks like:
 
-    \ScreenShot{Multiple choice with light theme}{examples/choice-multiple-dark}
+    \ScreenShot{Multiple choice with light theme}{examples/theme-dark}
 
     This should be compared with the corresponding screenshot in section
     \autoref{choice-multiple}, which uses the default theme.
 
-  The currently supported themes are:
+    The list of currently supported themes is:
 
-    \begin{quote}
-        \input{webquiz.theme}
-    \end{quote}
+      \begin{quote}
+          \input{webquiz.themes}
+      \end{quote}
+
+    For screenshots for the complete list of themes see
+    \autoref{SS:themes}.
 
     \item[hidesidemenu]\CrossIndex{document class options}{hide side menu}
     If this option is set the end the side menu is not displayed
@@ -1505,7 +1507,13 @@ option.
     your problem is really an issue with \TeX4ht rather a bug in
     \WebQuiz.
 
-\section{The on-line WebQuiz manual}\label{S:online}
+\appendix
+\newpage
+\section*{Appendices}
+  \addcontentsline{toc}{section}{Appendices}
+\renewcommand\thesection{}
+\renewcommand\thesubsection{\Alph{subsection}}
+\subsection{The on-line WebQuiz manual}\label{S:online}
 
   \WebQuiz has an
   \href{http://www.maths.usyd.edu.au/u/MOW/WebQuiz/doc/webquiz-manual.html}{on-line
@@ -1535,7 +1543,17 @@ option.
 
   \includepdf[pages=-,pagecommand={\pagestyle{webquiz}}]{webquiz-online-manual}
 
-\section{Licence}
+
+\subsection{List of themes}\index{SS:themes}
+\WebQuiz{} comes with quite a few different themes for the on-line
+quizzes, which can be set using the \textsf{theme} documentclass option
+or in the \webquizrc file; see \autoref{SS:classOptions} for more
+details. Themes are easy to construct in principle although finding
+colour that work well together can be tricky in practice.
+
+  \input webquiz-themes.tex
+
+\subsection{Licence}
 
 Copyright (C) 2013-2017
 

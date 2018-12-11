@@ -24,13 +24,14 @@ Alternatively, it is possible to extract a png image of the PDF file created by 
 For the full extraction specifications see the pages array below
 '''
 
-import argparse, glob, os, shutil, subprocess
+import argparse, glob, os, re, shutil, subprocess
 
 # location of the webquiz example web pages on a development server
 examplesURL = "http://localhost/WebQuiz/doc/examples"
+examplesDIR = os.path.join(os.environ['HOME'], 'Code/WebQuiz/doc/examples')
 
 # lambda function for running shell commands: run( command )
-run  = lambda cmd: subprocess.call(cmd, shell=True)
+run  = lambda cmd: subprocess.call(cmd, shell=True, cwd=examplesDIR)
 
 webquiz_mode = '-qq'
 webkit2png_mode = ''
@@ -44,14 +45,21 @@ class Convert:
                    being generated starting with pdflatex, webkit2png or latex
       - page_out = output file                                         (default: file_in)
       - delay    = time to wait in second before taking the screenshot (default: 3)
+      - question = a string of the form 'question:part' to "guess" that this
+                   part is correct                                     (default: None)
       - js       = javascript commands                                 (default: '')
     The actual conversion is done by using the write_image method of the class.
     '''
-    def __init__(self, page, src='html', page_out=None, delay=3, js=''):
+    def __init__(self, page, src='html', page_out=None, delay=3, question=None, js=''):
         self.page = page
         self.page_out = page_out if page_out is not None else self.page
         self.delay = delay
         self.javascript = js
+
+        if not question is None:
+            quest, part = question.split(':')
+            self.javascript = "document.forms['Q{}Form'].elements[{}].checked=true; setTimeout(checkAnswer, 4)".format(quest, part)
+            self.delay = 5
 
         # set conversion mechanism
         if src == 'html':
@@ -72,7 +80,7 @@ class Convert:
         '''
         print('\nExtracting image file for {}...'.format(self.page))
 
-        if os.path.exists(self.page_out+'.png'): 
+        if os.path.exists(self.page_out+'.png'):
             # remove png file if it already exists
             os.remove(self.page_out+'.png')
 
@@ -103,7 +111,7 @@ class Convert:
         if webkit2png_mode == '--debug':
             print(cmd)
         run(cmd)
-        if os.path.exists(self.page_out+'-full.png'): # remove png file if it already exists
+        if os.path.exists(os.path.join(examplesDIR, self.page_out+'-full.png')): # remove png file if it already exists
             shutil.move(self.page_out+'-full.png', self.page_out+'.png')
             run('mogrify -trim -gravity center {}.png'.format(self.page_out))
         else:
@@ -128,11 +136,19 @@ class Convert:
 # Specify the pages to construct using the Convert class:
 pages = [
     Convert("breadcrumbs", delay=10),
-    Convert("choice-multiple"),
-    Convert("choice-multiple-light"),
-    Convert("choice-multiple-dark"),
-    Convert("theme-dark"),
     Convert("choice-single"),
+    Convert("choice-multiple"),
+    Convert("theme-dark", question="1:2"),
+    Convert("theme-default", question="1:2"),
+    Convert("theme-dynamic", question="1:2"),
+    Convert("theme-fresh", question="1:2"),
+    Convert("theme-light", question="1:2"),
+    Convert("theme-lively", question="1:2"),
+    Convert("theme-muted", question="1:2"),
+    Convert("theme-neon", question="1:2"),
+    Convert("theme-red", question="1:2"),
+    Convert("theme-sleek", question="1:2"),
+    Convert("theme-vibrant", question="1:2"),
     Convert("discussion"),
     Convert("dropdown", js='toggle_dropdown_menu()', delay=10),
     Convert("french"),
@@ -143,7 +159,7 @@ pages = [
     Convert("pst2pdf"),
     Convert("pstricks-ex"),
     Convert("question"),
-    Convert("quiz-page", js="document.forms['Q1Form'].elements[1].checked=true; setTimeout(checkAnswer, 4)", delay=5),
+    Convert("quiz-page", question="1:2"),
     Convert("display-as-image"),
     Convert("simple", page_out='simple-html'),
     Convert("simple", src='pdf',  page_out='simple-pdf'),
@@ -173,12 +189,12 @@ if __name__ == '__main__':
         # generate all images
         is_good_page = lambda page: True
     else:
-        # only generate images with specified page_out file names
-        is_good_page = lambda page: page.page_out in args.images
+        # only generate images that match one of the specified images
+        is_good_page = lambda page: any(re.search(image, page.page_out) for image in args.images)
 
         # remove extensions from output file names
         for page in range(len(args.images)):
-            name = args.images[page] 
+            name = args.images[page]
             if '.' in name:
                 args.images[page] = name[:name.index('.')]
 

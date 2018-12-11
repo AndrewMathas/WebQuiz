@@ -12,5 +12,7 @@ doc/examples/*.css
 doc/examples/*.html
 doc/examples/quiztitles.js
 doc/webquiz.lang
+doc/webquiz.theme
+doc/webquiz-online-manual/
 bin/*
 install/*

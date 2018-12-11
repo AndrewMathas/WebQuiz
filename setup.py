@@ -103,7 +103,11 @@ class WebQuizCtan(Command):
         '''
         for css_file in glob.glob('webquiz-*.scss'):
             self.shell_command('sass --style compress {} {}.css'.format(css_file, css_file[:-4]))
-        self.shell_command('cd doc && ./mklanguages && latex --interaction=batchmode webquiz-online-manual && dvipdf webquiz-online-manual')
+        # auto generate all of the data used in the manual
+        self.shell_command('cd doc && ./makedoc')
+        # create a PDF file for the on-line manual
+        self.shell_command('cd doc && latex --interaction=batchmode webquiz-online-manual && dvipdf webquiz-online-manual')
+        # create a PDF file for the main manual
         self.shell_command('cd doc && pdflatex --interaction=batchmode webquiz')
 
     def write_zip_file(self):
