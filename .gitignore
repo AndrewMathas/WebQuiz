@@ -4,11 +4,15 @@ css/*.css.map
 css/.sass-cache/
 doc/credits/
 doc/credits.xml
+doc/webquiz.languages
+doc/webquiz.themes
+doc/webquiz-themes.tex
 doc/examples/*/
 doc/examples/*.png
 doc/examples/*.svg
 doc/examples/*.xml
 doc/examples/*.css
+doc/examples/theme-*.tex
 doc/examples/*.html
 doc/examples/quiztitles.js
 doc/webquiz.lang

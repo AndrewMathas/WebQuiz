@@ -97,7 +97,7 @@ class WebQuizCtan(Command):
         Rebuilds the documentation files and css for inclusion in the zip file:
             - doc/webquiz-manual.tex
             - doc/webquiz.tex
-            - css/webquiz.css
+            - css/webquiz-*.css
         to ensure that they are correct for the ctan upload. We need to make
         webquiz-manual.pdf first because it is included in webquiz.pdf.
         '''
@@ -140,7 +140,7 @@ class WebQuizCtan(Command):
                                    ('webquiz/webquiz*.py',             'scripts'),
                                    ('webquiz.ini',                     'scripts'),
                                    ('webquiz/webquiz.bat',             'scripts'),
-                                   ('css/webquiz-*.css',               'scripts/www'),
+                                   ('css/webquiz-*.css',               'scripts/www/css'),
                                    ('javascript/webquiz.js',           'scripts/www'),
                                    ('doc/webquiz-online-manual.tex',   'scripts/www/doc'),
                                    ('webquiz.ini',                     'scripts/www/doc'),

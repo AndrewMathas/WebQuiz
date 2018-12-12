@@ -1,0 +1,55 @@
+/*
+ * -----------------------------------------------------------------------
+ *   webquiz.css | colour specifications for dark theme 
+ * -----------------------------------------------------------------------
+ *
+ *   Copyright (C) Andrew Mathas, University of Sydney
+ *
+ *   Distributed under the terms of the GNU General Public License (GPL)
+ *               http://www.gnu.org/licenses/
+ *
+ *   This file is part of the WebQuiz system.
+ *
+ *   <Andrew.Mathas@sydney.edu.au>
+ * ----------------------------------------------------------------------
+ */
+
+// sass variables for the colours used in the quizzes
+
+  $Text:           #C2CAD0;
+  $BackGround:     #7E685A;
+
+  $Heading:        #AFD276;
+  $Subheading:     lighten($Heading, 20%);
+
+  $QuestionPart:   lighten($Heading, 8%);
+
+  $ButtonBG:       #E7717D;
+  $ButtonBorder:   darken($ButtonBG, 40%);
+  $ButtonHover:    lighten($ButtonBG, 20%);
+  $ButtonSelected: lighten($ButtonBG, 30%);
+
+  $Dazzle:         #F76C6C;
+
+  $ResponseBG:     $ButtonBG;
+  $ResponseBorder: darken($ResponseBG, 40%);
+  $ResponseText:   lighten($ResponseBG, 20%);
+
+  $SideMenuText:   #A8D0E6;
+
+  $WarningBG:      #C289B0;
+  $WarningBorder:  darken($WarningBG, 60%);
+  $WarningFG:      lighten($WarningBG, 90%);
+
+  $BreadCrumbBG:   darken($Heading, 50%);
+  $BreadCrumbFG:   darken($BackGround, 30%);
+  $DropDownFG:     #AFD275;
+
+  $Copyright:      $BreadCrumbBG;
+  $School:         lighten($Copyright, 10%);
+
+  $ListMarker:    '\027A3';
+
+  $HeadingFont: Verdana, Arial, Helvetica, sans-serif;
+
+@import "webquiz";

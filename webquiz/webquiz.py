@@ -231,7 +231,7 @@ class WebQuizSettings:
             'help': 'Default language used on web pages'
         },
         theme={
-            'default': 'webquiz-light',
+            'default': 'default',
             'advanced': False,
             'help': 'Default colour theme used on web pages'
         },
@@ -669,9 +669,10 @@ class MakeWebQuiz(object):
 
         self.language = MetaData(language_file)
 
-        self.theme = self.quiz.theme
-        if self.theme == '':
-            self.theme = self.settings['theme']
+        if self.quiz.theme == '':
+            self.theme = 'webquiz-'+self.settings['theme']
+        else:
+            self.theme = 'webquiz-'+self.quiz.theme
 
         # initialise number of quiz and discussion items
         self.number_discussions = len(self.quiz.discussion_list)

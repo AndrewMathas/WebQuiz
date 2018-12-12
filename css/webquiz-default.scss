@@ -1,0 +1,57 @@
+/*
+ * -----------------------------------------------------------------------
+ *   webquiz.css | colour specifications for light theme 
+ * -----------------------------------------------------------------------
+ *
+ *   Copyright (C) Andrew Mathas, University of Sydney
+ *
+ *   Distributed under the terms of the GNU General Public License (GPL)
+ *               http://www.gnu.org/licenses/
+ *
+ *   This file is part of the WebQuiz system.
+ *
+ *   <Andrew.Mathas@sydney.edu.au>
+ * ----------------------------------------------------------------------
+ */
+
+// sass variables for the colours used in the quizzes
+
+  $Text:           black;
+  $BackGround:     white;
+
+  $Heading:        #CE1126;
+  $Subheading:     lighten($Heading, 80%);
+  $QuestionPart:   lighten($Heading, 60%);
+
+  $ButtonBG:       #FFF8DC;
+  $ButtonBorder:   #F2BB66;
+  $ButtonHover:    #5B2C6F;
+  $ButtonSelected: #B33C00;
+
+  $ResponseBG:     #E9E0D8;
+  $ResponseBorder: #C9A798;
+  $ResponseText:   lighten($ResponseBG, 20%);
+
+  $SideMenuText:   #000000;
+
+  $WarningBG:      #EC7063;
+  $WarningBorder:  #5B2C6F;
+  $WarningFG:      #FFCC00;
+
+  $White:          #FFFFFF;
+
+  $BreadCrumbBG:   #994d00;
+  $BreadCrumbFG:   $White;
+
+  $Dazzle:         #FF1A1A;
+
+  $DropDownFG:     $BreadCrumbBG;
+
+  $Copyright:      $BreadCrumbBG;
+  $School:         lighten($Copyright, 10%);
+
+  $ListMarker:    '\027A3';
+
+  $HeadingFont: Verdana, Arial, Helvetica, sans-serif;
+
+@import "webquiz";
