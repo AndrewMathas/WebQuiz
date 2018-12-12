@@ -245,20 +245,21 @@ function checkAnswer() {
         }
         showResponse("q" + currentQ + "response" + checkedAnswer);
     } else { // type is "multiple"
-        var badAnswer = 0;
+        var badAnswers = [];
         for (i = 0; i < question.length; i++) {
             if (formObject.elements[i].checked !== question[i]) {
-                badAnswer = i + 1;
+                badAnswers.push(i + 1);
                 break;
             }
         }
-        // fully correct only if badAnswer === 0
-        if (badAnswer > 0) {
-            correct[qnum] = false;
-            showResponse("q" + currentQ + "response" + badAnswer);
-        } else {
+        // fully correct only if badAnswers == []
+        if (badAnswers.length === 0) {
             correct[qnum] = true;
             showResponse("q" + currentQ + "response0");
+        } else {
+            // randomly display a response for one of incorrect choices
+            correct[qnum] = false;
+            showResponse("q" + currentQ + "response" + badAnswers[Math.floor(Math.random() * badAnswers.length)]);
         }
     }
     //
@@ -287,17 +288,24 @@ function WebQuizInit(questions, discussions, quizfile, hidesidemenu) {
         toggle_side_menu();
     }
 
-    currentQ = 0;
-    var newQ = (dTotal > 0) ? -1 : 1;
-    if ((dTotal + qTotal) > 0) {
-        showQuestion(newQ);
-    }
-
     // set up arrays for tracking how many times the questions have been attempted
     var i;
     for (i = 0; i < qTotal; i++) {
         wrongAnswers[i] = 0; // the number of times the question has been attempted
         correct[i] = false; // whether or not the supplied answer is correct
+    }
+
+    // read the color and background colour of the buttons from the last
+    // question button
+    var lastButton = getComputedStyle(document.getElementById('button'+qTotal));
+    blank.color = lastButton.color;
+    blank.bg = lastButton.backgroundColor;
+
+    // display the first question or discussion item
+    currentQ = 0;
+    var newQ = (dTotal > 0) ? -1 : 1;
+    if ((dTotal + qTotal) > 0) {
+         showQuestion(newQ);
     }
 }
 

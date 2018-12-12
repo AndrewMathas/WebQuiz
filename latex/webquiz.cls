@@ -31,8 +31,8 @@
       tikz/.code         = {\global\Tikztrue},
       sidemenu/.code     = {\def\MQ@HideSideMenu{false}},
       hidesidemenu/.code = {\def\MQ@HideSideMenu{true}},
-      language/.initial  = english,
-      theme/.initial     = light,
+      language/.initial  = ,
+      theme/.initial     = ,
       .unknown/.code={\edef\unknown@options{\unknown@options,\pgfkeyscurrentname}}
 }
 \newcommand\latexquizOption[1]{\pgfkeysvalueof{/latexquizoptions/#1}}

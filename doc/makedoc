@@ -37,10 +37,9 @@ function make_themes () {
         name=${name/.scss/}
         echo -e "\\ScreenShot[0.7]{Example of the \\\textbf{$name} theme}{examples/theme-$name}" >> $THEMESCREENSHOT
         echo -e "\\index{theme!$name}\n" >> $THEMESCREENSHOT
-        if [ ! -e "$WEBQUIZDOC/examples/choice-multiple-$name.tex" ]; then
+        if [ ! -e "$WEBQUIZDOC/examples/theme-$name.tex" ]; then
           ( cd $WEBQUIZDOC/examples
-            sed "s@documentclass@&[theme=$name]@" choice-multiple.tex > "theme-$name.tex"
-            #git add "choice-multiple-$name.tex"
+            sed "s@default@$name@" theme.tex > "theme-$name.tex"
             sed -i 's@    Convert("theme-default"),@&\n    Convert("theme-'"$name"'", question="1:2"),@' $MAKEIMAGES
           )
         fi
@@ -80,7 +79,7 @@ function make_online_manual() {
 
 function make_manual() {
   message "Making pdf for manual"
-  make_languages 
+  make_languages
   make_themes
   if  [[ "$fast" = false ]] ; then
       make_examples
@@ -104,24 +103,33 @@ else
   while [ $# -gt 0 ]
   do
      case $1 in
-       -a|--a*) make_all
-                shift ;;
-       -e|--e*) make_examples
-                shift ;;
-       -f|--f*) fast=true
-                shift ;;
-       -l|--l*) make_languages
-                shift ;;
-       -m|--m*) make_manual
-                shift ;;
-       -o|--o*) make_online_manual
-                shift ;;
-       -q|--q*) quiet=true
-                shift ;;
-       -t|--t*) make_themes
-                shift ;;
-       *)       usage && exit
-                shift ;;
+       -a|--all)
+         make_all
+         shift ;;
+       -e|--examples)
+         make_examples
+         shift ;;
+       -f|--fast)
+         fast=true
+         shift ;;
+       -l|--languages)
+         make_languages
+         shift ;;
+       -m|--manual)
+         make_manual
+         shift ;;
+       -o|--online-manual)
+         make_online_manual
+         shift ;;
+       -q|--quiet)
+         quiet=true
+         shift ;;
+       -t|--theme)
+         make_themes
+         shift ;;
+       *)
+         usage && exit
+         shift ;;
      esac
    done
 fi

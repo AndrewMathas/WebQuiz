@@ -303,21 +303,22 @@ class WebQuizSettings:
             if not 'editable' in self.settings[key]:
                 self.settings[key]['editable'] = False
 
-        # define a user and system rc file and load the ones that exist
+        # define user and system rc file and load the ones that exist
 
-        tex_local = kpsewhich('-var-value=TEXMFLOCAL')
-        self.system_rc_file = os.path.join(tex_local, 'scripts', 'webquiz',
-                                           'webquizrc')
+        # tex_local = kpsewhich('-var-value=TEXMFLOCAL')
+        self.system_rc_file = WEBQUIZ_FILE('webquizrc')
         self.read_webquizrc(self.system_rc_file)
 
-        # the user rc file defaults to ~/.config/webquizrc if the .config directory exists
+        # the user rc file defaults to:
+        #   ~/.dotfiles/config/webquizrc if .dotfiles/config exists
+        #   ~/.config/webquizrc if .config exists
         # and otherwise to ~/.webquizrc
-        if os.path.isdir(os.path.join(os.path.expanduser('~'), '.config')):
-            self.user_rc_file = os.path.join(
-                os.path.expanduser('~'), '.config', 'webquizrc')
+        if os.path.isdir(os.path.join(os.path.expanduser('~'), '.dotfiles', 'config')):
+            self.user_rc_file = os.path.join(os.path.expanduser('~'), '.dotfiles', 'config', 'webquizrc')
+        elif os.path.isdir(os.path.join(os.path.expanduser('~'), '.config')):
+            self.user_rc_file = os.path.join(os.path.expanduser('~'), '.config', 'webquizrc')
         else:
-            self.user_rc_file = os.path.join(
-                os.path.expanduser('~'), '.webquizrc')
+            self.user_rc_file = os.path.join(os.path.expanduser('~'), '.webquizrc')
         if os.path.isfile(self.user_rc_file):
             self.read_webquizrc(self.user_rc_file)
 
@@ -402,7 +403,6 @@ class WebQuizSettings:
             self.rc_file = self.system_rc_file
 
         file_not_written = True
-
         while file_not_written:
             try:
                 dire, file = os.path.split(self.rc_file)
@@ -418,8 +418,7 @@ class WebQuizSettings:
                             rcfile.write('# {}\n{:<15} = {}\n'.format(
                                 self.settings[key]['help'], key, self[key]))
 
-                print('\nNon-default WebQuiz settings saved in {}\n'.format(
-                    self.rc_file))
+                print('\nWebQuiz settings saved in {}\n'.format( self.rc_file))
                 input('Press return to continue... ')
                 file_not_written = False
 
@@ -530,10 +529,9 @@ class WebQuizSettings:
                         # get the root directory of the source code
                         webquiz_src = os.path.dirname(
                             os.path.dirname(os.path.realpath(__file__)))
-                        for (src, target) in [('javascript/webquiz.js',
-                                               'webquiz.js'),
-                                              ('css/webquiz.css',
-                                               'webquiz.css'), ('doc', 'doc')]:
+                        for (src, target) in [('javascript/webquiz.js', 'webquiz.js'),
+                                              ('css', 'css'),
+                                              ('doc', 'doc')]:
                             os.symlink(
                                 os.path.join(webquiz_src, src),
                                 os.path.join(web_dir, target))
@@ -669,10 +667,9 @@ class MakeWebQuiz(object):
 
         self.language = MetaData(language_file)
 
-        if self.quiz.theme == '':
-            self.theme = 'webquiz-'+self.settings['theme']
-        else:
-            self.theme = 'webquiz-'+self.quiz.theme
+        self.theme = self.quiz.theme
+        if self.theme == '':
+            self.theme = self.settings['theme']
 
         # initialise number of quiz and discussion items
         self.number_discussions = len(self.quiz.discussion_list)
@@ -874,10 +871,9 @@ class MakeWebQuiz(object):
             discussion_list = ''
 
         buttons = '\n' + '\n'.join(
-            webquiz_templates.button.format(
-                b=q,
-                cls=' button-selected'
-                if self.quiz.discussion_list == [] and q == 1 else '')
+            webquiz_templates.button.format(b=q,
+                cls=' button-selected' if self.quiz.discussion_list == [] and q == 1 else ''
+            )
             for q in range(1, self.number_quizzes + 1))
 
         if self.school['department_url'] == '':
