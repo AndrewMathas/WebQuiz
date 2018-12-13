@@ -19,6 +19,7 @@
 
 
 % initialise and then process document class options usng pgfopts
+\RequirePackage{etoolbox}
 \RequirePackage{pgfopts}
 \def\unknown@options{}%          unknown options are passed to article.cls
 \def\MQ@HideSideMenu{false}%     side menu visible by default
@@ -75,7 +76,12 @@
 
 % Macro to define a picture variant of \<command>. The latex version does
 % nothing but the cfg version converts \<command> into an image
+
 \newcommand\DisplayAsImage[2][]{\relax}
+
+% Need to declare possible graphics extensions: see https://tex.stackexchange.com/questions/213461
+% This is just placeholder - the real definition is used in the cfg file
+%\newcommand\DeclareGraphicsExtensions[1]{}
 
 % Macros for defining the university and department
 \newcommand*{\DepartmentURL}[1]{\def\MQ@departmentURL{#1}}
