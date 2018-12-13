@@ -19,21 +19,22 @@
   $Text:           #C5C6C7;
   $BackGround:     #0B0C10;
 
-  $Heading:        #66FcF1;
-  $Subheading:     lighten($Heading, 20%);
+  $Heading:        #5900b3;
+  $Subheading:     lighten($Heading, 10%);
 
-  $QuestionPart:   lighten($Heading, 8%);
+  $QuestionPart:   lighten($Heading, 20%);
 
-  $ButtonBG:       #45A29E;
-  $ButtonBorder:   darken($ButtonBG, 40%);
+  $BreadCrumbBG:   #800000;
+  $BreadCrumbFG:   white;
+
+  $ButtonBG:       $BreadCrumbBG;
+  $ButtonBorder:   lighten($ButtonBG, 10%);
   $ButtonHover:    lighten($ButtonBG, 20%);
   $ButtonSelected: lighten($ButtonBG, 30%);
 
-  $Dazzle:         yellow;
+  $DropDownFG:     lighten($ButtonBG, 40%);
 
-  $ResponseBG:     $ButtonBG;
-  $ResponseBorder: darken($ResponseBG, 40%);
-  $ResponseText:   lighten($ResponseBG, 20%);
+  $Dazzle:         yellow;
 
   $SideMenuText:   lighten($Text, 10%);
 
@@ -41,9 +42,9 @@
   $WarningBorder:  darken($WarningBG, 60%);
   $WarningFG:      lighten($WarningBG, 90%);
 
-  $BreadCrumbBG:   darken($Heading, 50%);
-  $BreadCrumbFG:   lighten($BackGround, 30%);
-  $DropDownFG:     lighten($ButtonBG, 40%);
+  $ResponseBG:     $BreadCrumbBG;
+  $ResponseBorder: darken($ResponseBG, 40%);
+  $ResponseText:   lighten($ResponseBG, 20%);
 
   $Copyright:      $BreadCrumbBG;
   $School:         lighten($Copyright, 10%);

@@ -23,9 +23,11 @@
 \usepackage{pdfpages}
 
 \usepackage{etoolbox}% to patch l@section to remove extraneous spacing
+\usepackage{appendix}
 \def\sectionautorefname{Chapter}
 \def\subsectionautorefname{Section}
 \def\subsubsectionautorefname{\S\unskip}
+\def\appendixautorefname{Appendix}
 
 \usepackage[nonewpage]{imakeidx}
 \indexsetup{level=\section*,toclevel=section,noclearpage}
@@ -303,21 +305,21 @@ the on-line manual.}}
 
     The quizzes are not timed and do not have time-limits.
 
-    Finally, the point of \WebQuiz is to make it possible to write
-    on-line quizzes without knowing any HTML, so \WebQuiz provides
-    almost no mechanisms for controlling the style and format of the
-    quizzes that it creates (although see \autoref{SS:customisation}).
-    In particular, the colour scheme of the quizzes is
-    fixed.\footnote{In principle, adding support for different colour
-    schemes would be easy to do, the only real difficulty is in finding
-    compatible colours. There is another minor complication in that the
-    \WebQuiz CSS file, \textsf{webquiz.css}, is written using
-    \href{http://sass-lang.com/}{sass}. This said, I would be happy to
-    incorporate different colour schemes that are sent to me.}
-    It is possible to add some styling using, for example, the
-    \Verb|\Css| command from \TeX4ht, however, if you really want
-    to do this then you are probably better off writing
-    \href{https://www.w3schools.com/css/}{CSS} directly.
+    \WebQuiz supports several different languages and it
+    provides a number of different colour schemes (see
+    \autoref{SS:commandline} and \autoref{SS:themes}). Any additional
+    languages files that are sent to me, as well as corrections to
+    existing languages, will be incorporated in future releases.
+
+    Finally, \WebQuiz provides many different new colour schemes (see
+    \autoref{SS:commandline} and \autoref{SS:themes}). Again, new colour
+    schemes sent to me will be included in future releases, although
+    there is a possible complication in that the \WebQuiz CSS files are
+    generated using \href{http://sass-lang.com/}{sass}. Part of the
+    point of \WebQuiz is to make it possible to write on-line quizzes
+    without knowing any HTML, so \WebQuiz provides almost no other
+    mechanisms for controlling the style and format of the quizzes that
+    it creates (although see \autoref{SS:customisation}).
 
     Some of the ``missing features'' listed above may be added to \WebQuiz in a future release.
 
@@ -1513,6 +1515,16 @@ option.
   \addcontentsline{toc}{section}{Appendices}
 \renewcommand\thesection{}
 \renewcommand\thesubsection{\Alph{subsection}}
+
+  \subsection{List of themes}\index{SS:themes}\label{SS:themes}
+  \WebQuiz{} comes with quite a few different themes for the on-line
+  quizzes, which can be set using the \textsf{theme} documentclass
+  option or in the \webquizrc file; see \autoref{SS:classOptions} for
+  more details. Themes are easy to construct in principle although
+  finding colour that work well together can be tricky in practice.
+
+  \input webquiz-themes.tex
+
 \subsection{The on-line WebQuiz manual}\label{S:online}
 
   \WebQuiz has an
@@ -1543,15 +1555,6 @@ option.
 
   \includepdf[pages=-,pagecommand={\pagestyle{webquiz}}]{webquiz-online-manual}
 
-
-\subsection{List of themes}\index{SS:themes}
-\WebQuiz{} comes with quite a few different themes for the on-line
-quizzes, which can be set using the \textsf{theme} documentclass option
-or in the \webquizrc file; see \autoref{SS:classOptions} for more
-details. Themes are easy to construct in principle although finding
-colour that work well together can be tricky in practice.
-
-  \input webquiz-themes.tex
 
 \subsection{Licence}
 

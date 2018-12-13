@@ -1,14 +1,20 @@
 \documentclass{webquiz}
 \usepackage[version=4]{mhchem}
 
+\Department{Chemistry}
+\UnitCode{Chem101}
+\title{Display as image example}
+
 \begin{document}
 \DisplayAsImage[style="vertical-align: middle;"]{ce}
 
 \begin{question}
   What is \ce{(NH4)2S}?
-  \answer{4}
-  \whenRight Correct
-  \whenWrong Incorrect
+  \begin{choice}[1]
+    \correct Ammonium sulfide
+    \incorrect Ammonium hydrosulfide
+    \response This is \ce{(NH4)HS}
+  \end{choice}
 \end{question}
 
 \end{document}

@@ -111,6 +111,7 @@ div.side-menu {
 
         div.button:hover {
             border: solid $ButtonHover 2px !important;
+            color: $ButtonHover;
             text-decoration: underline;
         }
         div.button:after {
@@ -125,7 +126,7 @@ div.side-menu {
 
         div.button-selected {
             border: solid $ButtonSelected 2px;
-            color: $Subheading;
+            color: $ButtonSelected;
         }
     }
 
@@ -172,7 +173,7 @@ div.side-menu {
 }
 
 li:hover.nolink, div:hover.nolink  { text-decoration: none !important; }
-li.nolink, div:hover.nolink  { color:  $Subheading !important;}
+li.nolink, div:hover.nolink  { color:  $ButtonHover !important;}
 
 
 span.question-label {
@@ -394,11 +395,11 @@ nav {
 
                     // turn off "triangle" colouring inside the ul
                     li:nth-child(n) {
-                        background:   hsla(48,100%,93%,1);
+                        background:   $ButtonBG;
                         padding-left: 0px;
                     }
                     li:nth-child(n):after {
-                        border-left-color: hsla(48,100%,93%,1);
+                        border-left-color: $ButtonBG;
                         border: 7px solid ;
                     }
                     li:hover {
@@ -437,7 +438,7 @@ nav {
               height: 0;
               border-top: 7px solid transparent;
               border-bottom: 7px solid transparent;
-              border-left: 14px solid white;
+              border-left: 14px solid $BackGround;
               position: absolute;
               top: 50%;
               margin-top: -7px;
@@ -455,20 +456,19 @@ nav {
 
         @while $step <=6  {
             ul >  li:nth-child(#{$step+1}) {
-                    background: lighten($BreadCrumbBG, ($step*8%));
+                    background: lighten($BreadCrumbBG, ($step*5%));
                     color: $BreadCrumbFG;
                     font-family: Arial, Verdana, sans-serif !important;
                     a { color: $BreadCrumbFG; }
                     ul li a { color: $BreadCrumbFG; }
             }
             ul > li:nth-child(#{$step+1}):after {
-                    border-left-color: lighten($BreadCrumbBG, ($step*8%));
+                    border-left-color: lighten($BreadCrumbBG, ($step*5%));
             }
 
             // Increment the step up by 1
             $step: $step + 1;
         }
-
 }
 
 div.menu-icon {
