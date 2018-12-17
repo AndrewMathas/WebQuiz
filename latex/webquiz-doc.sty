@@ -106,13 +106,14 @@
 \lstdefinestyle{latexcode}{
   language=[LaTeX]TeX,
   texcsstyle=*\bfseries\color{DodgerBlue},
-  morekeywords={UnitCode,UnitName,UnitURL,QuizzesURL,BreadCrumbs,BreadCrumb,Institution,Department},
+  morekeywords={UnitCode,UnitName,UnitURL,QuizzesURL,BreadCrumbs,BreadCrumb,Institution,Department,DeclareGraphicsExtensions},
   classoffset=1,
-  morekeywords={quiz, quizlist, discussion, question, choice, Choice},
+  morekeywords={quiz, quizlist, discussion, question, choice, Choice, },
   classoffset=2,
   morekeywords={response,correct,incorrect,whenRight,whenWrong,answer},
 }
 \lstnewenvironment{latexcode}{\lstset{style=latexcode}}{}
+\NewDocumentCommand\LaTeXCode{v}{\lstinline[style=latexcode]|#1|}
 
 \lstdefinestyle{pythoncode}{
   language=HTML,

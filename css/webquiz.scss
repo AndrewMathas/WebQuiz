@@ -18,10 +18,19 @@
 body {
   color: $Text;
   background-color: $BackGround;
-   
+
   a {
     color: $LinkColor;
   }
+
+  a:hover {
+    color: lighten($LinkColor,30);
+  }
+
+  a:visited {
+    color: darken($LinkColor,20);
+  }
+
 }
 
 /* container for the full quiz page */

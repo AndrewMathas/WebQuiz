@@ -20,3 +20,4 @@ doc/webquiz.theme
 doc/webquiz-online-manual/
 bin/*
 install/*
+webquiz/webquizrc

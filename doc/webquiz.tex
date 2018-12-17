@@ -460,7 +460,7 @@ Quizzes are composed of questions and each quiz question must to be
 placed inside a \Verb|question| environment. Typically, a quiz will have
 several questions, each wrapped in its own \Verb|question| environment.
 For brevity, all of the examples in this chapter have only one question
--- see the on-inline manual in the \WebQuiz web directory for a complete quiz file.
+-- see the on-line manual in the \WebQuiz web directory for a complete quiz file.
 
   \lstinputlisting[style=latexcode]{examples/question}
   \macroIndex{answer}\CrossIndex{question environment}*{answer}
@@ -917,12 +917,30 @@ five document class options:
 
 \subsection{Including graphics and using pstricks and tikz}\label{SS:graphics}
 
-Diagrams and graphics in \LaTeX\ documents are often included using
-either \ctan{graphicx}, \ctan{tikz} or \ctan{pstricks}. These packages
-can also be used in \WebQuiz quizzes although, unfortunately, both of
-these packages have issues when used with \TeX 4ht. The good news is
-that \WebQuiz attempts to solve these problems for you if you use the
-appropriate document class options.
+By far the easiest way to include images when using \WebQuiz is by
+adding
+\begin{center}
+\LaTeXCode|\usepackage[dvipdfmx]{graphicx}\DeclareGraphicsExtensions{.png}|
+\end{center}
+to your document preamble. You need to use
+\LaTeXCode|\DeclareGraphicsExtensions| to tell \WebQuiz what types of
+images you are using (you can you can use a comma separated list of
+extensions like png, jpg, gif, etc). The option \Verb|dvipdfmx|
+to \Verb|graphicx| is necessary if you want to be able to rescale
+images. For example, the code:
+
+    \lstinputlisting[style=latexcode]{examples/using-images}
+
+produces the web page:
+
+\ScreenShot{Including images}{examples/using-images}
+
+Of course, it is also possible to draw quite complicated diagrams in
+\LaTeX\ documents using packages like \ctan{tikz} and \ctan{pstricks}.
+These packages can also be used in \WebQuiz quizzes although,
+unfortunately, both of these packages have issues when used with \TeX
+4ht. The good news is that \WebQuiz attempts to solve these problems for
+you if you use the appropriate document class options.
 
 \begin{description}
     \item[pst2pdf] \index{pstricks}\CrossIndex{document class options}{pst2pdf}
@@ -932,17 +950,17 @@ appropriate document class options.
 
     For the most part \ctan{pstricks} drawings will display correctly and
     when they fail they can often be salvaged by using \ctan{pst2pdf}. The
-    \Verb|pst2pdf| class option automates what needs to be done to apply
+    \ctan|pst2pdf| class option automates what needs to be done to apply
     \ctan{pst2pdf} to a \WebQuiz file in order to convert all postscript objects in the
     quiz into images. Whilst not guaranteed to work, this often fixes
     issues with \ctan{pstricks} diagrams. This class option is
-    equivalent to using the \Verb|pst2pdf| command-line option; see
+    equivalent to using the \ctan|pst2pdf| command-line option; see
     \autoref{SS:commandline}.
 
     \lstinputlisting[style=latexcode]{examples/pst2pdf}
 
     \WebQuiz is unable to create this web page correctly without the
-    \Verb|pst2pdf| class option, however, when this option is used
+    \ctan|pst2pdf| class option, however, when this option is used
     \WebQuiz constructs the following web page:
 
     \ScreenShot{Example requiring the pst2pdf document class option}{examples/pst2pdf}
@@ -965,8 +983,8 @@ appropriate document class options.
   \item[tikz]\CrossIndex{document class options}{tikz}
     Giving this class option both loads the \ctan[pgf]{tikz} package (so
     you do not need to have, and should not have,
-    \Verb|\usepackage{tikz}| in your \LaTeX\ file). As a bonus, thjis
-    \Verb|tikz| document option fixes several issues with PGF that
+    \LaTeXCode|\usepackage{tikz}| in your \LaTeX\ file). As a bonus, this
+    \ctan|tikz| document option fixes several issues with PGF that
     prevent it from working with \TeX 4ht. Thanks are due to Michal
     Hoftich for supplying both fixes!\footnote{The first issue is a bug
     that has been reported to the PGF developers, together with a
@@ -1376,20 +1394,21 @@ option.
             \end{center}
             will take you to the \WebQuiz on-line \texttt{docs/} directory.
         \item[breadcrumbs]\index{breadcrumbs}
-          Sets the default breadcrumbs at the top of quiz page; see \Verb|\BreadCrumbs| in \autoref{SS:breadcrumbs}
+          Sets the default breadcrumbs at the top of quiz page; see \LaTeXCode|\BreadCrumbs|
+          in \autoref{SS:breadcrumbs}
           \macroIndex{BreadCrumbs}
         \item[department]
-          Sets the default department name; see \Verb|\Department| in \autoref{SS:breadcrumbs}
-          \macroIndex{Department}
+          Sets the default department name; see \LaTeXCode|\Department| in
+          \autoref{SS:breadcrumbs}\macroIndex{Department}
         \item[department\_url]
-          Sets the URL for the department; see \Verb|\DepartmentURL| in \autoref{SS:breadcrumbs}
-          \macroIndex{DepartmentURL}
+          Sets the URL for the department; see \LaTeXCode|\DepartmentURL| in
+          \autoref{SS:breadcrumbs}\macroIndex{DepartmentURL}
         \item[institution]
-          Sets the default institution name; see \Verb|\Institution| in \autoref{SS:breadcrumbs}
-          \macroIndex{Department}
+          Sets the default institution name; see \LaTeXCode|\Institution| in
+          \autoref{SS:breadcrumbs}\macroIndex{Department}
         \item[institution\_url]
-          Sets the URL for the institution; see \Verb|\InstitutionURL| in \autoref{SS:breadcrumbs}
-          \macroIndex{InstitutionURL}
+          Sets the URL for the institution; see \LaTeXCode|\InstitutionURL| in
+          \autoref{SS:breadcrumbs} \macroIndex{InstitutionURL}
         \item[language]\index{language}
           Sets the default language for the \WebQuiz web pages. This can
           be overridden in the quiz file by using the document class

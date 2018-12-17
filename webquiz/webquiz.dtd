@@ -20,7 +20,7 @@
 -->
 
 <!ELEMENT quiz
-    title       #PCDATA #REQUIRED
+    title       CDATA   #REQUIRED
     breadCrumb  #PCDATA #REQUIRED
     src         #PCDATA #REQUIRED
 (meta*,link*,course,(quizlist|question*,discussion?))>

@@ -116,7 +116,7 @@ class QuizHandler(xml.sax.ContentHandler):
     def quiz_start(self, attrs):
         self.root = Quiz()
         self.position = self.root
-        self.position.title = attrs.get('title', '')
+        self.position.title = attrs.get('title', '').encode().decode()
         self.position.breadcrumb = attrs.get('breadcrumb', 'default')
         self.position.breadcrumbs = attrs.get('breadcrumbs', 'default')
         self.position.hide_side_menu = attrs.get('hidesidemenu', False)
