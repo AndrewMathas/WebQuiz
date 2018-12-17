@@ -32,8 +32,8 @@
       tikz/.code         = {\global\Tikztrue},
       sidemenu/.code     = {\def\MQ@HideSideMenu{false}},
       hidesidemenu/.code = {\def\MQ@HideSideMenu{true}},
-      language/.initial  = ,
-      theme/.initial     = ,
+      language/.initial  = default,
+      theme/.initial     = default,
       .unknown/.code={\edef\unknown@options{\unknown@options,\pgfkeyscurrentname}}
 }
 \newcommand\latexquizOption[1]{\pgfkeysvalueof{/latexquizoptions/#1}}
@@ -112,16 +112,16 @@
 % Default values - the university and department defaults can also be
 % set in the webquizrc file. The main purpose of these defaults is
 % to remind the user to set them.
-\UnitCode{}
-\UnitName{}
+\UnitCode{Unit code?}
+\UnitName{Unit name?}
 \UnitURL{}
-\QuizzesURL{}
-\BreadCrumb{}
-\BreadCrumbs{}
-\Department{}
-\DepartmentURL{}
-\University{}
-\UniversityURL{}
+\QuizzesURL{default}
+\BreadCrumb{default}
+\BreadCrumbs{default}
+\Department{default}
+\DepartmentURL{default}
+\University{default}
+\UniversityURL{default}
 
 % Define page header and footer for the printable version of the quiz
 % to show the unit code information.

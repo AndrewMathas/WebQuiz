@@ -18,6 +18,10 @@
 body {
   color: $Text;
   background-color: $BackGround;
+   
+  a {
+    color: $LinkColor;
+  }
 }
 
 /* container for the full quiz page */

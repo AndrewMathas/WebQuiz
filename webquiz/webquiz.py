@@ -260,6 +260,11 @@ class WebQuizSettings:
             'advanced': False,
             'help': 'URL for institution or university',
         },
+        unitcode={
+            'default': '???',
+            'advanced': False,
+            'help': 'Unit code for that is running the quizzes',
+        },
         webquiz_format={
             'default': 'webquiz_standard',
             'advanced': True,
@@ -652,7 +657,7 @@ class MakeWebQuiz(object):
 
         # determine language settings
         language = self.quiz.language
-        if language == '':
+        if language == 'default':
             language = self.settings['language']
 
         try:
@@ -662,13 +667,13 @@ class MakeWebQuiz(object):
                 language_file = kpsewhich(language)
             except subprocess.CalledProcessError:
                 webquiz_error(
-                    'kpsewhich is unable to find language file for "{}"'.
-                    format(language))
+                    'kpsewhich is unable to find language file for "{}"'.format(language)
+                )
 
         self.language = MetaData(language_file)
 
         self.theme = self.quiz.theme
-        if self.theme == '':
+        if self.theme == 'default':
             self.theme = self.settings['theme']
 
         # initialise number of quiz and discussion items
@@ -678,12 +683,9 @@ class MakeWebQuiz(object):
         # take school defaults from settings if they are not set in the quiz file
         self.unit = self.quiz.unit
         self.school = self.quiz.school
-        for opt in [
-                'department', 'department_url', 'institution',
-                'institution_url'
-        ]:
-            if self.school[opt] == '' and settings[opt] != '':
-                self.school[opt] = settings[opt]
+        for opt in ['department', 'department_url', 'institution', 'institution_url']:
+            if self.school[opt] == 'default':
+                self.school[opt] = self.settings[opt]
 
         self.title = self.quiz.title
         self.add_meta_data()
@@ -692,17 +694,13 @@ class MakeWebQuiz(object):
         self.add_quiz_header_and_questions()
 
         # build the bread crumbs - take crumbs from settings if not specified by the quiz
-        if self.quiz.breadcrumbs == ['none']:
-            self.quiz.breadcrumbs = ['']
-        elif self.quiz.breadcrumbs == [
-                ''
-        ] and self.settings['breadcrumbs'] != '':
-            self.quiz.breadcrumbs = [
-                crumb.strip()
-                for crumb in self.settings['breadcrumbs'].split('|')
-            ]
+        if self.quiz.breadcrumbs == 'default':
+            self.quiz.breadcrumbs = self.settings['breadcrumbs']
 
-        self.breadcrumbs = ''
+        self.quiz.breadcrumbs = [
+            crumb.strip() for crumb in self.quiz.breadcrumbs.split('|')
+        ]
+
         if self.quiz.breadcrumbs != ['']:
             crumbs = ''
             for crumb in self.quiz.breadcrumbs:
@@ -734,14 +732,12 @@ class MakeWebQuiz(object):
                     else:
                         crumbs += self.add_breadcrumb_line('Quizzes')
                 elif crumb == 'breadcrumb':
-                    crumbs += self.add_breadcrumb_line(
-                        self.quiz.breadcrumb, missing='breadcrumb')
+                    crumbs += self.add_breadcrumb_line(self.quiz.breadcrumb, missing='breadcrumb')
                 elif crumb != '':
                     lastSpace = crumb.rfind(' ')
                     url = crumb[lastSpace:].strip()
                     if url[0] == '/' or url.lower()[:4] == 'http':
-                        crumbs += self.add_breadcrumb_line(
-                            text=crumb[:lastSpace], url=url)
+                        crumbs += self.add_breadcrumb_line(text=crumb[:lastSpace], url=url)
                     else:
                         crumbs += self.add_breadcrumb_line(crumb)
 
@@ -752,8 +748,7 @@ class MakeWebQuiz(object):
             self.breadcrumbs = self.settings.initialise_warning + self.breadcrumbs
 
         # now write the quiz to the html file
-        with codecs.open(
-                self.quiz_name + '.html', 'w', encoding='utf8') as file:
+        with codecs.open(self.quiz_name + '.html', 'w', encoding='utf8') as file:
             # write the quiz in the specified format
             file.write(self.options.write_web_page(self))
 
@@ -876,13 +871,13 @@ class MakeWebQuiz(object):
             )
             for q in range(1, self.number_quizzes + 1))
 
-        if self.school['department_url'] == '':
+        if self.school['department_url'] == 'default':
             department = self.school['department']
         else:
             department = '''<a href="{department_url}">{department}</a>'''.format(
                 **self.school)
 
-        if self.school['institution_url'] == '':
+        if self.school['institution_url'] == 'default':
             institution = self.school['institution']
         else:
             institution = '''<a href="{institution_url}">{institution}</a>'''.format(
@@ -1264,8 +1259,7 @@ if __name__ == '__main__':
 
                 quiz_name = quiz_file  # the quiz name and the quiz_file will be if pst2pdf is used
                 if options.quiet < 2:
-                    print(
-                        'WebQuiz generating web page for {}'.format(quiz_file))
+                    print('WebQuiz generating web page for {}'.format(quiz_file))
 
                 # set options.pst2pdf = True if pst2pdf is given as an option to the webquiz documentclass
                 with codecs.open(quiz_file, 'r', encoding='utf8') as q_file:

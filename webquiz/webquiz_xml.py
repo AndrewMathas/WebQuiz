@@ -117,16 +117,13 @@ class QuizHandler(xml.sax.ContentHandler):
         self.root = Quiz()
         self.position = self.root
         self.position.title = attrs.get('title', '')
-        self.position.breadcrumbs = [
-            crumb.strip() for crumb in attrs.get('breadcrumbs', '').split('|')
-        ]
-        self.position.breadcrumb = attrs.get('breadcrumb', '')
+        self.position.breadcrumb = attrs.get('breadcrumb', 'default')
+        self.position.breadcrumbs = attrs.get('breadcrumbs', 'default')
         self.position.hide_side_menu = attrs.get('hidesidemenu', False)
         self.position.src = attrs.get('src', '')
-        self.position.language = attrs.get(
-            'language', '')  # defaults to the rc-file setting
-        self.position.theme = attrs.get('theme',
-                                        '')  # defaults to the rc-file setting
+        # the following default to the rc-file setting
+        self.position.language = attrs.get('language', 'default')
+        self.position.theme = attrs.get('theme', 'default')
 
     def meta_start(self, attrs):
         r'''

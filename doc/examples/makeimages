@@ -27,7 +27,7 @@ For the full extraction specifications see the pages array below
 import argparse, glob, os, re, shutil, subprocess
 
 # location of the webquiz example web pages on a development server
-examplesURL = "http://localhost/WebQuiz/doc/examples"
+examplesURL = "http://localhost/WebQuiz/doc/examples/"
 examplesDIR = os.path.join(os.environ['HOME'], 'Code/WebQuiz/doc/examples')
 
 # lambda function for running shell commands: run( command )
@@ -50,7 +50,7 @@ class Convert:
       - js       = javascript commands                                 (default: '')
     The actual conversion is done by using the write_image method of the class.
     '''
-    def __init__(self, page, src='html', page_out=None, delay=3, question=None, js=''):
+    def __init__(self, page, src='html', page_out=None, delay=3, question=None, js=None):
         self.page = page
         self.page_out = page_out if page_out is not None else self.page
         self.delay = delay
@@ -106,7 +106,8 @@ class Convert:
                         delay=self.delay,
                         fin=self.page,
                         fout=self.page_out,
-                        js='--js="{java};"'.format(java=self.javascript)
+                        js='' if self.javascript is None 
+                              else '--js="{java};"'.format(java=self.javascript)
                     )
         if webkit2png_mode == '--debug':
             print(cmd)
@@ -142,15 +143,13 @@ pages = [
     Convert("display-as-image"),
     Convert("dropdown", js='toggle_dropdown_menu()', delay=10),
     Convert("french"),
-    Convert("including-images"),
     Convert("index"),
     Convert("montypython", delay=5),
-    Convert("newconfigure"),
     Convert("nounits", delay=5),
     Convert("pst2pdf"),
     Convert("pstricks-ex"),
     Convert("question"),
-    Convert("quiz-page", question="1:2"),
+    Convert("quiz-page", question="1:2", delay=15),
     Convert("simple", page_out='simple-html'),
     Convert("simple", src='pdf',  page_out='simple-pdf'),
     Convert("theme-dark", question="3:2"),
@@ -165,6 +164,7 @@ pages = [
     Convert("theme-sleek", question="3:2"),
     Convert("theme-vibrant", question="3:2"),
     Convert("tikz-ex"),
+    Convert("using-images"),
 ]
 
 if __name__ == '__main__':
