@@ -50,11 +50,13 @@ class Convert:
       - js       = javascript commands                                 (default: '')
     The actual conversion is done by using the write_image method of the class.
     '''
-    def __init__(self, page, src='html', page_out=None, delay=3, question=None, js=None):
+    def __init__(self, page, src='html', page_out=None, delay=3,
+                 question=None, js=None, webquiz=''):
         self.page = page
         self.page_out = page_out if page_out is not None else self.page
         self.delay = delay
         self.javascript = js
+        self.webquiz = webquiz
 
         if not question is None:
             quest, part = question.split(':')
@@ -97,7 +99,7 @@ class Convert:
             Extract and trim and image using webquiz, webkit2png and mogrify
         '''
         # run the quiz file through webquiz
-        run('webquiz {} {}'.format(webquiz_mode, self.page))
+        run('webquiz {} {} {}'.format(self.webquiz, webquiz_mode, self.page))
 
         # extract a png image for the web page using webkit2png
         cmd = r"webkit2png {debug} --ignore-ssl-check -o {fout} -W 400 -F --delay={delay} {js} {URL}/{fin}.html".format(
@@ -142,7 +144,7 @@ pages = [
     Convert("discussion"),
     Convert("display-as-image"),
     Convert("dropdown", js='toggle_dropdown_menu()', delay=10),
-    Convert("french"),
+    Convert("french", webquiz='-x'),
     Convert("index"),
     Convert("montypython", delay=5),
     Convert("nounits", delay=5),

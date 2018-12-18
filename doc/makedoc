@@ -66,7 +66,20 @@ function make_examples() {
    )
 }
 
+function make_settings() {
+  message "Generating settings file"
+  /bin/rm -f webquiz.settings
+  webquiz --settings >> webquiz.settings
+}
+
+function make_usage() {
+  message "Generating usage file"
+  /bin/rm -f webquiz.usage
+  webquiz --shorthelp >> webquiz.usage
+}
+
 function make_all() {
+  make_usage
   make_languages
   make_themes
   make_examples
@@ -124,8 +137,14 @@ else
        -q|--quiet)
          quiet=true
          shift ;;
+       -s|--settings)
+         make_settings
+         shift ;;
        -t|--theme)
          make_themes
+         shift ;;
+       -u|--usage)
+         make_usage
          shift ;;
        *)
          usage && exit

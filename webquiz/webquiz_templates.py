@@ -84,7 +84,7 @@ side_menu = r'''<div class="menu-icon">
         <a href="http://www.maths.usyd.edu.au/u/mathas/WebQuiz/credits.html">
            WebQuiz {version}
         </a>
-        <br>&copy; Copyright<br><span style="overflow: visible;">2004-2017</span>
+        <br>&copy; Copyright<br><span style="overflow: visible;">2004-2018</span>
       </div>
     </div>'''
 
@@ -299,5 +299,5 @@ no_script = '''<noscript>
 
 # and now for the webquiz help message
 webquiz_help_message = r'''
-WebQuiz allows you to write writing on-line quizzes starting from a latex file.
+WebQuiz allows you to write interactive on-line quizzes using latex
 '''

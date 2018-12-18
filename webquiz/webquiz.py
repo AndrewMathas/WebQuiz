@@ -33,7 +33,7 @@ import webquiz_templates
 
 # ---------------------------------------------------------------------------------------
 # Return the full path for a file in the webquiz directory
-WEBQUIZ_FILE = lambda file: os.path.join(os.path.dirname(os.path.realpath(__file__)), file)
+webquiz_file = lambda file: os.path.join(os.path.dirname(os.path.realpath(__file__)), file)
 
 
 # ---------------------------------------------------------------------------------------
@@ -69,9 +69,8 @@ def kpsewhich(search):
     r'''short-cut to access kpsewhich output:
     usage: kpsewhich('-var-value=TEXMFLOCAL')
     '''
-    return subprocess.check_output(
-        'kpsewhich ' + search, stderr=subprocess.STDOUT,
-        shell=True).decode('ascii').strip()
+    return subprocess.check_output('kpsewhich ' + search, stderr=subprocess.STDOUT,
+                                   shell=True).decode('ascii').strip()
 
 
 # read in basic meta data such as author, version, ...
@@ -79,7 +78,7 @@ try:
     metadata = MetaData(kpsewhich('webquiz.ini'))
 except subprocess.CalledProcessError:
     try:
-        metadata = MetaData('webquiz.ini')
+        metadata = MetaData(webquiz_file('webquiz.ini'))
     except FileNotFoundError:
         print('webquiz installation error: unable to find webquiz.ini')
         sys.exit(1)
@@ -230,6 +229,12 @@ class WebQuizSettings:
             'advanced': False,
             'help': 'Default language used on web pages'
         },
+        engine = {
+            'default': 'latex',
+            'advanced': False,
+            'help': 'Default TeX engine used to compile web pages',
+            'values': dict(latex='', lua='--lua', xelatex='--xetex')
+        },
         theme={
             'default': 'default',
             'advanced': False,
@@ -290,7 +295,7 @@ class WebQuizSettings:
         })
 
     # to stop execution from command-line options after initialised() has been called
-    just_initialised = False
+    just_initialise = False
 
     def __init__(self):
         '''
@@ -310,8 +315,7 @@ class WebQuizSettings:
 
         # define user and system rc file and load the ones that exist
 
-        # tex_local = kpsewhich('-var-value=TEXMFLOCAL')
-        self.system_rc_file = WEBQUIZ_FILE('webquizrc')
+        self.system_rc_file = webquiz_file('webquizrc')
         self.read_webquizrc(self.system_rc_file)
 
         # the user rc file defaults to:
@@ -414,7 +418,7 @@ class WebQuizSettings:
                 if dire != '' and not os.path.isdir(dire):
                     os.makedirs(dire, exist_ok=True)
                 with codecs.open(self.rc_file, 'w', encoding='utf8') as rcfile:
-                    for key in self.settings:
+                    for key in sorted(self.settings.keys()):
                         # Only save settings in the rcfile if they have changed
                         # Note that changed means changed from the last read
                         # rcfile rather than from the default (of course, the
@@ -464,7 +468,7 @@ class WebQuizSettings:
 
         else:
             print('WebQuiz settings from {}\n'.format(self.rc_file))
-            for key in self.settings:
+            for key in sorted(self.settings.keys()):
                 if self[key] != '':
                     print('# {}{}\n{:<15} = {}\n'.format(
                         self.settings[key]['help'], ' (default)'
@@ -477,7 +481,7 @@ class WebQuizSettings:
         this directory. Once this is done save the settings to webquizrc.
         This method should only be used when WebQuiz is being set up.
         '''
-        if self.just_initialised:  # stop initialising twice with webquiz --initialise
+        if self.just_initialise:  # stop initialising twice with webquiz --initialise
             return
 
         print(webquiz_templates.initialise_introduction)
@@ -521,11 +525,11 @@ class WebQuizSettings:
                         shutil.rmtree(web_doc)
 
                     print('**** About to copy www directory {} to {} ****'.
-                          format(WEBQUIZ_FILE('www'), web_dir))
-                    if os.path.isdir(WEBQUIZ_FILE('www')):
+                          format(webquiz_file('www'), web_dir))
+                    if os.path.isdir(webquiz_file('www')):
                         # if the www directory exists then copy it to web_dir
                         print('Copying files to {}...\n'.format(web_dir))
-                        copytree(WEBQUIZ_FILE('www'), web_dir)
+                        copytree(webquiz_file('www'), web_dir)
                     else:
                         # assume this is a development version and add links
                         # from the web directory to the parent directory
@@ -581,7 +585,7 @@ class WebQuizSettings:
         self.edit_settings(
             ignored_settings=['webquiz_url', 'webquiz_www', 'version'])
         print(webquiz_templates.initialise_ending.format(web_dir=self['webquiz_www']))
-        self.just_initialised = True
+        self.just_initialise = True
 
     def edit_settings(self, ignored_settings=['webquiz_www', 'version']):
         r'''
@@ -596,21 +600,22 @@ class WebQuizSettings:
                 else:
                     print('')
 
-                setting = input('{}{}: '.format(
-                    self.settings[key]['help'],
-                    '' if self[key] == '' else ' [' + self[key] + '] '))
+                setting = input('{}{}: '.format(self.settings[key]['help'],
+                                          '' if self[key] == '' else ' [' + self[key] + '] '))
                 if setting != '':
                     if key == 'webquiz_url' and setting[0] != '/':
                         print("  ** prepending '/' to webquiz_url **")
                         setting = '/' + setting
 
-                    if key == 'webquiz_format':
+                    elif key == 'webquiz_format':
                         setting = os.path.expanduser(setting)
                         if setting.endswith('.py'):
-                            print(
-                                "  ** removing .py extension from webquiz_format **"
-                            )
+                            print("  ** removing .py extension from webquiz_format **")
                             setting = setting[:-3]
+
+                    elif key == 'engine' and setting not in self.settings['engine'].values:
+                        print('setting not changed: {} is not a valid TeX engine'.format(setting))
+                        setting = self['engine']
 
                     self[key] = setting
                     self.settings[key]['changed'] = True
@@ -774,10 +779,14 @@ class MakeWebQuiz(object):
 
         try:
             talk('Processing {}.tex with TeX4ht'.format(self.quiz_name))
-            cmd = 'make4ht --utf8 --config webquiz.cfg {make4ht_options} {escape} {quiz_file}.tex'.format(
-                quiz_file=self.quiz_file,
+            # there is a slightly torturous process to convert the engine
+            # settings into a command line option that make4ht understands
+            cmd = 'make4ht --utf8 --config webquiz.cfg {engine} {escape} {make4ht_options} {quiz_file}.tex'.format(
+                engine=self.settings.settings['engine']['values'][self.options.engine],
+                escape='--shell-escape' if self.options.shell_escape else '',
                 make4ht_options=self.options.make4ht_options,
-                escape='--shell-escape' if self.options.shell_escape else '')
+                quiz_file=self.quiz_file
+            )
             run(cmd)
 
             # move the css file into the quiz_file subdirectory
@@ -1115,30 +1124,60 @@ class MakeWebQuiz(object):
 if __name__ == '__main__':
     try:
         settings = WebQuizSettings()
-        if settings.just_initialised:
+        if settings.just_initialise:
             sys.exit()
 
         # parse the command line options
         parser = argparse.ArgumentParser(
-            description=metadata.description, epilog=webquiz_templates.webquiz_help_message)
+            description=metadata.description,
+            epilog=webquiz_templates.webquiz_help_message
+        )
+
         parser.add_argument(
             'quiz_file',
             nargs='*',
             type=str,
             default=None,
             help='latex quiz files')
+
+        parser.add_argument(
+            '--edit-settings',
+            action='store_true',
+            default=False,
+            help='Edit webquiz settings')
+
         parser.add_argument(
             '-i',
             '--initialise',
             action='store_true',
             default=False,
-            help='Initialise files and setings for webquiz')
+            help='Initialise files and settings for webquiz')
+
+        parser.add_argument(
+            '-m',
+            '--make4ht',
+            action='store',
+            type=str,
+            dest='make4ht_options',
+            default=settings['make4ht'],
+            help='Options for make4ht')
+
         parser.add_argument(
             '-q',
             '--quiet',
             action='count',
             default=0,
             help='suppress tex4ht messages (also -qq etc)')
+
+        parser.add_argument(
+            '-r',
+            '--rcfile',
+            action='store',
+            type=str,
+            dest='rcfile',
+            default='',
+            help='Set rcfile')
+
         parser.add_argument(
             '--settings',
             nargs='?',
@@ -1148,32 +1187,14 @@ if __name__ == '__main__':
             dest='setting',
             default='',
             help='List system settings for webquiz')
-        parser.add_argument(
-            '--edit-settings',
-            action='store_true',
-            default=False,
-            help='Edit webquiz settings')
+
         parser.add_argument(
             '-s',
             '--shell-escape',
             action='store_true',
             default=False,
-            help='Shell escape for htlatex/make4ht')
-        parser.add_argument(
-            '-r',
-            '--rcfile',
-            action='store',
-            type=str,
-            dest='rcfile',
-            default='',
-            help='Set rcfile')
-        parser.add_argument(
-            '--make4ht',
-            action='store',
-            type=str,
-            dest='make4ht_options',
-            default=settings['make4ht'],
-            help='Options for make4ht')
+            help='Shell escape for tex4ht/make4ht')
+
         parser.add_argument(
             '--webquiz_format',
             action='store',
@@ -1182,14 +1203,46 @@ if __name__ == '__main__':
             default=settings['webquiz_format'],
             help='Local python code for generating the quiz web page')
 
+        engine = parser.add_mutually_exclusive_group()
+        engine.add_argument(
+            '--latex',
+            action='store_const',
+            const='latex',
+            default=settings['engine'],
+            dest='engine',
+            help='Use latex to compile document with make4ht (default)')
+
+        engine.add_argument(
+            '-l',
+            '--lua',
+            action='store_const',
+            const='lua',
+            dest='engine',
+            help='Use lualatex to compile document with make4ht')
+
+        engine.add_argument(
+            '-x',
+            '--xelatex',
+            action='store_const',
+            const='xelatex',
+            dest='engine',
+            help='Use xelatex to compile document with make4ht')
+
         # options suppressed from the help message
         parser.add_argument(
             '--version',
             action='version',
             version='%(prog)s {}'.format(metadata.version),
             help=argparse.SUPPRESS)
+
         parser.add_argument(
             '--debugging',
+            action='store_true',
+            default=False,
+            help=argparse.SUPPRESS)
+
+        parser.add_argument(
+            '--shorthelp',
             action='store_true',
             default=False,
             help=argparse.SUPPRESS)
@@ -1218,6 +1271,11 @@ if __name__ == '__main__':
         # initialise and exit
         if options.edit_settings:
             settings.edit_settings()
+            sys.exit()
+
+        # print short help and exit
+        if options.shorthelp:
+            parser.print_usage()
             sys.exit()
 
         # if no filename then exit

@@ -443,11 +443,12 @@ The \WebQuiz document class defines the following four environments:
   \begin{description}
     \item[question] Each quiz question needs to be inside a
     \Verb|question| environment
-    \item[choice] For typesetting multiple choice questions
-    \item[discussion] For including (optional) discussion, or revision, material at
-    the top of the quiz
-    \item[quizlist] For writing an index file for a related ``family'' of quizzes,
-    such as the quizzes for a unit of study
+    \item[choice] For typesetting multiple choice questions, with
+    possibly multiple answers
+    \item[discussion] For including (optional) discussion, or revision,
+    material at the top of the quiz
+    \item[quizlist] For writing an index file for the quizzes in
+    one ``unit of study''.
   \end{description}
 \end{quote}
 This section describes these environments and gives examples
@@ -469,14 +470,14 @@ For brevity, all of the examples in this chapter have only one question
   \index{feedback!whenRight}
   \index{feedback!whenWrong}
   \SeeIndex{numeric answer}{\textbackslash answer}
-  This example code shows how to use \Verb|\answer|. The \Verb|\answer|
-  macro is used to ask for a numerical answer to a question. Then macros
+  This example code shows how to use \Verb|\answer|, which is used
+  ask for a numerical answer to a question. Then macros
   \Verb|\whenRight| and \Verb|\whenWrong|, which are mandatory when
   \Verb|\answer| is used, are used to give the student feedback, when
   they are right, or further hints etc for approaching the question,
   when they are wrong.
 
-  The web page created by this code-block looks something like this:
+  The web page created by this code-block looks like this:
 
   \ScreenShot{A question with a numeric answer}{examples/question}
 
@@ -531,12 +532,14 @@ two correct answers:
   \lstinputlisting[style=latexcode]{examples/choice-multiple}
   \label{choice-multiple}
 
-\noindent which gives:
+  \noindent which gives (here, the documentclass-option
+  \LaTeXCode{theme=vibrant} is used to change the colour scheme):
 
 \ScreenShot{Multi-answer multiple choice question}{examples/choice-multiple}
 
-When the optional argument \Verb|multiple| is used then the question is
-marked correct if and only if all of the correct responses are selected.
+When the optional argument \Verb|multiple| is used, as above, then the
+question is marked correct if and only if all of the correct responses
+are selected.
 
   \subsubsection{Discussion environments}
   \CrossIndex{environment}{discussion}
@@ -616,9 +619,10 @@ discussion.
   \ScreenShot{Drop-down menu giving index of quizzes}{examples/dropdown.png}
 
   \noindent
-  The breadcrumbs for the quiz web page can be either be configured quiz-by-quiz, using the
-  \Verb|\BreadCrumbs| macro \macroIndex{BreadCrumbs}, or by setting \textsf{breadcrumbs} ``globally'' in the
-  \webquizrc file using the command-line option
+  The breadcrumbs for the quiz web page can be either be configured
+  quiz-by-quiz, using the \Verb|\BreadCrumbs| macro
+  \macroIndex{BreadCrumbs}, or by setting \textsf{breadcrumbs}
+  ``globally'' in the \webquizrc file using the command-line option
   \begin{center}
         \webquizopt{edit-settings}\qquad (see \autoref{SS:commandline}).
   \end{center}
@@ -1222,15 +1226,9 @@ My guess is that you are in either the second or third case. In the second case 
     the output produced by \LaTeX\ and \TeX4ht. The next section
     discusses the \WebQuiz command-line options.
 
-    \subsection{Command-line options}\label{SS:commandline}
-\index{command-line options}
+    \subsection{Command-line options}\label{SS:commandline}\index{command-line options}
 
-\begin{verbatim}
-usage: webquiz [-h] [-i] [-q] [--settings] [--edit-settings  [SETTING]] [-s]
-                [-r RCFILE] [-p] [--build WEBQUIZ_MK4]
-                [--webquiz_format WEBQUIZ_FORMAT]
-                [quiz_file [quiz_file ...]]
-\end{verbatim}
+    \lstinputlisting[language=bash]{webquiz.usage}
 
 The command-line options are listed on separate lines here to improve
 readability but they can appear in any order when you use them provided
@@ -1242,66 +1240,13 @@ option.
        \item[ -h, \ddash help] \CrossIndex{command-line options}{help}
           list the command-line options and exit
 
-       \item[-i, \ddash initialise] \CrossIndex{command-line options}{initialise}
-          Initialise files and settings for webquiz. The command
-          \webquizopt{initialise} should be run before using
-          \WebQuiz. This command will help you to copy the web files needed by
-          \WebQuiz into the directories used by your web server. See
-          \autoref{S:configuration} for more details.
-
-          \item[\ddash settings {[SETTING]}] \CrossIndex{command-line options}{settings}
-          \SeeIndex{rc file}{webquizrc}
-          \SeeIndex{default settings}{webquizrc}
-          List system settings for webquiz stored in the  rc-file
-          (\textit{run-time configuration file}); see the \textsf{\ddash
-          rcfile} command-line option below. Optionally, a single
-          \textsf{SETTING} can be given in which case the value of only that
-          setting is returned. Typical settings returned by this
-          command look like:
-          \begin{verbatim}
-  WebQuiz settings stored in /Users/andrew/.webquizrc
-
-    # Relative URL for webquiz web directory
-    webquiz_url    = /WebQuiz
-
-    # Breadcrumbs at the top of quiz page
-    breadcrumbs     = department|unitcode|Quiz_index|breadcrumb
-
-    # Department running quiz
-    department      = School of Mathematics and Statistics
-
-    # (Relative) URL for department running quiz
-    department_url  = http://www.maths.edu.au
-
-    # University or institution
-    institution     = University of Sydney
-
-    # (Relative) URL for university or institution
-    institution_url = http://sydney.edu.au/
-
-    # The python module that determines the format of the quiz web page (default)
-    webquiz_format = webquiz_standard
-
-    # Local URL for mathjax (default)
-    mathjax         = https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/
-          \end{verbatim}
-
-          These settings are used by all of the quizzes created by
-          \WebQuiz unless the quiz overrides them. These defaults are
-          normally set when \WebQuiz is initialised, using the command:
-          \webquizopt{initialise}. The defaults can be changed any time using:
-          \webquizopt{edit-settings}.
-
-       \item[\ddash edit-settings] \CrossIndex{command-line options}{edit-settings}
-          Edit the webquiz settings in the rc-file. The settings that
-          are marked as advanced should be changed only with care. To
-          change the \textsf{webquiz\_www} and \textsf{webquiz\_url}
-          use: \webquizopt{initialise}.
-
           \textit{You will be given the option of saving the \WebQuiz settings to an rc-file,
           \textsf{.webquizrc}, in your home directory or another file if you do
           not have permission to write to the system rc-file, which is in the
           \WebQuiz scripts directory. }
+
+       \item[-s,\ddash shell-escape] \CrossIndex{command-line options}{shell-escape}
+          Shell escape for htlatex/make4ht
 
        \item[-q, -qq, \ddash quiet] \CrossIndex{command-line options}{quiet mode}
        Suppress tex4ht messages: \textsf{\ddash q} is quiet and \textsf{\ddash qq} is  very quiet. If you use
@@ -1311,8 +1256,36 @@ option.
        errors, so using the \textsf{\ddash q} and \textsf{\ddash qq} options is not
        recommended if your file is not compiling.
 
-       \item[-s,\ddash shell-escape] \CrossIndex{command-line options}{shell-escape}
-          Shell escape for htlatex/make4ht
+       \item[-i, \ddash initialise] \CrossIndex{command-line options}{initialise}
+          Initialise files and settings for webquiz. The command
+          \webquizopt{initialise} should be run before using
+          \WebQuiz. This command will help you to copy the web files needed by
+          \WebQuiz into the directories used by your web server. See
+          \autoref{S:configuration} for more details.
+
+       \item[\ddash edit-settings] \CrossIndex{command-line options}{edit-settings}
+          Edit the webquiz settings in the rc-file. The settings that
+          are marked as advanced should be changed only with care. To
+          change the \textsf{webquiz\_www} and \textsf{webquiz\_url}
+          use: \webquizopt{initialise}.
+
+       \item[\ddash settings {[SETTING]}] \CrossIndex{command-line options}{settings}
+          \SeeIndex{rc file}{webquizrc}
+          \SeeIndex{default settings}{webquizrc}
+          List system settings for webquiz stored in the  rc-file
+          (\textit{run-time configuration file}); see the \textsf{\ddash
+          rcfile} command-line option below. Optionally, a single
+          \textsf{SETTING} can be given in which case the value of only that
+          setting is returned. Typical settings returned by this
+          command look like:
+
+          \lstinputlisting[language=bash]{webquiz.settings}
+
+          These settings are used by all of the quizzes created by
+          \WebQuiz unless the quiz overrides them. These defaults are
+          normally set when \WebQuiz is initialised, using the command:
+          \webquizopt{initialise}. The defaults can be changed any time using:
+          \webquizopt{edit-settings}.
 
        \item[-r RCFILE, \ddash rcfile RCFILE]\index{webquizrc}
           Specify the rc-file (\textit{run-time configuration file}), file
