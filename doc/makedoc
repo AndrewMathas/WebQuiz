@@ -12,7 +12,7 @@ function message() {
   fi
 }
 function make_languages() {
-  message "Generating list of supported languages"
+  message " - generating list of webquiz supported languages"
   LANG="webquiz.languages"
   /bin/rm -f $LANG
   echo -e "% List of languages currently supported by WebQuiz -- generated $(date '+%Y-%m-%d')\n" > $LANG
@@ -23,7 +23,7 @@ function make_languages() {
 }
 
 function make_themes () {
-  message "Generating list of supported css themes"
+  message " - Generating list of webquiz supported css themes"
 
   # next generate code to include screenshots for each theme in the appendix
   THEMESCREENSHOT="$WEBQUIZDOC/webquiz-themes.tex"
@@ -57,7 +57,7 @@ function make_themes () {
 }
 
 function make_examples() {
-  message "Generating example images"
+  message " - Generating webquiz example images"
   (cd examples
    if [ "$quiet" = true ]; then
      ./makeimages > /dev/null
@@ -67,22 +67,15 @@ function make_examples() {
 }
 
 function make_settings() {
-  message "Generating settings file"
+  message " - Generating webquiz settings file"
   /bin/rm -f webquiz.settings
   webquiz --settings >> webquiz.settings
 }
 
 function make_usage() {
-  message "Generating usage file"
+  message " - Generating webquiz usage file"
   /bin/rm -f webquiz.usage
   webquiz --shorthelp >> webquiz.usage
-}
-
-function make_all() {
-  make_usage
-  make_languages
-  make_themes
-  make_examples
 }
 
 function make_online_manual() {
@@ -90,8 +83,9 @@ function make_online_manual() {
   latex webquiz-online-manual && dvipdf webquiz-online-manual
 }
 
-function make_manual() {
+function make_all() {
   message "Making pdf for manual"
+  make_usage
   make_languages
   make_themes
   if  [[ "$fast" = false ]] ; then
@@ -109,7 +103,7 @@ function usage() {
 
 fast=false
 quiet=false # TODO
-
+command=""  # what we need to execute
 if [ $# -eq 0 ]; then
   make_all
 else
@@ -117,34 +111,31 @@ else
   do
      case $1 in
        -a|--all)
-         make_all
+         command+="make_all "
          shift ;;
        -e|--examples)
-         make_examples
+         command+="make_examples"
          shift ;;
        -f|--fast)
          fast=true
          shift ;;
        -l|--languages)
-         make_languages
-         shift ;;
-       -m|--manual)
-         make_manual
+         command+="make_languages"
          shift ;;
        -o|--online-manual)
-         make_online_manual
+         command+="make_online_manual"
          shift ;;
        -q|--quiet)
          quiet=true
          shift ;;
        -s|--settings)
-         make_settings
+         command+="make_settings"
          shift ;;
        -t|--theme)
-         make_themes
+         command+="make_themes"
          shift ;;
        -u|--usage)
-         make_usage
+         command+="make_usage"
          shift ;;
        *)
          usage && exit
@@ -152,3 +143,5 @@ else
      esac
    done
 fi
+[ "$command" = "" ] && command="make_all"
+$command
