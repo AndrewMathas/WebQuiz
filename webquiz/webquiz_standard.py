@@ -23,7 +23,7 @@ from webquiz_templates import no_script
 def write_web_page(quiz):
     return quiz_page.format(
         title=quiz.title,  # page title
-        include=quiz.header + quiz.javascript + quiz.css,  # header material
+        htmlpremable=quiz.header + quiz.javascript + quiz.css,  # header material
         breadcrumbs=quiz.breadcrumbs,  # bread crumb constructed above
         side_menu=quiz.side_menu,  # navigation menu for quiz
         quiz_header=quiz.quiz_header,  # quiz title + navigation arrows
@@ -37,7 +37,7 @@ quiz_page = r'''<!DOCTYPE HTML>
 <html lang="en">
 <head>
   <title> {title} </title>
-  {include}
+  {htmlpremable}
 </head>
 
 <body>
