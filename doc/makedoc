@@ -85,9 +85,10 @@ function make_online_manual() {
 
 function make_all() {
   message "Making pdf for manual"
-  make_usage
   make_languages
+  make_settings
   make_themes
+  make_usage
   if  [[ "$fast" = false ]] ; then
       make_examples
       make_online_manual

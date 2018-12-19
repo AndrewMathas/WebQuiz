@@ -106,14 +106,30 @@
 \lstdefinestyle{latexcode}{
   language=[LaTeX]TeX,
   texcsstyle=*\bfseries\color{DodgerBlue},
-  morekeywords={UnitCode,UnitName,UnitURL,QuizzesURL,BreadCrumbs,BreadCrumb,Institution,Department,DeclareGraphicsExtensions},
+  morekeywords={UnitCode,UnitName,UnitURL,QuizzesURL,BreadCrumbs,BreadCrumb,Institution,Department,
+                includegraphics, DeclareGraphicsExtensions},
   classoffset=1,
   morekeywords={quiz, quizlist, discussion, question, choice, Choice, },
   classoffset=2,
   morekeywords={response,correct,incorrect,whenRight,whenWrong,answer},
+  classoffset=3,
+  morekeywords={theme, language, hidesidemenu, pst2pdf, tikz},
 }
 \lstnewenvironment{latexcode}{\lstset{style=latexcode}}{}
-\NewDocumentCommand\LaTeXCode{v}{\lstinline[style=latexcode]|#1|}
+\NewDocumentCommand\LatexCode{v}{\lstinline[style=latexcode]|#1|}
+\newcommand\InputLatexCode[1]{\lstinputlisting[style=latexcode]{#1}}
+
+\lstdefinestyle{bashcode}{
+  language=bash,
+  upquote=true,
+  classoffset=1,
+  morekeywords={webquiz, kpsewhich, latex, pdflatex, xelatex. lualatex},
+  classoffset=2,
+  morekeywords={>}
+}
+\lstnewenvironment{bashcode}{\lstset{style=bashcode}}{}
+\NewDocumentCommand\BashCode{v}{\lstinline[style=bashcode]|#1|}
+\newcommand\InputBashCode[1]{\lstinputlisting[style=bashcode]{#1}}
 
 \lstdefinestyle{pythoncode}{
   language=HTML,
@@ -122,6 +138,8 @@
   morekeywords={quiz_page},
 }
 \lstnewenvironment{pythoncode}{\lstset{style=pythoncode}}{}
+\NewDocumentCommand\PythonCode{v}{\lstinline[style=pythoncode]|#1|}
+\newcommand\InputPythoCode[1]{\lstinputlisting[style=pythoncode]{#1}}
 
 \lstdefinestyle{htmlcode}{
   language=HTML,

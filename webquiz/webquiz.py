@@ -376,7 +376,7 @@ class WebQuizSettings:
                             line = line[:line.index('#')]
                         if '=' in line:
                             key, value = line.split('=')
-                            key = key.strip().lower()
+                            key = key.strip().lower().replace('-','_')
                             value = value.strip()
                             if key in self.settings:
                                 if value != self[key]:
@@ -425,7 +425,10 @@ class WebQuizSettings:
                         # defaults serve as the "initial rcfile")
                         if key == 'version' or self.settings[key]['changed']:
                             rcfile.write('# {}\n{:<15} = {}\n'.format(
-                                self.settings[key]['help'], key, self[key]))
+                                           self.settings[key]['help'], 
+                                           key.replace('_','-'), 
+                                           self[key])
+                            )
 
                 print('\nWebQuiz settings saved in {}\n'.format( self.rc_file))
                 input('Press return to continue... ')
@@ -461,6 +464,7 @@ class WebQuizSettings:
             )
 
         if setting != 'all':
+            setting = setting.replace('-', '_')
             if setting in self.settings:
                 print(self.settings[setting]['value'])
             else:
@@ -471,9 +475,11 @@ class WebQuizSettings:
             for key in sorted(self.settings.keys()):
                 if self[key] != '':
                     print('# {}{}\n{:<15} = {}\n'.format(
-                        self.settings[key]['help'], ' (default)'
-                        if self[key] == self.settings[key]['default'] else '',
-                        key, self[key]))
+                            self.settings[key]['help'], 
+                            ' (default)' if self[key] == self.settings[key]['default'] else '',
+                            key.replace('_', '-'), 
+                            self[key])
+                    )
 
     def initialise_webquiz(self):
         r'''
