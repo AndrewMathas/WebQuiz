@@ -27,7 +27,7 @@ For the full extraction specifications see the pages array below
 import argparse, glob, os, re, shutil, subprocess
 
 # location of the webquiz example web pages on a development server
-examplesURL = "http://localhost/WebQuiz/doc/examples/"
+examplesURL = "http://localhost/WebQuiz/doc/examples"
 examplesDIR = os.path.join(os.environ['HOME'], 'Code/WebQuiz/doc/examples')
 
 # lambda function for running shell commands: run( command )
@@ -150,7 +150,7 @@ pages = [
     Convert("nounits", delay=5),
     Convert("pst2pdf"),
     Convert("pstricks-ex"),
-    Convert("question"),
+    Convert("question", js='''document.forms["Q1Form"].elements[0].value=5; setTimeout(checkAnswer, 4)''', delay=6),
     Convert("quiz-page", question="1:2", delay=15),
     Convert("simple", page_out='simple-html'),
     Convert("simple", src='pdf',  page_out='simple-pdf'),

@@ -241,7 +241,7 @@ class WebQuizSettings:
             'help': 'Default colour theme used on web pages'
         },
         breadcrumbs={
-            'default': 'department|unitcode|quiz_index|breadcrumb',
+            'default': 'department|unitcode|quiz-index|breadcrumb',
             'advanced': False,
             'help': 'Breadcrumbs at the top of quiz page',
         },
@@ -735,7 +735,7 @@ class MakeWebQuiz(object):
                         text=self.unit['name'],
                         url=self.unit['url'],
                         missing='unit name')
-                elif crumb == 'quiz_index':
+                elif crumb == 'quiz-index':
                     if self.quiz.quiz_list == []:
                         crumbs += webquiz_templates.breadcrumb_quizlist.format(
                             quizzes_url=self.unit['quizzes_url'],
