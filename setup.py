@@ -143,6 +143,7 @@ class WebQuizCtan(Command):
                                    ('webquiz.ini',                     'scripts'),
                                    ('webquiz/webquiz*.py',             'scripts'),
                                    ('webquiz/webquiz.bat',             'scripts'),
+                                   ('webquiz/README-scripts',          'scripts'),
                 ]:
                 for file in glob.glob(src):
                     print('{} --> {}'.format(file, target if target !='' else '.'))

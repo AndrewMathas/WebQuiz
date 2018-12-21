@@ -475,7 +475,10 @@ For brevity, all of the examples in this chapter have only one question
   \index{feedback!whenWrong}
   \SeeIndex{numeric answer}{\textbackslash answer}
   This example code shows how to use \LatexCode|\answer|, which is used
-  ask for a numerical answer to a question. Then macros
+  ask for a numerical answer to a question. The  \LatexCode{\answer}
+  macro accepts an optional argument
+
+  Then macros
   \LatexCode|\whenRight| and \LatexCode|\whenWrong|, which are mandatory when
   \LatexCode|\answer| is used, are used to give the student feedback, when
   they are right, or further hints etc for approaching the question,
@@ -515,8 +518,8 @@ for correct responses and
 \LatexCode|\incorrect| \CrossIndex{choice environment}*{incorrect}
 for incorrect responses. In addition, you can use
 \LatexCode|\response| \CrossIndex{choice environment}*{response}
-to give a feedback response to the person taking the quiz when they
-select the last correct or incorrect answer.
+to give a feedback response to the person taking the quiz, which is
+displayed when they select the last correct or incorrect answer.
 \index{feedback!response}
 
 Here is an example of a multiple choice question with a unique answer
