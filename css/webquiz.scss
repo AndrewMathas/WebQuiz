@@ -141,6 +141,31 @@ div.side-menu {
             border: solid $ButtonSelected 2px;
             color: $ButtonSelected;
         }
+
+        div.blank {
+            content: "";
+            color: $BlankButtonFG;
+            background: $BlankButtonBG;
+        }
+
+        div.cross {
+            content: "\u2718";
+            color: $CrossButtonFG;
+            background: linear-gradient(to bottom right, $CrossButtonTop, $CrossButtonBot);
+        }
+
+        div.star {
+            content: "\u272D";
+            color: $StarButtonFG;
+            background: linear-gradient(to bottom right, $StarButtonTop, $StarButtonBot);
+        }
+
+        div.tick {
+            content: "\u2714";
+            color: $TickButtonFG;
+            background: linear-gradient(to bottom right, $TickButtonTop, $TickButtonBot);
+        }
+
     }
 
     table.marking-key {

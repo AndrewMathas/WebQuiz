@@ -29,9 +29,10 @@ import argparse, glob, os, re, shutil, subprocess
 # location of the webquiz example web pages on a development server
 examplesURL = "http://localhost/WebQuiz/doc/examples"
 examplesDIR = os.path.join(os.environ['HOME'], 'Code/WebQuiz/doc/examples')
+os.chdir(examplesDIR)
 
 # lambda function for running shell commands: run( command )
-run  = lambda cmd: subprocess.call(cmd, shell=True, cwd=examplesDIR)
+run  = lambda cmd: subprocess.call(cmd, shell=True)
 
 webquiz_mode = '-qq'
 webkit2png_mode = ''
@@ -45,8 +46,9 @@ class Convert:
                    being generated starting with pdflatex, webkit2png or latex
       - page_out = output file                                         (default: file_in)
       - delay    = time to wait in second before taking the screenshot (default: 3)
-      - question = a string of the form 'question:part' to "guess" that this
-                   part is correct                                     (default: None)
+      - question = a c| separated string of the form 'question:part',
+                   where part is comma separated, to "guess" that these
+                   parts are correct                                   (default: None)
       - js       = javascript commands                                 (default: '')
     The actual conversion is done by using the write_image method of the class.
     '''
@@ -59,9 +61,14 @@ class Convert:
         self.webquiz = webquiz
 
         if not question is None:
-            quest, part = question.split(':')
-            self.javascript = "document.forms['Q{}Form'].elements[{}].checked=true; setTimeout(checkAnswer, 4)".format(quest, part)
-            self.delay = 5
+            self.javascript = ''
+            for qp in question.split('|'):
+                quest, part = qp.split(':')
+                for p in part.split(','):
+                    self.javascript += "document.forms['Q{}Form'].elements[{}].checked=true;".format(quest, int(p)-1)
+                self.javascript += 'currentQ={};updateQuestionMarker;'.format(quest)
+                self.delay += 4
+            self.javascript += 'setTimeout(showQuestion({}), 4)'.format(quest)
 
         # set conversion mechanism
         if src == 'html':
@@ -150,12 +157,12 @@ pages = [
     Convert("nounits", delay=5),
     Convert("pst2pdf"),
     Convert("pstricks-ex"),
-    Convert("question", js='''document.forms["Q1Form"].elements[0].value=5; setTimeout(checkAnswer, 4)''', delay=6),
+    Convert("question", js="document.forms['Q1Form'].elements[0].value=18; setTimeout(checkAnswer, 4);", delay=10),
     Convert("quiz-page", question="1:2", delay=15),
     Convert("simple", page_out='simple-html'),
     Convert("simple", src='pdf',  page_out='simple-pdf'),
     Convert("theme-dark", question="3:2"),
-    Convert("theme-default", question="3:2"),
+    Convert("theme-default", question="1:1,3|3:2", delay=5),
     Convert("theme-dynamic", question="3:2"),
     Convert("theme-fresh", question="3:2"),
     Convert("theme-light", question="3:2"),

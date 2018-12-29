@@ -20,10 +20,12 @@
 -->
 
 <!ELEMENT quiz
-    title       #PCDATA  #REQUIRED
-    breadCrumb  #PCDATA #REQUIRED
-    src         #PCDATA #REQUIRED
-(meta*,link*,course,(quizlist|question*,discussion?))>
+    hidesidemenu  #PCDATA #REQUIRED
+    language      #PCDATA #REQUIRED
+    src           #PCDATA #REQUIRED
+    theme         #PCDATA #REQUIRED
+(breadcrumb, breadcrumbs, unit, department, instution, meta*, link*, 
+    (quizlist|question*, discussion?))>
 
 <!ELEMENT meta EMPTY>
 <!ATTLIST meta
@@ -32,6 +34,7 @@
   content     CDATA     #REQUIRED
   scheme      CDATA     #IMPLIED
 >
+
 <!ELEMENT link EMPTY>
 <!ATTLIST link
   href        CDATA     #IMPLIED
@@ -39,34 +42,56 @@
   rel         CDATA     #IMPLIED
   target      CDATA     #IMPLIED
 >
-<!ELEMENT course >
-<!ATTLIST course
-    code        #PCDATA #REQUIRED
-    name        #PCDATA #REQUIRED
-    quizzes     #PCDATA #REQUIRED
-    url         #PCDATA #REQUIRED
-    department  #PCDATA #REQUIRED
-    university  #PCDATA #REQUIRED
+<!ELEMENT breadcrumb (text)>
+<!ELEMENT breadcrumbs (text)>
+
+<!ELEMENT department (text)>
+<!ATTLIST departmment
+    url #PCDATA #REQUIRED
 >
+
+<!ELEMENT institution (text)>
+<!ATTLIST institution #
+    url PCDATA #REQUIRED
+>
+
 <!ELEMENT quizlist (quizitem*)>
 <!ELEMENT quizlistitem EMPTY>
 <!ATTLIST quizlistitem
     title  #CDATA  #REQUIRED
     url    #CDATA  #REQUIRED
 >
+
 <!ELEMENT discussion (text)>
 <!ATTLIST dicussion heading #PCDATA #REQUIRED>
+
 <!ELEMENT question (text,(choice|answer))>
+
+<!ELEMENT title (text)>
+
+<!ELEMENT unit (text)>
+<!ATTLIST unit
+    code        #PCDATA #REQUIRED
+    quizzes     #PCDATA #REQUIRED
+    url         #PCDATA #REQUIRED
+>
+
 <!ELEMENT choice (item*)>
 <!ATTLIST choice type (single|multiple) #REQUIRED
                  cols CDATA             #REQUIRED
 >
 <!ELEMENT item (text,response?)>
 <!ATTLIST item expect (true|false) #REQUIRED>
-<!ELEMENT answer (tag?,when)_right,when_wrong)>
+
+<!ELEMENT answer (tag?,when_right,when_wrong)>
 <!ATTLIST answer value CDATA #REQUIRED>
+
 <!ELEMENT tag (#PCDATA)>
+
 <!ELEMENT text %Flow;>
+
 <!ELEMENT response %Flow;>
+
 <!ELEMENT when_right %Flow;>
+
 <!ELEMENT when_wrong %Flow;>

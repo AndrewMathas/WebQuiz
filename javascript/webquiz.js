@@ -31,31 +31,27 @@ var QuizSpecifications = [];
 
 // Specification for the question buttons for use in updateQuestionMarker
 var blank = {
-    "marker": "",
-    "color": "black",
-    "bg": "#FFF8DC"
+    "content": "",
+    "name": "blank"
 };
 var cross = {
-    "marker": "\u2718",
-    "color": "red",
-    "bg": "linear-gradient(to bottom right, white,  slateblue)"
+    "content": "\u2718",
+    "name": "cross"
 };
 var star = {
-    "marker": "\u272D",
-    "color": "yellow",
-    "bg": "linear-gradient(to bottom right, yellow, green)"
+    "content": "\u272D",
+    "name": "star"
 };
 var tick = {
-    "marker": "\u2714",
-    "color": "green",
-    "bg": "linear-gradient(to bottom right, red, yellow)"
+    "content": "\u2714",
+    "name": "tick"
 };
 
 // Add a small delay for loading the quiz specifications. Not sure that this
 // actually does anything. We can't use a while-loop because with this the
 // page never loads
 function WaitForQuizSpecifications() {
-    if (QuizSpecifications.length < qTotal) {
+    while (typeof QuizSpecifications  === "undefined") {
         setTimeout(WaitForQuizSpecifications, 15);
     }
 }
@@ -190,6 +186,8 @@ function nextQuestion(increment) {
     }
 }
 
+
+var buttons = ['blank', 'cross', 'star', 'tick'];
 function updateQuestionMarker() {
     var qnum = currentQ - 1;
     if (currentQ < 0) {
@@ -209,9 +207,11 @@ function updateQuestionMarker() {
             marker = blank;
         }
     }
-    button.style.background = marker.bg;
-    button.style.color = marker.color;
-    button.setAttribute("content", marker.marker);
+    for (var b = 0; b < buttons.length; b++) {
+       button.classList.remove(buttons[b]);
+    }
+    button.classList.add(marker.name);
+    button.setAttribute("content", marker.content);
 }
 
 function gotoQuestion(qnum) {
@@ -227,7 +227,7 @@ function checkAnswer() {
     var i;
 
     if (question.type === "input") {
-        if (question.value === parseFloat(formObject.elements[0].value)) {
+        if (parseFloat(question.value) === parseFloat(formObject.elements[0].value)) {
             correct[qnum] = true;
             showResponse("q" + currentQ + "true");
         } else {
@@ -277,6 +277,8 @@ function WebQuizInit(questions, discussions, quizfile, hidesidemenu) {
 
     // read the question specifications for the quiz from <currentQuiz>/quiz_list.js
     document.head.appendChild(document.createElement("script")).src = currentQuiz + "/wq-" + currentQuiz + ".js";
+
+    // wait for the QuizSpecifications to load
     WaitForQuizSpecifications();
 
     // make the drop down menu if QuizTitles has some entries
