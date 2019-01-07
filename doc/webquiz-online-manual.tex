@@ -122,19 +122,19 @@ an easily readable layout.
   name of the unit of study, the location of the homepage for the
   unit and the index file for the quizzes for this unit; this is
   done using the commands
-  \lstinline[style=latexcode]|\UnitCode|,
-  \lstinline[style=latexcode]|\UnitName|,
-  \lstinline[style=latexcode]|\UnitURL| and
-  \lstinline[style=latexcode]|\QuizzesURL| respectively. If the
-  command \lstinline[style=latexcode]|\QuizzesURL| is omitted then the URL for the quiz
-  index file is set to \lstinline[style=latexcode]|\UnitURL/|Quizzes. (Within the School of
+  \LatexCode|\UnitCode|,
+  \LatexCode|\UnitName|,
+  \LatexCode|\UnitURL| and
+  \LatexCode|\QuizzesURL| respectively. If the
+  command \LatexCode|\QuizzesURL| is omitted then the URL for the quiz
+  index file is set to \LatexCode|\UnitURL/|Quizzes. (Within the School of
   Mathematics and Statistics, there is also a package
   \href{smsquiz.html}{smsquiz.sty} which sets the default
   parameters from the unit code.)
 
   The title of the quiz should also be set in the preamble using the
-  \lstinline[style=latexcode]|\title| command. Note that the \lstinline[style=latexcode]|\title|
-  command \emph{must} appear before the \lstinline[style=latexcode]|\begin{document}| command.
+  \LatexCode|\title| command. Note that the \LatexCode|\title|
+  command \emph{must} appear before the \LatexCode|\begin{document}| command.
   In the preamble you can also define macros and load
   any packages that you want in the usual way .
 
@@ -192,10 +192,10 @@ an easily readable layout.
     \end{question}
 \end{latexcode}
   The multiple choice responses for each question go inside a choice environment.
-  The correct answer goes after \lstinline[style=latexcode]|\correct|, incorrect answers
-  after \lstinline[style=latexcode]|\incorrect|. Either can be followed by a
-  \lstinline[style=latexcode]|\response|, providing comments on the students choice when
-  checking their answers.  The \lstinline[style=latexcode]|\response| commands are optional;
+  The correct answer goes after \LatexCode|\correct|, incorrect answers
+  after \LatexCode|\incorrect|. Either can be followed by a
+  \LatexCode|\response|, providing comments on the students choice when
+  checking their answers.  The \LatexCode|\response| commands are optional;
   however, it is recommended that you use them as good feedback is
   very useful for the students.
   \par
@@ -265,7 +265,7 @@ an easily readable layout.
     \end{question}
 \end{latexcode}
   The only difference to the previous case is that multiple (or no)
-  \lstinline[style=latexcode]|\correct| commands may be used.
+  \LatexCode|\correct| commands may be used.
   \par
   For example, \qref{2} below was typed into WebQuiz
   using the following commands:
@@ -384,25 +384,28 @@ an easily readable layout.
   The final type of question that \WebQuiz{} supports is a question
   which requires a \emph{numerical} as an answer. The numerical
   answer must be given in decimal form.
-  The answer is typeset using the \lstinline[style=latexcode]|\answer| macro. That macro
+  The answer is typeset using the \LatexCode|\answer| macro. That macro
   takes two arguments, some text appearing in an answer box after the
   question and the actual numerical answer. The text is optional. The
-  syntax is \lstinline[style=latexcode]|\answer[text after answer box]{numerical answer}|.
+  syntax is \LatexCode|\answer[text after answer box]{numerical answer}|.
   Then there is a mechanism for providing feedback for correct and
-  incorrect answers. This is done using \lstinline[style=latexcode]|\whenRight| and
-  \lstinline[style=latexcode]|\whenWrong|.  Unlike the \lstinline[style=latexcode]|\response| commands, the two
-  responses \lstinline[style=latexcode]|\whenRight| and \lstinline[style=latexcode]|\whenWrong| are both mandatory
+  incorrect answers. This is done using \LatexCode|\whenRight| and
+  \LatexCode|\whenWrong|.  Unlike the \LatexCode|\response| commands, the two
+  responses \LatexCode|\whenRight| and \LatexCode|\whenWrong| are both mandatory
   for questions of this type.  The syntax is for such questions is as
   follows:
 \begin{latexcode}
        \begin{question}
          . . .question text. . .
-         \answer[text after the answer box]{actual answer}
+         \answer[integer|number|string|lowercase|evaluate]{actual answer}
          \whenRight . . . feedback when right
          \whenWrong . . . feedback when wrong
        \end{question}
 \end{latexcode}
   \par
+  The optional argument to the \LatexCode{\answer} command sets the type
+  of comparison that is used when marking the quiz. By default, integer
+  comparisons are used.
   For example, \qref{4} below was typed into \WebQuiz{}
   using the following commands:
 \begin{latexcode}
@@ -415,7 +418,7 @@ an easily readable layout.
       \end{displaymath}
       (Hint: Draw a diagram!)
 
-      \answer[units]{10}
+      \answer{10}
       \whenRight The vectors $\vect{a}$, \(-2\vect{b}\), and
       $\vect{a} - 2\vect{b}$ form the sides of a right-angled
       triangle, with sides of length $8$ and $6$ and
@@ -430,7 +433,7 @@ an easily readable layout.
 \begin{discussion}[Index Files]
   \WebQuiz{} also provides a mechanism for creating a web page
   containing an index of all quizzes for a given Unit of Study.
-  This is done with a \WebQuiz{} file which contains a |quizlist|
+  This is done with a \WebQuiz{} file which contains a \LatexCode|quizlist|
   environment. The syntax for this environment is as follows:
 \begin{latexcode}
     \begin{quizlist}
@@ -440,7 +443,7 @@ an easily readable layout.
     \end{quizlist}
 \end{latexcode}
 If no \textit{URL} is given as an optional argument to
-\lstinline[style=latexcode]|\quiz| then
+\LatexCode|\quiz| then
   \WebQuiz{} sets the url(s) to \verb|quiz1.html|, \verb|quiz2.html|
   and so on.
 \end{discussion}
@@ -609,7 +612,7 @@ If no \textit{URL} is given as an optional argument to
   \(|\vect{a} -2\vect{b}|\)~?
   (Hint: Draw a diagram!)
 
-  \answer[units]{10}
+  \answer{10} units
   \whenRight The vectors $\vect{a}$, \(-2\vect{b}\), and
   $\vect{a} - 2\vect{b}$ form the sides of a right-angled
   triangle, with sides of length $8$ and $6$ and

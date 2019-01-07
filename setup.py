@@ -105,6 +105,11 @@ class WebQuizCtan(Command):
             self.shell_command('sass --style compress {} {}.css'.format(css_file, css_file[:-4]))
         # auto generate all of the data used in the manual and build the manuals
         self.shell_command('cd doc && ./makedoc --fast --make-manual')
+        try:
+            os.remove('javascript/webquiz-min.js')
+        except OSError:
+            pass
+        self.shell_command('cd javascript && uglifyjs --output webquiz-min.js --compress sequences=true,conditionals=true,booleans=true  webquiz.js ')
 
     def write_zip_file(self):
         r'''
@@ -113,8 +118,10 @@ class WebQuizCtan(Command):
         their expected places.
         '''
         # if the ctan directory already exists then delete it
-        if os.path.isfile('webquiz.zip'):
+        try:
             os.remove('webquiz.zip')
+        except OSError:
+            pass
 
         self.build_files_for_zipping()
 
@@ -134,7 +141,9 @@ class WebQuizCtan(Command):
                                    ('doc/webquiz.usage',               'doc'),
                                    ('doc/examples/*.png',              'doc/examples'),
                                    ('doc/examples/*.tex',              'scripts/www/doc/examples'),
-                                   ('javascript/webquiz.js',           'scripts/www'),
+                                   ('doc/examples/README-examples',    'scripts/www/doc/examples'),
+                                   ('doc/README-doc',                  'doc'),
+                                   ('javascript/webquiz-min.js',       'scripts/www/webquiz.js'),
                                    ('latex/pgfsys-tex4ht-mq-fixed.def','latex'),
                                    ('latex/webquiz-*.lang',            'latex'),
                                    ('latex/webquiz-doc.sty',           'latex'),
@@ -146,8 +155,12 @@ class WebQuizCtan(Command):
                                    ('webquiz/README-scripts',          'scripts'),
                 ]:
                 for file in glob.glob(src):
-                    print('{} --> {}'.format(file, target if target !='' else '.'))
-                    zfile.write(file, os.path.join('webquiz', target, file.split('/')[-1]))
+                    if '.' in target:
+                        zfile.write(file, os.path.join('webquiz', target))
+                    else:
+                        zfile.write(file, os.path.join('webquiz', target, file.split('/')[-1]))
+
+
 
 setup(name             = settings.program,
       version          = settings.version,

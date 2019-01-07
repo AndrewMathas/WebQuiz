@@ -155,7 +155,7 @@ signal.signal(signal.SIGTERM, graceful_exit)
 
 #################################################################################
 def preprocess_with_pst2pdf(quiz_file):
-    r''' 
+    r'''
     Preprocess the latex file using pst2pdf. As we are preprocessing the file it
     is not enough to have latex pass us a flag that tells us to use pst2pdf and,
     instead, we have to extract the class file option from the tex file
@@ -203,7 +203,7 @@ class WebQuizSettings:
     copying files into the web directories during initialisation. The settings
     themselves are stored in attribute settings, which is a dictionary. The
     class reads and writes the settings to the webquizrc file and the
-    vbalues of the settings are available as items:
+    values of the settings are available as items:
         >>> mq = WebQuizSettings()
         >>> mq['webquiz_url']
         ... /WebQuiz
@@ -265,10 +265,10 @@ class WebQuizSettings:
             'advanced': False,
             'help': 'URL for institution or university',
         },
-        unitcode={
-            'default': '???',
+        hidesidemenu={
+            'default': False,
             'advanced': False,
-            'help': 'Unit code for that is running the quizzes',
+            'help': 'Do not display the side menu when quiz starts (True or False)',
         },
         webquiz_format={
             'default': 'webquiz_standard',
@@ -290,7 +290,7 @@ class WebQuizSettings:
         },
         version={
             'default': metadata.version,
-            'advanced': True,
+            'advanced': False,
             'help': 'WebQuiz version number for webquizrc settings',
         })
 
@@ -334,9 +334,9 @@ class WebQuizSettings:
         # if webquiz_url is empty then assume that we need to initialise
         self.initialise_warning = ''
         if self['webquiz_url'] == '':
-            self['webquiz_url'] = 'http://www.maths.usyd.edu.au/u/mathas/WebQuiz/'
+            self['webquiz_url'] = 'http://www.maths.usyd.edu.au/u/mathas/WebQuiz'
             self.initialise_warning = webquiz_templates.web_initialise_warning
-            initialise = input('Do you want to initialise WebQuiz [Y/n]? ')
+            initialise = input(webquiz_templates.initialise_invite)
             if initialise == '' or initialise.strip().lower()[0] == 'y':
                 self.initialise_webquiz()
 
@@ -425,8 +425,8 @@ class WebQuizSettings:
                         # defaults serve as the "initial rcfile")
                         if key == 'version' or self.settings[key]['changed']:
                             rcfile.write('# {}\n{:<15} = {}\n'.format(
-                                           self.settings[key]['help'], 
-                                           key.replace('_','-'), 
+                                           self.settings[key]['help'],
+                                           key.replace('_','-'),
                                            self[key])
                             )
 
@@ -474,10 +474,17 @@ class WebQuizSettings:
             print('WebQuiz settings from {}\n'.format(self.rc_file))
             for key in sorted(self.settings.keys()):
                 if self[key] != '':
+                    extra = 'default' if self[key] == self.settings[key]['default'] else ''
+                    if self.settings[key]['advanced']:
+                        if extra != '':
+                            extra += ', '
+                        extra += 'advanced'
+                    if extra != '':
+                        extra = ' ('+extra+')'
                     print('# {}{}\n{:<15} = {}\n'.format(
-                            self.settings[key]['help'], 
-                            ' (default)' if self[key] == self.settings[key]['default'] else '',
-                            key.replace('_', '-'), 
+                            self.settings[key]['help'],
+                            extra,
+                            key.replace('_', '-'),
                             self[key])
                     )
 
@@ -490,25 +497,37 @@ class WebQuizSettings:
         if self.just_initialise:  # stop initialising twice with webquiz --initialise
             return
 
-        print(webquiz_templates.initialise_introduction)
-
         # prompt for directory and copy files - are these reasonable defaults
         # for each OS?
-        if self['webquiz_www'] != '':
-            web_root = self['webquiz_www']
-        elif sys.platform == 'linux':
-            web_root = '/usr/local/httpd/WebQuiz'
         elif sys.platform == 'darwin':
-            web_root = '/Library/WebServer/Documents/WebQuiz'
+            default_root = '/Library/WebServer/Documents/WebQuiz'
+            platform = 'Mac OSX'
+        elif sys.platform.startswith('win'):
+            default_root = ' c:\inetpub\wwwroot\WebQuiz'
+            platform = 'Windows'
         else:
-            web_root = '/Local/Library/WebServer'
+            default_root = '/var/www/html/WebQuiz'
+            platform = sys.platform.capitalize()
+
+        if self['webquiz_www'] != '':
+            webquiz_root = self['webquiz_www']
+        else:
+            webquiz_root = default_root
+
+        print(webquiz_templates.initialise_introduction)
+        input('Press return to continue... ')
+
+        print(webquiz_templates.webroot_request.format(
+                platform=platform,
+                webquiz_dir = webquiz_root)
+        )
+        input('Press return to continue... ')
 
         files_copied = False
-        print(webquiz_templates.web_directory_message)
         while not files_copied:
-            web_dir = input('WebQuiz web directory [{}] '.format(web_root))
+            web_dir = input('\nWebQuiz web directory:\n[{}] '.format(webquiz_root))
             if web_dir == '':
-                web_dir = web_root
+                web_dir = webquiz_root
             else:
                 web_dir = os.path.expanduser(web_dir)
 
@@ -530,11 +549,9 @@ class WebQuizSettings:
                     elif os.path.isdir(web_doc):
                         shutil.rmtree(web_doc)
 
-                    print('**** About to copy www directory {} to {} ****'.
-                          format(webquiz_file('www'), web_dir))
                     if os.path.isdir(webquiz_file('www')):
                         # if the www directory exists then copy it to web_dir
-                        print('Copying files to {}...\n'.format(web_dir))
+                        print('\nCopying web files to {} ...\n'.format(web_dir))
                         copytree(webquiz_file('www'), web_dir)
                     else:
                         # assume this is a development version and add links
@@ -559,10 +576,7 @@ class WebQuizSettings:
                     print(webquiz_templates.permission_error.format(web_dir))
 
                 except OSError as err:
-                    print(
-                        'There was a problem copying files to {}.\n  Error: {}]\n'
-                        .format(web_dir, err))
-                    print('Please give a different directory.\n')
+                    print(oserror_copying.format(web_dir=web_dir, err=err))
 
         if self['webquiz_www'] != 'SMS':
             # now prompt for the relative url
@@ -588,8 +602,7 @@ class WebQuizSettings:
         # read and save the rest of the settings and exit
         print(webquiz_templates.edit_settings)
         input('Press return to continue... ')
-        self.edit_settings(
-            ignored_settings=['webquiz_url', 'webquiz_www', 'version'])
+        self.edit_settings(ignored_settings=['webquiz_url', 'webquiz_www', 'version'])
         print(webquiz_templates.initialise_ending.format(web_dir=self['webquiz_www']))
         self.just_initialise = True
 
@@ -597,17 +610,20 @@ class WebQuizSettings:
         r'''
         Change current default values for the WebQuiz settings
         '''
-        for key in self.settings:
+        advanced_not_started = True
+        for key in sorted(self.settings.keys(), key=lambda k: '{}{}'.format(self.settings[k]['advanced'], k)):
             if key not in ignored_settings:
-                if self.settings[key]['advanced']:
-                    print(
-                        '\n** This is an advanced setting that you probably do not want to change **'
-                    )
-                else:
-                    print('')
+                if advanced_not_started and self.settings[key]['advanced']:
+                    print(webquiz_templates.advanced_settings)
+                    advanced_not_started = False
 
-                setting = input('{}{}: '.format(self.settings[key]['help'],
-                                          '' if self[key] == '' else ' [' + self[key] + '] '))
+                skey = '{}'.format(self[key])
+                setting = input('{}{}[{}]: '.format(
+                                    self.settings[key]['help'],
+                                    ' ' if len(skey)<40 else '\n',
+                                    skey
+                          )
+                ).strip()
                 if setting != '':
                     if key == 'webquiz_url' and setting[0] != '/':
                         print("  ** prepending '/' to webquiz_url **")
@@ -622,6 +638,14 @@ class WebQuizSettings:
                     elif key == 'engine' and setting not in self.settings['engine'].values:
                         print('setting not changed: {} is not a valid TeX engine'.format(setting))
                         setting = self['engine']
+
+                    elif key == 'hidesidemenu':
+                        setting = setting.capitalize()
+                        if setting in ['True', 'False']:
+                            setting = eval(setting) # convert to boolean
+                        else:
+                            print('setting not changed: hidesidemenu must be True or False')
+                            setting = self['hidesidemenu']
 
                     self[key] = setting
                     self.settings[key]['changed'] = True
@@ -668,8 +692,6 @@ class MakeWebQuiz(object):
 
         # determine language settings
         language = self.quiz.language
-        if language == 'default':
-            language = self.settings['language']
 
         try:
             language_file = kpsewhich('webquiz-{}.lang'.format(language))
@@ -683,20 +705,9 @@ class MakeWebQuiz(object):
 
         self.language = MetaData(language_file)
 
-        self.theme = self.quiz.theme
-        if self.theme == 'default':
-            self.theme = self.settings['theme']
-
         # initialise number of quiz and discussion items
         self.number_discussions = len(self.quiz.discussion_list)
         self.number_quizzes = len(self.quiz.question_list)
-
-        # take school defaults from settings if they are not set in the quiz file
-        self.unit = self.quiz.unit
-        self.school = self.quiz.school
-        for opt in ['department', 'department_url', 'institution', 'institution_url']:
-            if self.school[opt] == 'default':
-                self.school[opt] = self.settings[opt]
 
         self.title = self.quiz.title
         self.add_meta_data()
@@ -705,9 +716,7 @@ class MakeWebQuiz(object):
         self.add_quiz_header_and_questions()
 
         # build the bread crumbs - take crumbs from settings if not specified by the quiz
-        if self.quiz.breadcrumbs == 'default':
-            self.quiz.breadcrumbs = self.settings['breadcrumbs']
-
+        self.quiz.breadcrumbs = self.settings['breadcrumbs']
         self.quiz.breadcrumbs = [
             crumb.strip() for crumb in self.quiz.breadcrumbs.split('|')
         ]
@@ -717,28 +726,28 @@ class MakeWebQuiz(object):
             for crumb in self.quiz.breadcrumbs:
                 if crumb == 'department':
                     crumbs += self.add_breadcrumb_line(
-                        text=self.school['department'],
-                        url=self.school['department_url'],
+                        text=self.quiz.department,
+                        url=self.quiz.department_url,
                         missing='department')
                 elif crumb == 'institution':
                     crumbs += self.add_breadcrumb_line(
-                        text=self.school['institution'],
-                        url=self.school['institution_url'],
-                        missing='insitution')
+                        text=self.quiz.institution,
+                        url=self.quiz.institution_url,
+                        missing='institution')
                 elif crumb == 'unitcode':
                     crumbs += self.add_breadcrumb_line(
-                        text=self.unit['code'],
-                        url=self.unit['url'],
+                        text=self.quiz.unit_code,
+                        url=self.quiz.unit_url,
                         missing='unit code')
                 elif crumb == 'unitname':
                     crumbs += self.add_breadcrumb_line(
-                        text=self.unit['name'],
-                        url=self.unit['url'],
+                        text=self.quiz.unit_name,
+                        url=self.quiz.unit_url,
                         missing='unit name')
                 elif crumb == 'quiz-index':
                     if self.quiz.quiz_list == []:
                         crumbs += webquiz_templates.breadcrumb_quizlist.format(
-                            quizzes_url=self.unit['quizzes_url'],
+                            quizzes_url=self.quiz.quizzes_url,
                             **self.language)
                     else:
                         crumbs += self.add_breadcrumb_line('Quizzes')
@@ -846,6 +855,7 @@ class MakeWebQuiz(object):
             if not os.path.isfile(self.quiz_name + '.xml'):
                 webquiz_error('{}.xml does not exist!?'.format(self.quiz_name))
             self.quiz = webquiz_xml.ReadWebQuizXmlFile(self.quiz_name + '.xml',
+                                                       self.settings,
                                                        self.options.debugging)
         except Exception as err:
             webquiz_error(
@@ -861,10 +871,10 @@ class MakeWebQuiz(object):
             webquiz_url=self.webquiz_url,
             description=metadata.description,
             copyright=metadata.copyright,
-            department=self.school['department'],
-            institution=self.school['institution'],
+            department=self.quiz.department,
+            institution=self.quiz.institution,
             quiz_file=self.quiz_name,
-            theme=self.theme)
+            theme=self.quiz.theme)
 
         # we don't need any of the links or metas from the latex file
         # self.header += ''.join('  <meta {}>\n'.format(' '.join('{}="{}"'.format(k, meta[k]) for k in meta)) for meta in self.quiz.meta_list)
@@ -886,17 +896,8 @@ class MakeWebQuiz(object):
             )
             for q in range(1, self.number_quizzes + 1))
 
-        if self.school['department_url'] == 'default':
-            department = self.school['department']
-        else:
-            department = '''<a href="{department_url}">{department}</a>'''.format(
-                **self.school)
-
-        if self.school['institution_url'] == 'default':
-            institution = self.school['institution']
-        else:
-            institution = '''<a href="{institution_url}">{institution}</a>'''.format(
-                **self.school)
+        department = '''<a href="{0.department_url}">{0.department}</a>'''.format(self.quiz)
+        institution = '''<a href="{0.institution_url}">{0.institution}</a>'''.format(self.quiz)
 
         # end of progress buttons, now for the credits
         self.side_menu = webquiz_templates.side_menu.format(
@@ -928,42 +929,36 @@ class MakeWebQuiz(object):
                     encoding='utf8') as quiz_list:
                 if self.number_discussions > 0:
                     for (i, d) in enumerate(self.quiz.discussion_list):
-                        quiz_list.write('Discussion[{}]="{}";\n'.format(
-                            i, d.heading))
+                        quiz_list.write('Discussion[{}]="{}";\n'.format(i, d.heading))
                 if self.number_quizzes > 0:
-                    for (i, q) in enumerate(self.quiz.question_list):
+                    for (i, question) in enumerate(self.quiz.question_list):
+                        # QuizSpecifications is a 0-based array
+                        quiz_list.write('QuizSpecifications[%d]=[];\n' % i)
+                        a = question.text
                         quiz_list.write(
-                            'QuizSpecifications[%d]=[];\n' %
-                            i)  # QuizSpecifications is a 0-based array
-                        a = q.answer
-                        quiz_list.write(
-                            'QuizSpecifications[%d].label="%s %s";\n' %
-                            (i, self.language.question, i + 1))
-                        if isinstance(a, webquiz_xml.Answer):
-                            quiz_list.write(
-                                'QuizSpecifications[%d].value="%s";\n' %
-                                (i, a.value))
-                            quiz_list.write(
-                                'QuizSpecifications[%d].type="input";\n' % i)
+                            'QuizSpecifications[%d].label="%s %s";\n' % (i, self.language.question, i + 1)
+                        )
+                        quiz_list.write('QuizSpecifications[%d].type="%s";\n' % (i, question.type))
+                        if question.type == 'input':
+                            quiz_list.write('QuizSpecifications[%d].value="%s";\n' % (i, question.answer))
+                            quiz_list.write('QuizSpecifications[%d].comparison="%s";\n' % (i, question.comparison))
                         else:
-                            quiz_list.write(
-                                'QuizSpecifications[%d].type="%s";\n' %
-                                (i, a.type))
-                            quiz_list.write(''.join(
-                                'QuizSpecifications[%d][%d]=%s;\n' % (i, j,
-                                                                      s.expect)
-                                for (j, s) in enumerate(a.item_list)))
+                            quiz_list.write(''.join('QuizSpecifications[%d][%d]=%s;\n' % (i, j, s.expect)
+                                for (j, s) in enumerate(question.items)))
 
         except Exception as err:
             webquiz_error('error writing quiz specifications', err)
 
         self.javascript = webquiz_templates.questions_javascript.format(
-            webquiz_url=self.webquiz_url, mathjax=self.settings['mathjax'])
+            webquiz_url=self.webquiz_url,
+            mathjax=self.settings['mathjax']
+        )
         self.webquiz_init = webquiz_templates.webquiz_init.format(
             number_quizzes=self.number_quizzes,
             number_discussions=self.number_discussions,
             quiz_file=self.quiz_name,
-            hide_side_menu=self.quiz.hide_side_menu)
+            hide_side_menu=self.quiz.hidesidemenu
+        )
 
     def add_quiz_header_and_questions(self):
         r'''
@@ -978,8 +973,9 @@ class MakeWebQuiz(object):
         self.quiz_header = webquiz_templates.quiz_header.format(
             title=self.title,
             question_number=self.quiz.discussion_list[0].heading
-            if self.quiz.discussion_list != [] else self.language.question +
-            ' 1' if self.quiz.question_list > [] else '',
+                                    if self.quiz.discussion_list != []
+                                    else self.language.question + ' 1' if self.quiz.question_list > []
+                                    else '',
             arrows=arrows)
 
         # now comes the main page text
@@ -997,11 +993,12 @@ class MakeWebQuiz(object):
 
         # index for quiz
         if self.quiz.quiz_list != []:
+            print('quizlist: {}'.format(self.quiz.quiz_list))
             # add index to the web page
             self.quiz_questions += webquiz_templates.quiz_list_div.format(
-                unit=self.unit['name'],
+                unit=self.quiz.unit_name,
                 quiz_index='\n          '.join(
-                    webquiz_templates.quiz_list_item.format(url=q['url'], title=q['title'])
+                    webquiz_templates.quiz_list_item.format(url=q.url, title=q.title)
                     for q in self.quiz.quiz_list),
                 **self.language)
             # write a javascript file for displaying the menu
@@ -1010,7 +1007,7 @@ class MakeWebQuiz(object):
                     'quiztitles.js', 'w', encoding='utf8') as quizmenu:
                 quizmenu.write('var QuizTitles = [\n{titles}\n];\n'.format(
                     titles=',\n'.join("  ['{}', '/{}/Quizzes/{}']".format(
-                        q['title'], self.unit['url'], q['url'])
+                        q.title, self.quiz.unit_url, q.url)
                                       for q in self.quiz.quiz_list)))
 
         # finally we print the questions
@@ -1024,55 +1021,59 @@ class MakeWebQuiz(object):
                     response=self.print_responses(q, qnum + 1))
                 for (qnum, q) in enumerate(self.quiz.question_list))
 
-    def print_question(self, Q, Qnum):
+    def print_question(self, question, qnum):
         r'''Here:
-            - Q is a class containing the question
-            - Qnum is the number of the question
+            - question is the question
+            - qnum is the number of the question
         '''
-        if isinstance(Q.answer, webquiz_xml.Answer):
+        if question.type == 'input':
             question_options = webquiz_templates.input_answer.format(
-                tag=Q.answer.tag if Q.answer.tag else '')
+                                 size=5+len('{}'.format(question.answer)),
+                                 after_text=question.after_text,
+                                 **self.language
+            )
+            print('ANSWER={}, SIZE={}'.format(question.answer, 5+len('{}'.format(question.answer))))
+        elif question.type in ['single', 'multiple']:
+            question_options = webquiz_templates.choice_answer.format(
+                    after_text=question.after_text,
+                    choices='\n'.join(self.print_choices(qnum, question, choice)
+                        for choice in range(len(question.items)))
+            )
         else:
-            question_options = webquiz_templates.choice_answer.format(choices='\n'.join(
-                self.print_choices(Qnum, Q.answer.item_list, choice)
-                for choice in range(len(Q.answer.item_list))))
-            #hidden=webquiz_templates.input_single.format(qnum=Qnum) if Q.answer.type=="single" else '')
+            webquiz_error('Unknown question type "{}" in question {}'.format(question.type, qnum))
         return webquiz_templates.question_text.format(
-            qnum=Qnum,
-            question_text=Q.question,
+            qnum=qnum,
+            question_text=question.text,
             question_options=question_options,
             **self.language)
 
-    def print_choices(self, qnum, answers, choice):
+    def print_choices(self, qnum, question, part):
         r'''
         Here:
             - qnum     = question number
-            - answers = listr of answers to this question
-            - choice  = number of the option we need to process.
+            - question = current question
+            - part     = number of the option we need to process.
         We put the parts into ans.parent.cols multicolumn format, so we have
-        to add '<tr>' and '</tr>' tags depending on choice.
+        to add '<tr>' and '</tr>' tags depending on part.
         '''
-        ans = answers[choice]
-        item = '<tr>' if ans.parent.cols == 1 or (
-            choice % ans.parent.cols) == 0 else '<td>&nbsp;</td>'
-        if ans.parent.type == 'single':
+        choice = question.items[part]
+        item = '<tr>' if question.cols == 1 or (part % question.cols) == 0 else '<td>&nbsp;</td>'
+        if question.type == 'single':
             item += webquiz_templates.single_item.format(
-                choice=ALPHABET[choice], qnum=qnum, answer=ans.answer)
-        elif ans.parent.type == 'multiple':
+                choice=ALPHABET[part], qnum=qnum, text=choice.text)
+        elif question.type == 'multiple':
             item += webquiz_templates.multiple_item.format(
-                choice=ALPHABET[choice],
+                choice=ALPHABET[part],
                 qnum=qnum,
-                optnum=choice,
-                answer=ans.answer)
+                optnum=part,
+                text=choice.text)
         else:
-            item += '<!-- internal error: %s -->\n' % ans.parent.type
-            sys.stderr.write('Unknown question type encountered: {}'.format(
-                ans.parent.type))
-        if ans.parent.cols == 1 or (
-                choice +
-                1) % ans.parent.cols == 0 or choice == len(answers) - 1:
-            item += '   </tr><!-- choice={}, cols={}, # answers = {} -->\n'.format(
-                choice, ans.parent.cols, len(answers))
+            item += '<!-- internal error: %s -->\n' % question.type
+            webquiz_error('Unknown question type "{}" in question {}'.format(question.type, qnum))
+
+        if question.cols == 1 or (part+1) % question.cols == 0 or part == len(question.items) - 1:
+            item += '   </tr><!-- part={}, cols={}, # answers = {} -->\n'.format(
+                part, question.cols, len(question.items))
         return item
 
     def print_responses(self, question, qnum):
@@ -1080,49 +1081,50 @@ class MakeWebQuiz(object):
         Generate the HTML for displaying the response help text when the user
         answers a question.
         '''
-        if isinstance(question.answer, webquiz_xml.Answer):
-            s = question.answer
+        if question.type == 'input':
             response = webquiz_templates.tf_response_text.format(
                 choice=qnum,
                 response='true',
-                answer=self.language.correct,
+                correct_answer=self.language.correct,
                 answer2='',
-                text=s.when_right)
+                text=question.when_right)
             response += webquiz_templates.tf_response_text.format(
                 choice=qnum,
                 response='false',
-                answer=self.language.incorrect,
+                correct_answer=self.language.incorrect,
                 answer2=self.language.try_again,
-                text=s.when_wrong)
-        elif question.answer.type == "single":
+                text=question.when_wrong)
+        elif question.type == "single":
             response = '\n' + '\n'.join(
                 webquiz_templates.single_response.format(
                     qnum=qnum,
                     part=snum + 1,
-                    answer=self.language.correct if s.expect ==
-                    'true' else self.language.incorrect,
+                    correct_answer=self.language.correct if s.expect == 'true' else self.language.incorrect,
                     alpha_choice=self.language.choice.format(ALPHABET[snum]),
                     response=s.response,
                     **self.language)
-                for (snum, s) in enumerate(question.answer.item_list))
-        else:  # question.answer.type == "multiple":
+                for (snum, s) in enumerate(question.items))
+        elif question.type == "multiple":
             response = '\n' + '\n'.join(
                 webquiz_templates.multiple_response.format(
                     qnum=qnum,
                     part=snum + 1,
-                    answer=s.expect.capitalize(),
+                    correct_answer=s.expect.capitalize(),
                     response=s.response,
                     multiple_choice_opener=self.language.multiple_incorrect.
                     format(ALPHABET[snum]),
                     **self.language)
-                for (snum, s) in enumerate(question.answer.item_list))
+                for (snum, s) in enumerate(question.items))
             response += webquiz_templates.multiple_response_correct.format(
                 qnum=qnum,
                 responses='\n'.join(
                     webquiz_templates.multiple_response_answer.format(
-                        answer=s.expect.capitalize(), reason=s.response)
-                    for s in question.answer.item_list),
+                        correct_answer=s.expect.capitalize(), reason=s.response)
+                    for s in question.items),
                 **self.language)
+        else:
+            webquiz_error('Unknown question type "{}" in question {}'.format(question.type, qnum))
+
         return '<div class="answer">' + response + '</div>'
 
 
@@ -1224,7 +1226,7 @@ if __name__ == '__main__':
             action='store_const',
             const='lua',
             dest='engine',
-            help='Use lualatex to compile document with make4ht')
+            help='Use lualatex to compile the quiz')
 
         engine.add_argument(
             '-x',
@@ -1232,7 +1234,7 @@ if __name__ == '__main__':
             action='store_const',
             const='xelatex',
             dest='engine',
-            help='Use xelatex to compile document with make4ht')
+            help='Use xelatex to compile the quiz')
 
         # options suppressed from the help message
         parser.add_argument(

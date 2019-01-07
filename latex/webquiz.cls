@@ -22,21 +22,40 @@
 \RequirePackage{etoolbox}
 \RequirePackage{pgfopts}
 \def\unknown@options{}%          unknown options are passed to article.cls
-\def\MQ@HideSideMenu{false}%     side menu visible by default
+\def\MQ@HideSideMenu{deFAULT}%     side menu visible by default
 \newif\ifTikz\Tikzfalse%         true if tikz a document class option
 \newif\ifpsttopdf\psttopdffalse% true if pst2pdf a document class option
 
+% Process the documentclass options using pgfkeys and \ProcessPgfOptions
 \pgfkeys{/latexquizoptions/.is family,
   /latexquizoptions,
       pst2pdf/.code      = {\global\psttopdftrue},
       tikz/.code         = {\global\Tikztrue},
-      sidemenu/.code     = {\def\MQ@HideSideMenu{false}},
-      hidesidemenu/.code = {\def\MQ@HideSideMenu{true}},
-      language/.initial  = default,
-      theme/.initial     = default,
+      sidemenu/.style     = {hidesidemenuvalue=false},
+      hidesidemenu/.style     = {hidesidemenuvalue=true},
+      hidesidemenuvalue/.initial = deFAULT,
+      language/.initial  = deFAULT,
+      theme/.initial     = deFAULT,
       .unknown/.code={\edef\unknown@options{\unknown@options,\pgfkeyscurrentname}}
 }
 \newcommand\latexquizOption[1]{\pgfkeysvalueof{/latexquizoptions/#1}}
+
+% use pgfkeys to check for valid options for the choice environment and the
+% answer comparisons. As \ERROR is not define this generates an error message
+% if the option is not defined.
+\pgfkeys{/webquiz checker/.is family, /webquiz checker,
+  choice/.is choice,
+  choice/single/.code = {\textit{Exactly one option must be correct}},
+  choice/multiple/.code = {\textit{Zero or more options can be correct}},
+  choice/.unknown/.code = {\ERROR: invalid choice type: use single or multiple}
+  comparison/.is choice,
+  comparison/integer/.code = \relax,
+  comparison/number/.code = \relax,
+  comparison/string/.code = \relax,
+  comparison/lowercase string/.code = \relax,
+  comparison/eval/.code=\relax,
+  comparison/.unknown/.code = {\ERROR: invalid input type: use integer, string or eval}
+}
 
 % now process the options
 \ProcessPgfOptions{/latexquizoptions}% process options
@@ -115,13 +134,13 @@
 \UnitCode{Unit code?}
 \UnitName{Unit name?}
 \UnitURL{}
-\QuizzesURL{default}
-\BreadCrumb{default}
-\BreadCrumbs{default}
-\Department{default}
-\DepartmentURL{default}
-\University{default}
-\UniversityURL{default}
+\QuizzesURL{deFAULT}
+\BreadCrumb{deFAULT}
+\BreadCrumbs{deFAULT}
+\Department{deFAULT}
+\DepartmentURL{deFAULT}
+\University{deFAULT}
+\UniversityURL{deFAULT}
 
 % Define page header and footer for the printable version of the quiz
 % to show the unit code information.
@@ -213,31 +232,24 @@
 % allowed choice types are "single" or "multiple". The type and number
 % of columns is allowed to appear in either order, so most of the fun
 % and games below is sanity checking of the argunments.
-\def\MQ@choicesingle{single}      % the two legal choices
-\def\MQ@choicemultiple{multiple}
 \NewDocumentEnvironment{choice}{O{}}{%
   \ifInQuestion\relax% Give a warning if we aer not inside a question
   \else\MQ@error{Choice environments must be contained in a question}%
   \fi%
   \def\MQ@choicetype{single}% default choice type is single
   \def\MQ@choicecols{2}     % default of 2 columns
-  \foreach \opt in {#1} {   % loop throug the options and check for strings and numbers
-    \ifnum0<0\opt1\relax% \opt is a positive integer
-       \xdef\MQ@choicecols{\opt}
-    \else
-       \xdef\MQ@choicetype{\opt}
-    \fi
+  \foreach \opt in {#1} {%    loop throug the options and check for strings and numbers
+    \ifnum0<0\opt1\relax% \opt is a positive integer%
+       \xdef\MQ@choicecols{\opt}%
+    \else%
+       \pgfkeys{/webquiz checker/choice/\opt}%
+       \xdef\MQ@choicetype{\opt}%
+    \fi%
   }%
   \leavevmode\newline
   (\textit{The choices will be printed in \MQ@choicecols\ columns in the HTML version of the quiz})
   \global\InChoicetrue%
   \par%
-  % check that we have a valid choice type and give an error if we don't
-  \ifx\MQ@choicetype\MQ@choicesingle(\textit{Exactly one option must be correct})%
-  \else\ifx\MQ@choicetype\MQ@choicemultiple(\textit{Zero or more options can be correct})
-       \else\MQ@error{\MQ@choicetype\space is not a valid multiple choice type. Use single or multiple}%
-       \fi%
-  \fi%
   \setcounter{choice}{0}%
 }{\InChoicefalse}
 
@@ -245,7 +257,8 @@
 \newif\ifanswer
 \newif\ifWhenRight
 \newif\ifWhenWrong
-\newcommand\answer[2][\relax]{%
+% supported answer comparisons
+\newcommand\answer[2][integer]{%
   \answertrue%
   \ifInQuestion\relax%
   \else\MQ@error{\noexpand\answer\ must be contained in a question}%
@@ -253,9 +266,10 @@
   \ifInChoice%
   \MQ@error{You cannot have \noexpand\answer\ inside multiple choice}%
   \fi%
+  \pgfkeys{/webquiz checker/comparison/#1}%
   \InAnswertrue%
   \leavevmode\bigskip\newline%
-  \fbox{\textit{Answer:}\qquad#2}\qquad#1%
+  \fbox{\textit{Answer (comparison #1):}\qquad#2}%
   \WhenRightfalse\WhenWrongfalse}
 \newcounter{choice}
 \def\MQ@option#1{%

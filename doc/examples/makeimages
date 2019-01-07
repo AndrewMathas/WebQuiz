@@ -145,6 +145,11 @@ class Convert:
 
 # Specify the pages to construct using the Convert class:
 pages = [
+    Convert("answer-integer", js="document.forms['Q1Form'].elements[0].value=18; setTimeout(checkAnswer, 4);", delay=10),
+    Convert("answer-number", js="document.forms['Q1Form'].elements[0].value=18; setTimeout(checkAnswer, 4);", delay=10),
+    Convert("answer-string", js="document.forms['Q1Form'].elements[0].value=18; setTimeout(checkAnswer, 'Canberra');", delay=10),
+    Convert("answer-lower", js="document.forms['Q1Form'].elements[0].value=18; setTimeout(checkAnswer, 4);", delay=10),
+    Convert("answer-eval", js="document.forms['Q1Form'].elements[0].value=18; setTimeout(checkAnswer, 'sin(x)');", delay=10),
     Convert("breadcrumbs", delay=10),
     Convert("choice-multiple"),
     Convert("choice-single"),
@@ -157,7 +162,6 @@ pages = [
     Convert("nounits", delay=5),
     Convert("pst2pdf"),
     Convert("pstricks-ex"),
-    Convert("question", js="document.forms['Q1Form'].elements[0].value=18; setTimeout(checkAnswer, 4);", delay=10),
     Convert("quiz-page", question="1:2", delay=15),
     Convert("simple", page_out='simple-html'),
     Convert("simple", src='pdf',  page_out='simple-pdf'),

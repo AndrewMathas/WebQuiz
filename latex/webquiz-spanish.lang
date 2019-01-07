@@ -1,3 +1,4 @@
+answer             = Responder
 check answer       = Checar respuesta
 choice             = La opción ({}) es
 correct            = ¡Correcto!

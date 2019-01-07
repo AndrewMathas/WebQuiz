@@ -227,11 +227,27 @@ function checkAnswer() {
     var i;
 
     if (question.type === "input") {
-        if (parseFloat(question.value) === parseFloat(formObject.elements[0].value)) {
-            correct[qnum] = true;
+        var answer = formObject.elements[0].value;
+        switch(question.comparison) {
+          case 'integer':
+            correct[qnum] = (parseInt(question.value) === parseInt(answer));
+            break;
+          case 'number':
+            correct[qnum] = (parseFloat(question.value) === parseFloat(answer));
+            break;
+          case 'string':
+            correct[qnum] = (String(question.value) === String(answer));
+            break;
+          case 'lowercase string':
+            correct[qnum] = (String(question.value).toLowerCase() === String(answer).toLowerCase());
+            break;
+          case 'eval':
+            correct[qnum] = (math.eval(question.value-answer) == int(0));
+            break;
+        }
+        if (correct[qnum]) {
             showResponse("q" + currentQ + "true");
         } else {
-            correct[qnum] = false;
             showResponse("q" + currentQ + "false");
         }
     } else if (question.type === "single") {

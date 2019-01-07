@@ -19,6 +19,7 @@ r'''
 
 import sys
 import xml.sax
+from webquiz_templates import mathjs
 
 DEBUG = False
 
@@ -29,16 +30,17 @@ def Debugging(*arg):
             '%s' % a for a in arg) + '\n')
 
 
-def ReadWebQuizXmlFile(quizfile, debugging):
+def ReadWebQuizXmlFile(quizfile, defaults, debugging):
     global DEBUG
 
     DEBUG = debugging
     parser = xml.sax.make_parser()
-    quiz = QuizHandler()
+    quiz = QuizHandler(defaults)
     parser.setContentHandler(quiz)
     parser.setErrorHandler(quiz)
+    parser.setDTDHandler(quiz)
     parser.parse(quizfile)
-    return quiz.root
+    return quiz
     #parser.close()
 
 
@@ -46,371 +48,221 @@ def ReadWebQuizXmlFile(quizfile, debugging):
 # The HandlerBase class inherits from#:
 # DocumentHandler, DTDHandler, EntityResolver, ErrorHandler
 # -----------------------------------------------------
+
+class Data(object):
+    r'''
+    A wrapper object class that holds the data for the different
+    components of the quiz.
+    '''
+    def __init__(self, **args):
+        '''
+        Accepts key-value pairs, each of which is stored as an attribute
+        '''
+        self._items = args.items()
+        for key, val in args.items():
+            setattr(self, key, val)
+
+    def __str__(self):
+        return '\n - '.join('{} = {}'.format(k, getattr(self, k)) for k in self._items)
+
 class QuizHandler(xml.sax.ContentHandler):
     """
-     Provides callbacks for all the entities in webquiz.dtd.
-     These methods manage the construction of the document tree.
+        The content handler gives the xml tags to `startElement`, which
+        initialises the webquiz tags, and then `endElement` attaches the
+        content of each webquiz tag tothe appropriate part of `self`. Any end
+        tag that is ot special to webquiz has its contents appended to
+        `self.text`. Any tag that contains `deFAULT` is set to the system
+        default using the `defaults` dictionary.
+    """
 
-     The SAXinterface provides a dictionary of attributes when it
-     calls xxx_start.  The value of a given key can be
-     retrieved by attrs.get('keyname','default')
+    def __init__(self, defaults):
+        self.defaults = defaults
 
-     PCDATA is accumulated in self.text
-     self.position keeps track of where we are in the tree
+        # arrays for the different quiz components
+        self.discussion_list = []
+        self.link_list = []
+        self.meta_list = []
+        self.question_list = []
+        self.quiz_list = []
 
-     Provide a list for all child elements of the form xxx*
+        self.mathjs_not_linked = True  # to ensure that mathjs is added only once
 
-     The quiz files themselves may need to use the <![CDATA[ ... ]]>
-     construction to include HTML markup in the text sections.
-  """
-
-    def __init__(self):
-        self.level = 0
+        # the following tags have defaults set by `defaults`
+        self.setting_tags = [
+               'breadcrumbs',
+               'department',
+               'department_u
+               'institution',
+               'institution_url',
+               'language',
+               'theme',
+        ]
+        # quiz data
+        for tag in self.setting_tags:
+            setattr(self, tag, defaults[tag])
+        self.breadcrumb = ''
         self.text = ''
-        self.root = Node()
-        self.position = self.root
-        # self.text accumulates character data.  It is set to
-        # a null string by startElement but it may persist
-        # after the corresponding endElement fires.
+        self.after_text = ''
+        self.title = ''
+        self.unit_name = ''
 
-    def startElement(self, name, attrs):
-        self.text = ''
-        self.level += 1
-        method = name + "_start"
-        Debugging('Looking for ' + method)
-        if hasattr(self, method):
-            getattr(self, method)(attrs)
+        # keep track of current tags
+        self.current_tags=[]
+
+
+    def set_default_attribute(self, key, value):
+        ''' Set the attribute `key` of self, using the default value if
+        `value=='deFAULT'`.
+        '''
+        if value.strip() == 'deFAULT':
+            setattr(self, key, self.defaults[key])
+        elif hasattr(self, key):
+            setattr(self, key, getattr(self,key)+value)
         else:
-            self.default_start(name, attrs)
+            setattr(self, key, value)
 
-    def characters(self, chars):  #data,start,length):
-        if self.level > 0:
-            self.text += chars  # cdata[start:start+length]
+    def startElement(self, tag, attributes):
+        '''
+            At the start of each webquiz xml tag we need to pull out the
+            attributes and place
+        '''
 
-    def endElement(self, name):
-        self.level = self.level - 1
-        method = name + "_end"
-        if hasattr(self, method):
-            getattr(self, method)()
+        Debugging('startElement\n - tags={}\n - text={}.'.format(', '.join(self.current_tags), self.text))
+        self.current_tags.append(tag)
+
+        # initialise the quiz
+        if tag == 'quiz':
+            self.src = attributes.get('src')
+            for key in ['hidesidemenu', 'language', 'theme']:
+                self.set_default_attribute(key, attributes.get(key))
+
+        # set up links, meta tags and department and unit data
+        elif tag == 'link':
+            self.link_list.append({key: attributes.get(key) for key in attributes.keys()})
+
+        elif tag == 'meta':
+            self.meta_list.append({key: attributes.get(key) for key in attributes.keys()})
+
+        elif tag in [' department', 'institution', 'uni']:
+            for key in attributes.keys():
+                self.set_default_attribute(tag, attributes.get(key))
+
+        elif tag == 'unit':
+            self.set_default_attribute('unit_code', attributes.get('code'))
+            self.set_default_attribute('unit_url', attributes.get('url'))
+            self.quizzes_url = attributes.get('quizzes')
+            if self.quizzes_url == 'deFAULT':
+                self.quizzes_url = self.unit_url + '/Quizzes'
+
+        # set up questions and discussion
+        elif tag == 'discussion':
+            discussion = Data(heading = attributes.get('heading'),
+                              short_heading = attributes.get('short_heading'),
+                              text = ''  # The text of the discussion
+            )
+            self.discussion_list.append(discussion)
+
+        elif tag == 'question':
+            question = Data(text = '',        # The text of the question
+                            type = None,      # input, or single or multiple choice
+                            after_text = '' # text at end of question
+            )
+            self.question_list.append(question)
+
+        # process the different question types, items choice and responses
+        elif tag == 'answer':
+            self.question_list[-1].type = 'input'
+            self.question_list[-1].answer = ''
+            self.question_list[-1].when_right = ''
+            self.question_list[-1].when_wrong = ''
+            self.question_list[-1].text += self.text
+            self.text = ''
+
+            self.question_list[-1].comparison = attributes.get('comparison')
+            if mathjs not in self.link_list and self.question_list[-1].comparison == 'eval':
+                self.link_list.append(mathjs)
+
+        elif tag == 'choice':
+            self.question_list[-1].type = attributes.get('type')
+            self.question_list[-1].cols = int(attributes.get('cols'))
+            self.question_list[-1].items = []
+            self.question_list[-1].text += self.text
+            self.text = ''
+
+        elif tag == 'item':
+            self.question_list[-1].items.append(
+                    Data(expect= attributes.get('expect'),
+                         response='',
+                         text=''
+                        )
+            )
+
+        # finally look after the index file
+        elif tag == 'quizlistitem':
+            self.quiz_list.append(Data(title=attributes.get('title'),
+                                       url=attributes.get('url')
+                                 )
+            )
+
+        elif tag in ['when_right', 'when_wrong']:
+            self.question_list[-1].after_text += self.text
+            self.text = ''
+
+
+    def endElement(self, tag):
+        Debugging('endElement\n - tag = {}\n - tags={}\n - text={}.'.format(tag, ', '.join(self.current_tags), self.text))
+        self.current_tags.pop()  # remove the last tag from the tag list
+
+        text_used = True # assume that we will use the text
+
+        if tag in self.setting_tags:
+            self.set_default_attribute(tag, self.text)
+
+        elif tag == 'unit':
+            self.unit_name += self.text
+
+        elif tag == 'answer':
+            self.question_list[-1].answer += self.text
+
+        elif tag == 'discussion':
+            self.discussion_list[-1].text += self.text
+
+        elif tag =='item':
+            self.question_list[-1].items[-1].text += self.text
+
+        elif tag =='response':
+            print('adding response={}.'.format(self.text))
+            self.question_list[-1].items[-1].response += self.text
+
+        elif tag == 'question':
+            self.question_list[-1].after_text += self.text
+
+        elif tag == 'title':
+            self.title += self.text
+
+        elif tag == 'unit':
+            self.unit_name += self.text
+
+        elif tag == 'when_right':
+            self.question_list[-1].when_right += self.text
+
+        elif tag == 'when_wrong':
+            self.question_list[-1].when_wrong += self.text
+
         else:
-            self.default_end(name)
+            # mark that we still need to use the text
+            text_used = False
 
-#  def ignorable_whitespace(self, cdata,start,length):
-#    self.characters(cdata,start,length)
+        if text_used:
+            Debugging('text "{}" added to {}'.format(self.text, tag))
+            self.text = ''
 
-#  def processing_instruction(self, target,data):
-#    print "<?"+target+" "+data+"?>"
-
-    def default_start(self, name, attrs):
-        Debugging('START:', name)
-
-    def default_end(self, name):
-        Debugging('END:', name)
+    def characters(self, text):  #data,start,length):
+        self.text += text
+        Debugging('characters\n - tags={}\n - text={}.'.format(', '.join(self.current_tags), self.text))
 
     def error(self, e):
         raise e
 
     def fatalError(self, e):
         raise e
-
-    def quiz_start(self, attrs):
-        self.root = Quiz()
-        self.position = self.root
-        self.position.title = attrs.get('title', '').encode().decode()
-        self.position.breadcrumb = attrs.get('breadcrumb', 'default')
-        self.position.breadcrumbs = attrs.get('breadcrumbs', 'default')
-        self.position.hide_side_menu = attrs.get('hidesidemenu', False)
-        self.position.src = attrs.get('src', '')
-        # the following default to the rc-file setting
-        self.position.language = attrs.get('language', 'default')
-        self.position.theme = attrs.get('theme', 'default')
-
-    def meta_start(self, attrs):
-        r'''
-      Convert attrs to a normal dictionary and append to meta_list
-      '''
-        self.position.meta_list.append(
-            {meta: attrs.get(meta, '')
-             for meta in attrs.keys()})
-
-    def link_start(self, attrs):
-        r'''
-      Convert attrs to a normal dictionary and append to link_list
-      '''
-        self.position.link_list.append(
-            {link: attrs.get(link, '')
-             for link in attrs.keys()})
-
-    def quizlistitem_start(self, attrs):
-        self.position.quiz_list.append(attrs)
-
-    def unit_start(self, attrs):
-        r'''
-    There should only be one unit field. We replace `attrs` with a dictionary
-    of the unit attributes.
-    '''
-        self.position.unit = {k: attrs.get(k) for k in attrs.keys()}
-
-    def school_start(self, attrs):
-        r'''
-    There should only be one school field. We replace `attrs` with a dictionary
-    of the school attributes.
-    '''
-        self.position.school = {k: attrs.get(k) for k in attrs.keys()}
-
-    def question_start(self, attrs):
-        q = Question(self.position)
-        self.position.question_list.append(q)
-        self.position = q
-
-    def text_end(self):
-        self.position.set_text(self.text)
-
-    def choice_start(self, attrs):
-        if self.position.answer:
-            sys.stderr.write(
-                "Processing halted. Multiple <choice>/<answer> tags\n")
-            sys.exit(1)
-        self.position.answer = Choice(self.position, attrs.get('type'),
-                                      attrs.get('cols'))
-        self.position = self.position.answer
-
-    def answer_start(self, attrs):
-        if self.position.answer:
-            sys.stderr.write(
-                "Processing halted. Multiple <choice>/<answer> tags\n")
-            sys.exit(1)
-        self.position.answer = Answer(self.position, attrs.get('value'))
-        self.position = self.position.answer
-
-    def tag_end(self):
-        self.position.tag = self.text.strip()
-
-    def discussion_start(self, attrs):
-        d = Discussion(self.position, attrs.get('heading'),
-                       attrs.get('short_heading'))
-        self.position.discussion_list.append(d)
-        self.position = d
-
-    def discussion_end(self):
-        self.position = self.position.parent
-
-    def item_start(self, attrs):
-        r = Item(self.position, attrs.get('expect'))
-        self.position.item_list.append(r)
-        self.position = r
-
-    def response_end(self):
-        self.position.response = self.text.strip()
-
-    def when_right_end(self):
-        self.position.when_right = self.text.strip()
-
-    def when_wrong_end(self):
-        self.position.when_wrong = self.text.strip()
-
-    def item_end(self):
-        self.position = self.position.parent
-
-    def answer_end(self):
-        self.position = self.position.parent
-
-    def choice_end(self):
-        self.position = self.position.parent
-
-    def question_end(self):
-        self.position = self.position.parent
-
-    def quiz_end(self):
-        Debugging('level =', self.level)
-
-
-# -----------------------------------------------------
-#  DTD structure
-# -----------------------------------------------------
-
-# Each node of the document tree keeps a reference to its
-# parent node in self.parent except for the root, which
-# defaults to None
-
-
-class Node(object):
-    def __init__(self, parent=None):
-        self.parent = parent
-        self.meta_list = []
-        self.link_list = []
-        Debugging('Node: class={}, parent={}'.format(
-            self.__class__.__name__,
-            parent.__class__.__name__ if parent else ''))
-
-    def accept(self, visitor):
-        pass
-
-    def broadcast(self, visitor):
-        pass
-
-    def __str__(self):
-        return ''
-
-
-class Quiz(Node):
-    """<!ELEMENT quiz (title, breadcrumbs, breadcrumb, hidesidemenu, meta*, link*, question*)>
-     <!ELEMENT title (#PCDATA)>
-  """
-
-    def __init__(self):
-        Node.__init__(self)
-        self.unit = dict(name='', code='', url='', quizzes='')
-        self.school = dict(
-            department='',
-            department_url='',
-            institution='',
-            institution_url='')
-        self.discussion_list = []
-        self.question_list = []
-        self.quiz_list = []
-
-    def accept(self, visitor):
-        visitor.for_quiz(self)
-
-    def broadcast(self, visitor):
-        for node in self.question_list:
-            node.accept(visitor)
-
-    def __str__(self):
-        s = 'Quiz: %s\n' % self.title
-        for p in self.question_list:
-            s += '%s\n' % p
-        return s
-
-
-class Discussion(Node):
-    """<!ELEMENT discussion (#PCDATA)>
-     <!ATTLIST dicussion heading #PCDATA #required>
-  """
-
-    def __init__(self, parent, heading, short_heading):
-        Node.__init__(self, parent)
-        self.discussion = ""
-        self.heading = heading
-        self.short_heading = short_heading
-        self.meta_list = []
-
-    def accept(self, visitor):
-        visitor.for_discussion(self)
-
-    def broadcast(self, visitor):
-        for node in self.question_list:
-            node.accept(visitor)
-
-    def set_text(self, text):
-        self.discussion = text.strip()
-
-    def __str__(self):
-        return 'Discussion(' + self.heading + '):' + self.discussion
-
-
-class Question(Node):
-    """<!ELEMENT question (text, (choice|answer))>
-     <!ELEMENT text (#PCDATA)>
-  """
-
-    def __init__(self, parent):
-        Node.__init__(self, parent)
-        self.question = ""  # The text of the question
-        self.answer = None  # Can be a Node of class Answer OR Choice
-
-    def set_text(self, text):
-        self.question = text.strip()
-
-    def accept(self, visitor):
-        visitor.for_question(self)
-
-    def broadcast(self, visitor):
-        if self.answer:
-            self.answer.accept(visitor)
-
-    def __str__(self):
-        return 'Question: ' + self.question + '\n' + str(self.answer)
-
-
-class Choice(Node):
-    """<!ELEMENT choice (item*)>
-     <!ATTLIST choice type (single|multiple) #REQUIRED
-                           cols #CDATA       #REQUIRED
-     >
-  """
-
-    def __init__(self, parent, type, cols):
-        Node.__init__(self, parent)
-        self.item_list = []
-        # --
-        self.type = type
-        self.cols = int(cols)
-
-    def accept(self, visitor):
-        visitor.for_choice(self)
-
-    def broadcast(self, visitor):
-        for node in self.item_list:
-            node.accept(visitor)
-
-    def __str__(self):
-        s = "Choices:\n"
-        for p in self.item_list:
-            s += '%s\n' % str(p)
-        return s
-
-
-class Answer(Node):
-    """<!ELEMENT answer (tag?, when_right, when_wrong)>
-     <!ATTLIST answer value CDATA #REQUIRED>
-     <!ELEMENT tag (#PCDATA)>
-     <!ELEMENT when_right (#PCDATA)>
-     <!ELEMENT when_wrong (#PCDATA)>
-  """
-
-    def __init__(self, parent, value):
-        Node.__init__(self, parent)
-        self.tag = ""
-        self.when_true = ""
-        self.when_false = ""
-        # --
-        self.value = value
-
-    def accept(self, visitor):
-        visitor.for_answer(self)
-
-    def __str__(self):
-        s = self.value + ': '
-        if self.tag:
-            s += self.tag
-        s += '\n_right: %s Wrong:' % (self.when_true, self.when_false)
-        return s
-
-
-class Item(Node):
-    """<!ELEMENT item (text,response?)>
-     <!ATTLIST item expect (true|false) #REQUIRED>
-     <!ELEMENT text (#PCDATA)>
-     <!ELEMENT response (#PCDATA)>
-  """
-
-    def __init__(self, parent, expect):
-        Node.__init__(self, parent)
-        self.answer = ""
-        self.response = ""
-        # --
-        self.expect = expect
-
-    def set_text(self, text):
-        self.answer = text.strip()
-
-    def accept(self, visitor):
-        visitor.for_item(self)
-
-    def __str__(self):
-        s = '%s: %s' % (self.expect, self.answer)
-        if self.response:
-            s += '\n_response: ' + self.response
-        return s

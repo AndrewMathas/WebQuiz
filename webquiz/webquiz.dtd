@@ -20,12 +20,12 @@
 -->
 
 <!ELEMENT quiz
-    hidesidemenu  #PCDATA #REQUIRED
-    language      #PCDATA #REQUIRED
-    src           #PCDATA #REQUIRED
-    theme         #PCDATA #REQUIRED
-(breadcrumb, breadcrumbs, unit, department, instution, meta*, link*, 
-    (quizlist|question*, discussion?))>
+    showsidemenu  CDATA #REQUIRED
+    language      CDATA #REQUIRED
+    src           CDATA #REQUIRED
+    theme         CDATA #REQUIRED
+(title, meta*, link*, breadcrumb, breadcrumbs, a,
+    unit, department, institution, (quizlist|question*, discussion?))>
 
 <!ELEMENT meta EMPTY>
 <!ATTLIST meta
@@ -47,19 +47,19 @@
 
 <!ELEMENT department (text)>
 <!ATTLIST departmment
-    url #PCDATA #REQUIRED
+    url CDATA #REQUIRED
 >
 
 <!ELEMENT institution (text)>
 <!ATTLIST institution #
-    url PCDATA #REQUIRED
+    url CDATA #REQUIRED
 >
 
 <!ELEMENT quizlist (quizitem*)>
 <!ELEMENT quizlistitem EMPTY>
 <!ATTLIST quizlistitem
-    title  #CDATA  #REQUIRED
-    url    #CDATA  #REQUIRED
+    title  #PCDATA  #REQUIRED
+    url    CDATA  #REQUIRED
 >
 
 <!ELEMENT discussion (text)>
@@ -84,7 +84,7 @@
 <!ATTLIST item expect (true|false) #REQUIRED>
 
 <!ELEMENT answer (tag?,when_right,when_wrong)>
-<!ATTLIST answer value CDATA #REQUIRED>
+<!ATTLIST answer comparison CDATA #REQUIRED>
 
 <!ELEMENT tag (#PCDATA)>
 
