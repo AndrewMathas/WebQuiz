@@ -52,7 +52,7 @@
   comparison/integer/.code = \relax,
   comparison/number/.code = \relax,
   comparison/string/.code = \relax,
-  comparison/lowercase string/.code = \relax,
+  comparison/lowercase/.code = \relax,
   comparison/eval/.code=\relax,
   comparison/.unknown/.code = {\ERROR: invalid input type: use integer, string or eval}
 }

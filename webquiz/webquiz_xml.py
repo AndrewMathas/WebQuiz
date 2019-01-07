@@ -91,7 +91,7 @@ class QuizHandler(xml.sax.ContentHandler):
         self.setting_tags = [
                'breadcrumbs',
                'department',
-               'department_u
+               'department_url',
                'institution',
                'institution_url',
                'language',

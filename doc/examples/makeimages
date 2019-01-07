@@ -145,11 +145,11 @@ class Convert:
 
 # Specify the pages to construct using the Convert class:
 pages = [
-    Convert("answer-integer", js="document.forms['Q1Form'].elements[0].value=18; setTimeout(checkAnswer, 4);", delay=10),
-    Convert("answer-number", js="document.forms['Q1Form'].elements[0].value=18; setTimeout(checkAnswer, 4);", delay=10),
-    Convert("answer-string", js="document.forms['Q1Form'].elements[0].value=18; setTimeout(checkAnswer, 'Canberra');", delay=10),
-    Convert("answer-lower", js="document.forms['Q1Form'].elements[0].value=18; setTimeout(checkAnswer, 4);", delay=10),
-    Convert("answer-eval", js="document.forms['Q1Form'].elements[0].value=18; setTimeout(checkAnswer, 'sin(x)');", delay=10),
+    Convert("answer-integer", js="document.forms['Q1Form'].elements[0].value=18; setTimeout(checkAnswer, 1);"),
+    Convert("answer-number", js="document.forms['Q1Form'].elements[0].value=0.75; setTimeout(checkAnswer, 1);"),
+    Convert("answer-string", js="document.forms['Q1Form'].elements[0].value='Canberra'; setTimeout(checkAnswer, 1);"),
+    Convert("answer-lowercase", js="document.forms['Q1Form'].elements[0].value='long'; setTimeout(checkAnswer, 1);"),
+    Convert("answer-eval", js="document.forms['Q1Form'].elements[0].value='-cos(x)'; setTimeout(checkAnswer, 1)');"),
     Convert("breadcrumbs", delay=10),
     Convert("choice-multiple"),
     Convert("choice-single"),

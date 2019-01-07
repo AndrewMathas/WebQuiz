@@ -238,7 +238,7 @@ function checkAnswer() {
           case 'string':
             correct[qnum] = (String(question.value) === String(answer));
             break;
-          case 'lowercase string':
+          case 'lowercase':
             correct[qnum] = (String(question.value).toLowerCase() === String(answer).toLowerCase());
             break;
           case 'eval':

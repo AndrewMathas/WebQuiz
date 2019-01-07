@@ -455,7 +455,7 @@ The \WebQuiz document class defines the following four environments:
 This section describes these environments and gives examples
 of their use.
 
-\subsubsection{Question environments}
+\subsubsection{Question environments and the \textcolor{blue}{\textbackslash answer} macro}
 \CrossIndex{environment}{question}
 
 Quizzes are composed of questions and each quiz question must to be
@@ -470,21 +470,68 @@ For brevity, all of the examples in this chapter have only one question
   \CrossIndex*{answer}*{whenWrong}
   \index{feedback!whenRight}
   \index{feedback!whenWrong}
-  \SeeIndex{numeric answer}{\textbackslash answer}
-  This example code shows how to use \LatexCode|\answer|, which is used
-  ask for a numerical answer to a question. The  \LatexCode{\answer}
-  macro accepts an optional argument for the units for the answer. The
-  units are printed on the quiz page after the answer box.
 
-  Then macros
-  \LatexCode|\whenRight| and \LatexCode|\whenWrong|, which are mandatory when
-  \LatexCode|\answer| is used, are used to give the student feedback, when
-  they are right, or further hints etc for approaching the question,
-  when they are wrong.
+  The macros \LatexCode|\whenRight| and \LatexCode|\whenWrong|, which
+  are mandatory when \LatexCode|\answer| is used, are used to give the
+  student feedback, when they are right, or further hints etc for
+  approaching the question, when they are wrong.
 
   The web page created by this code-block looks like this:
 
-  \ScreenShot{A question with a numeric answer}{examples/question}
+  \ScreenShot{A question with an integral answer}{examples/answer-integer}
+  This example code shows one way of using the \LatexCode|\answer| macro, which
+  asks for an answer to a question. The syntax of the
+  \LatexCode|\answer| macro is:
+  \begin{latexcode}
+      \answer[comparison type]{correct answer}
+  \end{latexcode}
+  where the optional \textit{comparison type} is one of:
+  \begin{description}
+      \item[integer] The \textit{correct answer} and the inputted answer
+      as compared as \textit{integers}. This is the default.
+      \CrossIndex*{answer}{integer}
+      \item[number] The \textit{correct answer} and the inputted answer
+      as compared as (real) \textit{numbers}. For example, if the
+      \textit{correct answer} was $0.8$ then $4/5$ would be marked as
+      correct.
+      \CrossIndex*{answer}{number}
+      \item[string] The \textit{correct answer} and the inputted answer
+      as compared as \textit{strings}. Note that \textit{string} is case
+      sensitive.
+      \CrossIndex*{answer}{string}
+      \item[lowercase] The \textit{correct answer} and the inputted answer
+      are converted to lower case and then compared as strings.
+      \CrossIndex*{answer}{eval}
+      \item[eval] The inputted answer is marked correct if the \textit{difference}
+      of the \textit{correct answer} and the inputted answer
+      evaluates, as a mathematical expression, to $0$. Standard
+      functions such as $\sin(x)$, $\cos(x)$ etc. are accepted.
+  \end{description}
+
+  Since \textit{integer} is the default comparison type, the example
+  code above is shows how integer comparisons work. The following code
+  blocks and screen shots show the four other \LatexCode|\answer|
+  comparison types.
+
+  \textcolor{blue}{Numeric answer}
+  \CrossIndex*{answer}{number}
+  \InputLatexCode{examples/answer-number}
+  \ScreenShot{A question with a numeric answer}{examples/answer-number}
+
+  \textcolor{blue}{String answer}
+  \CrossIndex*{answer}{string}
+  \InputLatexCode{examples/answer-string}
+  \ScreenShot{A question with a string answer}{examples/answer-string}
+
+  \textcolor{blue}{Lowercase string answer}
+  \CrossIndex*{answer}{lowercase}
+  \InputLatexCode{examples/answer-lowercase}
+  \ScreenShot{A question with a lowercase string answer}{examples/answer-lowercase}
+
+  \textcolor{blue}{Evaluated answer}
+  \CrossIndex*{answer}{eval}
+  \InputLatexCode{examples/answer-eval}
+  \ScreenShot{A question with an evaluated answer}{examples/answer-eval}
 
 \subsubsection{Choice environments}
 \CrossIndex{environment}{choice}
@@ -731,10 +778,12 @@ discussion.
     The \LatexCode|\BreadCrumb| command sets the \textsf{breadcrumb}
     variable that, by default, is the last item in the breadcrumbs on
     the quiz web page. By default, \textsf{breadcrumb} is as set to be
-    the part of the quiz title, as set by \verb!\title!, before the
+    the part of the quiz title, as set by \LatexCode|\title|, before the
     first colon. For example, the title
 
-     \hspace*{20mm}\verb!\title{Quiz 1: Some interesting questions about frogs}!
+     \begin{latexcode}
+       \title{Quiz 1: Some interesting questions about frogs}
+     \end{latexcode}
 
      sets \textsf{breadcrumb} to ``Quiz 1''. Using the \LatexCode|\BreadCrumb|
      command \textit{after} the \LatexCode|\title| command will override the
@@ -1159,22 +1208,20 @@ to use both \ctan{pstrick} and  \ctan{tik} will probably compile.
      \textit{initialisation} routine that helps to streamline
      the process. In fact, until \WebQuiz has been initialised it will
      ask you if you to run the initialisation routine each time you use
-     \WebQuiz. You can also initialise at any time using the
+     \WebQuiz. You can reinitialise \WebQuiz at any time using the
      command-line option:
     \begin{bashcode}
       > webquiz --initialise
     \end{bashcode}
-    Initialising \WebQuiz will also allow you to set various system
+    Initialising \WebQuiz also allows you to set various system
     defaults for the quizzes that, for example, specify the name and URL
     for your department and institution as well as the default language
     and theme used for the quizzes. All of these defaults can be
     overridden in any \LaTeX\ file for a quiz.
 
-    \textit{If you want to install the \WebQuiz files for general use on
-    your system, or to save system wide settings, then you need to run the
-    initialisation command }\BashCode|webquiz --initialise| \textit{using an
-    administrator account or using \textsf{sudo} on a UNIX or Mac OSX
-    system.}
+    \WebQuiz will actually work without being initialised, however, any
+    quiz web pages that are created before initialisation will be
+    emblazoned with a message reminding you to initialise \WebQuiz.
 
     The initialisation routine tries to explain what it is doing at each
     step, and we give more detail below. As \WebQuiz needs to put files
@@ -1183,10 +1230,21 @@ to use both \ctan{pstrick} and  \ctan{tik} will probably compile.
     initialise \WebQuiz on a computer that has access to the files on
     the web server.
 
-    The location of the files on the web server depend both on the
+    \textit{If you want to install the \WebQuiz files for general use on
+    your system, or to save system wide settings, then you need to run
+    the initialisation command }\BashCode|webquiz --initialise|
+    \textit{using an administrator account or using \textsf{sudo} on a
+    UNIX or Mac OSX system.}
+
+    The location of the files on the web server depends both on the
     operating system that is running on your computer and how your web
-    server has been configured. If necessary please consult your system
-    administrator. Common locations for the \textit{web root} of the server are:
+    server has been configured. It is essential that the \WebQuiz files
+    are installed in a directory that is accessible from the web. It
+    does not matter if they are put into a user web directory or into a
+    system web directory.  If necessary please consult your system
+    administrator.
+
+    Common locations for the \textit{web root} of the server are:
     \begin{center}
       \begin{tabular}{ll}
         \toprule
@@ -1202,61 +1260,45 @@ to use both \ctan{pstrick} and  \ctan{tik} will probably compile.
     The most important part of the \WebQuiz initialisation is copying
     files into a subdirectory of this web root.
 
-
-    I recommend running this initialisation command and follow the
-    prompts. More detail about what this command does, and what
-    information is required, is given for those who want it.
-
-    In fact, it is enough to run \textsf{webquiz} from the command-line
-    without any options because it will keep asking you to initialise
-    until you do so. \WebQuiz will work without being initialised,
-    however, any web pages that are created before initialisation will
-    be emblazoned with a message reminding you to initialise \WebQuiz.
-    As described in more detail below, initialisation copies the
-    javascript and CSS files used by \WebQuiz into the file space used
-    by your web server.
-
     When you run the \WebQuiz initialisation command,
-     \BashCode|webquiz --initialise|,  you will be prompted for the following:
-     \begin{itemize}
-       \item The location of the \WebQuiz web directory, which needs to
-       be a directory on your local file system that is visible to your
-       web server
-       \item The relative URL for this directory, which tells your web
-       browser where to find these files
-     \end{itemize}
-     For example, on my system the base directory for our web server is
-     \textsf{/usr/local/httpd/} and the \WebQuiz web
-     files are in \textsf{/usr/local/httpd/WebQuiz}. So, I set:
-     \begin{quote}
-       \begin{tabular}{lll}
-         \WebQuiz web directory &=& \textsf{/usr/local/httpd/WebQuiz}\\
-         \WebQuiz relative URL  &=& \textsf{/WebQuiz}
-       \end{tabular}
-     \end{quote}
-     In addition, the initialisation command lets you set global defaults for the following:
-     \begin{itemize}
-       \item breadcrumbs = the breadcrumbs at the top of the quiz web page
-       \item department = a (short) name for your department
-       \item department-url = the URL for your department's web server
-       \item institution = a (short) name for your institution
-       \item institution = the URL for your institution
-     \end{itemize}
-     These settings are mainly used in the \textit{breadcrumbs} on the
-     quiz web pages; see \autoref{S:documentclass} for
-     details.\index{breadcrumbs}
-     If in doubt just press return to accept the default values for
-     these variables. You can come back and change these settings at
-     any time using the command:
-     \begin{bashcode}
-        > webquiz --edit-settings
-     \end{bashcode}
-     In addition, you can override the system defaults in any quiz file.
+    \BashCode|webquiz --initialise|,  you will be prompted for the following:
+    \begin{itemize} \item The location of the \WebQuiz web directory,
+        which needs to be a directory on your local file system that is
+        visible to your web server \item The relative URL for this
+        directory, which tells your web browser where to find these
+        files \end{itemize} For example, on my system the base directory
+        for our web server is \textsf{/usr/local/httpd/} and the
+        \WebQuiz web files are in \textsf{/usr/local/httpd/UoS/WebQuiz}.
+        So, I set: \begin{quote} \begin{tabular}{lll} \WebQuiz web
+            directory &=& \textsf{/usr/local/httpd/UoS/WebQuiz}\\
+            \WebQuiz relative URL  &=& \textsf{/UoS/WebQuiz}
+        \end{tabular} \end{quote} In addition, the initialisation
+        command lets you set global defaults for the following:
+        \begin{itemize}
+            \item breadcrumbs = the breadcrumbs at the top of the quiz
+            web page
+            \item colour theme = default colour theme for web pages
+            \item department = a (short) name for your department
+            \item department-url = the URL for your department's web server
+            \item engine = default \TeX{} engine for compiling quizzes
+                  (latex, xelatex or lualatex)
+            \item institution = a (short) name for your institution
+            \item institution = the URL for your institution
+            \item language = default language for quizzes
+        \end{itemize}
+        There are three additional advanced options. For more details see
+        \autoref{SS:rcfile}, which describes the \webquizrc file.  The
+        default values of all of these settings can be overridden in the
+        \LaTeX{} file for the  quiz and the default values can be
+        changed at any time using \BashCode|webquiz --edit-settings|.
 
-     Finally, the initialisation command will ask you about some more
-     advanced settings. It is very unlikely that you will need to change
-     these when you first use \WebQuiz, so I recommend that you hit
-     return to accept the default options for each of these settings.
+     When initialising \WebQuiz if you are unsure what
+     a particular setting does then you should just hit return to accept
+     the default value for setting --- the default value is printed
+     inside square brackets as \BashCode|[default]|. In particular, you
+     are strongly recommended to accept the default values for all of
+     the advanced options because it is very unlikely that you will need
+     to change these when you first use \WebQuiz.
 
     \bigskip
 
@@ -1624,9 +1666,9 @@ option.
     requires some knowledge of HTML and python.}
 
     The construction of the online quizzes is controlled by the python
-    file \verb!webquiz_standard.py!. If you want to change the structure
+    file \PythonCode|webquiz_standard.py|. If you want to change the structure
     of the web pages for the quizzes then the easiest way to do this is
-    to make a copy of \verb!webquiz_standard.py!, say
+    to make a copy of \PythonCode|webquiz_standard.py|, say
     \textsf{webquiz\_myformat.py}, and then edit this file directly.
     This will require working knowledge of python and HTML. To give you
     an idea of what needs to be done, the python file
@@ -1659,14 +1701,13 @@ option.
   By changing this output you can change the format of the quizzes
   produced by \WebQuiz. For example, by adding code to the
   \HTMLCode|<head>...</head>| section of \HTMLCode|quiz_page| it is easy to
-  include new CSS code and by modifying \HTMLCode|<body>....</body>| you can
-  change the ``decorating HTML'' of the web page.  You may also want to
-  change the CSS style sheet for webquiz, which is the file
-  \textsf{web/webquiz.css}. More sophisticated versions of
-  \verb!webquiz_standard.py!  where you change the underlying python
-  code are of course possible.  For example, at the University of Sydney
-  our version of this python file calls our content management system
-  directly and uses this to create the web page for the quiz.
+  include new CSS code and by modifying \HTMLCode|<body>....</body>|.css}.
+  More sophisticated versions of \PythonCode|webquiz_standard.py|  where you
+  change the underlying python code are possible.  For example, at the
+  University of Sydney we have a custom version of \PythonCode|webquiz_standard|
+  that calls our content management system and, in this way, embeds the
+  quiz web page inside a web page that uses the official layout of our
+  university.
 
   When experimenting with a new format can run
   \WebQuiz using the command:

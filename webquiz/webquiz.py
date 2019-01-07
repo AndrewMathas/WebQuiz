@@ -1032,7 +1032,6 @@ class MakeWebQuiz(object):
                                  after_text=question.after_text,
                                  **self.language
             )
-            print('ANSWER={}, SIZE={}'.format(question.answer, 5+len('{}'.format(question.answer))))
         elif question.type in ['single', 'multiple']:
             question_options = webquiz_templates.choice_answer.format(
                     after_text=question.after_text,

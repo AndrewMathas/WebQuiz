@@ -1,0 +1,20 @@
+The WebQuiz doc directory contains the follow files:
+    - webquiz.tex                 The LaTeX source for the WebQuiz manual
+    - webquiz-online-manual.tex   The LaTeX source for on-line WebQuiz manual
+                                  This file can be compiled with webquiz. It
+                                  uses pstricks and so must be compiled latex,
+                                  not pdflatex, to produce a PDF version
+    - webquiz.pdf                 A PDF version of the WebQuiz manual
+    - webquiz-online-manual.pdf   A PDF version of the on-line manual
+
+The following files are included by the WebQuiz manual:
+    - webquiz-themes.tex          Screenshots for the themes supported by WebQuiz.
+    - webquiz.languages           The languages of the themes supported by WebQuiz.
+    - webquiz.settings            The settings supported by WebQuiz.
+    - webquiz.themes              The themes supported by WebQuiz.
+    - webquiz.usage               The command-line options supported by WebQuiz.
+    - examples/                   A directory containing images that are
+                                  included by the WebQuiz manual. Once WebQuiz
+                                  has been initialised, the source files for
+                                  these images can be found in the WebQuiz web
+                                  directory
