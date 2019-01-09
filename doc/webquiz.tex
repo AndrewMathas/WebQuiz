@@ -448,7 +448,7 @@ The \WebQuiz document class defines the following four environments:
     possibly multiple answers
     \item[discussion] For including (optional) discussion, or revision,
     material at the top of the quiz
-    \item[quizlist] For writing an index file for the quizzes in
+    \item[quizindex] For writing an index file for the quizzes in
     one ``unit of study''.
   \end{description}
 \end{quote}
@@ -619,11 +619,11 @@ discussion.
 
   \subsubsection{Quiz indexes}
 
-  \index{quizlist environment}
-  \CrossIndex{environment}{quizlist}
+  \index{quizindex environment}
+  \CrossIndex{environment}{quizindex}
 
   Most quizzes occur in sets that cover related material, for example
-  for a particular unit of study. The \LatexCode|quizlist| environment can be
+  for a particular unit of study. The \LatexCode|quizindex| environment can be
   used to create an index page for the quizzes.
 
   \InputLatexCode{examples/index}
@@ -635,9 +635,10 @@ discussion.
   As the next section describes, index files are also used to
   automatically add a drop-down menu to the breadcrumbs on the quiz web
   pages. This drop-down menu accesses all of the quizzes for the unit.
-  As the example above shows, the entries in the \LatexCode|quizlist| are all
-  given using the \LatexCode|\quiz| command.\CrossIndex{quizlist
-  environment}*{quiz} The syntax for this command is
+  As the example above shows, the entries in the \LatexCode|quizindex| are all
+  given using the \LatexCode|\quiz| command.
+  \CrossIndex{quizindex environment}*{quiz}
+  The syntax for this command is
 
   \begin{latexcode}
       \quiz|[URL for quiz]{Title for quiz}

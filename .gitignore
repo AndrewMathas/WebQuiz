@@ -10,6 +10,7 @@ doc/examples/*.html
 doc/examples/*.png
 doc/examples/*.svg
 doc/examples/*.xml
+doc/examples/quiz-page-*.tex
 doc/examples/*/
 doc/examples/quiztitles.js
 doc/examples/theme-*.tex
@@ -20,5 +21,6 @@ doc/webquiz.languages
 doc/webquiz.settings
 doc/webquiz.themes
 doc/webquiz.usage
+javascript/webquiz-min.js
 install/*
 webquiz/webquizrc

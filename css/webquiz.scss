@@ -35,10 +35,10 @@ body {
 
 /* container for the full quiz page */
 div.quiz-page {
-    position: absolute;
-    left: 5%;
-    top: 36px;
-    width: 90%;
+  position: absolute;
+  top: 36px;
+  left: 5%;
+  min-width: 60%;
 }
 
 /* side menu with question buttons and copyright message */
@@ -235,7 +235,7 @@ div.quiz-questions {
             font-family: Verdana, Arial, Helvetica, sans-serif;
             font-weight: bold;
             margin-bottom: 0.8ex;
-            min-width: 400px;
+            min-width: 50%;
         }
 
         span.arrows {

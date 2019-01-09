@@ -21,7 +21,7 @@ r'''
 
 # html meta statements
 html_meta = r'''<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta name="viewport" content="width=device-width">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <meta name="generator" content="WebQuiz {version} (http://www.maths.usyd.edu.au/u/mathas/WebQuiz/webquiz-online-manual.html)">
   <meta name="description" content="{description}">
   <meta name="authors" content="WebQuiz: {authors}">
@@ -110,13 +110,13 @@ discussion = r'''<div id="question-{dnum}" class="question" {display}>
 input_button = '<input type="button" name="next" value="Start quiz" onClick="return gotoQuestion(1);"/>\n'
 
 #quiz index
-quiz_list_div = r'''     <div class="quiz-list">
+quiz_index_div = r'''     <div class="quiz-list">
         <h2>{unit} {quizzes}</h2>
         <ul>
           {quiz_index}
         </ul>
       </div>'''
-quiz_list_item = r'''<li><a href={url}>{title}</a></li>'''
+index_item = r'''<li><a href={url}>{title}</a></li>'''
 
 # now we come to the question wrappers
 question_wrapper = r'''<div id="question{qnum}" class="question" {display}>

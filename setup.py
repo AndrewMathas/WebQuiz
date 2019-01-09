@@ -149,8 +149,8 @@ class WebQuizCtan(Command):
                                    ('latex/webquiz-doc.sty',           'latex'),
                                    ('latex/webquiz.c*',                'latex'),
                                    ('webquiz.ini',                     'latex'),
-                                   ('webquiz.ini',                     'scripts'),
                                    ('webquiz/webquiz*.py',             'scripts'),
+                                   ('webquiz/webquiz.dtd',             'scripts'),
                                    ('webquiz/webquiz.bat',             'scripts'),
                                    ('webquiz/README-scripts',          'scripts'),
                 ]:

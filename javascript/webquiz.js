@@ -233,13 +233,13 @@ function checkAnswer() {
             correct[qnum] = (parseInt(question.value) === parseInt(answer));
             break;
           case 'number':
-            correct[qnum] = (parseFloat(question.value) === parseFloat(answer));
+            correct[qnum] = (eval(question.value+'-'+answer)==0);
             break;
           case 'string':
             correct[qnum] = (String(question.value) === String(answer));
             break;
           case 'lowercase':
-            correct[qnum] = (String(question.value).toLowerCase() === String(answer).toLowerCase());
+            correct[qnum] = (String(question.value).toLowerCase() === answer);
             break;
           case 'eval':
             correct[qnum] = (math.eval(question.value-answer) == int(0));

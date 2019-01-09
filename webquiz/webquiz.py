@@ -23,122 +23,18 @@ import os
 import re
 import shutil
 import signal
-import stat
 import subprocess
 import sys
-import traceback
 
-import webquiz_xml
 import webquiz_templates
+from webquiz_util import kpsewhich, metadata, MetaData, webquiz_error, webquiz_file
+from webquiz_settings import WebQuizSettings
+from webquiz_xml import ReadWebQuizXmlFile
 
-# ---------------------------------------------------------------------------------------
-# Return the full path for a file in the webquiz directory
-webquiz_file = lambda file: os.path.join(os.path.dirname(os.path.realpath(__file__)), file)
-
-
-# ---------------------------------------------------------------------------------------
-class MetaData(dict):
-    r"""
-    A dummy class for reading, accessing and storing key-value pairs from
-    a file. Any internal spaces in the key name are replaced with underscores
-    and lines without a key-value pair are ignored.
-
-    The key-value pairs are available as both attributes and items
-
-    Usage: MetaData(filename)
-    """
-
-    # debugging disabled by default
-    debugging = False
-
-    def __init__(self, filename):
-        dict.__init__(self)
-        with open(filename, 'r') as meta:
-            for line in meta:
-                if '=' in line:
-                    key, val = line.strip().split('=')
-                    if key.strip() != '':
-                        self.__setitem__(key.strip().lower().replace(' ', '_'),
-                                         val.strip())
-                        setattr(self,
-                                key.strip().lower().replace(' ', '_'),
-                                val.strip())
-
-
-def kpsewhich(search):
-    r'''short-cut to access kpsewhich output:
-    usage: kpsewhich('-var-value=TEXMFLOCAL')
-    '''
-    return subprocess.check_output('kpsewhich ' + search, stderr=subprocess.STDOUT,
-                                   shell=True).decode('ascii').strip()
-
-
-# read in basic meta data such as author, version, ...
-try:
-    metadata = MetaData(kpsewhich('webquiz.ini'))
-except subprocess.CalledProcessError:
-    try:
-        metadata = MetaData(webquiz_file('webquiz.ini'))
-    except FileNotFoundError:
-        print('webquiz installation error: unable to find webquiz.ini')
-        sys.exit(1)
 
 # used to label the parts of questions as a, b, c, ...
 ALPHABET = "abcdefghijklmnopqrstuvwxyz"
 
-
-###############################################################################
-def copytree(src, dst, symlinks=False, ignore=None):
-    r''' Recursively copy directory tree, fixing shutil.copytree
-         from https://stackoverflow.com/questions/1868714
-    '''
-    if not os.path.exists(dst):
-        os.makedirs(dst)
-        shutil.copystat(src, dst)
-    lst = os.listdir(src)
-    if ignore:
-        excl = ignore(src, lst)
-        lst = [x for x in lst if x not in excl]
-    for item in lst:
-        s = os.path.join(src, item)
-        d = os.path.join(dst, item)
-        if symlinks and os.path.islink(s):
-            if os.path.lexists(d):
-                os.remove(d)
-            os.symlink(os.readlink(s), d)
-            try:
-                st = os.lstat(s)
-                mode = stat.S_IMODE(st.st_mode)
-                os.lchmod(d, mode)
-            except OSError:
-                pass  # lchmod not available
-        elif os.path.isdir(s):
-            copytree(s, d, symlinks, ignore)
-        else:
-            shutil.copy2(s, d)
-
-
-#################################################################################
-def webquiz_error(msg, err=None):
-    r'''
-    Consistent handling of errors in magthquiz: print the message `msg` and
-    exist with error code `err.errno` if it is available.abs
-    '''
-    print('WebQuiz error: {}'.format(msg))
-
-    if metadata.debugging and err is not None:
-        raise
-
-    if err is not None:
-        trace = traceback.extract_tb(sys.exc_info()[2])
-        filename, lineno, fn, text = trace[-1]
-        print('File: {}, line number: {}\nError {} in {}: {}'.format(
-            filename, lineno, err, fn, text))
-
-    if hasattr(err, 'errno'):
-        sys.exit(err.errno)
-
-    sys.exit(1)
 
 # ---------------------------------------------------------------------------------------
 def graceful_exit(sig, frame):
@@ -182,11 +78,8 @@ def preprocess_with_pst2pdf(quiz_file):
     # the svg images are in the quiz_file subdirectory but latex can't
     # find them so we update the tex file to look in the right place
     try:
-        with codecs.open(
-                quiz_file + '-pdf.tex', 'r', encoding='utf8') as pst_file:
-            with codecs.open(
-                    quiz_file + '-pdf-fixed.tex', 'w',
-                    encoding='utf8') as pst_fixed:
+        with codecs.open(quiz_file + '-pdf.tex', 'r', encoding='utf8') as pst_file:
+            with codecs.open(quiz_file + '-pdf-fixed.tex', 'w', encoding='utf8') as pst_fixed:
                 for line in pst_file:
                     pst_fixed.write(
                         fix_svg.sub(r'\1{%s/\2.svg}' % quiz_file, line))
@@ -194,465 +87,6 @@ def preprocess_with_pst2pdf(quiz_file):
         webquiz_error(
             'there was an problem running pst2pdf for {}'.format(quiz_file),
             err)
-
-
-#################################################################################
-class WebQuizSettings:
-    r'''
-    Class for initialising webquiz. This covers both reading and writting the webquizrc file and
-    copying files into the web directories during initialisation. The settings
-    themselves are stored in attribute settings, which is a dictionary. The
-    class reads and writes the settings to the webquizrc file and the
-    values of the settings are available as items:
-        >>> mq = WebQuizSettings()
-        >>> mq['webquiz_url']
-        ... /WebQuiz
-        >>> mq['webquiz_url'] = '/new_url'
-    '''
-
-    # default of settings for the webquizrc file - a dictionary of dictionaries
-    # the 'help' field is for printing descriptions of the settings to help the
-    # user - they are also printed in the webquizrc file
-    settings = dict(
-        webquiz_url={
-            'default': '',
-            'advanced': False,
-            'help': 'Relative URL for webquiz web directory',
-        },
-        webquiz_www={
-            'default': '',
-            'advanced': False,
-            'help': 'Full path to WebQuiz web directory',
-        },
-        language={
-            'default': 'english',
-            'advanced': False,
-            'help': 'Default language used on web pages'
-        },
-        engine = {
-            'default': 'latex',
-            'advanced': False,
-            'help': 'Default TeX engine used to compile web pages',
-            'values': dict(latex='', lua='--lua', xelatex='--xetex')
-        },
-        theme={
-            'default': 'default',
-            'advanced': False,
-            'help': 'Default colour theme used on web pages'
-        },
-        breadcrumbs={
-            'default': 'department|unitcode|quiz-index|breadcrumb',
-            'advanced': False,
-            'help': 'Breadcrumbs at the top of quiz page',
-        },
-        department={
-            'default': 'Mathematics',
-            'advanced': False,
-            'help': 'Name of department',
-        },
-        department_url={
-            'default': '/',
-            'advanced': False,
-            'help': 'URL for department',
-        },
-        institution={
-            'default': '',
-            'advanced': False,
-            'help': 'Institution or university',
-        },
-        institution_url={
-            'default': '',
-            'advanced': False,
-            'help': 'URL for institution or university',
-        },
-        hidesidemenu={
-            'default': False,
-            'advanced': False,
-            'help': 'Do not display the side menu when quiz starts (True or False)',
-        },
-        webquiz_format={
-            'default': 'webquiz_standard',
-            'advanced': True,
-            'help': 'Name of python module that formats the quizzes',
-        },
-        make4ht={
-            'default': '',
-            'advanced': True,
-            'help': 'Build file for make4ht',
-        },
-        mathjax={
-            'default':
-            'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js',
-            'advanced':
-            True,
-            'help':
-            'URL for mathjax',
-        },
-        version={
-            'default': metadata.version,
-            'advanced': False,
-            'help': 'WebQuiz version number for webquizrc settings',
-        })
-
-    # to stop execution from command-line options after initialised() has been called
-    just_initialise = False
-
-    def __init__(self):
-        '''
-        First read the system webquizrc file and then read the
-        user .webquizrc file, if it exists. This allows the user
-        to use some system settings and to override others.
-
-        By default, there is no webquiz initialisation file. We first
-        look for webquizrc in the webquiz source directory and then
-        for .webquizrc file in the users home directory.
-        '''
-        for key in self.settings:
-            self.settings[key]['value'] = self.settings[key]['default']
-            self.settings[key]['changed'] = False
-            if not 'editable' in self.settings[key]:
-                self.settings[key]['editable'] = False
-
-        # define user and system rc file and load the ones that exist
-
-        self.system_rc_file = webquiz_file('webquizrc')
-        self.read_webquizrc(self.system_rc_file)
-
-        # the user rc file defaults to:
-        #   ~/.dotfiles/config/webquizrc if .dotfiles/config exists
-        #   ~/.config/webquizrc if .config exists
-        # and otherwise to ~/.webquizrc
-        if os.path.isdir(os.path.join(os.path.expanduser('~'), '.dotfiles', 'config')):
-            self.user_rc_file = os.path.join(os.path.expanduser('~'), '.dotfiles', 'config', 'webquizrc')
-        elif os.path.isdir(os.path.join(os.path.expanduser('~'), '.config')):
-            self.user_rc_file = os.path.join(os.path.expanduser('~'), '.config', 'webquizrc')
-        else:
-            self.user_rc_file = os.path.join(os.path.expanduser('~'), '.webquizrc')
-        if os.path.isfile(self.user_rc_file):
-            self.read_webquizrc(self.user_rc_file)
-
-        # if webquiz_url is empty then assume that we need to initialise
-        self.initialise_warning = ''
-        if self['webquiz_url'] == '':
-            self['webquiz_url'] = 'http://www.maths.usyd.edu.au/u/mathas/WebQuiz'
-            self.initialise_warning = webquiz_templates.web_initialise_warning
-            initialise = input(webquiz_templates.initialise_invite)
-            if initialise == '' or initialise.strip().lower()[0] == 'y':
-                self.initialise_webquiz()
-
-    def __getitem__(self, key):
-        r'''
-        Return the value of the corresponding setting. That is, it returns
-            self.settings[key]['value']
-        and an error if the key is unknown.
-        '''
-        if key in self.settings:
-            return self.settings[key]['value']
-
-        webquiz_error('unknown setting {} in webquizrc.'.format(key))
-
-    def __setitem__(self, key, value):
-        r'''
-        Set the value of the corresponding setting. This is the equivalent of
-            self.settings[key]['value'] = value
-        and an error if the key is unknown.
-        '''
-        if key in self.settings:
-            self.settings[key]['value'] = value
-        else:
-            webquiz_error('unknown setting {} in webquizrc'.format(key))
-
-    def read_webquizrc(self, rc_file, external=False):
-        r'''
-        Read the settings from the specified webquizrc file - if it exists, in
-        which case set self.rc_file equal to this directory. If the file does
-        not exist then return without changing the current settings.
-        '''
-        if os.path.isfile(rc_file):
-            try:
-                with codecs.open(rc_file, 'r', encoding='utf8') as webquizrc:
-                    for line in webquizrc:
-                        if '#' in line:  # remove comments
-                            line = line[:line.index('#')]
-                        if '=' in line:
-                            key, value = line.split('=')
-                            key = key.strip().lower().replace('-','_')
-                            value = value.strip()
-                            if key in self.settings:
-                                if value != self[key]:
-                                    self[key] = value
-                                    self.settings[key]['changed'] = True
-                            elif key != '':
-                                webquiz_error('unknown setting {} in {}'.format(
-                                    key, rc_file))
-
-                # record the rc_file for later use
-                self.rc_file = rc_file
-
-            except OSError as err:
-                webquiz_error(
-                    'there was a problem reading the rc-file {}'.format(
-                        rc_file), err)
-
-            except Exception as err:
-                webquiz_error('there was an error reading the webquizrc file,',
-                             err)
-
-        elif external:
-            # this is only an error if we have been asked to read this file
-            webquiz_error('the rc-file {} does not exist'.format(rc_file))
-
-    def write_webquizrc(self):
-        r'''
-        Write the settings to the webquizrc file, defaulting to the user
-        rc_file if unable to write to the system rc_file
-        '''
-        if not hasattr(self, 'rc_file'):
-            # when initialising an rc_file will not exist yet
-            self.rc_file = self.system_rc_file
-
-        file_not_written = True
-        while file_not_written:
-            try:
-                dire, file = os.path.split(self.rc_file)
-                if dire != '' and not os.path.isdir(dire):
-                    os.makedirs(dire, exist_ok=True)
-                with codecs.open(self.rc_file, 'w', encoding='utf8') as rcfile:
-                    for key in sorted(self.settings.keys()):
-                        # Only save settings in the rcfile if they have changed
-                        # Note that changed means changed from the last read
-                        # rcfile rather than from the default (of course, the
-                        # defaults serve as the "initial rcfile")
-                        if key == 'version' or self.settings[key]['changed']:
-                            rcfile.write('# {}\n{:<15} = {}\n'.format(
-                                           self.settings[key]['help'],
-                                           key.replace('_','-'),
-                                           self[key])
-                            )
-
-                print('\nWebQuiz settings saved in {}\n'.format( self.rc_file))
-                input('Press return to continue... ')
-                file_not_written = False
-
-            except (OSError, PermissionError) as err:
-                # if writing to the system_rc_file then try to write to user_rc_file
-                alt_rc_file = self.user_rc_file if self.rc_file != self.user_rc_file else self.system_rc_file
-                response = input(
-                    webquiz_templates.rc_permission_error.format(
-                        error=err,
-                        rc_file=self.rc_file,
-                        alt_rc_file=alt_rc_file))
-                if response.startswith('2'):
-                    self.rc_file = alt_rc_file
-                elif response.startswith('3'):
-                    rc_file = input('rc_file: ')
-                    self.rc_file = os.path.expanduser(rc_file)
-                elif not response.startswith('1'):
-                    print('exiting...')
-                    sys.exit(1)
-
-                # if still here then try to write the rc-file again
-                self.write_webquizrc()
-
-    def list_settings(self, setting='all'):
-        r'''
-        Print the non-default settings for webquiz from the webquizrc
-        '''
-        if not hasattr(self, 'rc_file'):
-            print(
-                'Please initialise WebQuiz using the command: webquiz --initialise\n'
-            )
-
-        if setting != 'all':
-            setting = setting.replace('-', '_')
-            if setting in self.settings:
-                print(self.settings[setting]['value'])
-            else:
-                webquiz_error('{} is an invalid setting'.format(setting))
-
-        else:
-            print('WebQuiz settings from {}\n'.format(self.rc_file))
-            for key in sorted(self.settings.keys()):
-                if self[key] != '':
-                    extra = 'default' if self[key] == self.settings[key]['default'] else ''
-                    if self.settings[key]['advanced']:
-                        if extra != '':
-                            extra += ', '
-                        extra += 'advanced'
-                    if extra != '':
-                        extra = ' ('+extra+')'
-                    print('# {}{}\n{:<15} = {}\n'.format(
-                            self.settings[key]['help'],
-                            extra,
-                            key.replace('_', '-'),
-                            self[key])
-                    )
-
-    def initialise_webquiz(self):
-        r'''
-        Set the root for the WebQuiz web directory and copy the www files into
-        this directory. Once this is done save the settings to webquizrc.
-        This method should only be used when WebQuiz is being set up.
-        '''
-        if self.just_initialise:  # stop initialising twice with webquiz --initialise
-            return
-
-        # prompt for directory and copy files - are these reasonable defaults
-        # for each OS?
-        elif sys.platform == 'darwin':
-            default_root = '/Library/WebServer/Documents/WebQuiz'
-            platform = 'Mac OSX'
-        elif sys.platform.startswith('win'):
-            default_root = ' c:\inetpub\wwwroot\WebQuiz'
-            platform = 'Windows'
-        else:
-            default_root = '/var/www/html/WebQuiz'
-            platform = sys.platform.capitalize()
-
-        if self['webquiz_www'] != '':
-            webquiz_root = self['webquiz_www']
-        else:
-            webquiz_root = default_root
-
-        print(webquiz_templates.initialise_introduction)
-        input('Press return to continue... ')
-
-        print(webquiz_templates.webroot_request.format(
-                platform=platform,
-                webquiz_dir = webquiz_root)
-        )
-        input('Press return to continue... ')
-
-        files_copied = False
-        while not files_copied:
-            web_dir = input('\nWebQuiz web directory:\n[{}] '.format(webquiz_root))
-            if web_dir == '':
-                web_dir = webquiz_root
-            else:
-                web_dir = os.path.expanduser(web_dir)
-
-            print('Web directory set to {}'.format(web_dir))
-            if web_dir == 'SMS':
-                # undocumented: allow links to SMS web pages
-                self['webquiz_www'] = 'SMS'
-                self['webquiz_url'] = 'http://www.maths.usyd.edu.au/u/mathas/WebQuiz'
-
-            else:
-                try:
-                    # first delete files of the form webquiz.* files in web_dir
-                    for file in glob.glob(os.path.join(web_dir, 'webquiz.*')):
-                        os.remove(file)
-                    # ... now remove the doc directory
-                    web_doc = os.path.join(web_dir, 'doc')
-                    if os.path.isfile(web_doc) or os.path.islink(web_doc):
-                        os.remove(web_doc)
-                    elif os.path.isdir(web_doc):
-                        shutil.rmtree(web_doc)
-
-                    if os.path.isdir(webquiz_file('www')):
-                        # if the www directory exists then copy it to web_dir
-                        print('\nCopying web files to {} ...\n'.format(web_dir))
-                        copytree(webquiz_file('www'), web_dir)
-                    else:
-                        # assume this is a development version and add links
-                        # from the web directory to the parent directory
-                        if not os.path.exists(web_dir):
-                            os.makedirs(web_dir)
-                        # get the root directory of the source code
-                        webquiz_src = os.path.dirname(
-                            os.path.dirname(os.path.realpath(__file__)))
-                        for (src, target) in [('javascript/webquiz.js', 'webquiz.js'),
-                                              ('css', 'css'),
-                                              ('doc', 'doc')]:
-                            os.symlink(
-                                os.path.join(webquiz_src, src),
-                                os.path.join(web_dir, target))
-
-                    self['webquiz_www'] = web_dir
-                    self.settings['webquiz_www']['changed'] = True
-                    files_copied = True
-
-                except PermissionError as err:
-                    print(webquiz_templates.permission_error.format(web_dir))
-
-                except OSError as err:
-                    print(oserror_copying.format(web_dir=web_dir, err=err))
-
-        if self['webquiz_www'] != 'SMS':
-            # now prompt for the relative url
-            mq_url = input(webquiz_templates.webquiz_url_message.format(self['webquiz_url']))
-            if mq_url != '':
-                # removing trailing slashes from mq_url
-                while mq_url[-1] == '/':
-                    mq_url = mq_url[:len(mq_url) - 1]
-
-                if mq_url[0] != '/':  # force URL to start with /
-                    print("  ** prepending '/' to webquiz_url **")
-                    mq_url = '/' + mq_url
-
-                if not web_dir.endswith(mq_url):
-                    print(webquiz_templates.webquiz_url_warning)
-                    input('Press return to continue... ')
-
-                self['webquiz_url'] = mq_url
-
-        self.settings['webquiz_url']['changed'] = (
-            self['webquiz_url'] != self.settings['webquiz_url']['default'])
-
-        # read and save the rest of the settings and exit
-        print(webquiz_templates.edit_settings)
-        input('Press return to continue... ')
-        self.edit_settings(ignored_settings=['webquiz_url', 'webquiz_www', 'version'])
-        print(webquiz_templates.initialise_ending.format(web_dir=self['webquiz_www']))
-        self.just_initialise = True
-
-    def edit_settings(self, ignored_settings=['webquiz_www', 'version']):
-        r'''
-        Change current default values for the WebQuiz settings
-        '''
-        advanced_not_started = True
-        for key in sorted(self.settings.keys(), key=lambda k: '{}{}'.format(self.settings[k]['advanced'], k)):
-            if key not in ignored_settings:
-                if advanced_not_started and self.settings[key]['advanced']:
-                    print(webquiz_templates.advanced_settings)
-                    advanced_not_started = False
-
-                skey = '{}'.format(self[key])
-                setting = input('{}{}[{}]: '.format(
-                                    self.settings[key]['help'],
-                                    ' ' if len(skey)<40 else '\n',
-                                    skey
-                          )
-                ).strip()
-                if setting != '':
-                    if key == 'webquiz_url' and setting[0] != '/':
-                        print("  ** prepending '/' to webquiz_url **")
-                        setting = '/' + setting
-
-                    elif key == 'webquiz_format':
-                        setting = os.path.expanduser(setting)
-                        if setting.endswith('.py'):
-                            print("  ** removing .py extension from webquiz_format **")
-                            setting = setting[:-3]
-
-                    elif key == 'engine' and setting not in self.settings['engine'].values:
-                        print('setting not changed: {} is not a valid TeX engine'.format(setting))
-                        setting = self['engine']
-
-                    elif key == 'hidesidemenu':
-                        setting = setting.capitalize()
-                        if setting in ['True', 'False']:
-                            setting = eval(setting) # convert to boolean
-                        else:
-                            print('setting not changed: hidesidemenu must be True or False')
-                            setting = self['hidesidemenu']
-
-                    self[key] = setting
-                    self.settings[key]['changed'] = True
-
-        # save the settings, print them and exit
-        self.write_webquizrc()
-        self.list_settings()
 
 
 #################################################################################
@@ -745,7 +179,7 @@ class MakeWebQuiz(object):
                         url=self.quiz.unit_url,
                         missing='unit name')
                 elif crumb == 'quiz-index':
-                    if self.quiz.quiz_list == []:
+                    if self.quiz.quiz_index == []:
                         crumbs += webquiz_templates.breadcrumb_quizlist.format(
                             quizzes_url=self.quiz.quizzes_url,
                             **self.language)
@@ -817,12 +251,8 @@ class MakeWebQuiz(object):
             # file being created but this doesn't seem to work ??
             try:
                 fix_img = re.compile(r'^src="([0-9]a-za-z]*.svg)" (.*)$')
-                with codecs.open(
-                        self.quiz_file + '.html', 'r',
-                        encoding='utf8') as make4ht_file:
-                    with codecs.open(
-                            self.quiz_name + '.xml', 'w',
-                            encoding='utf8') as xml_file:
+                with codecs.open(self.quiz_file + '.html', 'r', encoding='utf8') as make4ht_file:
+                    with codecs.open(self.quiz_name + '.xml', 'w', encoding='utf8') as xml_file:
                         for line in make4ht_file:
                             match = fix_img.match(line)
                             if match is None:
@@ -854,7 +284,7 @@ class MakeWebQuiz(object):
             # read in the xml version of the quiz
             if not os.path.isfile(self.quiz_name + '.xml'):
                 webquiz_error('{}.xml does not exist!?'.format(self.quiz_name))
-            self.quiz = webquiz_xml.ReadWebQuizXmlFile(self.quiz_name + '.xml',
+            self.quiz = ReadWebQuizXmlFile(self.quiz_name + '.xml',
                                                        self.settings,
                                                        self.options.debugging)
         except Exception as err:
@@ -911,10 +341,10 @@ class MakeWebQuiz(object):
     def add_question_javascript(self):
         """
         Add the javascript for the questions to self and write the javascript
-        initialisation file, <quiz>/quiz_list.js, for the quiz.  When the quiz
-        page is loaded, WebQuizInit reads the quiz_list initialisation file to
+        initialisation file, <quiz>/quiz_specs.js, for the quiz.  When the quiz
+        page is loaded, WebQuizInit reads the quiz_specs initialisation file to
         load the answers to the questions,  and the headers for the discussion
-        items. We don't explicitly list quiz_list.js in the meta data for the
+        items. We don't explicitly list quiz_specs.js in the meta data for the
         quiz page because we want to hide this information from the student,
         although they can easily get this if they open by the javascript
         console and know what to look for.
@@ -922,28 +352,27 @@ class MakeWebQuiz(object):
 
         try:
             os.makedirs(self.quiz_name, exist_ok=True)
-            with codecs.open(
-                    os.path.join(self.quiz_name,
-                                 'wq-' + self.quiz_name + '.js'),
-                    'w',
-                    encoding='utf8') as quiz_list:
+            with codecs.open(os.path.join(self.quiz_name, 'wq-' + self.quiz_name + '.js'), 'w', encoding='utf8') as quiz_specs:
                 if self.number_discussions > 0:
                     for (i, d) in enumerate(self.quiz.discussion_list):
-                        quiz_list.write('Discussion[{}]="{}";\n'.format(i, d.heading))
+                        quiz_specs.write('Discussion[{}]="{}";\n'.format(i, d.heading))
                 if self.number_quizzes > 0:
                     for (i, question) in enumerate(self.quiz.question_list):
                         # QuizSpecifications is a 0-based array
-                        quiz_list.write('QuizSpecifications[%d]=[];\n' % i)
-                        a = question.text
-                        quiz_list.write(
+                        quiz_specs.write('QuizSpecifications[%d]=[];\n' % i)
+                        quiz_specs.write(
                             'QuizSpecifications[%d].label="%s %s";\n' % (i, self.language.question, i + 1)
                         )
-                        quiz_list.write('QuizSpecifications[%d].type="%s";\n' % (i, question.type))
+                        quiz_specs.write('QuizSpecifications[%d].type="%s";\n' % (i, question.type))
                         if question.type == 'input':
-                            quiz_list.write('QuizSpecifications[%d].value="%s";\n' % (i, question.answer))
-                            quiz_list.write('QuizSpecifications[%d].comparison="%s";\n' % (i, question.comparison))
+                            quiz_specs.write('QuizSpecifications[{}].value="{}";\n'.format(i,
+                                question.answer.lower() if question.comparison=='lowercase'
+                                                        else question.answer
+                              )
+                            )
+                            quiz_specs.write('QuizSpecifications[%d].comparison="%s";\n' % (i, question.comparison))
                         else:
-                            quiz_list.write(''.join('QuizSpecifications[%d][%d]=%s;\n' % (i, j, s.expect)
+                            quiz_specs.write(''.join('QuizSpecifications[%d][%d]=%s;\n' % (i, j, s.expect)
                                 for (j, s) in enumerate(question.items)))
 
         except Exception as err:
@@ -992,23 +421,22 @@ class MakeWebQuiz(object):
                     and dnum == len(self.quiz.discussion_list) else '')
 
         # index for quiz
-        if self.quiz.quiz_list != []:
-            print('quizlist: {}'.format(self.quiz.quiz_list))
+        if self.quiz.quiz_index != []:
             # add index to the web page
-            self.quiz_questions += webquiz_templates.quiz_list_div.format(
+            self.quiz_questions += webquiz_templates.quiz_index_div.format(
                 unit=self.quiz.unit_name,
                 quiz_index='\n          '.join(
-                    webquiz_templates.quiz_list_item.format(url=q.url, title=q.title)
-                    for q in self.quiz.quiz_list),
+                    webquiz_templates.index_item.format(url=q.url, title=q.title)
+                    for q in self.quiz.quiz_index),
                 **self.language)
             # write a javascript file for displaying the menu
             # quizmenu = the index file for the quizzes in this directory
-            with codecs.open(
-                    'quiztitles.js', 'w', encoding='utf8') as quizmenu:
+            with codecs.open('quiztitles.js', 'w', encoding='utf8') as quizmenu:
                 quizmenu.write('var QuizTitles = [\n{titles}\n];\n'.format(
-                    titles=',\n'.join("  ['{}', '/{}/Quizzes/{}']".format(
-                        q.title, self.quiz.unit_url, q.url)
-                                      for q in self.quiz.quiz_list)))
+                    titles=',\n'.join("  ['{}', '{}']".format(q.title, q.url)
+                                      for q in self.quiz.quiz_index)
+                    )
+                )
 
         # finally we print the questions
         if self.quiz.question_list != []:

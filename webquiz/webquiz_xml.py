@@ -40,8 +40,8 @@ def ReadWebQuizXmlFile(quizfile, defaults, debugging):
     parser.setErrorHandler(quiz)
     parser.setDTDHandler(quiz)
     parser.parse(quizfile)
+    parser.close()
     return quiz
-    #parser.close()
 
 
 # -----------------------------------------------------
@@ -83,13 +83,12 @@ class QuizHandler(xml.sax.ContentHandler):
         self.link_list = []
         self.meta_list = []
         self.question_list = []
-        self.quiz_list = []
+        self.quiz_index = []
 
         self.mathjs_not_linked = True  # to ensure that mathjs is added only once
 
         # the following tags have defaults set by `defaults`
         self.setting_tags = [
-               'breadcrumbs',
                'department',
                'department_url',
                'institution',
@@ -104,6 +103,7 @@ class QuizHandler(xml.sax.ContentHandler):
         self.text = ''
         self.after_text = ''
         self.title = ''
+        self.unit_code = ''
         self.unit_name = ''
 
         # keep track of current tags
@@ -116,10 +116,9 @@ class QuizHandler(xml.sax.ContentHandler):
         '''
         if value.strip() == 'deFAULT':
             setattr(self, key, self.defaults[key])
-        elif hasattr(self, key):
-            setattr(self, key, getattr(self,key)+value)
         else:
             setattr(self, key, value)
+        print('Set {} to {}'.format(key, getattr(self,key)))
 
     def startElement(self, tag, attributes):
         '''
@@ -127,11 +126,10 @@ class QuizHandler(xml.sax.ContentHandler):
             attributes and place
         '''
 
-        Debugging('startElement\n - tags={}\n - text={}.'.format(', '.join(self.current_tags), self.text))
         self.current_tags.append(tag)
 
         # initialise the quiz
-        if tag == 'quiz':
+        if tag == 'webquiz':
             self.src = attributes.get('src')
             for key in ['hidesidemenu', 'language', 'theme']:
                 self.set_default_attribute(key, attributes.get(key))
@@ -143,12 +141,14 @@ class QuizHandler(xml.sax.ContentHandler):
         elif tag == 'meta':
             self.meta_list.append({key: attributes.get(key) for key in attributes.keys()})
 
-        elif tag in [' department', 'institution', 'uni']:
+        elif tag in ['department', 'institution', 'uni']:
             for key in attributes.keys():
                 self.set_default_attribute(tag, attributes.get(key))
 
-        elif tag == 'unit':
-            self.set_default_attribute('unit_code', attributes.get('code'))
+        elif tag == 'breadcrumb':
+            self.set_default_attribute('breadcrumbs,', attributes.get('breadcrumbs'))
+
+        elif tag == 'unit_name':
             self.set_default_attribute('unit_url', attributes.get('url'))
             self.quizzes_url = attributes.get('quizzes')
             if self.quizzes_url == 'deFAULT':
@@ -156,8 +156,8 @@ class QuizHandler(xml.sax.ContentHandler):
 
         # set up questions and discussion
         elif tag == 'discussion':
-            discussion = Data(heading = attributes.get('heading'),
-                              short_heading = attributes.get('short_heading'),
+            discussion = Data(heading = '',
+                              short_heading = '',
                               text = ''  # The text of the discussion
             )
             self.discussion_list.append(discussion)
@@ -198,11 +198,8 @@ class QuizHandler(xml.sax.ContentHandler):
             )
 
         # finally look after the index file
-        elif tag == 'quizlistitem':
-            self.quiz_list.append(Data(title=attributes.get('title'),
-                                       url=attributes.get('url')
-                                 )
-            )
+        elif tag == 'index_item':
+            self.quiz_index.append(Data(url=attributes.get('url'), title=''))
 
         elif tag in ['when_right', 'when_wrong']:
             self.question_list[-1].after_text += self.text
@@ -210,7 +207,6 @@ class QuizHandler(xml.sax.ContentHandler):
 
 
     def endElement(self, tag):
-        Debugging('endElement\n - tag = {}\n - tags={}\n - text={}.'.format(tag, ', '.join(self.current_tags), self.text))
         self.current_tags.pop()  # remove the last tag from the tag list
 
         text_used = True # assume that we will use the text
@@ -218,36 +214,36 @@ class QuizHandler(xml.sax.ContentHandler):
         if tag in self.setting_tags:
             self.set_default_attribute(tag, self.text)
 
-        elif tag == 'unit':
-            self.unit_name += self.text
-
         elif tag == 'answer':
-            self.question_list[-1].answer += self.text
+            self.question_list[-1].answer = self.text.strip()
 
         elif tag == 'discussion':
-            self.discussion_list[-1].text += self.text
+            self.discussion_list[-1].text = self.text.strip()
+
+        elif tag in ['heading', 'short_heading']:
+            setattr(self.discussion_list[-1], tag, self.text.strip())
 
         elif tag =='item':
-            self.question_list[-1].items[-1].text += self.text
+            self.question_list[-1].items[-1].text = self.text.strip()
 
         elif tag =='response':
-            print('adding response={}.'.format(self.text))
-            self.question_list[-1].items[-1].response += self.text
+            self.question_list[-1].items[-1].response = self.text.strip()
 
         elif tag == 'question':
-            self.question_list[-1].after_text += self.text
+            self.question_list[-1].after_text = self.text.strip()
 
-        elif tag == 'title':
-            self.title += self.text
-
-        elif tag == 'unit':
-            self.unit_name += self.text
+        elif tag in ['breadcrumb', 'title', 'unit_code', 'unit_name']:
+            setattr(self, tag, self.text.strip())
 
         elif tag == 'when_right':
-            self.question_list[-1].when_right += self.text
+            self.question_list[-1].when_right = self.text.strip()
 
         elif tag == 'when_wrong':
-            self.question_list[-1].when_wrong += self.text
+            self.question_list[-1].when_wrong = self.text.strip()
+
+        elif tag == 'index_item':
+            # ungainly hack to remove line breaks from titles...
+            self.quiz_index[-1].title = self.text.strip().replace('\n',' ').replace('\r',' ')
 
         else:
             # mark that we still need to use the text
@@ -258,8 +254,10 @@ class QuizHandler(xml.sax.ContentHandler):
             self.text = ''
 
     def characters(self, text):  #data,start,length):
+        r'''
+        Append everything to `self.text`
+        '''
         self.text += text
-        Debugging('characters\n - tags={}\n - text={}.'.format(', '.join(self.current_tags), self.text))
 
     def error(self, e):
         raise e

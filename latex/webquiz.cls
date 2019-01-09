@@ -199,7 +199,7 @@
   \leavevmode\medskip\newline%
   \textbf{Quiz~\arabic{quiz}}.\space #2. \newline
   \phantom{XXX}\textit{URL}:\quad \MQ@url}
-\newenvironment{quizlist}{\bigskip}{}
+\newenvironment{quizindex}{\bigskip}{}
 % \begin{dicussion}[short title][title -default-> Discussion]
 \NewDocumentEnvironment{discussion}{O{Discussion}o}{%
 \IfNoValueTF{#2}{\textbf{#1}}{\texbf{#2} (#1)}\newline}{\par\bigskip}
