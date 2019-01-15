@@ -22,7 +22,7 @@ from webquiz_templates import no_script
 
 def write_web_page(quiz):
   return quiz_page.format(
-    title=quiz.title,  # page title
+    title=quiz.quiz.title,  # page title
     htmlpreamble=quiz.header + quiz.javascript + quiz.css,  # header material
     breadcrumbs=quiz.breadcrumbs,  # bread crumb constructed above
     side_menu=quiz.side_menu,  # navigation menu for quiz

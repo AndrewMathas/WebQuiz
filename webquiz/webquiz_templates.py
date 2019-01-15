@@ -53,6 +53,11 @@ breadcrumb_quizlist = r'''          <li><a href="{quizzes_url}">{quizzes}</a>
           <ul id="drop-down-menu" onclick="toggle_dropdown_menu();"></ul>
         </li>
 '''
+create_dropdown = r'''// construct the drop down menu if QuizTitles has some entries
+if (QuizTitles.length > 0 && document.getElementById("drop-down-menu")) {
+    create_drop_down_menu();
+}
+'''
 breadcrumbs = r'''<div class="breadcrumbs">
     <nav>
         <ul>

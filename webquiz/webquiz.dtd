@@ -80,15 +80,13 @@
                  columns CDATA          #REQUIRED
 >
 <!ELEMENT item (text,response?)>
-<!ATTLIST item 
+<!ATTLIST item
     correct (true|false) #REQUIRED
     symbol CDATA         #REQUIRED
 >
 
-<!ELEMENT answer (tag?,when_right,when_wrong)>
+<!ELEMENT answer (when_right,when_wrong)>
 <!ATTLIST answer comparison CDATA #REQUIRED>
-
-<!ELEMENT tag (#PCDATA)>
 
 <!ELEMENT response (#PCDATA)>
 

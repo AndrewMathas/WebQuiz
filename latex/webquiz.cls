@@ -59,17 +59,17 @@
 % generated when the option is not defined.
 \pgfkeys{/webquiz checker/.is family, /webquiz checker,
   mode/.initial          = single,
-  columns value/.initial = 2,
+  columns value/.initial = 1,
   columns/.style         = {columns value=#1},
   single/.style          = {mode=single},
   multiple/.style        = {mode=multiple},
   .unknown/.code         = {\ERROR: invalid choice type: use single or multiple}
   comparison/.is choice,
+  comparison/complex/.code      = \relax,
   comparison/integer/.code      = \relax,
+  comparison/lowercase/.code    = \relax,
   comparison/number/.code       = \relax,
   comparison/string/.code       = \relax,
-  comparison/lowercase/.code    = \relax,
-  comparison/eval/.code         = \relax,
   comparison/.unknown/.code     = {\ERROR: invalid input type: use integer, string or eval}
 }
 
@@ -120,8 +120,8 @@
 
 % University/instution - university included for backwards compatibility
 \newcommand*{\InstitutionURL}[1]{\def\MQ@institutionURL{#1}}
-\newcommand*{\UniversityURL}[1]{\def\MQ@institutionURL{#1}}
 \newcommand*{\Institution}[1]{\def\MQ@institution{#1}}
+\newcommand*{\UniversityURL}[1]{\def\MQ@institutionURL{#1}}
 \newcommand*{\University}[1]{\def\MQ@institution{#1}}
 
 % Macros for defining the quiz web breadcrumbs using the unit code, name and
@@ -134,12 +134,6 @@
 \newcommand*{\BreadCrumb}[1]{\def\MQ@breadcrumb{#1}}
 \newcommand*{\BreadCrumbs}[1]{\def\MQ@breadcrumbs{#1}}
 
-% Trickery to set the breadcrumb equal to the portion of the title before
-% a colon in the title...I can't remember but presumably this is used in
-% some of the SMS quizzes.
-\def\MQ@SetBreadCrumb#1:#2!{\def\MQ@breadcrumb{#1}}
-\def\title#1{\def\@title{#1}\MQ@SetBreadCrumb#1:!}
-
 % Default values - the university and department defaults can also be
 % set in the webquizrc file. The main purpose of these defaults is
 % to remind the user to set them.
@@ -147,7 +141,7 @@
 \UnitName{Unit name?}
 \UnitURL{}
 \QuizzesURL{deFAULT}
-\BreadCrumb{deFAULT}
+\BreadCrumb{}
 \BreadCrumbs{deFAULT}
 \Department{deFAULT}
 \DepartmentURL{deFAULT}

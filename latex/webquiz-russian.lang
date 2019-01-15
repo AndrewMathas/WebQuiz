@@ -1,9 +1,9 @@
 answer             = Ответ
 check answer       = Проверить ответ
-choice             = Выбор ({}) является
+choice             = Выбор {} является
 correct            = Верный!
 incorrect          = Неправильно.
-multiple incorrect = Например, выбор ({}) должен быть
+multiple incorrect = Например, выбор {} должен быть
 next question      = Следующий вопрос
 next question      = следующий неотвеченный вопрос
 one mistake        = Есть хотя бы одна ошибка.

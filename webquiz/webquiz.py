@@ -140,7 +140,6 @@ class MakeWebQuiz(object):
         self.number_discussions = len(self.quiz.discussion_list)
         self.number_quizzes = len(self.quiz.question_list)
 
-        self.title = self.quiz.title
         self.add_meta_data()
         self.add_question_javascript()
         self.add_side_menu()
@@ -157,30 +156,43 @@ class MakeWebQuiz(object):
                         text=self.quiz.department,
                         url=self.quiz.department_url,
                         missing='department')
+
                 elif crumb == 'institution':
                     crumbs += self.add_breadcrumb_line(
                         text=self.quiz.institution,
                         url=self.quiz.institution_url,
                         missing='institution')
-                elif crumb == 'unit_code':
+
+                elif crumb == 'unitcode':
                     crumbs += self.add_breadcrumb_line(
                         text=self.quiz.unit_code,
                         url=self.quiz.unit_url,
                         missing='unit code')
-                elif crumb == 'unit_name':
+
+                elif crumb == 'unitname':
                     crumbs += self.add_breadcrumb_line(
                         text=self.quiz.unit_name,
                         url=self.quiz.unit_url,
                         missing='unit name')
-                elif crumb == 'quiz-index':
+
+                elif crumb == 'quizindex':
                     if self.quiz.quiz_index == []:
                         crumbs += webquiz_templates.breadcrumb_quizlist.format(
                             quizzes_url=self.quiz.quizzes_url,
                             **self.language)
                     else:
                         crumbs += self.add_breadcrumb_line('Quizzes')
+
+                elif crumb == 'Title':
+                    crumbs += self.add_breadcrumb_line(text = self.quiz.title, missing='title')
+
                 elif crumb == 'title':
-                    crumbs += webquiz_templates.breadcrumb_quizlist.format(text = self.quiz.title)
+                    title = self.quiz.title
+                    crumbs += self.add_breadcrumb_line(
+                                  text = title[:title.index(':')] if ':' in title else title,
+                                  missing='title'
+                              )
+
                 elif crumb != '':
                     lastSpace = crumb.rfind(' ')
                     url = crumb[lastSpace:].strip()
@@ -404,7 +416,7 @@ class MakeWebQuiz(object):
             self.quiz_header = ''
         else:
             self.quiz_header = webquiz_templates.quiz_header.format(
-                title=self.title,
+                title=self.quiz.title,
                 question_number=self.quiz.discussion_list[0].heading
                                         if self.quiz.discussion_list != []
                                         else '1' if self.quiz.question_list > []
@@ -428,8 +440,9 @@ class MakeWebQuiz(object):
                 quizmenu.write('var QuizTitles = [\n{titles}\n];\n'.format(
                     titles=',\n'.join("  ['{}', '{}']".format(q.title, q.url)
                                       for q in self.quiz.quiz_index)
+                    )
                 )
-            )
+                quizmenu.write(webquiz_templates.create_dropdown)
 
         # now comes the main page text
         # discussion(s) masquerade as negative questions
@@ -584,7 +597,7 @@ if __name__ == '__main__':
             help='latex quiz files')
 
         parser.add_argument(
-            '--edit-settings',
+            '-e', '--edit-settings',
             action='store_true',
             default=False,
             help='Edit webquiz settings')

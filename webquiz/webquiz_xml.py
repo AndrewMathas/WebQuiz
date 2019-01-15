@@ -21,7 +21,7 @@ import sys
 import xml.sax
 
 # imports of webquiz code
-from webquiz_util import debugging 
+from webquiz_util import debugging , webquiz_error
 
 # ---------------------------------------------------------------------------------------
 def ReadWebQuizXmlFile(quizfile, defaults):
@@ -54,6 +54,9 @@ class Data(object):
             setattr(self, key, val)
 
     def __str__(self):
+        r'''
+        A string methid, purely for debugging purposes...
+        '''
         return '\n - '.join('{} = {}'.format(k, getattr(self, k)) for k in self._items)
 
 
@@ -163,14 +166,19 @@ class QuizHandler(xml.sax.ContentHandler):
             self.discussion_list.append(discussion)
 
         elif tag == 'question':
-            question = Data(text = '',        # The text of the question
-                            type = None,      # input, or single or multiple choice
-                            after_text = '' # text at end of question
+            self.question_list.append(
+                Data(text = '',      # The text of the question
+                    type = None,    # input, or single or multiple choice
+                    after_text = '' # text at end of question
+                )
             )
-            self.question_list.append(question)
 
         # process the different question types, items choice and responses
         elif tag == 'answer':
+            if self.question_list[-1].type != None:
+                webquiz_error('question {} has too many question types: {} and input'.format(
+                        len(self.question_list)+1, self.question_list[-1].type)
+                )
             self.question_list[-1].type = 'input'
             self.question_list[-1].answer = ''
             self.question_list[-1].when_right = ''
@@ -179,13 +187,18 @@ class QuizHandler(xml.sax.ContentHandler):
             self.text = ''
 
             self.question_list[-1].comparison = attributes.get('comparison')
-            if self.question_list[-1].comparison == 'eval':
+            if self.question_list[-1].comparison == 'complex':
                 self.mathjs = True
 
         elif tag == 'choice':
+            if self.question_list[-1].type != None:
+                webquiz_error('question {} has too many question types: {} and choice'.format(
+                        len(self.question_list)+1, self.question_list[-1].type)
+                )
             self.question_list[-1].type = attributes.get('type')
             self.question_list[-1].columns = int(attributes.get('columns'))
             self.question_list[-1].items = []
+            self.question_list[-1].correct = 0
             self.question_list[-1].text += self.text
             self.text = ''
 
@@ -197,6 +210,8 @@ class QuizHandler(xml.sax.ContentHandler):
                          text=''
                         )
             )
+            if attributes.get('correct')=='true':
+                self.question_list[-1].correct += 1
 
         # finally look after the index file
         elif tag == 'index_item':
@@ -233,6 +248,18 @@ class QuizHandler(xml.sax.ContentHandler):
             self.question_list[-1].items[-1].response = self.text.strip()
 
         elif tag == 'question':
+            if hasattr(self.question_list[-1], 'items'):
+                # some error checking
+                if len(self.question_list[-1].items)==0:
+                    webquiz_error('question {} has no multiple choice items'.format(len(self.question_list)+1))
+
+                if self.question_list[-1].type=='single' and self.question_list[-1].correct!=1:
+                    webquiz_error('question {} is single-choice but has {} correct answers'.format(
+                                    len(self.question_list)+1,
+                                    self.question_list[-1].correct
+                                 )
+                    )
+
             if self.text.strip() != '':
                 self.question_list[-1].after_text += ' '+self.text.strip()
 

@@ -1,12 +1,11 @@
 \documentclass[theme=vibrant]{webquiz}
-\UnitCode{Math103}
 \title{A multiple choice example with zero or more correct answers}
 \renewcommand\thechoice{\roman{choice})}
 \begin{document}
   \begin{question}     % a quiz question
      Which of the following integers are prime?
      % multiple (0 or more) correct answers rendered in two columns
-     \begin{choice}[multiple]
+     \begin{choice}[multiple, columns=4]
        \correct   $17$ \response Yes, the only divisors of $17$ are $1$ and $17$
        \incorrect $12$ \response No, $12 = 3\times 4$
        \incorrect $27$ \response No, $27=3^3$

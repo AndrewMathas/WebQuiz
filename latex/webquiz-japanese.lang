@@ -1,9 +1,9 @@
 answer             = 回答
 check answer       = 回答を確認する
-choice             = 選択肢（{}）は
+choice             = 選択肢 {} は
 correct            = 正しい！
 incorrect          = 間違っています。
-multiple incorrect = たとえば、選択肢（{}）は
+multiple incorrect = たとえば、選択肢 {} は
 next question      = 次の問題
 next question      = 次の未回答の質問
 one mistake        = 少なくとも1つの間違いがあります。

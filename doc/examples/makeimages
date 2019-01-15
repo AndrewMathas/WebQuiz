@@ -66,7 +66,7 @@ class Convert:
                 quest, part = qp.split(':')
                 for p in part.split(','):
                     self.javascript += "document.forms['Q{}Form'].elements[{}].checked=true;".format(quest, int(p)-1)
-                self.javascript += 'currentQ={};updateQuestionMarker;'.format(quest)
+                self.javascript += 'checkAnswer({});'.format(quest)
                 self.delay += 4
             self.javascript += 'setTimeout(showQuestion({}), 4)'.format(quest)
 
@@ -87,7 +87,7 @@ class Convert:
           If `cleaning` is `True` then all unnecessary files are deleted
           once after the image is created
         '''
-        print('\nExtracting image file for {}...'.format(self.page))
+        print('\nExtracting image file {}...'.format(self.page_out))
 
         if os.path.exists(self.page_out+'.png'):
             # remove png file if it already exists
@@ -145,28 +145,29 @@ class Convert:
 
 # Specify the pages to construct using the Convert class:
 pages = [
-    Convert("answer-integer", js="document.forms['Q1Form'].elements[0].value=18; setTimeout(checkAnswer, 1);"),
-    Convert("answer-number", js="document.forms['Q1Form'].elements[0].value=0.75; setTimeout(checkAnswer, 1);"),
-    Convert("answer-string", js="document.forms['Q1Form'].elements[0].value='Canberra'; setTimeout(checkAnswer, 1);"),
-    Convert("answer-lowercase", js="document.forms['Q1Form'].elements[0].value='long'; setTimeout(checkAnswer, 1);"),
-    Convert("answer-eval", js="document.forms['Q1Form'].elements[0].value='-cos(x)'; setTimeout(checkAnswer, 1)');"),
-    Convert("breadcrumbs", delay=10),
+    Convert("answer-complex", js="document.forms['Q1Form'].elements[0].value='i+7'; setTimeout(checkAnswer(1), 2);"),
+    Convert("answer-integer", js="document.forms['Q1Form'].elements[0].value=18; setTimeout(checkAnswer(1), 2);"),
+    Convert("answer-lowercase", js="document.forms['Q1Form'].elements[0].value='long'; setTimeout(checkAnswer(1), 2);"),
+    Convert("answer-number", js="document.forms['Q1Form'].elements[0].value=0.75; setTimeout(checkAnswer(1), 2);"),
+    Convert("answer-string", js="document.forms['Q1Form'].elements[0].value='canberra'; setTimeout(checkAnswer(1), 2);"),
+    Convert("breadcrumbs"),
+    Convert("breadcrumbs", page_out="dropdown", js='toggle_dropdown_menu()'),
     Convert("choice-multiple"),
     Convert("choice-single"),
     Convert("discussion"),
     Convert("display-as-image"),
-    Convert("dropdown", js='toggle_dropdown_menu()', delay=10),
     Convert("french", webquiz='-x'),
     Convert("index"),
+    Convert("lion-image"),
     Convert("montypython", delay=5),
     Convert("nounits", delay=5),
     Convert("onepage"),
     Convert("pst2pdf"),
     Convert("pstricks-ex"),
     Convert("quiz-page", question="1:2", delay=15),
-    Convert("simple", page_out='simple-html'),
+    Convert("simple", page_out='simple-html', question='1:1'),
     Convert("simple", src='pdf',  page_out='simple-pdf'),
-    Convert("random", js="document.forms['Q2Form'].elements[2].value='2'; setTimeout(checkAnswer, 2)');"),
+    Convert("random", js="document.forms['Q2Form'].elements[2].value='2'; setTimeout(checkAnswer(2), 2)');"),
     Convert("theme-dark", question="3:2"),
     Convert("theme-default", question="1:1,3|3:2", delay=5),
     Convert("theme-dynamic", question="3:2"),
@@ -179,7 +180,6 @@ pages = [
     Convert("theme-sleek", question="3:2"),
     Convert("theme-vibrant", question="3:2"),
     Convert("tikz-ex"),
-    Convert("using-images"),
 ]
 
 if __name__ == '__main__':

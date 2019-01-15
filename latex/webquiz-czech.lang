@@ -1,9 +1,9 @@
 answer             = Odpovědět
 check answer       = Zkontrolujte odpově
-choice             = Volba ({}) je
+choice             = Volba {} je
 correct            = správné!
-incorrect          = nesprávné!
-multiple incorrect = Například volba ({}) by měla být
+incorrect          = Nesprávné!
+multiple incorrect = Například volba {} by měla být
 next question      = Další otázka
 next question      = Další nezodpovězená otázka
 one mistake        = Existuje alespoň jedna chyba.

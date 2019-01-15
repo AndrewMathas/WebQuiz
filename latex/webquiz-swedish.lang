@@ -1,9 +1,9 @@
 answer             = Svar
 check answer       = Kolla svar
-choice             = Valet ({}) är
-correct            = Rätta!
+choice             = Valet {} är
+correct            = rätta!
 incorrect          = Felaktig.
-multiple incorrect = Till exempel bör valet ({}) vara
+multiple incorrect = Till exempel bör valet {} vara
 next question      = Nästa fråga
 next question      = nästa obesvarad fråga
 one mistake        = Det finns minst ett misstag.

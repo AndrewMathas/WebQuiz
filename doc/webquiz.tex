@@ -1,4 +1,4 @@
-%------------------------------------------ -----------------------------------
+%------------------------------------------ -----the
 %  Copyright (C) 2004-2017 Andrew Mathas, University of Sydney
 %
 %  Distributed under the terms of the GNU General Public License (GPL)
@@ -163,12 +163,13 @@ the on-line manual.}}
 
 \section{Introduction}
     On-line quizzes provide a good way to reinforce learning, especially
-    because they can give ``interactive'' feedback to the students based
-    on the answers that they give. Unfortunately, in addition to writing
-    the quiz content there are significant technical hurdles that need
-    to be overcome when writing an on-line quiz -- and there are
-    additional complications if the quiz involves mathematics or
-    diagrams.
+    because they can give ``interactive'' feedback to the
+    students\footnote{Throughout this manual, ``student'' means the
+    person taking the on-line quiz.} based on the answers that they
+    give. Unfortunately, in addition to writing the quiz content there
+    are significant technical hurdles that need to be overcome when
+    writing an on-line quiz -- and there are additional complications if
+    the quiz involves mathematics or diagrams.
 
     \WebQuiz makes it possible to write on-line quizzes using \LaTeX,
     which is the typesetting language used by mathematicians who use
@@ -210,10 +211,10 @@ the on-line manual.}}
     The easiest way to explain how \WebQuiz works is by example. The
     following \LaTeX\ file defines a quiz with a single multiple choice
     question that has four possible answers, each of which has a
-    customised response.  (Responses to answers are optional, but they
-    are one of the main pedagogical advantages of on-line quizzes
-    because the quiz can explain to the student why their answer was
-    correct or incorrect.)
+    customised response. Giving feedback to the students in each
+    question is optional but the capability of being able to give
+    students feedback on their answer is one of the main pedagogical
+    advantages of on-line quizzes.
 
     \InputLatexCode{examples/simple}
 
@@ -221,20 +222,18 @@ the on-line manual.}}
     \BashCode|pdflatex|, or \BashCode|latex|, to produce a readable and
     printable version of the quiz, which can be useful when
     proofreading. In this case, the \LaTeX\ version of the quiz looks
-    something like this:
-
+    like this:
     \ScreenShot[0.5]{Sample PDF output}{examples/simple-pdf}
-
     Of course, the real reason for using \WebQuiz is that it is also
     possible to make an on-line version of the quiz by processing the
-    quiz using the \BashCode|webquiz| command. If you do this, and then open
-    the resulting web page in your favourite browser, you will see a web page
-    that looks something like this:
+    quiz using the \BashCode|webquiz| command. If you do this, open
+    the resulting web page in your favourite browser and select answer~(a),
+    then you will see a web page like this:
     \ScreenShot{Sample web page}{examples/simple-html}
     By default, the on-line version of the quiz displays one question at a time,
     with the question buttons serving the dual purpose of navigation
     between questions and displaying how successful the student was
-    in answering the question. In fact, the decorations on the question
+    in answering the question. The decorations on the question
     buttons indicate whether the question has been attempted and, if so,
     whether it was answered correctly or incorrectly on the first of
     subsequent attempts. One of the main points of \WebQuiz is that
@@ -429,12 +428,16 @@ the on-line manual.}}
     errors. Further, \textit{\LaTeX{} error messages are much easier to read and
     understand than those produced by \TeXfht and \WebQuiz}.
   \end{itemize}
-  Note that the PDF version of a quiz does not contain any
-  information about the unit, department or institution. This
-  information was included in previous releases of \WebQuiz, however, it
-  is now omitted because this data can now be specified in the \webquizrc
-  file (see \autoref{SS:rcfile}) and \LaTeX{} does not have access to
-  the \webquizrc file.
+  This said, \WebQuiz does check for more errors in the quiz than
+  \LaTeX{} is (easily) able to do.
+
+  The PDF version of a quiz does not contain information about
+  the unit, department or institution, which can be used in the
+  breadcrumbs. This information was included in previous releases of
+  \WebQuiz, however, this data is now omitted from the PDF because this
+  data can now be specified in the \webquizrc file (see
+  \autoref{SS:rcfile}) and \LaTeX{} does not have access to the
+  \webquizrc file.
 
   The next sections describe the commands and environments provided by
   \WebQuiz for typesetting quizzes as well as the document-class options
@@ -444,7 +447,7 @@ the on-line manual.}}
   \autoref{SS:config} describes a work-around for using (some?) \LaTeX{}
   features that have not been configured for use with \TeXfht.
 
-\subsection{\WebQuiz question environments}
+\subsection{Question environments}
 
 The \WebQuiz document class defines the following four environments:
 \begin{quote}
@@ -482,35 +485,38 @@ directory for a complete quiz file.
   The \textit{optional} macros \LatexCode|\whenRight| and
   \LatexCode|\whenWrong| are used to give the student additional
   feedback, when they are right, or further hints etc for approaching
-  the question, when they are wrong.
+  the question, when they are wrong. This feedback is displayed on the
+  quiz page only when the student checks their answer.
 
-  The web page created by the code above, when a correct answer is
-  given, looks like this:
-
+  The web page created by the code above, when an answer of
+  ``canberra'', instead of ``Canberra'' is given, is:
   \ScreenShot{A question with an answer}{examples/answer-string}
   This example code shows one way of using the \LatexCode|\answer| macro, which
-  asks for an answer to a question. The syntax of the
+  asks for the student to type in an answer to the question. The syntax of the
   \LatexCode|\answer| macro is:
   \begin{latexcode}
       \answer[comparison type]{correct answer}
   \end{latexcode}
   where the optional \textit{comparison type} is one of:
   \begin{description}
+      \item[complex] \CrossIndex*{answer}{complex}
+      The \textit{correct answer} and the inputted answer
+      are compared as \textit{complex} numbers
       \item[integer] \CrossIndex*{answer}{integer}
       The \textit{correct answer} and the inputted answer
-      as compared as \textit{integers}
+      are compared as \textit{integers}
+      \item[lowercase] \CrossIndex*{answer}{lowercase}
+      The \textit{correct answer} and the inputted answer
+      are converted to lower case and then compared as strings
       \item[number] \CrossIndex*{answer}{number}
       The \textit{correct answer} and the inputted answer
-      as compared as (real) \textit{numbers}. For example, if the
+      are compared as (real) \textit{numbers}. For example, if the
       \textit{correct answer} was $0.8$ then $4/5$ would be marked as
       correct.
       \item[string] \CrossIndex*{answer}{string}
       The \textit{correct answer} and the inputted answer are compared
       as \textit{strings}, so they have to match exactly. In particular,
       \textit{string} is case sensitive. This is the default.
-      \item[lowercase] \CrossIndex*{answer}{lowercase}
-      The \textit{correct answer} and the inputted answer
-      are converted to lower case and then compared as strings.
       % \item[eval] \CrossIndex*{answer}{eval}
       % The inputted answer is marked correct if the \textit{difference}
       % of the \textit{correct answer} and the inputted answer
@@ -518,30 +524,35 @@ directory for a complete quiz file.
       % functions such as $\sin(x)$, $\cos(x)$ etc. are accepted.
   \end{description}
 
-  Since \textit{integer} is the default comparison type, the example
-  code above is shows how integer comparisons work. The following code
-  blocks and screen shots show the four other \LatexCode|\answer|
+  Since \textit{string} is the default comparison type, the example
+  code above is shows how string comparisons work. The following code
+  blocks and screen shots give examples of the different \LatexCode|\answer|
   comparison types.
 
-  \textcolor{blue}{Numeric answer}
-  \CrossIndex*{answer}{number}
-  \InputLatexCode{examples/answer-number}
-  \ScreenShot{A question with a numeric answer}{examples/answer-number}
+  \textcolor{blue}{Complex answer}
+  \CrossIndex*{answer}{complex}
+  \InputLatexCode{examples/answer-complex}
+  \ScreenShot{A question with a complex answer}{examples/answer-complex}
 
-  \textcolor{blue}{String answer}
-  \CrossIndex*{answer}{string}
-  \InputLatexCode{examples/answer-string}
-  \ScreenShot{A question with a string answer}{examples/answer-string}
+  \textcolor{blue}{Integer answer}
+  \CrossIndex*{answer}{integer}
+  \InputLatexCode{examples/answer-integer}
+  \ScreenShot{A question with a integer answer}{examples/answer-integer}
 
   \textcolor{blue}{Lowercase string answer}
   \CrossIndex*{answer}{lowercase}
   \InputLatexCode{examples/answer-lowercase}
   \ScreenShot{A question with a lowercase string answer}{examples/answer-lowercase}
 
-  \textcolor{blue}{Evaluated answer}
-  \CrossIndex*{answer}{eval}
-  \InputLatexCode{examples/answer-eval}
-  \ScreenShot{A question with an evaluated answer}{examples/answer-eval}
+  \textcolor{blue}{Numeric answer}
+  \CrossIndex*{answer}{number}
+  \InputLatexCode{examples/answer-number}
+  \ScreenShot{A question with a numeric answer}{examples/answer-number}
+
+  %\textcolor{blue}{Evaluated answer}
+  %\CrossIndex*{answer}{eval}
+  %\InputLatexCode{examples/answer-eval}
+  %\ScreenShot{A question with an evaluated answer}{examples/answer-eval}
 
   \subsubsection{Multiple choice questions}
   \CrossIndex{environment}{choice}
@@ -558,50 +569,64 @@ accepts two optional arguments, which can appear in any order:
   \textit{single} correct answer or whether 0 or more of the answers are
   correct, respectively.
   \item \index{choice environment!columns}
-  A non-negative integer $n$, specifying that the choices should
-  be rendered in $n$ columns.
+  The number of \textit{columns} in which to typeset the choices. This
+  is specified as \LatexCode|columns=n|, where $n$ is a non-negative integer.
+  By default, the choices appear in $n=1$ columns
+  (\DefaultValue{columns=1}).
 \end{itemize}
-Of course, \LatexCode|choice| environments need to be put inside a
-\LatexCode|question| environment.
+The key difference between these two types of \LatexCode|choice|
+questions is that a \LatexCode|single|-choice environment uses radio
+boxes, so it is only possible to select one correct answer, whereas in a
+\LatexCode|multiple|-choice environment checkboxes are used, so that is
+possible to select zero or more correct answers.  Every
+\LatexCode|choice| environment needs to be inside a \LatexCode|question|
+environment.
 
-A \LatexCode|choice| environment  is similar to the list-like environments
+A \LatexCode|choice| environment is similar to the \LaTeX{} list environments
 (\textit{enumerate}, \textit{itemize}, \textit{description}, ...) except
-that rather than using \LatexCode|\item| to separate the different list item
-you should use
+that instead of using \LatexCode|\item| to separate the items
 \LatexCode|\correct| \CrossIndex{choice environment}*{correct}
-for correct responses and
-\LatexCode|\incorrect| \CrossIndex{choice environment}*{incorrect}
-for incorrect responses. In addition, you can use
+\LatexCode|\incorrect| \CrossIndex{choice environment}*{incorrect} are
+used, indicating correct and incorrect responses respectively.
+In addition, after each \LatexCode|\correct| or \LatexCode|\incorrect|
+you can , optionally, use
 \LatexCode|\response| \CrossIndex{choice environment}*{response}
-to give a feedback response to the person taking the quiz, which is
-displayed when they select the last correct or incorrect answer.
+to give a feedback response to the person taking the quiz. Like
+\LatexCode|\whenRight| and \LatexCode|\whenWrong| this feedback is
+displayed only when the student checks their answer.
 \index{feedback!response}
 
-Here is an example of a multiple choice question with a unique answer
-
+Here is an example of a \LatexCode|single|-choice question with a unique answer:
   \InputLatexCode{examples/choice-single}
-
-\noindent
-It is not necessary to put the \LatexCode|\response| lines on the same line
-as the \LatexCode|\(in)correct| lines; this is done here only to make the
-example more compact. This results in the following web page:
-
+It is not necessary to put the \LatexCode|\response| lines on the same
+line as the \LatexCode|\incorrect| and \LatexCode|\incorrect|; this is
+done only to make the example more compact. This results in the
+following web page:
 \ScreenShot{Single answer multiple choice question}{examples/choice-single}
 
 Here is an example of a multiple choice question that has
 two correct answers:
-
-  \InputLatexCode{examples/choice-multiple}
-  \label{choice-multiple}
-
-  \noindent which gives (here, the documentclass-option
-  \LatexCode{theme=vibrant} is used to change the colour scheme):
-
+  \InputLatexCode{examples/choice-multiple}\label{choice-multiple}
+Notice that this example uses the documentclass-option
+\LatexCode{theme=vibrant}, which changes the colour scheme:
 \ScreenShot{Multi-answer multiple choice question}{examples/choice-multiple}
 
 When the optional argument \LatexCode|multiple| is used, as above, then the
 question is marked correct if and only if all of the correct responses
-are selected.
+are selected. Feedback to the students is randomly selected from the
+feedback for their incorrect responses.
+
+Finally, observe that the multiple choice items in the screenshot above
+are labelled by roman numerals. The items in a \LatexCode{choice} are
+labelled by a standard \LaTeX{} counter, which is also called
+\LatexCode|choice|. Redefining \LatexCode|\thechoice| changes how the
+items in the on-line quiz are labelled. For example, to label the items
+in a \LatexCode|choice| environment by A), B), C) $\dots$ add
+\begin{latexcode}
+  \renewcommand\thechoice{\Alph{choice})}
+\end{latexcode}
+to the preamble of the \LaTeX{} file for your quiz.
+\CrossIndex{choice environment}*{thechoice}\macroIndex{thechoice}
 
   \subsubsection{Discussion environments}
   \CrossIndex{environment}{discussion}
@@ -627,7 +652,7 @@ that contain only \LatexCode|discussion| environments, with no questions, and
 quizzes that contain only \LatexCode|question| environments, with no
 discussion.
 
-  \subsubsection{Quiz indexes}
+  \subsubsection{Index pages for qizzes}
 
   \index{quizindex environment}
   \CrossIndex{environment}{quizindex}
@@ -664,28 +689,30 @@ discussion.
   \subsubsection{Breadcrumbs}\label{SS:breadcrumbs}\index{breadcrumbs}
 
   \WebQuiz provides a straightforward way to place navigation breadcrumbs
-  at the top of the quiz web page. By default these
-  breadcrumbs look something like this:
-
+  at the top of the quiz web page. By default the
+  breadcrumbs are disabled. Adding \LatexCode|\BreawdCrumbs| command
+  like:
+  \begin{latexcode}
+      \BreadCrumbs{ Mathematics / | Math1001 /u/Math1001 | quiz_index | title }
+  \end{latexcode}
+  adds the following breadcrumbs, or navigation links,
+  to the top of the quiz page:
   \ScreenShot{Example of breadcrumbs}{examples/breadcrumbs}
-
   \noindent
-  The breadcrumbs will typically be links, so clicking on the
-  \textit{School of Mathematics and Statistics} will take you to the
-  School's web page, clicking on \textit{MATH1001} will take you to the
-  unit of study web page and clicking on \textit{Quizzes} will take you
+  The breadcrumbs will typically be links. In the example above, clicking on
+  \textsf{Mathematics} takes you to the web page for the
+  department of mathematics, clicking on \textsf{MATH1001} takes you to the
+  unit of study web page and clicking on \textsf{Quizzes} takes you
   to the index page for the quizzes for the current unit. As alluded to
   in the last section, clicking on the~{\large\color{red} $\equiv$} symbol after
   \textit{Quizzes} causes a drop-down menu to appear that
-  contains links to all of the quizzes for the current unit of study.
-
+  contains links to all of the quizzes for the current unit of study:
   \ScreenShot{Drop-down menu giving index of quizzes}{examples/dropdown.png}
-
-  \noindent
   The breadcrumbs for the quiz web page can be either be configured
   quiz-by-quiz, using the \LatexCode|\BreadCrumbs| macro
-  \macroIndex{BreadCrumbs}, or by setting \textsf{breadcrumbs}
-  ``globally'' in the \webquizrc file using the command-line option
+  \macroIndex{BreadCrumbs} as above, or by setting the
+  \textsf{breadcrumbs} ``globally'' in the \webquizrc file using the
+  command-line option
   \begin{bashcode}
     > webquiz --edit-settings|
   \end{bashcode}
@@ -713,13 +740,7 @@ discussion.
 
   \noindent
   In principle, there can be arbitrarily many crumbs in your
-  breadcrumbs but, in practice, five is more than enough. Using
-  \LatexCode|\BreadCrumbs{none}| will disable the breadcrumbs.
-  \CrossIndex*{BreadCrumbs}{none}
-  Similarly, setting \textsf{breadcrumbs = none} in the \webquizrc will
-  also disable the breadcrumbs, unless there is a \LatexCode|\BreadCrumbs|
-  command in the quiz file, which will overwrite the default settings in
-  the rc-file.
+  breadcrumbs but, in practice, five is more than enough.
 
   The \LatexCode|\BreadCrumbs| command accepts the following ``magic crumbs'':
 
@@ -727,33 +748,49 @@ discussion.
     \item[breadcrumb] The crumb for the current quiz. As described
     below, this is set using \LatexCode|\BreadCrumb|, with the default
     being the quiz title which is set by \LatexCode|\title|
-    \CrossIndex*{BreadCrumb}*{title}
+    \CrossIndex*{BreadCrumb}*{breadcrumb}
 
     \item[department] This expands to a link to your department, where
     the department is set using \LatexCode|\Department| and its URL is set by
     \LatexCode|\DepartmentURL|
     \macroIndex{Department}\macroIndex{DepartmentURL}
+    \CrossIndex*{BreadCrumb}{department}
 
     \item[institution] This expands to a link to your institution, where
     the department is set using \LatexCode|\Institution| and its URL is set by
     \LatexCode|\InstitutionURL|
     \macroIndex{Department}\macroIndex{DepartmentURL}
+    \CrossIndex*{BreadCrumb}{institution}
 
     \item[quiz-index] This expands to ``Quizzes'', which is a link to
     the index page for your unit as given by \LatexCode|\QuizzesURL|. In
     addition, a drop-down menu to the index page is added to the
     breadcrumbs, which is accessed via {\large\color{red} $\equiv$}.
     \macroIndex{QuizzesURL}
+    \CrossIndex*{BreadCrumb}{quiz-index}
+
+    \item[Title] This expands to the full title of the quiz page, as given by
+    the \LatexCode|\title|.
+    \CrossIndex*{BreadCrumb}*{Title}
+
+    \item[title] This expands to the part of title of the quiz page, as given by
+    the \LatexCode|\title| command, that is \textit{before} the first
+    colon ``:'' in the title. So, for example, if the title is
+    ``Quiz 1: The wonders of life'' then ``Quiz 1'' will be added
+    to the list of breadcrumbs.
+    \CrossIndex*{BreadCrumb}*{title}
 
     \item[unitcode] This expands to a link to the unit code, where
     the unit code is set using \LatexCode|\UnitCode|, and its URL is set by
     \LatexCode|\UnitURL|
     \macroIndex{UnitCode}\macroIndex{UnitURL}
+    \CrossIndex*{BreadCrumb}{unitcode}
 
     \item[unitname] This expands to a link to the unit name, where
     the unit name is set using \LatexCode|\UnitName|, and its URL is set by
     \LatexCode|\UnitURL|
     \macroIndex{UnitName}\macroIndex{UnitURL}
+    \CrossIndex*{BreadCrumb}{unitname}
 
   \end{description}
 
@@ -984,7 +1021,7 @@ class options. Defaults for many of these options can be set in the
     translate the material to the right of the equals signs and then
     save the file as \BashCode|webquiz-XXX.lang|, and then put this file
     anywhere in the \LaTeX{} search path. Note that the expressions
-    \LatexCode|({})| in the language files should be not be removed because
+    \LatexCode|{}| in the language files should be not be removed because
     they expand to expressions like \textsf{(a)}, \textsf{(b)} etc. when
     used in the on-line quizzes. Once the new language file
     \BashCode|webquiz-XXX.lang| is in the \LaTeX{} search path it can be
@@ -1066,13 +1103,13 @@ The option \LatexCode|dvipdfmx|
 to \LatexCode|graphicx| is only necessary if you want to be able to
 rescale images. For example, the code:
 
-    \InputLatexCode{examples/using-images}
+    \InputLatexCode{examples/lion-image}
 
 produces the web page:
 
-\ScreenShot{Including images}{examples/using-images}
+\ScreenShot{Including images}{examples/lion-image}
 
-Of course, it is also possible to draw quite complicated diagrams in
+It is also possible to draw quite complicated diagrams in
 \LaTeX\ documents using packages like \ctan{tikz} and \ctan{pstricks}.
 These packages can be used in \WebQuiz quizzes although,
 unfortunately, both of these packages have issues when used with \TeX

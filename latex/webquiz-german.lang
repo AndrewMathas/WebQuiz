@@ -1,9 +1,9 @@
 answer             = Antworten
 check answer       = Antwort prüfen
-choice             = Wahl ({}) ist
-correct            = Richtig!
+choice             = Wahl {} ist
+correct            = richtig!
 incorrect          = Falsch.
-multiple incorrect = Zum Beispiel sollte die Wahl ({}) sein
+multiple incorrect = Zum Beispiel sollte die Wahl {} sein
 next question      = Nächste Frage
 next question      = Nächste unbeantwortete Frage
 one mistake        = Es gibt mindestens einen Fehler.

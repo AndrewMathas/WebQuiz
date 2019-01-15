@@ -71,8 +71,8 @@ function create_drop_down_menu() {
 // create an event listener so that we can close the drop-down menu
 // whenever some one clicks outside of it
 function MenuEventListener(evnt) {
-    var drop_down = document.getElementById("drop-down-menu");
-    var menu_icon = document.getElementsByClassName("menu-icon")[0];
+    var drop_down = document.getElementById('drop-down-menu');
+    var menu_icon = document.getElementsByClassName('menu-icon')[0];
     if (drop_down.contains(evnt.target)) {
       return; // inside the menu so just return
     } else {   // outside the menu so check the number of menu_clicks
@@ -84,7 +84,7 @@ function MenuEventListener(evnt) {
 }
 
 function toggle_dropdown_menu() {
-    var drop_down = document.getElementById("drop-down-menu");
+    var drop_down = document.getElementById('drop-down-menu');
     if (drop_down.style.display === 'block') {
       drop_down.style.display = 'none';
     } else {
@@ -111,9 +111,14 @@ function toggle_side_menu() {
 
 // Code to hide/show questions
 function showQuestion(newQ) { // newQ is an integer which is always in the correct range
+    var realQ;
+    var button;
     if (!onePage && newQ !== currentQ) {
-        var button;
-        var realQ = questionOrder[currentQ-1];
+        if (currentQ>0) {
+            realQ = questionOrder[currentQ-1];
+        } else {
+            realQ = currentQ
+        }
         if (currentQ !== 0) { // hide the current question and responses
             hideResponse();
             document.getElementById("question" + realQ).style.display = "none";
@@ -124,9 +129,13 @@ function showQuestion(newQ) { // newQ is an integer which is always in the corre
             }
         }
 
-        // now set currtentQ = newQ and display it
+        // now set currentQ = newQ and display it
         currentQ = newQ;
-        realQ = questionOrder[currentQ-1];
+        if (currentQ>0) {
+            realQ = questionOrder[currentQ-1];
+        } else {
+            realQ = currentQ
+        }
         document.getElementById("question" + realQ).style.display = "table";
         button = document.getElementById("button" + currentQ);
         button.classList.add("nolink");
@@ -224,6 +233,9 @@ function checkAnswer(qnum) {
     if (question.type == "input") {
         var answer = formObject.elements[0].value;
         switch(question.comparison) {
+          case 'complex':
+            correct[q] = (math.complex(question.value-answer)==0);
+            break;
           case 'integer':
             correct[q] = (parseInt(question.value) === parseInt(answer));
             break;
