@@ -50,9 +50,10 @@ signal.signal(signal.SIGTERM, graceful_exit)
 def preprocess_with_pst2pdf(quiz_file):
     r'''
     Preprocess the latex file using pst2pdf. As we are preprocessing the file it
-    is not enough to have latex pass us a flag that tells us to use pst2pdf and,
-    instead, we have to extract the class file option from the tex file
-    INPUTL: quiz_file should be the name of the quiz file, WITHOUT the .tex extension
+    is not enough to have latex pass us a flag that tells us to use pst2pdf.
+    Instead, we have to extract the class file option from the tex file
+
+    INPUT: quiz_file should be the name of the quiz file, WITHOUT the .tex extension
     '''
     talk('Preprocessing {} with pst2pdsf'.format(quiz_file))
     try:
@@ -96,14 +97,14 @@ class MakeWebQuiz(object):
       2. Read in the xml file version of the quiz
       3. Spit out the html version
 
-    The HTMl is contructed using the template strings in webquiz_templates
+    The HTMl is constructed using the template strings in webquiz_templates
     """
     # attributes that will form part of the generated web page
-    header = ''  # everything printed in the page header: meta data, includes, javascript, CSS, ...
-    css = ''  # css specifications
-    javascript = ''  # javascript code
+    header         = ''  # page header: title, meta data, links
+    css            = ''  # css specifications
+    javascript     = ''  # javascript code
     quiz_questions = ''  # the main quiz page
-    side_menu = ''  # the left hand quiz menu
+    side_menu      = ''  # the left hand quiz menu
 
     def __init__(self, quiz_name, quiz_file, options, settings):
         self.options = options
@@ -298,10 +299,6 @@ class MakeWebQuiz(object):
             theme=self.quiz.theme)
         if self.quiz.mathjs:
             self.header += webquiz_templates.mathjs
-
-        # we don't need any of the links or metas from the latex file
-        # self.header += ''.join('  <meta {}>\n'.format(' '.join('{}="{}"'.format(k, meta[k]) for k in meta)) for meta in self.quiz.meta_list)
-        # self.header += ''.join('  <link {}>\n'.format(' '.join('{}="{}"'.format(k, link[k]) for k in link)) for link in self.quiz.link_list)
 
     def add_side_menu(self):
         """ construct the left hand quiz menu """
@@ -758,13 +755,31 @@ if __name__ == '__main__':
             else:
 
                 # the quiz name and the quiz_file will be if pst2pdf is used
-                quiz_name = quiz_file
-                if self.quiz.pst2pdf:
-                    preprocess_with_pst2pdf(quiz_file[:-4])
-                    quiz_file = quiz_file[:-4] + '-pdf-fixed.tex'  # now run webquiz on modified tex file
-
+                quiz_name = quiz_file  
                 if options.quiet < 2:
                     print('WebQuiz generating web page for {}'.format(quiz_file))
+
+                # If the pst2podf option is used then we need to preprocess
+                # the latex file BEFORE passing it to MakeWebQuiz. Set
+                # options.pst2pdf = True if pst2pdf is given as an option to
+                # the webquiz documentclass
+                with codecs.open(quiz_file, 'r', encoding='utf8') as q_file:
+                    doc = q_file.read()
+
+                options.pst2pdf = False
+                try:
+                    brac = doc.index(
+                        r'\documentclass[') + 15  # start of class options
+                    if 'pst2pdf' in [
+                            opt.strip()
+                            for opt in doc[brac:brac +
+                                           doc[brac:].index(']')].split(',')
+                    ]:
+                        preprocess_with_pst2pdf(quiz_file[:-4])
+                        options.pst2pdf = True
+                        quiz_file = quiz_file[:-4] + '-pdf-fixed.tex'  # now run webquiz on modified tex file
+                except ValueError:
+                    pass
 
                 # the file exists and is readable so make the quiz
                 MakeWebQuiz(quiz_name, quiz_file, options, settings)
@@ -789,7 +804,7 @@ if __name__ == '__main__':
                             os.remove(quiz_name + '.' + ext)
 
                     # files created when using pst2pdf
-                    if self.quiz.pst2pdf:
+                    if options.pst2pdf:
                         for file in glob.glob(quiz_name + '-pdf.*'):
                             os.remove(file)
                         for file in glob.glob(quiz_name + '-pdf-fixed.*'):
