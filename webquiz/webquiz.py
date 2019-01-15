@@ -146,8 +146,10 @@ class MakeWebQuiz(object):
         self.add_side_menu()
         self.add_quiz_header_and_questions()
 
+        self.breadcrumbs = ''
         if self.quiz.breadcrumbs != '':
             # build the bread crumbs
+            crumbs = ''
             for crumb in self.quiz.breadcrumbs.split('|'):
                 crumb = crumb.strip()
                 if crumb == 'department':
@@ -177,8 +179,8 @@ class MakeWebQuiz(object):
                             **self.language)
                     else:
                         crumbs += self.add_breadcrumb_line('Quizzes')
-                elif crumb == 'breadcrumb':
-                    crumbs += self.add_breadcrumb_line(self.quiz.breadcrumb, missing='breadcrumb')
+                elif crumb == 'title':
+                    crumbs += webquiz_templates.breadcrumb_quizlist.format(text = self.quiz.title)
                 elif crumb != '':
                     lastSpace = crumb.rfind(' ')
                     url = crumb[lastSpace:].strip()
@@ -187,12 +189,13 @@ class MakeWebQuiz(object):
                     else:
                         crumbs += self.add_breadcrumb_line(crumb)
 
-            if crumbs != '':
-                self.breadcrumbs = webquiz_templates.breadcrumbs.format(crumbs=crumbs)
+            # append breadcrumb on the end if it is non-empty
+            if self.quiz.breadcrumb != '':
+                crumbs += self.add_breadcrumb_line(self.quiz.breadcrumb, missing='breadcrumb')
 
-        if not hasattr(self, 'breadcrumbs'):
-            self.breadcrumbs = ''
+            self.breadcrumbs = webquiz_templates.breadcrumbs.format(crumbs=crumbs)
 
+        # add the initialisation warning if webquiz has not been initialised
         if self.settings.initialise_warning != '':
             self.breadcrumbs = self.settings.initialise_warning + self.breadcrumbs
 
@@ -342,6 +345,7 @@ class MakeWebQuiz(object):
 
         try:
             os.makedirs(self.quiz_name, exist_ok=True)
+            os.chmod(self.quiz_name, mode=0o755)
             with codecs.open(os.path.join(self.quiz_name, 'wq-' + self.quiz_name + '.js'), 'w', encoding='utf8') as quiz_specs:
                 if self.number_discussions > 0:
                     for (i, d) in enumerate(self.quiz.discussion_list):
@@ -403,7 +407,7 @@ class MakeWebQuiz(object):
                 title=self.title,
                 question_number=self.quiz.discussion_list[0].heading
                                         if self.quiz.discussion_list != []
-                                        else self.language.question + ' 1' if self.quiz.question_list > []
+                                        else '1' if self.quiz.question_list > []
                                         else '',
                 arrows=arrows,
                 **self.language
@@ -484,11 +488,11 @@ class MakeWebQuiz(object):
             - qnum     = question number
             - question = current question
             - part     = number of the option we need to process.
-        We put the parts into ans.parent.cols multicolumn format, so we have
+        We put the parts into question.columns multicolumn format, so we have
         to add '<tr>' and '</tr>' tags depending on part.
         '''
         choice = question.items[part]
-        item = '<tr>' if question.cols == 1 or (part % question.cols) == 0 else '<td>&nbsp;</td>'
+        item = '<tr>' if question.columns == 1 or (part % question.columns) == 0 else '<td>&nbsp;</td>'
         if question.type == 'single':
             item += webquiz_templates.single_item.format(choice=choice.symbol, qnum=qnum, text=choice.text)
         elif question.type == 'multiple':
@@ -502,9 +506,9 @@ class MakeWebQuiz(object):
             item += '<!-- internal error: %s -->\n' % question.type
             webquiz_error('Unknown question type "{}" in question {}'.format(question.type, qnum))
 
-        if question.cols == 1 or (part+1) % question.cols == 0 or part == len(question.items) - 1:
+        if question.columns == 1 or (part+1) % question.columns == 0 or part == len(question.items) - 1:
             item += '   </tr><!-- part={}, cols={}, # answers = {} -->\n'.format(
-                part, question.cols, len(question.items))
+                part, question.columns, len(question.items))
         return item
 
     def print_responses(self, question, qnum):

@@ -128,7 +128,6 @@ class QuizHandler(xml.sax.ContentHandler):
         # initialise the quiz
         if tag == 'webquiz':
             for key in attributes.keys():
-                print('Looking at {}'.format(key))
                 self.set_default_attribute(key, attributes.get(key))
 
             # convert the following attibutes to booleans
@@ -185,7 +184,7 @@ class QuizHandler(xml.sax.ContentHandler):
 
         elif tag == 'choice':
             self.question_list[-1].type = attributes.get('type')
-            self.question_list[-1].cols = int(attributes.get('cols'))
+            self.question_list[-1].columns = int(attributes.get('columns'))
             self.question_list[-1].items = []
             self.question_list[-1].text += self.text
             self.text = ''

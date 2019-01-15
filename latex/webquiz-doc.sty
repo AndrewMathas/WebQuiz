@@ -93,10 +93,10 @@
     xleftmargin=10mm,
     classoffset=1,
     % Code design
-    keywordstyle={[1]\color{ForestGreen}\bfseries},
-    keywordstyle={[2]\color{Blue}},
-    keywordstyle={[3]\color{DodgerBlue}},
-    keywordstyle={[4]\color{DarkGreen}},
+    keywordstyle={[1]\color{Blue}\bfseries},
+    keywordstyle={[2]\color{ForestGreen}},
+    keywordstyle={[3]\color{LimeGreen}},
+    keywordstyle={[4]\color{DarkBlue}},
     commentstyle=\color{BurlyWood}\ttfamily,
     stringstyle=\color{Coral},
     tabsize=4,
@@ -107,20 +107,20 @@
 \lstdefinestyle{latexcode}{
   language=[LaTeX]TeX,
   texcsstyle=*\bfseries\color{DodgerBlue},
-  morekeywords={UnitCode,UnitName,UnitURL,QuizzesURL,BreadCrumbs,BreadCrumb,Institution,Department,
-                includegraphics, DeclareGraphicsExtensions, DisplayAsImage,
-                Institution,InstitutionURL},
   classoffset=1,
-  morekeywords={quiz, quizlist, discussion, question, multiple, single, choice, Choice, pspicture, document,
-                integer, number, string, lowercase, eval, tikzpicture },
+  morekeywords={UnitCode,UnitName,UnitURL,QuizzesURL,BreadCrumbs,BreadCrumb,Institution,Department,
+                includegraphics,DeclareGraphicsExtensions,DisplayAsImage,
+                Institution,InstitutionURL,response,correct,incorrect,whenRight,whenWrong,answer},
   classoffset=2,
-  morekeywords={response,correct,incorrect,whenRight,whenWrong,answer,},
+  morekeywords={quiz, quizlist, discussion, question, multiple, single, choice, Choice, pspicture, document,
+                , tikzpicture },
   classoffset=3,
   alsoletter=2,
-  morekeywords={theme, language, hidesidemenu, pst2pdf, tikz},
+  morekeywords={theme, language, hidesidemenu, pst2pdf, tikz, fixedorder, randomorder, showsidemenu, onepage,
+                separatepages, english, french, integer, number, string, lowercase, eval},
   classoffset=4,
   morekeywords={tikzset, foreach, draw, filldraw, Configure, NewConfigure, csdef, csletcs, csuse,
-                Picture, EndPicture, psplotThreeD, pstThreeDCoor, RequirePackage},
+                Picture, EndPicture, psplotThreeD, pstThreeDCoor, RequirePackage, DeclareGraphicsExtensions},
 }
 \lstnewenvironment{latexcode}{\lstset{style=latexcode}}{}
 \NewDocumentCommand\LatexCode{v}{\lstinline[style=latexcode]|#1|}
@@ -184,20 +184,22 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% hyperref settings
-\RequirePackage{hyperref}
-\hypersetup{%
-    colorlinks=true,
-    linkcolor=SaddleBrown,
-    urlcolor=Brown,
-    pdfauthor   = {\webquiz{authors}                       },
-    pdfkeywords = {\webquiz{keywords}                      },
-    pdfsubject  = {\webquiz{description}                   },
-    pdfinfo     = {%
-        copyright    = {\webquiz{copyright}},
-        licence      = {\webquiz{licence}},
-        release date = {\webquiz{release date}},
-        url          = {\webquiz{url}},
-    }
-}
 
+\AtEndPreamble{
+  \RequirePackage{hyperref}
+  \hypersetup{%
+      colorlinks=true,
+      linkcolor=SaddleBrown,
+      urlcolor=Brown,
+      pdfauthor   = {\webquiz{authors}                       },
+      pdfkeywords = {\webquiz{keywords}                      },
+      pdfsubject  = {\webquiz{description}                   },
+      pdfinfo     = {%
+          copyright    = {\webquiz{copyright}},
+          licence      = {\webquiz{licence}},
+          release date = {\webquiz{release date}},
+          url          = {\webquiz{url}},
+      }
+  }
+}
 \endinput

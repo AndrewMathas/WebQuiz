@@ -118,14 +118,13 @@ the on-line manual.}}
    \end{tikzpicture}
 }
 
-\hypersetup{pdftitle={WebQuiz manual}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% headers and footers
 \makeatletter
 \def\ps@webquiz{
   \ps@empty
-  \def\@oddfoot{\tiny\WebQuiz -- \webquiz{version}\hfill%
+  \def\@oddfoot{\tiny\WebQuiz\space -- version \webquiz{version}\hfill%
      \textsc{\ifodd\thepage The WebQuiz manual\else \webquizheader\fi}\hfill\thepage}
 }
 % hijack section and subsectionmark for our headers
@@ -137,6 +136,7 @@ the on-line manual.}}
 \makeatother
 
 \begin{document}
+\hypersetup{pdftitle={WebQuiz manual}}
 
     \WebQuizTitle
 
@@ -180,27 +180,27 @@ the on-line manual.}}
     quizzes can contain any \LaTeX commands that are understood by \TeX
     4ht, which is almost everything. In particular, it is possible to
     use graphics constructed using packages like \ctan{pstricks} and
-    \ctan{tikz}; however, see \autoref{SS:graphics}.
+    \ctan{tikz}; see \autoref{SS:graphics}.
 
     \WebQuiz supports the following three types of questions:
     \begin{itemize}
       \item Multiple choice questions with a unique correct answer
       \item Multiple choice questions zero or more correct answers
-      \item Questions with a numerical answer.
+      \item Questions with an answer that is supplied by the student.
     \end{itemize}
-    Each time a student answers a question they are told whether their
-    answer is correct and, moreover, it is possible for the quiz author
-    to give targeted feedback to the student based on their answer. This
-    feed back can be used to explain why the answer is right, why it is
-    wrong or to give further hints to the student to help them answer the
-    question.
+    Each time a student answers a question it is possible to give them
+    feedback, reinforcing their learning when they answer correctly and
+    giving them further hints when they are wrong. This allows the the
+    quiz author to give targeted feedback to the student based on their
+    answer.
 
     The on-line quizzes constructed using \WebQuiz can, in principle,
     contain anything that can be typeset by \LaTeX. In particular, they
     do not need to contain mathematics. In fact, the quizzes do not even
     have to contain ``questions'' as it is possible for a \WebQuiz
-    ``quiz'' to contain only \textsf{discussion} environments; see
-    \autoref{S:documentclass}.
+    ``quiz'' to contain only \textsf{discussion} environments that can
+    be used to revise material, or to introduce new material, for the
+    students; see \autoref{S:documentclass}.
 
     This introduction outlines how to use \WebQuiz, however, the
     impatient reader may want to skip ahead directly to the
@@ -230,10 +230,8 @@ the on-line manual.}}
     quiz using the \BashCode|webquiz| command. If you do this, and then open
     the resulting web page in your favourite browser, you will see a web page
     that looks something like this:
-
     \ScreenShot{Sample web page}{examples/simple-html}
-
-    The on-line version of the quiz displays one question at a time,
+    By default, the on-line version of the quiz displays one question at a time,
     with the question buttons serving the dual purpose of navigation
     between questions and displaying how successful the student was
     in answering the question. In fact, the decorations on the question
@@ -243,28 +241,35 @@ the on-line manual.}}
     targeted feedback can be given to the person taking the quiz based
     on their responses.
 
-    The underlying engine used by \WebQuiz is \ctan{tikz} so, because
-    \ctan{tikz} is not able process all \LaTeX{} code, it is possible to
-    find \LaTeX{} code that \WebQuiz is not able to cope with.
-    This said, \WebQuiz has been used to write literally thousands of quiz
-    questions without any problems. In particular, it is possible to use
-    \ctan[pgf]{tikz} and \ctan{pstricks} in \WebQuiz quizzes, although
-    (very?) complicated drawings with these packages may fail; see
-    \autoref{SS:graphics}.
+    The underlying engine used by \WebQuiz is \TeXfht so, because
+    \TeXfht is not able process all \LaTeX{} code, there is \LaTeX{}
+    code that \WebQuiz is not able to cope with.  This said, \TeXfht is
+    able to display \textit{most} \LaTeX{} code and \WebQuiz has been
+    used to write literally thousands of quiz questions so it is likely
+    that you will be able to typeset what you want in your on-line
+    quizzes.  In particular, it is possible to use \ctan[pgf]{tikz} and
+    \ctan{pstricks} in \WebQuiz quizzes, although complicated
+    drawings with these packages may fail; see \autoref{SS:graphics} for
+    more details.
 
+    \newpage
 \subsection{What WebQuiz does and does not do}
 
-    \WebQuiz is a tool that makes it possible to write ``interaactive''
-    on-line quizzes using \LaTeX{}. Only rudimentary knowledge of
-    \LaTeX{} is needed and, in particular, no knowledge of the
+    \WebQuiz is a tool that makes it possible to write ``interactive''
+    on-line quizzes using \LaTeX{}. To use \WebQuiz you only need to
+    know how to use \LaTeX{} and, in particular, no knowledge of the
     underlying HTML CSS, or javascript is required. \WebQuiz can be used
     to ask students a series of ``quiz'' questions.
 
-    By default in the on-line version of the quiz, the quiz question are
-    displayed one at a time it is also possible to display all questions
-    at once. Each question in a quiz, and each quiz itself, can be
-    attempted as many times as the student wants: \WebQuiz does not
-    limit the number of times that questions can be attempted.
+    By default, the on-line quizzes display one question at a time.  It
+    is also possible to display all questions at once. One of the key
+    features of \WebQuiz is that you can give feedback to the students
+    based on their answers. In this way you can give hints to the
+    students to correct their mistakes and you can reinforce the
+    students' understanding when they are correct. Each question in a
+    quiz, and each quiz itself, can be attempted as many times as the
+    student wants: \WebQuiz does not limit the number of times that
+    questions can be attempted.
 
     The following question types are currently supported:
     \begin{itemize}
@@ -276,13 +281,14 @@ the on-line manual.}}
     \end{itemize}
 
     Questions can appear in either the same order that they appear in
-    the \LaTeX{} file for the quiz or in random order. For multiple
-    choice questions the order in which the choices appear is
-    fixed, even if the questions appear in random order.
+    the \LaTeX{} file for the quiz or in a random order that changes
+    each time the quiz page is loaded. For multiple choice questions the
+    order in which the choices appear is fixed, even if the questions
+    appear in random order.
 
     \WebQuiz supports several different languages and it
     provides a number of different colour schemes (see
-    \autoref{SS:commandline} and \autoref{SS:themes}). Any additional
+    \autoref{SS:commandline} and \hyperref[SS:themes]{Appendix A}). Any additional
     languages files that are sent to me, as well as corrections to
     existing languages, will be incorporated in future releases.
 
@@ -298,12 +304,11 @@ the on-line manual.}}
     \WebQuiz were used as an assessment tool then there would be
     additional ``security issues'' to ensure that the quiz content is
     secure. Currently, even though the solutions to the quiz questions
-    do not appear in the HTML source code for the quiz it is possible to
-    access the answers if you know what you are doing.
+    do not appear in the HTML source code for the quiz pages it is
+    possible to access the answers if you know what you are doing.
 
     The questions in a \WebQuiz quiz are static. In particular, they do
-    not accept variables and exactly the same questions will appear in
-    exactly the same order each time the quiz is taken.
+    not accept variables.
 
     The \WebQuiz program was designed to be run from the command-line.
     To process the file \BashCode|quiz.tex| using \WebQuiz you would
@@ -332,8 +337,8 @@ the on-line manual.}}
     \begin{itemize}
       \item A \href{https://www.latex-project.org/}{\LaTeX} document class
       file, \BashCode|webquiz.cls|, and a \ctan[tex4ht]{\TeX 4ht}
-      configuration file, \BashCode|webquiz.cfg|, that enable the
-      quiz files to be processed by \LaTeX{} and \TeX 4ht, respectively.
+      configuration file, \BashCode|webquiz.cfg|, that enables the
+      quiz files to be processed by \LaTeX{} and \TeXfht, respectively.
       \item A \href{https://www.python.org/}{python} program,
       \BashCode|webquiz|, that translates the
       \LaTeX{} into xml, using \TeX 4ht, and then into HTML.
@@ -341,7 +346,7 @@ the on-line manual.}}
       \href{https://www.w3schools.com/html/html_intro.asp}{HTML},
       \href{https://www.w3schools.com/css/}{CSS} and
       \href{https://www.w3schools.com/Js/}{Javascript}
-      code that works behind the screens to control and style the quiz
+      code that works behind the scenes to control and style the quiz
       web pages.
     \end{itemize}
 
@@ -351,21 +356,14 @@ the on-line manual.}}
    2001.  Since 2004 the program has been maintained and developed by
    Andrew Mathas. Although the program has changed substantially since
    2004 some of Don's code, and in particular his idea of using
-   \TeXfht, is still in use.
+   \TeXfht, is still in use. Prior to publicly releasing the code, the
+   program was known as \texttt{MathQuiz}.
 
    Thanks are due to Bob Howlett for general help with CSS and to
    Michal Hoftich for invaluable technical advice on \TeXfht.
 
  \section{The WebQuiz document class --- \LaTeX{} commands}
  \label{S:documentclass}
-
-  This chapter describes the commands and environments provided by the
-  \WebQuiz document class. This assumes that you have already installed
-  and configured \WebQuiz. If you have not done this yet then you
-  should either be brave and type \textsf{webquiz} from the
-  command-line, and then follow the prompts to initialise \WebQuiz, or
-  follow the more detailed instructions given in
-  \autoref{S:configuration}.
 
   The aim of \WebQuiz is to write on-line quizzes using only \LaTeX.
   This chapter describes the \WebQuiz commands and environments and how
@@ -375,31 +373,42 @@ the on-line manual.}}
   \footnote{Once \WebQuiz is initialised you can find the \WebQuiz web
   directory using the command:\newline
   \hspace*{10mm}\lstinline[style=bashcode]|webquiz --settings webquiz-www|.}
-  More details and some examples can be found in the on-line manual,
-  which is included as \autoref{S:online}.
+  More details and additional examples can be found in the on-line manual,
+  which is included, in PDF form, as \hyperref[S:online]{Appendix B}.
 
-  A typical \WebQuiz quiz file is just a \LaTeX{} file of the form:
+  This chapter describes the commands and environments provided by the
+  \WebQuiz document class. This assumes that you have already installed
+  and configured \WebQuiz. If you have not done initialised \WebQuiz
+  then follow the instructions in \autoref{S:configuration}.
+
+  A typical \WebQuiz quiz file is a \LaTeX{} file of the form:
 
     \InputLatexCode{examples/typicalquizfile}
 
-  \noindent You should write your quizzes in the editor that you
-  normally use to write \LaTeX. As you write your quiz, you should use
-  \BashCode|latex| or \BashCode|pdflatex| to check that your quiz
-  compiles and that you are satisfied with the output, just as if you
-  were writing a normal \LaTeX{} document.  Once you are satisfied with
-  the content of the quiz, say \BashCode|quiz.tex|, then you can convert
-  it to an on-line quiz using \WebQuiz by typing
+  \noindent You should write your quizzes using the editor that you
+  normally use to write \LaTeX. As you write your quiz, say
+  \texttt{quizfiule.text}, you should use (\BashCode|latex| or)
+  \BashCode|pdflatex| in the usual way:
   \begin{bashcode}
-     > webquiz quiz
+      > pdflatex quizfile
   \end{bashcode}
-  from the command-line. The quiz file, \textsf{quiz.tex}, should be on
-  your web server because \WebQuiz creates a number of different
-  files and directories when it converts the file into an on-line quiz.
+  This is the easiest way to check that your quiz compiles and to
+  proof-read the output, just as if you were writing a normal
+  \LaTeX{} document. When you are satisfied with the content of the
+  quiz, then you can convert the quiz to an on-line quiz using \WebQuiz
+  using the command
+  \begin{bashcode}
+     > webquiz quizfile
+  \end{bashcode}
+  from the command-line prompt \BashCode|>|. The quiz file,
+  \textsf{quizfile.tex}, should be on your web server because \WebQuiz
+  creates a number of different files and directories when it converts
+  the file into an on-line quiz and all of these files are needed to
+  display the quiz on the web.
 
-  The reasons for using this workflow include:
-  \begin{itemize}
-    \item
-    \textit{Every file that you give to \WebQuiz should be a valid \LaTeX{} file!}
+  The reasons for using this workflow include: \begin{itemize} \item
+    \textit{Every file that you give to \WebQuiz should be a valid
+    \LaTeX{} file!}
 
     \item The \textsf{dvi} or \textsf{PDF} file produced by \LaTeX{}
     will show all of the information about the questions
@@ -427,173 +436,15 @@ the on-line manual.}}
   file (see \autoref{SS:rcfile}) and \LaTeX{} does not have access to
   the \webquizrc file.
 
-  The next sections describe the document class options and the
-  different environments and commands provided by \WebQuiz. The last
-  section in this chapter, \autoref{SS:graphics}, lists the class
-  options for the \WebQuiz document class. You should read this section
-  if you plan to use \ctan{pstricks} or \ctan[pgf]{tikz}.
+  The next sections describe the commands and environments provided by
+  \WebQuiz for typesetting quizzes as well as the document-class options
+  for the package. If you plan to use \ctan{pstricks} or
+  \ctan[pgf]{tikz} then you should read \autoref{SS:graphics}, which
+  describes how to use graphics in a \WebQuiz quiz.
+  \autoref{SS:config} describes a work-around for using (some?) \LaTeX{}
+  features that have not been configured for use with \TeXfht.
 
-  Finally, if you want to use \WebQuiz for your students then you will
-  need to \textit{initialise} \WebQuiz using the command:
-  \BashCode|webquiz --initialise|; see \autoref{SS:Initialise} for more
-  details.
-
-\subsection{WebQuiz class options}
-\label{SS:classOptions}
-
-The \textbf{webquiz} document class: supports the following
-document class options. Defaults for all of these options can be set in
-the \webquizrc file.
-
-  \begin{description}
-    \item[fixedorder] Display the quiz questions in the order that they
-    appear in the \LaTeX{} file. This is the default behaviour.
-    \item[hidesidemenu]
-      Hide the side menu when the quiz starts. This is the counterpart to
-      \texttt{sidemenu}
-    \item[language]
-      Set the language for the on-lline quiz. The default language is
-      \texttt{english}
-      \item[pst2pdf] Preprocess the quiz using \ctan{pst2pdf}. This
-      sometimes fixes issues when using \ctan{pstricks}
-    \item[randomorder]
-      Display the quiz questions in the order that they
-      appear in the \LaTeX{} file. This is the counterpart to
-      \texttt{fixedorder}
-    \item[sidemenu]
-      Display the side menu when the quiz starts, providing that the viewport is large enough. This is the counterpart
-      to \texttt{hidesidemenu}. This is the default behaviour
-    \item[theme]
-      Set the quiz colour scheme.
-    \item[tikz]
-  \end{description}
-
-  All other class options that are given to the \WebQuiz document class
-  are passed to the \LatexCode{article} class, which is the base class
-  used by \BashCode|webquiz|.
-
-  The section describes the three \textit{stylistic} class options:
-  \LatexCode|language|, \LatexCode|theme| and \LatexCode|hidesidemenu|.
-  Both the \LatexCode|language| and the \LatexCode|theme| can be set
-  globally in the \webquizrc; see \autoref{SS:rcfile}.  See
-  \autoref{SS:graphics} for more information about the
-  \LatexCode|tikz| and \LatexCode|pst2pdf| class options.
-
-\begin{description}
-  \item[language=<lang>] \CrossIndex{document class options}{language}
-  Set the language used by the \textit{webpages} constructed by \WebQuiz.
-  The currently supported languages are:
-
-    \begin{quote}
-        \input{webquiz.languages}
-    \end{quote}
-
-    The languages files are used to print the various buttons and text
-    that is generated on the web pages constructed by \WebQuiz. The
-    \textsf{language} option does not affect the DVI or PDF versions of
-    the quiz and it does not load language packages like \ctan{babel} or
-    \ctan{polyglossia}.
-
-    Typical usage of the \textsf{language} option is the following:
-    \lstinputlisting[style=latexcode,extendedchars=false]{examples/french}
-    This produces a web page like this:
-    \ScreenShot{A web page with \textsf{language=french}}{examples/french}
-    As a general rule, \LaTeX{} and \TeXfht do not cope well with
-    unicode characters and the page above is one such example.
-    Everything displayed inside the quiz will render properly, however,
-    information such as the quiz title needs to be processed by
-    \BashCode|webquiz| directly and this causes problems. If your quiz
-    contains (a lot of) unicode characters then we recommend using
-    Xe\LaTeX{} or Lau\LaTeX, which corresponds to using
-    \BashCode|webquiz -x| or \BashCode|webquiz -l|, respectively. The
-    default \TeX{} engine can be set in the \webquizrc file; see
-    \autoref{SS:rcfile}.\index{unicode}\index{lualatex}\index{xelatex}
-
-    The language files were created largely using google translate so
-    they may well need fine-tuning\footnote{For example, the word
-    ``Copyright'' in lefthand the side-margin is not translated but
-    perhaps it should be.}. You can use \BashCode|kpsewhich| to look at
-    the language files, which all have names of the form
-    \BashCode|webquiz-language.lang|.  For example, the
-    \textit{English} language file, which is the default, can be found
-    using the command:
-    \begin{bashcode}
-         > kpsewhich webquiz-english.lang
-    \end{bashcode}
-    This file contains the following:
-    \InputBashCode{webquiz-english.lang}
-    In these files, the material to the left of the equals signs are
-    effectively variables, and so they should never be changed, whereas
-    anything the right of the equals signs is the text that is written
-    to the \WebQuiz web pages. To add \WebQuiz support for a new
-    language, say \textsf{XXX}, copy any \WebQuiz language file and
-    translate the material to the right of the equals signs and then
-    save the file as \BashCode|webquiz-XXX.lang|, and then put this file
-    anywhere in the \LaTeX{} search path. Note that the expressions
-    \LatexCode|({})| in the language files should be not be removed because
-    they expand to expressions like \textsf{(a)}, \textsf{(b)} etc. when
-    used in the on-line quizzes. Once the new language file
-    \BashCode|webquiz-XXX.lang| is in the \LaTeX{} search path it can be
-    used by \WebQuiz using the \LatexCode|language| document-class
-    option:
-    \begin{latexcode}
-       \documentclass[language=XXX]{webquiz}
-       \begin{document}
-            insert quiz code
-       \end{document}
-    \end{latexcode}
-    Please submit any new language files, or corrections to existing
-    language files, as a \textit{new issue} at:
-      \href{https://\webquiz{repository}}{\webquiz{repository}}.
-
-  \item[theme]\CrossIndex{document class options}{theme}
-
-     \WebQuiz\ has a small number of different themes for setting the
-     colours on the quiz web pages. The theme can be set as an option to
-     the document class or in the \webquizrc file. All of the examples
-     so far have used the \LatexCode|default| theme. As
-     an example, if we use
-
-    \InputLatexCode{examples/theme-dark}
-
-    then the quiz page looks like:
-
-    \ScreenShot{Multiple choice with light theme}{examples/theme-dark}
-
-    This should be compared with the corresponding screenshot in section
-    \autoref{choice-multiple}, which uses the default theme.
-
-    The list of currently supported themes is:
-
-      \begin{quote}
-          \input{webquiz.themes}
-      \end{quote}
-
-    For screenshots for the complete list of themes see
-    \autoref{SS:themes}.
-
-    \item[fixedorder, randomorder]
-    By default, the questions in the quiz are displayed in the order
-    that they appear in the \LaTeX{} file for the quiz. With the
-    \textt{randomorder} option the questions in the quiz will be
-    displayed in a random order each time that the quiz is run. For
-    example, the code:
-    \InputLatexCode{examples/random}
-    will randomly permute the questions each time the quiz web page is
-    loaded. This produces the (random) quiz:
-    \ScreenShot{Randomly ordered questions}{examples/random}
-
-    \item[sidemenu, hidesidemenu]\CrossIndex{document class options}{hide side menu}
-    If this option is set the end the side menu is not displayed
-    initially.  By default, the side menu appears unless the screen size
-    is too small.
-
-    Examples of the \textsf{hidesidemenu} class option have already been
-    given above.
-\end{description}
-
-
-\subsection{\WebQuiz environments}
+\subsection{\WebQuiz question environments}
 
 The \WebQuiz document class defines the following four environments:
 \begin{quote}
@@ -618,24 +469,25 @@ Quizzes are composed of questions and each quiz question must to be
 placed inside a \LatexCode|question| environment. Typically, a quiz will have
 several questions, each wrapped in its own \LatexCode|question| environment.
 For brevity, most of the examples in this chapter have only one
-question. See the on-line manual (\autoref{S:online}), in the \WebQuiz web
+question. See the on-line manual (\hyperref[S:online]{Appendix B}), in the \WebQuiz web
 directory for a complete quiz file.
 
-  \InputLatexCode{examples/answer-integer}
+  \InputLatexCode{examples/answer-string}
   \macroIndex{answer}\CrossIndex{question environment}*{answer}
   \CrossIndex*{answer}*{whenRight}
   \CrossIndex*{answer}*{whenWrong}
   \index{feedback!whenRight}
   \index{feedback!whenWrong}
 
-  The macros \LatexCode|\whenRight| and \LatexCode|\whenWrong| are used
-  to give the student feedback, when they are right, or further hints
-  etc for approaching the question, when they are wrong.
+  The \textit{optional} macros \LatexCode|\whenRight| and
+  \LatexCode|\whenWrong| are used to give the student additional
+  feedback, when they are right, or further hints etc for approaching
+  the question, when they are wrong.
 
   The web page created by the code above, when a correct answer is
   given, looks like this:
 
-  \ScreenShot{A question with an integral answer}{examples/answer-integer}
+  \ScreenShot{A question with an answer}{examples/answer-string}
   This example code shows one way of using the \LatexCode|\answer| macro, which
   asks for an answer to a question. The syntax of the
   \LatexCode|\answer| macro is:
@@ -644,25 +496,26 @@ directory for a complete quiz file.
   \end{latexcode}
   where the optional \textit{comparison type} is one of:
   \begin{description}
-      \item[integer] The \textit{correct answer} and the inputted answer
-      as compared as \textit{integers}. This is the default.
-      \CrossIndex*{answer}{integer}
-      \item[number] The \textit{correct answer} and the inputted answer
+      \item[integer] \CrossIndex*{answer}{integer}
+      The \textit{correct answer} and the inputted answer
+      as compared as \textit{integers}
+      \item[number] \CrossIndex*{answer}{number}
+      The \textit{correct answer} and the inputted answer
       as compared as (real) \textit{numbers}. For example, if the
       \textit{correct answer} was $0.8$ then $4/5$ would be marked as
       correct.
-      \CrossIndex*{answer}{number}
-      \item[string] The \textit{correct answer} and the inputted answer
-      as compared as \textit{strings}. Note that \textit{string} is case
-      sensitive.
-      \CrossIndex*{answer}{string}
-      \item[lowercase] The \textit{correct answer} and the inputted answer
+      \item[string] \CrossIndex*{answer}{string}
+      The \textit{correct answer} and the inputted answer are compared
+      as \textit{strings}, so they have to match exactly. In particular,
+      \textit{string} is case sensitive. This is the default.
+      \item[lowercase] \CrossIndex*{answer}{lowercase}
+      The \textit{correct answer} and the inputted answer
       are converted to lower case and then compared as strings.
-      \CrossIndex*{answer}{eval}
-      \item[eval] The inputted answer is marked correct if the \textit{difference}
-      of the \textit{correct answer} and the inputted answer
-      evaluates, as a mathematical expression, to $0$. Standard
-      functions such as $\sin(x)$, $\cos(x)$ etc. are accepted.
+      % \item[eval] \CrossIndex*{answer}{eval}
+      % The inputted answer is marked correct if the \textit{difference}
+      % of the \textit{correct answer} and the inputted answer
+      % evaluates, as a mathematical expression, to $0$. Standard
+      % functions such as $\sin(x)$, $\cos(x)$ etc. are accepted.
   \end{description}
 
   Since \textit{integer} is the default comparison type, the example
@@ -690,10 +543,10 @@ directory for a complete quiz file.
   \InputLatexCode{examples/answer-eval}
   \ScreenShot{A question with an evaluated answer}{examples/answer-eval}
 
-\subsubsection{Choice environments}
-\CrossIndex{environment}{choice}
-\CrossIndex{question environment}{choice environment}
-\SeeIndex{multiple choice}{choice environment}
+  \subsubsection{Multiple choice questions}
+  \CrossIndex{environment}{choice}
+  \CrossIndex{question environment}{choice environment}
+  \SeeIndex{multiple choice}{choice environment}
 
 The multiple choice options for a quiz question need to be placed inside
 a \LatexCode|choice| environment. The \LatexCode|choice| environment
@@ -843,14 +696,14 @@ discussion.
   the default breadcrumbs are defined by:
 
   \begin{latexcode}
-    \BreadCrumbs{ department | unitcode | quiz_index | breadcrumb }
+    \BreadCrumbs{ department | unitcode | quiz_index | title }
   \end{latexcode}
 
   \noindent
   In fact, the default breadcrumbs are set in the \webquizrc file by
   setting \textsf{breadcrumbs} equal to:
   \begin{latexcode}
-     department | unitcode | quiz-index | breadcrumb
+     department | unitcode | quiz-index | title
   \end{latexcode}
   More generally, the breadcrumbs can be specified as:
 
@@ -1016,6 +869,184 @@ discussion.
 
 \end{description}
 
+\subsection{WebQuiz class options}\label{SS:classOptions}
+
+The \textbf{webquiz} document class: supports the following document
+class options. Defaults for many of these options can be set in the
+\webquizrc file; see \autoref{SS:rcfile}.
+
+  \begin{description}
+
+    \item[fixedorder] Display the quiz questions in the order that they
+    appear in the \LaTeX{} file. This is the default behaviour and this
+    option is the counterpart to \LatexCode|randomorder|.
+
+    \item[hidesidemenu]
+    Hide the side menu when the quiz starts. This is the counterpart to
+    \LatexCode|showsidemenu|
+
+    \item[language]
+    Set the language for the on-lline quiz. The default language is
+    \LatexCode|english|
+
+    \item[onepage] Display all quiz questions on a single web page.
+    This option is the counterpart of \LatexCode|separatepages|
+
+    \item[pst2pdf]
+    Pre-process the quiz using \ctan{pst2pdf}. This sometimes fixes
+    issues when using \ctan{pstricks}; see \autoref{SS:graphics} for
+    more details
+
+    \item[randomorder]
+    Display the quiz questions in the order that they appear in the
+    \LaTeX{} file. This option cannot be used with \LatexCode|onepage|.
+    This option is the counterpart to \LatexCode|fixedorder|
+
+    \item[separatepages]
+    Display only one quiz question at a time on the quiz web page. This
+    is the default behaviour. This option is the counterpart of
+    \LatexCode|separatepages|
+
+    \item[showsidemenu]
+    Display the side menu when the quiz starts, providing that the
+    viewport is large enough. This is the counterpart to
+    \LatexCode|hidesidemenu|. This is the default behaviour
+
+    \item[theme]
+    Set the colour scheme used by \WebQuiz. To change the colour scheme
+    you need to recompile the quiz
+
+    \item[tikz]
+    This loads \ctan{tikz} and fixes some known issues when using
+    \ctan{tikz} with \TeXfht
+
+  \end{description}
+
+  All other class options that are given to the \WebQuiz document class
+  are passed to the \LatexCode{article} class, which is the base class
+  used by \BashCode|webquiz|.
+
+  The section describes the three \textit{stylistic} class options:
+  \LatexCode|language|, \LatexCode|theme| and \LatexCode|hidesidemenu|.
+  Both the \LatexCode|language| and the \LatexCode|theme| can be set
+  globally in the \webquizrc; see \autoref{SS:rcfile}.  See
+  \autoref{SS:graphics} for more information about the
+  \LatexCode|tikz| and \LatexCode|pst2pdf| class options.
+
+\begin{description}
+  \item[language=<lang>] \CrossIndex{document class options}{language}
+  Set the language used by the \textit{webpages} constructed by \WebQuiz.
+  The currently supported languages are:
+
+    \begin{quote}
+        \input{webquiz.languages}
+    \end{quote}
+
+    The languages files are used to print the various buttons and text
+    that is generated on the web pages constructed by \WebQuiz. The
+    \textsf{language} option does not affect the DVI or PDF versions of
+    the quiz and it does not load language packages like \ctan{babel} or
+    \ctan{polyglossia}.
+
+    Typical usage of the \textsf{language} option is the following:
+    \lstinputlisting[style=latexcode,extendedchars=false]{examples/french}
+    This produces a web page like this:
+    \ScreenShot{A web page with \textsf{language=french}}{examples/french}
+    As a general rule, \LaTeX{} and \TeXfht do not cope well with
+    unicode characters and the page above is one such example.
+    Everything displayed inside the quiz will render properly, however,
+    information such as the quiz title needs to be processed by
+    \BashCode|webquiz| directly and this causes problems. If your quiz
+    contains (a lot of) unicode characters then we recommend using
+    Xe\LaTeX{} or Lau\LaTeX, which corresponds to using
+    \BashCode|webquiz -x| or \BashCode|webquiz -l|, respectively. The
+    default \TeX{} engine can be set in the \webquizrc file; see
+    \autoref{SS:rcfile}.\index{unicode}\index{lualatex}\index{xelatex}
+
+    The language files were created largely using google translate so
+    they may well need fine-tuning\footnote{For example, the word
+    ``Copyright'' in lefthand the side-margin is not translated but
+    perhaps it should be.}. You can use \BashCode|kpsewhich| to look at
+    the language files, which all have names of the form
+    \BashCode|webquiz-language.lang|.  For example, the
+    \textit{English} language file, which is the default, can be found
+    using the command:
+    \begin{bashcode}
+         > kpsewhich webquiz-english.lang
+    \end{bashcode}
+    This file contains the following:
+    \InputBashCode{webquiz-english.lang}
+    In these files, the material to the left of the equals signs are
+    effectively variables, and so they should never be changed, whereas
+    anything the right of the equals signs is the text that is written
+    to the \WebQuiz web pages. To add \WebQuiz support for a new
+    language, say \textsf{XXX}, copy any \WebQuiz language file and
+    translate the material to the right of the equals signs and then
+    save the file as \BashCode|webquiz-XXX.lang|, and then put this file
+    anywhere in the \LaTeX{} search path. Note that the expressions
+    \LatexCode|({})| in the language files should be not be removed because
+    they expand to expressions like \textsf{(a)}, \textsf{(b)} etc. when
+    used in the on-line quizzes. Once the new language file
+    \BashCode|webquiz-XXX.lang| is in the \LaTeX{} search path it can be
+    used by \WebQuiz using the \LatexCode|language| document-class
+    option:
+    \begin{latexcode}
+       \documentclass[language=XXX]{webquiz}
+       \begin{document}
+            insert quiz code
+       \end{document}
+    \end{latexcode}
+    Please submit any new language files, or corrections to existing
+    language files, as a \textit{new issue} at:
+      \href{https://\webquiz{repository}}{\webquiz{repository}}.
+
+  \item[theme]\CrossIndex{document class options}{theme}
+
+     \WebQuiz\ has a small number of different themes for setting the
+     colours on the quiz web pages. The theme can be set as an option to
+     the document class or in the \webquizrc file. All of the examples
+     so far have used the \LatexCode|default| theme. As
+     an example, if we use
+
+    \InputLatexCode{examples/theme-dark}
+
+    then the quiz page looks like:
+
+    \ScreenShot{Multiple choice with light theme}{examples/theme-dark}
+
+    This should be compared with the corresponding screenshot in section
+    \autoref{choice-multiple}, which uses the default theme.
+
+    The list of currently supported themes is:
+
+      \begin{quote}
+          \input{webquiz.themes}
+      \end{quote}
+
+    For screenshots for the complete list of themes see
+    \hyperref[SS:themes]{Appendix A}.
+
+    \item[fixedorder, randomorder]
+    By default, the questions in the quiz are displayed in the order
+    that they appear in the \LaTeX{} file for the quiz. With the
+    \LatexCode|randomorder| option the questions in the quiz will be
+    displayed in a random order each time that the quiz is run. For
+    example, the code:
+    \InputLatexCode{examples/random}
+    will randomly permute the questions each time the quiz web page is
+    loaded. This produces the (random) quiz:
+    \ScreenShot{Randomly ordered questions}{examples/random}
+
+    \item[sidemenu, hidesidemenu]\CrossIndex{document class options}{hide side menu}
+    If this option is set the end the side menu is not displayed
+    initially.  By default, the side menu appears unless the screen size
+    is too small.
+
+    Examples of the \textsf{hidesidemenu} class option have already been
+    given above.
+\end{description}
+
+
 \subsection{Including graphics and using pstricks and tikz}\label{SS:graphics}
 
 By far the easiest way to include images when using \WebQuiz is by
@@ -1117,7 +1148,8 @@ you if you use the appropriate document class options.
 Most people use either\ctan{pstricks} or \ctan{tik}. A quiz that tries
 to use both \ctan{pstrick} and  \ctan{tik} will probably compile.
 
-\subsection{Configuring commands and environments for \TeXfht}
+\subsection{Configuring commands and environments for
+\TeXfht}\label{SS:config}
 
   \WebQuiz uses \TeXfht{} to convert the quiz content from \LaTeX{} to
   HTML. If \TeXfht{} has not been configured to for some of the commands
@@ -1781,7 +1813,7 @@ option.
 \renewcommand\thesection{}
 \renewcommand\thesubsection{\Alph{subsection}}
 
-  \subsection{List of themes}\index{SS:themes}\label{SS:themes}
+  \subsection{Catalogue of web page themes}\index{SS:themes}\label{SS:themes}
   \WebQuiz{} comes with quite a few different themes for the on-line
   quizzes, which can be set using the \textsf{theme} documentclass
   option or in the \webquizrc file; see \autoref{SS:classOptions} for

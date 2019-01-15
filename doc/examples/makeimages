@@ -160,6 +160,7 @@ pages = [
     Convert("index"),
     Convert("montypython", delay=5),
     Convert("nounits", delay=5),
+    Convert("onepage"),
     Convert("pst2pdf"),
     Convert("pstricks-ex"),
     Convert("quiz-page", question="1:2", delay=15),

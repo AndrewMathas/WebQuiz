@@ -239,6 +239,13 @@ class WebQuizSettings:
             # this is only an error if we have been asked to read this file
             webquiz_error('the rc-file {} does not exist'.format(rc_file))
 
+    def keys(self):
+        r'''
+        Return a list of keys for all settings, ordered alphabetically with the
+        advanced options last/
+        '''
+        return sorted(self.settings.keys(), key=lambda k: '{}{}'.format(self.settings[k]['advanced'], k))
+
     def write_webquizrc(self):
         r'''
         Write the settings to the webquizrc file, defaulting to the user
@@ -255,7 +262,7 @@ class WebQuizSettings:
                 if dire != '' and not os.path.isdir(dire):
                     os.makedirs(dire, exist_ok=True)
                 with codecs.open(self.rc_file, 'w', encoding='utf8') as rcfile:
-                    for key in sorted(self.settings.keys()):
+                    for key in self.keys():
                         # Only save settings in the rcfile if they have changed
                         # Note that changed means changed from the last read
                         # rcfile rather than from the default (of course, the
@@ -309,20 +316,14 @@ class WebQuizSettings:
 
         else:
             print('WebQuiz settings from {}\n'.format(self.rc_file))
-            for key in sorted(self.settings.keys()):
+            for key in self.keys():
                 if self[key] != '':
-                    extra = 'default value' if self[key] == self.settings[key]['default'] else ''
-                    if self.settings[key]['advanced']:
-                        if extra != '':
-                            extra += ', '
-                        extra += 'advanced'
-                    if extra != '':
-                        extra = ' ('+extra+')'
-                    print('# {}\n{:<15} = {:<15}  {}\n'.format(
+                    print('# {}{}\n{:<15} = {:<15}  {}\n'.format(
                             self.settings[key]['help'],
+                            ' (advanced)' if self.settings[key]['advanced'] else '',
                             key.replace('_', '-'),
                             self[key],
-                            extra
+                            '(default value)' if self[key]==self.settings[key]['default'] else ''
                             )
                     )
 
@@ -449,7 +450,7 @@ class WebQuizSettings:
         Change current default values for the WebQuiz settings
         '''
         advanced_not_started = True
-        for key in sorted(self.settings.keys(), key=lambda k: '{}{}'.format(self.settings[k]['advanced'], k)):
+        for key in self.keys():
             if key not in ignored_settings:
                 if advanced_not_started and self.settings[key]['advanced']:
                     print(webquiz_templates.advanced_settings)

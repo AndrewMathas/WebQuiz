@@ -77,7 +77,7 @@
 
 <!ELEMENT choice (item*)>
 <!ATTLIST choice type (single|multiple) #REQUIRED
-                 cols CDATA             #REQUIRED
+                 columns CDATA          #REQUIRED
 >
 <!ELEMENT item (text,response?)>
 <!ATTLIST item 

@@ -31,7 +31,7 @@
 
   $ResponseBG:     #E9E0D8;
   $ResponseBorder: #C9A798;
-  $ResponseText:   lighten($ResponseBG, 20%);
+  $ResponseText:   $Heading;
 
   $SideMenuText:   #000000;
 

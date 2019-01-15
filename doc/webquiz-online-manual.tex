@@ -304,7 +304,7 @@ an easily readable layout.
 \begin{latexcode}
     \begin{question}
       . . .question text. . .
-      \begin{choice}[multiple, n]     . . . n columns
+      \begin{choice}[multiple, columns=n]     . . . n columns
         \(in)correct . . . text for (in)correct option
         \response    . . . feedback on response
 
@@ -333,7 +333,7 @@ an easily readable layout.
 %        \end{pspicture}
 %      \end{center}
 
-      \begin{choice}{1}
+      \begin{choice}[columns=1]
         \incorrect $x=2\cos t + 1$, $y=3\sin t + 2$
         \response This is an ellipse with centre $(1,2)$ and with axes of
         length $4$ in the $x$-direction and $6$ in the $y$-direction.
@@ -554,7 +554,7 @@ If no \textit{URL} is given as an optional argument to
 %    \end{pspicture}
 %  \end{center}
 
-  \begin{choice}[1]
+  \begin{choice}[columns=1]
     \incorrect $x=2\cos t + 1$, $y=3\sin t + 2$
     \response This is an ellipse with centre $(1,2)$ and with axes of
     length $4$ in the $x$-direction and $6$ in the $y$-direction.

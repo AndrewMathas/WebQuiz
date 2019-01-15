@@ -221,9 +221,6 @@ function checkAnswer(qnum) {
     var question = QuizSpecifications[realQ-1];
     var formObject = document.forms["Q" + realQ + "Form"];
     var i;
-  alert('qnum='+qnum+', realQ='+realQ);
-  alert('question.type='+question.type);
-
     if (question.type == "input") {
         var answer = formObject.elements[0].value;
         switch(question.comparison) {

@@ -58,17 +58,19 @@
 % answer comparisons. As \ERROR is not defined an error message is
 % generated when the option is not defined.
 \pgfkeys{/webquiz checker/.is family, /webquiz checker,
-  choice/.is choice,
-  choice/single/.code        = {\textit{Exactly one option must be correct}},
-  choice/multiple/.code      = {\textit{Zero or more options can be correct}},
-  choice/.unknown/.code      = {\ERROR: invalid choice type: use single or multiple}
+  mode/.initial          = single,
+  columns value/.initial = 2,
+  columns/.style         = {columns value=#1},
+  single/.style          = {mode=single},
+  multiple/.style        = {mode=multiple},
+  .unknown/.code         = {\ERROR: invalid choice type: use single or multiple}
   comparison/.is choice,
-  comparison/integer/.code   = \relax,
-  comparison/number/.code    = \relax,
-  comparison/string/.code    = \relax,
-  comparison/lowercase/.code = \relax,
-  comparison/eval/.code      = \relax,
-  comparison/.unknown/.code  = {\ERROR: invalid input type: use integer, string or eval}
+  comparison/integer/.code      = \relax,
+  comparison/number/.code       = \relax,
+  comparison/string/.code       = \relax,
+  comparison/lowercase/.code    = \relax,
+  comparison/eval/.code         = \relax,
+  comparison/.unknown/.code     = {\ERROR: invalid input type: use integer, string or eval}
 }
 
 % now process the options
@@ -218,18 +220,9 @@
   \ifInQuestion\relax% Give a warning if we are not inside a question
   \else\MQ@error{Choice environments must be contained in a question}%
   \fi%
-  \def\MQ@choicetype{single}% default choice type is single
-  \def\MQ@choicecols{2}     % default of 2 columns
-  \foreach \opt in {#1} {%    loop throug the options and check for strings and numbers
-    \ifnum0<0\opt1\relax% \opt is a positive integer%
-       \xdef\MQ@choicecols{\opt}%
-    \else%
-       \pgfkeys{/webquiz checker/choice/\opt}%
-       \xdef\MQ@choicetype{\opt}%
-    \fi%
-  }%
+  \pgfkeys{/webquiz checker, #1}%
   \leavevmode\newline
-  (\textit{The choices will be printed in \MQ@choicecols\ columns in the HTML version of the quiz})
+  (\textit{The choices will be printed in \pgfkeys{/webquiz checker/columns value} columns in the HTML version of the quiz})
   \global\InChoicetrue%
   \par%
   \setcounter{choice}{0}%
