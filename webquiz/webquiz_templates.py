@@ -34,14 +34,14 @@ html_meta = r'''<meta http-equiv="Content-Type" content="text/html; charset=utf-
 
 # javascript for setting up the questions
 questions_javascript = r'''  <script src="{webquiz_url}/webquiz.js"></script>
-  <script src="quiztitles.js"></script>
-  <script src="{mathjax}?config=MML_CHTML"></script>
+  <script defer src="quiztitles.js"></script>
+  <script defer src="{mathjax}?config=MML_CHTML"></script>
 '''
 
-mathjs='  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/5.4.0/math.min.js"></script>'
+mathjs=r'  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/5.4.0/math.min.js"></script>'
 
 webquiz_init = r'''<div style="display: none;">
-    <script type="text/javascript">WebQuizInit({number_quizzes}, {number_discussions}, '{quiz_file}', {hide_side_menu});</script>
+    <script type="text/javascript">WebQuizInit({number_quizzes}, {number_discussions}, '{quiz_file}');</script>
   </div>'''
 
 # Bread crumbs including a drop down menu for all of the quizzes for the unit.
@@ -67,7 +67,8 @@ button = r'        <div id="button{b}" class="button{cls}" content=" " onClick="
 discuss = r'        <li id="button-{b}" class="discussion" onClick="gotoQuestion(-{b})">{title}</li>'
 side_menu = r'''<div class="menu-icon">
       <span class="sidelabelclosed question-label" onclick="toggle_side_menu();">&#10070;</span>
-      <span class="sidelabelopen question-label" onclick="toggle_side_menu();">&#10006;&nbsp;{questions}</span>
+      <span class="sidelabelopen question-label" onclick="toggle_side_menu();">&#10006;&nbsp;{questions}
+      </span>
     </div>
     <div id="sidemenu" class="side-menu">{discussion_list}
       <div class="buttons">
@@ -93,7 +94,7 @@ side_menu = r'''<div class="menu-icon">
 # quiz title and navigation arrows
 quiz_header = r'''<div class="quiz-header">
         <div class="quiz-title">{title}</div><div></div>
-        <span id="question-number" class="question-label">{question_number}</span>
+        <span class="question-label">{question} <span id="question-number">{question_number}</span></span>
         {arrows}
       </div>'''
 navigation_arrows = r'''<span class="arrows">
@@ -103,7 +104,7 @@ navigation_arrows = r'''<span class="arrows">
         </span>'''
 
 # discussion item
-discussion = r'''<div id="question-{dnum}" class="question" {display}>
+discussion = r'''<div id="question-{dnum}" class="question" style="displaynone;">
         {discussion.text}{input_button}
       </div>
 '''
@@ -119,8 +120,8 @@ quiz_index_div = r'''     <div class="quiz-list">
 index_item = r'''<li><a href={url}>{title}</a></li>'''
 
 # now we come to the question wrappers
-question_wrapper = r'''<div id="question{qnum}" class="question" {display}>
-      {question}
+question_wrapper = r'''<div id="question{qnum}" class="question" style="display:{display};">
+      {question_number}{question}
       {response}
       </div>
 '''
@@ -128,22 +129,23 @@ question_text = r'''  {question_text}
       <form id="Q{qnum}Form" onSubmit="return false;" class="question">
         {question_options}
         <p>
-          <input type="button" value="{check_answer}" name="answer" class="input-button" onClick="checkAnswer();"/>
-          <input type="button" value="{next_question}" class="input-button" title="{next_question}" name="next" onClick="nextQuestion(1);"/>
+          <input type="button" value="{check_answer}" name="answer" class="input-button" onClick="checkAnswer({qnum});"/>
+          {nextquestion}
         </p>
       </form>
 '''
+nextquestion='<input type="button" value="{next_question}" class="input-button" title="{next_question}" name="next" onClick="nextQuestion(1);"/>'
 
 # Questions and responses:
-input_answer = '{answer}:&nbsp<input type="text"  onChange="checkAnswer();" size="{size}"/>{after_text}'
+input_answer = '{answer}:&nbsp;<input type="text"  onChange="checkAnswer();" size="{size}"/>{after_text}'
 choice_answer = '<table class="question-choices">{choices}</table>{after_text}'
 input_single = '\n<input type="hidden" name="Q{qnum}hidden"/>'
 
 single_item = '''<td><input type="radio" name="Q{qnum}option"/></td>
-<td class="brown" >{choice})</td><td><div class="question-choices">{text}</div></td>
+<td class="brown" >{choice}</td><td><div class="question-choices">{text}</div></td>
 '''
 multiple_item = '''<td><input type="checkbox" name="Q{qnum}option{optnum}"/></td>
-<td class="brown" >{choice})</td><td><div class="question-choices">{text}</div></td>
+<td class="brown" >{choice}</td><td><div class="question-choices">{text}</div></td>
 '''
 
 tf_response_text = r'''        <div id="q{choice}{response}" class="response"><em class="dazzle">{correct_answer}</em> <em>{answer2}</em>

@@ -382,32 +382,28 @@ an easily readable layout.
 \end{discussion}
 \begin{discussion}[Question 4]
   The final type of question that \WebQuiz{} supports is a question
-  which requires a \emph{numerical} as an answer. The numerical
-  answer must be given in decimal form.
-  The answer is typeset using the \LatexCode|\answer| macro. That macro
-  takes two arguments, some text appearing in an answer box after the
-  question and the actual numerical answer. The text is optional. The
-  syntax is \LatexCode|\answer[text after answer box]{numerical answer}|.
-  Then there is a mechanism for providing feedback for correct and
-  incorrect answers. This is done using \LatexCode|\whenRight| and
-  \LatexCode|\whenWrong|.  Unlike the \LatexCode|\response| commands, the two
-  responses \LatexCode|\whenRight| and \LatexCode|\whenWrong| are both mandatory
-  for questions of this type.  The syntax is for such questions is as
-  follows:
-\begin{latexcode}
-       \begin{question}
-         . . .question text. . .
-         \answer[integer|number|string|lowercase|evaluate]{actual answer}
-         \whenRight . . . feedback when right
-         \whenWrong . . . feedback when wrong
-       \end{question}
-\end{latexcode}
-  \par
-  The optional argument to the \LatexCode{\answer} command sets the type
-  of comparison that is used when marking the quiz. By default, integer
-  comparisons are used.
-  For example, \qref{4} below was typed into \WebQuiz{}
-  using the following commands:
+  which requires an answer, which can be a number, string or
+  mathematical expression.  The answer is typeset using the
+  \LatexCode|\answer| macro. The \LatexCode|\answer| macro takes two
+  arguments: an optional comparision method, which defaults to
+  \textit{integer}, and the correct answer:
+  \begin{latexcode}
+    \answer[comparision method]{correct answer}
+  \end{latexcode}
+  Feedback for correct and incorrect answers is given
+  using the macros \LatexCode|\whenRight| and \LatexCode|\whenWrong|,
+  respectively. The structure of questions with \LatexCode|\answer|'s is as follows:
+  \begin{latexcode}
+         \begin{question}
+           . . .question text. . .
+           \answer[integer|number|string|lowercase|eval]{actual answer}
+           \whenRight . . . feedback when right (optional)
+           \whenWrong . . . feedback when wrong (optional)
+         \end{question}
+  \end{latexcode}
+  See the \WebQuiz manual for details of the different
+  comparision types.  For example, \qref{4} below was typed into
+  \WebQuiz{} using the following commands:
 \begin{latexcode}
     \begin{question}
       If the vectors $\vect{a}$ (of magnitude 8 units) and $\vect{b}$
@@ -433,14 +429,14 @@ an easily readable layout.
 \begin{discussion}[Index Files]
   \WebQuiz{} also provides a mechanism for creating a web page
   containing an index of all quizzes for a given Unit of Study.
-  This is done with a \WebQuiz{} file which contains a \LatexCode|quizlist|
+  This is done with a \WebQuiz{} file which contains a \LatexCode|quizindex|
   environment. The syntax for this environment is as follows:
 \begin{latexcode}
-    \begin{quizlist}
+    \begin{quizindex}
       \quiz[url1]{title for quiz 1}
       \quiz[url2]{title for quiz 2}
       . . .
-    \end{quizlist}
+    \end{quizindex}
 \end{latexcode}
 If no \textit{URL} is given as an optional argument to
 \LatexCode|\quiz| then

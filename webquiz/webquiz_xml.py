@@ -19,21 +19,16 @@ r'''
 
 import sys
 import xml.sax
-from webquiz_templates import mathjs
 
-DEBUG = False
+# imports of webquiz code
+from webquiz_util import debugging 
 
-
-def Debugging(*arg):
-    if DEBUG:
-        sys.stderr.write('ReadWebQuizXmlFile: ' + ' '.join(
-            '%s' % a for a in arg) + '\n')
-
-
-def ReadWebQuizXmlFile(quizfile, defaults, debugging):
-    global DEBUG
-
-    DEBUG = debugging
+# ---------------------------------------------------------------------------------------
+def ReadWebQuizXmlFile(quizfile, defaults):
+    r'''
+    Set up, call and then return the xml parser
+    for the quiz web page
+    '''
     parser = xml.sax.make_parser()
     quiz = QuizHandler(defaults)
     parser.setContentHandler(quiz)
@@ -44,11 +39,7 @@ def ReadWebQuizXmlFile(quizfile, defaults, debugging):
     return quiz
 
 
-# -----------------------------------------------------
-# The HandlerBase class inherits from#:
-# DocumentHandler, DTDHandler, EntityResolver, ErrorHandler
-# -----------------------------------------------------
-
+# ---------------------------------------------------------------------------------------
 class Data(object):
     r'''
     A wrapper object class that holds the data for the different
@@ -65,6 +56,7 @@ class Data(object):
     def __str__(self):
         return '\n - '.join('{} = {}'.format(k, getattr(self, k)) for k in self._items)
 
+
 class QuizHandler(xml.sax.ContentHandler):
     """
         The content handler gives the xml tags to `startElement`, which
@@ -80,12 +72,16 @@ class QuizHandler(xml.sax.ContentHandler):
 
         # arrays for the different quiz components
         self.discussion_list = []
-        self.link_list = []
-        self.meta_list = []
         self.question_list = []
         self.quiz_index = []
 
-        self.mathjs_not_linked = True  # to ensure that mathjs is added only once
+        # these will contain the link and meta elements from the xml file but they
+        # are ignored by webquiz.py
+        self.link_list = []
+        self.meta_list = []
+
+        # to add mathjs when an eval comparison is used
+        self.mathjs = False  
 
         # the following tags have defaults set by `defaults`
         self.setting_tags = [
@@ -118,7 +114,7 @@ class QuizHandler(xml.sax.ContentHandler):
             setattr(self, key, self.defaults[key])
         else:
             setattr(self, key, value)
-        print('Set {} to {}'.format(key, getattr(self,key)))
+        debugging('Just set "{}" equal to "{}" from "{}"'.format(key, getattr(self, key), value))
 
     def startElement(self, tag, attributes):
         '''
@@ -127,12 +123,17 @@ class QuizHandler(xml.sax.ContentHandler):
         '''
 
         self.current_tags.append(tag)
+        debugging('Processing tags "{}" with text={}'.format(' -> '.join(self.current_tags), self.text))
 
         # initialise the quiz
         if tag == 'webquiz':
-            self.src = attributes.get('src')
-            for key in ['hidesidemenu', 'language', 'theme']:
+            for key in attributes.keys():
+                print('Looking at {}'.format(key))
                 self.set_default_attribute(key, attributes.get(key))
+
+            # convert the following attibutes to booleans
+            for key in ['hide_side_menu', 'one_page', 'pst2pdf', 'random_order']:
+                setattr(self, key, getattr(self,key)=='true')
 
         # set up links, meta tags and department and unit data
         elif tag == 'link':
@@ -146,7 +147,7 @@ class QuizHandler(xml.sax.ContentHandler):
                 self.set_default_attribute(tag, attributes.get(key))
 
         elif tag == 'breadcrumb':
-            self.set_default_attribute('breadcrumbs,', attributes.get('breadcrumbs'))
+            self.set_default_attribute('breadcrumbs', attributes.get('breadcrumbs'))
 
         elif tag == 'unit_name':
             self.set_default_attribute('unit_url', attributes.get('url'))
@@ -179,8 +180,8 @@ class QuizHandler(xml.sax.ContentHandler):
             self.text = ''
 
             self.question_list[-1].comparison = attributes.get('comparison')
-            if mathjs not in self.link_list and self.question_list[-1].comparison == 'eval':
-                self.link_list.append(mathjs)
+            if self.question_list[-1].comparison == 'eval':
+                self.mathjs = True
 
         elif tag == 'choice':
             self.question_list[-1].type = attributes.get('type')
@@ -191,7 +192,8 @@ class QuizHandler(xml.sax.ContentHandler):
 
         elif tag == 'item':
             self.question_list[-1].items.append(
-                    Data(expect= attributes.get('expect'),
+                    Data(correct= attributes.get('correct'),
+                         symbol=attributes.get('symbol'),
                          response='',
                          text=''
                         )
@@ -202,8 +204,10 @@ class QuizHandler(xml.sax.ContentHandler):
             self.quiz_index.append(Data(url=attributes.get('url'), title=''))
 
         elif tag in ['when_right', 'when_wrong']:
-            self.question_list[-1].after_text += self.text
-            self.text = ''
+            if self.text.strip() != '':
+                self.question_list[-1].after_text += ' '+self.text.strip()
+                debugging('After_text is now {}'.format(self.question_list[-1].after_text))
+                self.text = ''
 
 
     def endElement(self, tag):
@@ -230,7 +234,8 @@ class QuizHandler(xml.sax.ContentHandler):
             self.question_list[-1].items[-1].response = self.text.strip()
 
         elif tag == 'question':
-            self.question_list[-1].after_text = self.text.strip()
+            if self.text.strip() != '':
+                self.question_list[-1].after_text += ' '+self.text.strip()
 
         elif tag in ['breadcrumb', 'title', 'unit_code', 'unit_name']:
             setattr(self, tag, self.text.strip())
@@ -250,7 +255,7 @@ class QuizHandler(xml.sax.ContentHandler):
             text_used = False
 
         if text_used:
-            Debugging('text "{}" added to {}'.format(self.text, tag))
+            debugging('text "{}" added to {}'.format(self.text, tag))
             self.text = ''
 
     def characters(self, text):  #data,start,length):

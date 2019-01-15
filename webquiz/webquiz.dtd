@@ -57,7 +57,7 @@
 <!ATTLIST institution url CDATA #REQUIRED>
 
 <!ELEMENT quizindex (indexitem*)>
-<!ELEMENT indexitem (text)
+<!ELEMENT indexitem (text)>
 <!ATTLIST indexitem url    CDATA  #REQUIRED>
 
 <!ELEMENT discussion (heading, short_heading, text)>
@@ -80,17 +80,20 @@
                  cols CDATA             #REQUIRED
 >
 <!ELEMENT item (text,response?)>
-<!ATTLIST item expect (true|false) #REQUIRED>
+<!ATTLIST item 
+    correct (true|false) #REQUIRED
+    symbol CDATA         #REQUIRED
+>
 
 <!ELEMENT answer (tag?,when_right,when_wrong)>
 <!ATTLIST answer comparison CDATA #REQUIRED>
 
 <!ELEMENT tag (#PCDATA)>
 
-<!ELEMENT text %Flow;>
+<!ELEMENT response (#PCDATA)>
 
-<!ELEMENT response %Flow;>
+<!ELEMENT when_right (#PCDATA)>
 
-<!ELEMENT when_right %Flow;>
+<!ELEMENT when_wrong (#PCDATA)>
 
-<!ELEMENT when_wrong %Flow;>
+<!ELEMENT text (#PCDATA)>

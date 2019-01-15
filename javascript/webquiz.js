@@ -16,18 +16,20 @@
  */
 
 // Global variables
-var currentQ;
-var qTotal;
-var dTotal;
-var currentQuiz;
-var currentResponse = null;
 var Discussion = [];
 var QuizTitles = [];
 var correct = [];
+var currentQ;
+var currentQuiz;
+var currentResponse = null;
+var dTotal;
+var qTotal;
+var questionOrder = [];
 var wrongAnswers = [];
 
-// QuizSpecifications will be an array of the expected responses for each question
+// The following variables are redefined in the specifications file
 var QuizSpecifications = [];
+var onePage = false;
 
 // Specification for the question buttons for use in updateQuestionMarker
 var blank = {
@@ -46,15 +48,6 @@ var tick = {
     "content": "\u2714",
     "name": "tick"
 };
-
-// Add a small delay for loading the quiz specifications. Not sure that this
-// actually does anything. We can't use a while-loop because with this the
-// page never loads
-function WaitForQuizSpecifications() {
-    while (typeof QuizSpecifications  === "undefined") {
-        setTimeout(WaitForQuizSpecifications, 15);
-    }
-}
 
 // create the drop down menu dynamically using the QuizTitles array
 function create_drop_down_menu() {
@@ -118,26 +111,28 @@ function toggle_side_menu() {
 
 // Code to hide/show questions
 function showQuestion(newQ) { // newQ is an integer which is always in the correct range
-    var button;
-    if (newQ !== currentQ) {
+    if (!onePage && newQ !== currentQ) {
+        var button;
+        var realQ = questionOrder[currentQ-1];
         if (currentQ !== 0) { // hide the current question and responses
             hideResponse();
-            document.getElementById("question" + currentQ).style.display = "none";
+            document.getElementById("question" + realQ).style.display = "none";
             button = document.getElementById("button" + currentQ);
             button.classList.remove("nolink");
-            if (currentQ > 0) {
+            if (currentQ > 0) { // question and not discussion
                 button.classList.remove("button-selected");
             }
         }
 
         // now set currtentQ = newQ and display it
         currentQ = newQ;
-        document.getElementById("question" + currentQ).style.display = "table";
+        realQ = questionOrder[currentQ-1];
+        document.getElementById("question" + realQ).style.display = "table";
         button = document.getElementById("button" + currentQ);
         button.classList.add("nolink");
         if (currentQ > 0) {
             button.classList.add("button-selected");
-            document.getElementById("question-number").innerHTML = QuizSpecifications[currentQ-1].label;
+            document.getElementById("question-number").innerHTML = currentQ;
         } else if (Discussion[-1 - currentQ]) {
             document.getElementById("question-number").innerHTML = Discussion[-1 - currentQ];
         }
@@ -158,11 +153,11 @@ function showResponse(tag) {
     currentResponse.style.display = "block";
 }
 
-// if increment==+1 we find the next questions which has not
-// been wrongAnswers correctly; if increment==-1 we find the last
+// if increment==1 we find the next questions which has not
+// been answered incorrectly and if increment==-1 we find the last
 // such question
 function nextQuestion(increment) {
-    if (currentQ < 0) {
+    if (currentQ < 0) { // a discussion item
         if (increment === 1) {
             gotoQuestion(1);
         } else {
@@ -177,7 +172,7 @@ function nextQuestion(increment) {
             } else if (q > qTotal) {
                 q = 1;
             }
-        } while (q !== currentQ && correct[q - 1]);
+        } while (q !== currentQ && correct[ q - 1]);
         if (q === currentQ) {
             alert("There are no more unanswered questions");
         } else {
@@ -188,20 +183,20 @@ function nextQuestion(increment) {
 
 
 var buttons = ['blank', 'cross', 'star', 'tick'];
-function updateQuestionMarker() {
-    var qnum = currentQ - 1;
+function updateQuestionMarker(qnum) {
+    var q = qnum - 1;
     if (currentQ < 0) {
         return true;
     } // nothing to change in this case
     var marker, button = document.getElementById("button" + currentQ);
-    if (correct[qnum]) {
-        if (wrongAnswers[qnum] === 0) {
+    if (correct[q]) {
+        if (wrongAnswers[q] === 0) {
             marker = star;
         } else {
             marker = tick;
         }
     } else {
-        if (wrongAnswers[qnum] > 0) {
+        if (wrongAnswers[q] > 0) {
             marker = cross;
         } else {
             marker = blank;
@@ -215,51 +210,54 @@ function updateQuestionMarker() {
 }
 
 function gotoQuestion(qnum) {
-    updateQuestionMarker();
+    updateQuestionMarker(qnum);
     showQuestion(qnum);
 }
 
 // check to see whether the answer is correct and update the markers accordingly
-function checkAnswer() {
-    var qnum = currentQ - 1;
-    var question = QuizSpecifications[qnum];
-    var formObject = document.forms["Q" + currentQ + "Form"];
+function checkAnswer(qnum) {
+    var q = qnum - 1;
+    var realQ = questionOrder[q];
+    var question = QuizSpecifications[realQ-1];
+    var formObject = document.forms["Q" + realQ + "Form"];
     var i;
+  alert('qnum='+qnum+', realQ='+realQ);
+  alert('question.type='+question.type);
 
-    if (question.type === "input") {
+    if (question.type == "input") {
         var answer = formObject.elements[0].value;
         switch(question.comparison) {
           case 'integer':
-            correct[qnum] = (parseInt(question.value) === parseInt(answer));
+            correct[q] = (parseInt(question.value) === parseInt(answer));
             break;
           case 'number':
-            correct[qnum] = (eval(question.value+'-'+answer)==0);
+            correct[q] = (math.eval(question.value+'-'+answer)==0);
             break;
           case 'string':
-            correct[qnum] = (String(question.value) === String(answer));
+            correct[q] = (String(question.value) === String(answer));
             break;
           case 'lowercase':
-            correct[qnum] = (String(question.value).toLowerCase() === answer);
+            correct[q] = (String(question.value).toLowerCase() === answer);
             break;
           case 'eval':
-            correct[qnum] = (math.eval(question.value-answer) == int(0));
+            correct[q] = (math.eval(question.value-answer)==0);
             break;
         }
-        if (correct[qnum]) {
-            showResponse("q" + currentQ + "true");
+        if (correct[q]) {
+            showResponse("q" + realQ + "true");
         } else {
-            showResponse("q" + currentQ + "false");
+            showResponse("q" + realQ + "false");
         }
-    } else if (question.type === "single") {
+    } else if (question.type == "single") {
         var checkedAnswer = 0;
         for (i = 0; i < question.length; i++) {
             if (formObject.elements[i].checked) {
-                correct[qnum] = question[i];
+                correct[q] = question[i];
                 checkedAnswer = i + 1;
                 break;
             }
         }
-        showResponse("q" + currentQ + "response" + checkedAnswer);
+        showResponse("q" + realQ + "response" + checkedAnswer);
     } else { // type is "multiple"
         var badAnswers = [];
         for (i = 0; i < question.length; i++) {
@@ -270,61 +268,65 @@ function checkAnswer() {
         }
         // fully correct only if badAnswers == []
         if (badAnswers.length === 0) {
-            correct[qnum] = true;
-            showResponse("q" + currentQ + "response0");
+            correct[q] = true;
+            showResponse("q" + realQ + "response0");
         } else {
             // randomly display a response for one of incorrect choices
-            correct[qnum] = false;
-            showResponse("q" + currentQ + "response" + badAnswers[Math.floor(Math.random() * badAnswers.length)]);
+            correct[q] = false;
+            showResponse("q" + realQ + "response" + badAnswers[Math.floor(Math.random() * badAnswers.length)]);
         }
     }
     //
-    if (!correct[qnum]) {
-        wrongAnswers[qnum] += 1;
+    if (!correct[q]) {
+        wrongAnswers[q] += 1;
     }
-    updateQuestionMarker();
+    updateQuestionMarker(qnum);
+}
+
+/**
+ * Shuffles array in place. ES6 version
+ * @param {Array} a items An array containing the items.
+ * https://stackoverflow.com/questions/6274339/how-can-i-shuffle-an-array
+ */
+function shuffle(a) {
+    var i, j;
+    for (i = a.length - 1; i > 0; i--) {
+        j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
 }
 
 // initialise the quiz, loading specifications and setting up the first question
-function WebQuizInit(questions, discussions, quizfile, hidesidemenu) {
+function WebQuizInit(questions, discussions, quizfile) {
+    // process init options
     qTotal = questions;
     dTotal = discussions;
     currentQuiz = quizfile;
 
-    // read the question specifications for the quiz from <currentQuiz>/quiz_list.js
-    document.head.appendChild(document.createElement("script")).src = currentQuiz + "/wq-" + currentQuiz + ".js";
-
-    // wait for the QuizSpecifications to load
-    WaitForQuizSpecifications();
+    // display the first question or discussion item
+    currentQ = 0;
+    var newQ = (dTotal > 0) ? -1 : 1;
 
     // make the drop down menu if QuizTitles has some entries
     if (QuizTitles.length > 0 && document.getElementById("drop-down-menu")) {
         create_drop_down_menu();
     }
 
-    if (hidesidemenu) {
-        toggle_side_menu();
-    }
-
     // set up arrays for tracking how many times the questions have been attempted
     var i;
     for (i = 0; i < qTotal; i++) {
-        wrongAnswers[i] = 0; // the number of times the question has been attempted
-        correct[i] = false; // whether or not the supplied answer is correct
+        wrongAnswers[i] = 0;    // the number of times the question has been attempted
+        correct[i] = false;     // whether or not the supplied answer is correct
+        questionOrder[i] = i+1; // determine the order of the question
     }
 
-    // read the color and background colour of the buttons from the last
-    // question button
-    var lastButton = getComputedStyle(document.getElementById('button'+qTotal));
-    blank.color = lastButton.color;
-    blank.bg = lastButton.backgroundColor;
-
-    // display the first question or discussion item
-    currentQ = 0;
-    var newQ = (dTotal > 0) ? -1 : 1;
-    if ((dTotal + qTotal) > 0) {
-         showQuestion(newQ);
-    }
+    // read the question specifications for the quiz
+    // and then wait for the QuizSpecifications to load
+    var script = document.createElement('script');
+    script.src =  currentQuiz + "/wq-" + currentQuiz + ".js";
+    script.type = "text/javascript";
+    document.head.appendChild(script);
 }
 
 

@@ -26,14 +26,11 @@ import signal
 import subprocess
 import sys
 
+# imports of webquiz code
 import webquiz_templates
-from webquiz_util import kpsewhich, metadata, MetaData, webquiz_error, webquiz_file
+from webquiz_util import *
 from webquiz_settings import WebQuizSettings
 from webquiz_xml import ReadWebQuizXmlFile
-
-
-# used to label the parts of questions as a, b, c, ...
-ALPHABET = "abcdefghijklmnopqrstuvwxyz"
 
 
 # ---------------------------------------------------------------------------------------
@@ -61,32 +58,31 @@ def preprocess_with_pst2pdf(quiz_file):
     try:
         # pst2pdf converts pspicture environments to svg images and makes a
         # new latex file quiz_file+'-pdf' that includes these
-        cmd = 'pst2pdf --svg --imgdir={q_file} {q_file}.tex'.format(
-            q_file=quiz_file)
+        cmd = 'pst2pdf --svg --imgdir={q_file} {q_file}.tex'.format(q_file=quiz_file)
         run(cmd)
     except OSError as err:
         if err.errno == errno.ENOENT:
             webquiz_error(
                 'pst2pdf not found. You need to install pst2pdf to use the pst2pdf option',
-                err)
+                err
+            )
         else:
             webquiz_error('error running pst2pdf on {}'.format(quiz_file), err)
 
     # match \includegraphics commands
-    fix_svg = re.compile(r'(\\includegraphics\[scale=1\])\{(' + quiz_file +
-                         r'-fig-[0-9]*)\}')
+    fix_svg = re.compile(r'(\\includegraphics\[scale=1\])\{('+quiz_file+r'-fig-[0-9]*)\}')
     # the svg images are in the quiz_file subdirectory but latex can't
     # find them so we update the tex file to look in the right place
     try:
         with codecs.open(quiz_file + '-pdf.tex', 'r', encoding='utf8') as pst_file:
             with codecs.open(quiz_file + '-pdf-fixed.tex', 'w', encoding='utf8') as pst_fixed:
                 for line in pst_file:
-                    pst_fixed.write(
-                        fix_svg.sub(r'\1{%s/\2.svg}' % quiz_file, line))
+                    pst_fixed.write(fix_svg.sub(r'\1{%s/\2.svg}' % quiz_file, line))
     except OSError as err:
         webquiz_error(
             'there was an problem running pst2pdf for {}'.format(quiz_file),
-            err)
+            err
+        )
 
 
 #################################################################################
@@ -149,15 +145,10 @@ class MakeWebQuiz(object):
         self.add_side_menu()
         self.add_quiz_header_and_questions()
 
-        # build the bread crumbs - take crumbs from settings if not specified by the quiz
-        self.quiz.breadcrumbs = self.settings['breadcrumbs']
-        self.quiz.breadcrumbs = [
-            crumb.strip() for crumb in self.quiz.breadcrumbs.split('|')
-        ]
-
-        if self.quiz.breadcrumbs != ['']:
-            crumbs = ''
-            for crumb in self.quiz.breadcrumbs:
+        if self.quiz.breadcrumbs != '':
+            # build the bread crumbs
+            for crumb in self.quiz.breadcrumbs.split('|'):
+                crumb = crumb.strip()
                 if crumb == 'department':
                     crumbs += self.add_breadcrumb_line(
                         text=self.quiz.department,
@@ -168,12 +159,12 @@ class MakeWebQuiz(object):
                         text=self.quiz.institution,
                         url=self.quiz.institution_url,
                         missing='institution')
-                elif crumb == 'unitcode':
+                elif crumb == 'unit_code':
                     crumbs += self.add_breadcrumb_line(
                         text=self.quiz.unit_code,
                         url=self.quiz.unit_url,
                         missing='unit code')
-                elif crumb == 'unitname':
+                elif crumb == 'unit_name':
                     crumbs += self.add_breadcrumb_line(
                         text=self.quiz.unit_name,
                         url=self.quiz.unit_url,
@@ -197,6 +188,9 @@ class MakeWebQuiz(object):
 
             if crumbs != '':
                 self.breadcrumbs = webquiz_templates.breadcrumbs.format(crumbs=crumbs)
+
+        if not hasattr(self, 'breadcrumbs'):
+            self.breadcrumbs = ''
 
         if self.settings.initialise_warning != '':
             self.breadcrumbs = self.settings.initialise_warning + self.breadcrumbs
@@ -284,12 +278,9 @@ class MakeWebQuiz(object):
             # read in the xml version of the quiz
             if not os.path.isfile(self.quiz_name + '.xml'):
                 webquiz_error('{}.xml does not exist!?'.format(self.quiz_name))
-            self.quiz = ReadWebQuizXmlFile(self.quiz_name + '.xml',
-                                                       self.settings,
-                                                       self.options.debugging)
+            self.quiz = ReadWebQuizXmlFile(self.quiz_name + '.xml', self.settings)
         except Exception as err:
-            webquiz_error(
-                'error reading the xml generated for {}. Please check your latex source.'
+            webquiz_error('error reading the xml generated for {}. Please check your latex source.'
                 .format(self.quiz_name), err)
 
     def add_meta_data(self):
@@ -305,6 +296,8 @@ class MakeWebQuiz(object):
             institution=self.quiz.institution,
             quiz_file=self.quiz_name,
             theme=self.quiz.theme)
+        if self.quiz.mathjs:
+            self.header += webquiz_templates.mathjs
 
         # we don't need any of the links or metas from the latex file
         # self.header += ''.join('  <meta {}>\n'.format(' '.join('{}="{}"'.format(k, meta[k]) for k in meta)) for meta in self.quiz.meta_list)
@@ -360,9 +353,6 @@ class MakeWebQuiz(object):
                     for (i, question) in enumerate(self.quiz.question_list):
                         # QuizSpecifications is a 0-based array
                         quiz_specs.write('QuizSpecifications[%d]=[];\n' % i)
-                        quiz_specs.write(
-                            'QuizSpecifications[%d].label="%s %s";\n' % (i, self.language.question, i + 1)
-                        )
                         quiz_specs.write('QuizSpecifications[%d].type="%s";\n' % (i, question.type))
                         if question.type == 'input':
                             quiz_specs.write('QuizSpecifications[{}].value="{}";\n'.format(i,
@@ -372,8 +362,19 @@ class MakeWebQuiz(object):
                             )
                             quiz_specs.write('QuizSpecifications[%d].comparison="%s";\n' % (i, question.comparison))
                         else:
-                            quiz_specs.write(''.join('QuizSpecifications[%d][%d]=%s;\n' % (i, j, s.expect)
-                                for (j, s) in enumerate(question.items)))
+                            quiz_specs.write(''.join(
+                                    'QuizSpecifications[%d][%d]=%s;\n' % (i, j, s.correct)
+                                    for (j, s) in enumerate(question.items)
+                                )
+                            )
+
+                if self.quiz.hide_side_menu:
+                    quiz_specs.write('toggle_side_menu();\n')
+                if self.quiz.one_page:
+                    quiz_specs.write('onePage = true;\n')
+                if self.quiz.random_order:
+                    quiz_specs.write('questionOrder = shuffle(questionOrder);\n')
+                quiz_specs.write('showQuestion( (dTotal > 0) ? -1 : 1 );')
 
         except Exception as err:
             webquiz_error('error writing quiz specifications', err)
@@ -386,7 +387,6 @@ class MakeWebQuiz(object):
             number_quizzes=self.number_quizzes,
             number_discussions=self.number_discussions,
             quiz_file=self.quiz_name,
-            hide_side_menu=self.quiz.hidesidemenu
         )
 
     def add_quiz_header_and_questions(self):
@@ -399,26 +399,18 @@ class MakeWebQuiz(object):
             arrows = webquiz_templates.navigation_arrows.format(**self.language)
 
         # specify the quiz header - this will be wrapped in <div class="question-header>...</div>
-        self.quiz_header = webquiz_templates.quiz_header.format(
-            title=self.title,
-            question_number=self.quiz.discussion_list[0].heading
-                                    if self.quiz.discussion_list != []
-                                    else self.language.question + ' 1' if self.quiz.question_list > []
-                                    else '',
-            arrows=arrows)
-
-        # now comes the main page text
-        # discussion(s) masquerade as negative questions
-        if self.quiz.discussion_list != []:
-            dnum = 0
-            for d in self.quiz.discussion_list:
-                dnum += 1
-                self.quiz_questions += webquiz_templates.discussion.format(
-                    dnum=dnum,
-                    discussion=d,
-                    display='style="display: table;"' if dnum == 1 else '',
-                    input_button=webquiz_templates.input_button if self.quiz.question_list > []
-                    and dnum == len(self.quiz.discussion_list) else '')
+        if self.quiz.one_page:
+            self.quiz_header = ''
+        else:
+            self.quiz_header = webquiz_templates.quiz_header.format(
+                title=self.title,
+                question_number=self.quiz.discussion_list[0].heading
+                                        if self.quiz.discussion_list != []
+                                        else self.language.question + ' 1' if self.quiz.question_list > []
+                                        else '',
+                arrows=arrows,
+                **self.language
+            )
 
         # index for quiz
         if self.quiz.quiz_index != []:
@@ -435,19 +427,32 @@ class MakeWebQuiz(object):
                 quizmenu.write('var QuizTitles = [\n{titles}\n];\n'.format(
                     titles=',\n'.join("  ['{}', '{}']".format(q.title, q.url)
                                       for q in self.quiz.quiz_index)
-                    )
                 )
+            )
+
+        # now comes the main page text
+        # discussion(s) masquerade as negative questions
+        if self.quiz.discussion_list != []:
+            dnum = 0
+            for d in self.quiz.discussion_list:
+                dnum += 1
+                self.quiz_questions += webquiz_templates.discussion.format(
+                    dnum=dnum,
+                    discussion=d,
+                    input_button=webquiz_templates.input_button if self.quiz.question_list > []
+                    and dnum == len(self.quiz.discussion_list) else '')
 
         # finally we print the questions
         if self.quiz.question_list != []:
             self.quiz_questions += ''.join(
                 webquiz_templates.question_wrapper.format(
                     qnum=qnum + 1,
-                    display='style="display: table;"'
-                    if qnum == 0 and self.quiz.discussion_list == [] else '',
-                    question=self.print_question(q, qnum + 1),
-                    response=self.print_responses(q, qnum + 1))
-                for (qnum, q) in enumerate(self.quiz.question_list))
+                    question_number='{}. '.format(qnum+1) if self.quiz.one_page else '',
+                    display='table' if self.quiz.one_page else 'none',
+                    question=self.print_question(quiz_question, qnum + 1),
+                    response=self.print_responses(quiz_question, qnum + 1)
+                )
+                for (qnum, quiz_question) in enumerate(self.quiz.question_list))
 
     def print_question(self, question, qnum):
         r'''Here:
@@ -455,6 +460,7 @@ class MakeWebQuiz(object):
             - qnum is the number of the question
         '''
         if question.type == 'input':
+            debugging('Q{}: after_text={}.'.format(qnum, question.after_text))
             question_options = webquiz_templates.input_answer.format(
                                  size=5+len('{}'.format(question.answer)),
                                  after_text=question.after_text,
@@ -471,6 +477,7 @@ class MakeWebQuiz(object):
         return webquiz_templates.question_text.format(
             qnum=qnum,
             question_text=question.text,
+            nextquestion='' if self.quiz.one_page else webquiz_templates.nextquestion.format(**self.language),
             question_options=question_options,
             **self.language)
 
@@ -486,14 +493,14 @@ class MakeWebQuiz(object):
         choice = question.items[part]
         item = '<tr>' if question.cols == 1 or (part % question.cols) == 0 else '<td>&nbsp;</td>'
         if question.type == 'single':
-            item += webquiz_templates.single_item.format(
-                choice=ALPHABET[part], qnum=qnum, text=choice.text)
+            item += webquiz_templates.single_item.format(choice=choice.symbol, qnum=qnum, text=choice.text)
         elif question.type == 'multiple':
             item += webquiz_templates.multiple_item.format(
-                choice=ALPHABET[part],
+                choice=choice.symbol,
                 qnum=qnum,
                 optnum=part,
-                text=choice.text)
+                text=choice.text
+            )
         else:
             item += '<!-- internal error: %s -->\n' % question.type
             webquiz_error('Unknown question type "{}" in question {}'.format(question.type, qnum))
@@ -526,27 +533,27 @@ class MakeWebQuiz(object):
                 webquiz_templates.single_response.format(
                     qnum=qnum,
                     part=snum + 1,
-                    correct_answer=self.language.correct if s.expect == 'true' else self.language.incorrect,
-                    alpha_choice=self.language.choice.format(ALPHABET[snum]),
+                    correct_answer=self.language.correct if s.correct == 'true' else self.language.incorrect,
+                    alpha_choice=self.language.choice.format(s.symbol),
                     response=s.response,
                     **self.language)
                 for (snum, s) in enumerate(question.items))
         elif question.type == "multiple":
-            response = '\n' + '\n'.join(
-                webquiz_templates.multiple_response.format(
-                    qnum=qnum,
-                    part=snum + 1,
-                    correct_answer=s.expect.capitalize(),
-                    response=s.response,
-                    multiple_choice_opener=self.language.multiple_incorrect.
-                    format(ALPHABET[snum]),
-                    **self.language)
-                for (snum, s) in enumerate(question.items))
+            response = '\n' + '\n'.join(webquiz_templates.multiple_response.format(
+                qnum=qnum,
+                part=snum + 1,
+                correct_answer=s.correct.capitalize(),
+                response=s.response,
+                multiple_choice_opener=self.language.multiple_incorrect.
+                format(s.symbol),
+                **self.language)
+                for (snum, s) in enumerate(question.items)
+            )
             response += webquiz_templates.multiple_response_correct.format(
                 qnum=qnum,
                 responses='\n'.join(
                     webquiz_templates.multiple_response_answer.format(
-                        correct_answer=s.expect.capitalize(), reason=s.response)
+                        correct_answer=s.correct.capitalize(), reason=s.response)
                     for s in question.items),
                 **self.language)
         else:
@@ -750,28 +757,14 @@ if __name__ == '__main__':
 
             else:
 
-                quiz_name = quiz_file  # the quiz name and the quiz_file will be if pst2pdf is used
+                # the quiz name and the quiz_file will be if pst2pdf is used
+                quiz_name = quiz_file
+                if self.quiz.pst2pdf:
+                    preprocess_with_pst2pdf(quiz_file[:-4])
+                    quiz_file = quiz_file[:-4] + '-pdf-fixed.tex'  # now run webquiz on modified tex file
+
                 if options.quiet < 2:
                     print('WebQuiz generating web page for {}'.format(quiz_file))
-
-                # set options.pst2pdf = True if pst2pdf is given as an option to the webquiz documentclass
-                with codecs.open(quiz_file, 'r', encoding='utf8') as q_file:
-                    doc = q_file.read()
-
-                options.pst2pdf = False
-                try:
-                    brac = doc.index(
-                        r'\documentclass[') + 15  # start of class options
-                    if 'pst2pdf' in [
-                            opt.strip()
-                            for opt in doc[brac:brac +
-                                           doc[brac:].index(']')].split(',')
-                    ]:
-                        preprocess_with_pst2pdf(quiz_file[:-4])
-                        options.pst2pdf = True
-                        quiz_file = quiz_file[:-4] + '-pdf-fixed.tex'  # now run webquiz on modified tex file
-                except ValueError:
-                    pass
 
                 # the file exists and is readable so make the quiz
                 MakeWebQuiz(quiz_name, quiz_file, options, settings)
@@ -796,15 +789,12 @@ if __name__ == '__main__':
                             os.remove(quiz_name + '.' + ext)
 
                     # files created when using pst2pdf
-                    if options.pst2pdf:
+                    if self.quiz.pst2pdf:
                         for file in glob.glob(quiz_name + '-pdf.*'):
                             os.remove(file)
                         for file in glob.glob(quiz_name + '-pdf-fixed.*'):
                             os.remove(file)
-                        for extra in [
-                                '.preamble', '.plog', '-tmp.tex', '-pst.tex',
-                                '-fig.tex'
-                        ]:
+                        for extra in ['.preamble', '.plog', '-tmp.tex', '-pst.tex', '-fig.tex']:
                             if os.path.isfile(quiz_name + extra):
                                 os.remove(quiz_name + extra)
                         if os.path.isdir(os.path.join(quiz_name, quiz_name)):
