@@ -25,6 +25,7 @@ var currentResponse = null;
 var dTotal;
 var qTotal;
 var questionOrder = [];
+var drop_down, side_closed, side_menu, side_open;
 var wrongAnswers = [];
 
 // The following variables are redefined in the specifications file
@@ -51,11 +52,8 @@ var tick = {
 
 // create the drop down menu dynamically using the QuizTitles array
 function create_drop_down_menu() {
-    var drop_down = document.getElementById("drop-down-menu");
-    // add the menu icon for the quizzes menu if there is at least one quiz
-    if (QuizTitles.length > 0) {
-        document.getElementById("quizzes-menu-icon").innerHTML = " &#9776;";
-    }
+    // add the menu icon for the quizzes menu - only called if there is at least one quiz
+    document.getElementById("quizzes-menu-icon").innerHTML = " &#9776;";
 
     var max = 0, q, quiz_link, menu = document.createDocumentFragment();
     for (q = 0; q < QuizTitles.length; q++) {
@@ -71,7 +69,6 @@ function create_drop_down_menu() {
 // create an event listener so that we can close the drop-down menu
 // whenever some one clicks outside of it
 function MenuEventListener(evnt) {
-    var drop_down = document.getElementById('drop-down-menu');
     var menu_icon = document.getElementsByClassName('menu-icon')[0];
     if (drop_down.contains(evnt.target)) {
       return; // inside the menu so just return
@@ -84,7 +81,6 @@ function MenuEventListener(evnt) {
 }
 
 function toggle_dropdown_menu() {
-    var drop_down = document.getElementById('drop-down-menu');
     if (drop_down.style.display === 'block') {
       drop_down.style.display = 'none';
     } else {
@@ -95,9 +91,6 @@ function toggle_dropdown_menu() {
 
 // toggle the display of the side menu and its labels
 function toggle_side_menu() {
-    var side_menu = document.getElementsByClassName('side-menu')[0];
-    var side_open = document.getElementsByClassName('sidelabelopen')[0];
-    var side_closed = document.getElementsByClassName('sidelabelclosed')[0];
     if (side_menu.style.display === "block" || side_menu.style.display === "") {
         side_menu.style.display = "none";
         side_open.style.display = "none";
@@ -151,13 +144,13 @@ function showQuestion(newQ) { // newQ is an integer which is always in the corre
 // Code to hide/show responses
 
 function hideResponse() {
-    if (currentResponse !== null) {
+    if (currentResponse) {
         currentResponse.style.display = "none";
     }
 }
 
 function showResponse(tag) {
-    hideResponse();
+    hideResponse(); // hide current response
     currentResponse = document.getElementById(tag);
     currentResponse.style.display = "block";
 }
@@ -194,28 +187,28 @@ function nextQuestion(increment) {
 var buttons = ['blank', 'cross', 'star', 'tick'];
 function updateQuestionMarker(qnum) {
     var q = qnum - 1;
-    if (currentQ < 0) {
-        return true;
-    } // nothing to change in this case
-    var marker, button = document.getElementById("button" + currentQ);
-    if (correct[q]) {
-        if (wrongAnswers[q] === 0) {
-            marker = star;
+    if (currentQ > 0) {
+        var marker;
+        var button = document.getElementById("button" + currentQ);
+        if (correct[q]) {
+            if (wrongAnswers[q] === 0) {
+                marker = star;
+            } else {
+                marker = tick;
+            }
         } else {
-            marker = tick;
+            if (wrongAnswers[q] > 0) {
+                marker = cross;
+            } else {
+                marker = blank;
+            }
         }
-    } else {
-        if (wrongAnswers[q] > 0) {
-            marker = cross;
-        } else {
-            marker = blank;
+        for (var b = 0; b < buttons.length; b++) {
+           button.classList.remove(buttons[b]);
         }
+        button.classList.add(marker.name);
+        button.setAttribute("content", marker.content);
     }
-    for (var b = 0; b < buttons.length; b++) {
-       button.classList.remove(buttons[b]);
-    }
-    button.classList.add(marker.name);
-    button.setAttribute("content", marker.content);
 }
 
 function gotoQuestion(qnum) {
@@ -234,22 +227,21 @@ function checkAnswer(qnum) {
         var answer = formObject.elements[0].value;
         switch(question.comparison) {
           case 'complex':
-            correct[q] = (math.complex(question.value-answer)==0);
+            var a = math.complex(answer)
+            var b = math.complex(question.value)
+            correct[q] = (a.re==b.re && a.im==b.im)
             break;
           case 'integer':
-            correct[q] = (parseInt(question.value) === parseInt(answer));
+            correct[q] = (parseInt(answer)==parseInt(question.value));
             break;
           case 'number':
-            correct[q] = (math.eval(question.value+'-'+answer)==0);
+            correct[q] = (math.eval(answer)==math.eval(question.value));
             break;
           case 'string':
-            correct[q] = (String(question.value) === String(answer));
+            correct[q] = (String(question.value)==answer);
             break;
           case 'lowercase':
-            correct[q] = (String(question.value).toLowerCase() === answer);
-            break;
-          case 'eval':
-            correct[q] = (math.eval(question.value-answer)==0);
+            correct[q] = (String(question.value).toLowerCase()==answer);
             break;
         }
         if (correct[q]) {
@@ -317,11 +309,6 @@ function WebQuizInit(questions, discussions, quizfile) {
     currentQ = 0;
     var newQ = (dTotal > 0) ? -1 : 1;
 
-    // make the drop down menu if QuizTitles has some entries
-    if (QuizTitles.length > 0 && document.getElementById("drop-down-menu")) {
-        create_drop_down_menu();
-    }
-
     // set up arrays for tracking how many times the questions have been attempted
     var i;
     for (i = 0; i < qTotal; i++) {
@@ -336,6 +323,28 @@ function WebQuizInit(questions, discussions, quizfile) {
     script.src =  currentQuiz + "/wq-" + currentQuiz + ".js";
     script.type = "text/javascript";
     document.head.appendChild(script);
+
+    // compute these only once
+    side_menu = document.getElementById('sidemenu');
+    side_open = document.getElementsByClassName('sidelabelopen')[0];
+    side_closed = document.getElementsByClassName('sidelabelclosed')[0];
+    drop_down = document.getElementById("drop-down-menu");
+
+    // make the drop down menu if QuizTitles has some entries
+    if (QuizTitles.length > 0 && drop_down) {
+        create_drop_down_menu();
+    }
+
+    if (qTotal==0) {
+        // ugly hack to position copyright message when there are no questions
+        side_menu.style.height='60ex';
+        var school = side_menu.getElementsByClassName('school')[0];
+        school.style.position = 'relative'
+        school.style.bottom = '-40ex'
+        var copyright = side_menu.getElementsByClassName('copyright')[0];
+        copyright.style.position = 'relative'
+        copyright.style.bottom = '-40ex'
+    }
 }
 
 

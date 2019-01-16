@@ -95,17 +95,17 @@ class WebQuizSettings:
         hide_side_menu={
             'default': 'false',
             'advanced': False,
-            'help': 'Do not display the side menu when quiz starts (true or false)',
+            'help': 'Do not display the side menu when quiz starts',
         },
         one_page={
             'default': 'false',
             'advanced': False,
-            'help': 'Display questions on one page (true or false)',
+            'help': 'Display questions on one page',
         },
         random_order={
             'default': 'false',
             'advanced': False,
-            'help': 'Randomly order the quiz questions (true or false)',
+            'help': 'Randomly order the quiz questions',
         },
         webquiz_format={
             'default': 'webquiz_standard',
@@ -307,25 +307,33 @@ class WebQuizSettings:
                 'Please initialise WebQuiz using the command: webquiz --initialise\n'
             )
 
-        if setting != 'all':
+        if setting not in ['all', 'compact', 'help']:
             setting = setting.replace('-', '_')
             if setting in self.settings:
                 print(self.settings[setting]['value'])
             else:
                 webquiz_error('{} is an invalid setting'.format(setting))
 
+        elif setting=='compact':
+            print('WebQuiz settings from {}'.format(self.rc_file))
+            for key in self.keys():
+                print('{:<15} = {}'.format(key.replace('_', '-'), self[key]))
+
+        elif setting=='help':
+            for key in self.keys():
+                print('{}: {}'.format(key.replace('_', '-'), self.settings[key]['help'].lower()))
+
         else:
             print('WebQuiz settings from {}\n'.format(self.rc_file))
             for key in self.keys():
-                if self[key] != '':
-                    print('# {}{}\n{:<15} = {:<15}  {}\n'.format(
-                            self.settings[key]['help'],
-                            ' (advanced)' if self.settings[key]['advanced'] else '',
-                            key.replace('_', '-'),
-                            self[key],
-                            '(default value)' if self[key]==self.settings[key]['default'] else ''
-                            )
-                    )
+                print('# {}{}\n{:<15} = {:<15}  {}\n'.format(
+                        self.settings[key]['help'],
+                        ' (advanced)' if self.settings[key]['advanced'] else '',
+                        key.replace('_', '-'),
+                        self[key],
+                        '(default value)' if self[key]==self.settings[key]['default'] else ''
+                        )
+                )
 
     def initialise_webquiz(self):
         r'''
@@ -435,13 +443,10 @@ class WebQuizSettings:
 
                 self['webquiz_url'] = mq_url
 
-        self.settings['webquiz_url']['changed'] = (
-            self['webquiz_url'] != self.settings['webquiz_url']['default'])
+        self.settings['webquiz_url']['changed'] = (self['webquiz_url']!=self.settings['webquiz_url']['default'])
 
-        # read and save the rest of the settings and exit
-        print(webquiz_templates.edit_settings)
-        input('Press return to continue... ')
-        self.edit_settings(ignored_settings=['webquiz_url', 'webquiz_www', 'version'])
+        # save the settings and exit
+        self.write_webquizrc()
         print(webquiz_templates.initialise_ending.format(web_dir=self['webquiz_www']))
         self.just_initialise = True
 

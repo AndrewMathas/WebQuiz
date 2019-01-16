@@ -68,7 +68,7 @@ class Convert:
                     self.javascript += "document.forms['Q{}Form'].elements[{}].checked=true;".format(quest, int(p)-1)
                 self.javascript += 'checkAnswer({});'.format(quest)
                 self.delay += 4
-            self.javascript += 'setTimeout(showQuestion({}), 4)'.format(quest)
+            self.javascript += 'setTimeout(showQuestion({}), 20)'.format(quest)
 
         # set conversion mechanism
         if src == 'html':
@@ -145,18 +145,19 @@ class Convert:
 
 # Specify the pages to construct using the Convert class:
 pages = [
-    Convert("answer-complex", js="document.forms['Q1Form'].elements[0].value='i+7'; setTimeout(checkAnswer(1), 2);"),
-    Convert("answer-integer", js="document.forms['Q1Form'].elements[0].value=18; setTimeout(checkAnswer(1), 2);"),
-    Convert("answer-lowercase", js="document.forms['Q1Form'].elements[0].value='long'; setTimeout(checkAnswer(1), 2);"),
-    Convert("answer-number", js="document.forms['Q1Form'].elements[0].value=0.75; setTimeout(checkAnswer(1), 2);"),
-    Convert("answer-string", js="document.forms['Q1Form'].elements[0].value='canberra'; setTimeout(checkAnswer(1), 2);"),
-    Convert("breadcrumbs"),
-    Convert("breadcrumbs", page_out="dropdown", js='toggle_dropdown_menu()'),
+    Convert("answer-complex", js="document.forms['Q1Form'].elements[0].value='i+7'; setTimeout(checkAnswer(1), 60);"),
+    Convert("answer-integer", js="document.forms['Q1Form'].elements[0].value=18; setTimeout(checkAnswer(1), 20);"),
+    Convert("answer-lowercase", js="document.forms['Q1Form'].elements[0].value='long'; setTimeout(checkAnswer(1), 20);"),
+    Convert("answer-number", js="document.forms['Q1Form'].elements[0].value='0.75'; setTimeout(checkAnswer(1), 60);"),
+    Convert("answer-string", js="document.forms['Q1Form'].elements[0].value='canberra'; setTimeout(checkAnswer(1), 20);"),
+    Convert("breadcrumbs", js="setTimeout(create_drop_down_menu(),20)", delay=10),
+    Convert("breadcrumbs", page_out="dropdown", js='setTimeout(create_drop_down_menu(),20); toggle_dropdown_menu();', delay=10),
+    Convert("choice-dark"),
     Convert("choice-multiple"),
     Convert("choice-single"),
     Convert("discussion"),
     Convert("display-as-image"),
-    Convert("french", webquiz='-x'),
+    Convert("french", question='1:1'),
     Convert("index"),
     Convert("lion-image"),
     Convert("montypython", delay=5),
@@ -165,9 +166,9 @@ pages = [
     Convert("pst2pdf"),
     Convert("pstricks-ex"),
     Convert("quiz-page", question="1:2", delay=15),
+    Convert("random", js="setTimeout(questionOrder=[4,3,2,1],40);showQuestion(3); document.forms['Q2Form'].elements[0].value='yes'; setTimeout(checkAnswer(3), 20);"),
     Convert("simple", page_out='simple-html', question='1:1'),
     Convert("simple", src='pdf',  page_out='simple-pdf'),
-    Convert("random", js="document.forms['Q2Form'].elements[2].value='2'; setTimeout(checkAnswer(2), 2)');"),
     Convert("theme-dark", question="3:2"),
     Convert("theme-default", question="1:1,3|3:2", delay=5),
     Convert("theme-dynamic", question="3:2"),

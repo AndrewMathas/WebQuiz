@@ -4,34 +4,42 @@ Changes
 
 Version 5.0:
 ------------
-    - changed name from mathquiz to webquiz
-    - "programable" breadcrumbs
     - added button for hiding/showing question buttons
     - added colour theme support
     - added language support
     - added support for colour and listings in the quiz files
+    - added lualatex and xelatex engine support
+    - added displayasimage
+    - added more comparison options for inputted answers
     - all files converted to utf8  using codecs
     - bash script wrapper replaced with python, using argparser, making it more portable and more flexible
     - better installation support
-    - changed name to webquiz
+    - changed name from mathquiz to webquiz
     - drop-down menu for quiz index file
-    - export to ctan
+    - export to ctan in setup.py
     - images for buttons etc replaced by css
     - implemented a suggestion of Michal Hoftich to workaround tikz/pgf bugs
     - implemented a suggestion to Herbert Voss to fix a pstricks issue using pst2pdf
     - made compatible with setup tools, together with option to export to ctan
+    - many more document class options
     - new (off-line) manual with automatically generated images via makeimages script
     - now using make4ht
-    - option for pst2pdf preprocessing for quizzes using pstruicks/postscript
+    - option for pst2pdf preprocessing for quizzes using pstricks/postscript
     - option for tikz that fixes a few bugs of pgf/tikz
     - program packaged for uploading to ctan and texlive
+    - programmable breadcrumbs
     - python and javascript streamlined and largely rewritten
+    - randomorder and onepage options added
     - replaced Choice environment with smarter choice environment
+    - rewrote xml parser
     - side menu and breadcrumbs automatically disappear on small screens
     - system webquizrc configuration file added wiith optional user .webquizrc file
+    - thechoice controls the labels for multiple choice options
     - updated to use html5, mathjax and mathml
     - using git and bitbucket for version management control
-    - various magthquiz defaults can be stored in the rc-file
+    - using pgfkeys for processing document class and environment options
+    - using sass to generate css for different themes
+    - various webquiz defaults can be stored in the rc-file
     - windows batch file
 
 Version 4.6:

@@ -153,7 +153,7 @@ class QuizHandler(xml.sax.ContentHandler):
 
         elif tag == 'unit_name':
             self.set_default_attribute('unit_url', attributes.get('url'))
-            self.quizzes_url = attributes.get('quizzes')
+            self.quizzes_url = attributes.get('quizzes_url')
             if self.quizzes_url == 'deFAULT':
                 self.quizzes_url = self.unit_url + '/Quizzes'
 
@@ -187,7 +187,7 @@ class QuizHandler(xml.sax.ContentHandler):
             self.text = ''
 
             self.question_list[-1].comparison = attributes.get('comparison')
-            if self.question_list[-1].comparison == 'complex':
+            if self.question_list[-1].comparison in ['complex', 'number']:
                 self.mathjs = True
 
         elif tag == 'choice':

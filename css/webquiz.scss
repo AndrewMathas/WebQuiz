@@ -257,7 +257,7 @@ div.quiz-questions {
         }
     }
 
-    div.quiz-list {
+    div.quiz-index {
         color: $Heading;
         font-family: Arial, Helvetica, sans-serif;
         text-decoration: none;
@@ -285,8 +285,8 @@ div.quiz-questions {
     /* specifications for the divs containing questions, answers and responses */
     div.question {
         position: relative;
+        margin: 0 0 5px 0;
         display: none;
-        margin: 0;
 
         form {
             padding: 10px 0 0 0;
@@ -313,7 +313,7 @@ div.quiz-questions {
             border: solid $ResponseBorder 2px;
             border-radius: 5px;
             display: none;
-            padding: 1ex;
+            padding: 0 1ex 0 1ex;
 
             div {
                 text-align: left;
@@ -522,6 +522,10 @@ div.menu-icon {
 
 div.menu-icon:hover {
     background-color: $ButtonBG;
+}
+
+span#quizzes-menu-icon {
+  color: $Heading;
 }
 
 /*

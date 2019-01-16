@@ -47,14 +47,14 @@ webquiz_init = r'''<div style="display: none;">
 # Bread crumbs including a drop down menu for all of the quizzes for the unit.
 # The drop-down-menu is added by create_drop_down_menu() in webquiz.js
 breadcrumb_line_text = '          <li>{text}</li>\n'
-breadcrumb_line_url = '          <li><a href="{url}">{text}</a></li>\n'
-breadcrumb_quizlist = r'''          <li><a href="{quizzes_url}">{quizzes}</a>
+breadcrumb_line_url  = '          <li><a href="{url}">{text}</a></li>\n'
+breadcrumb_quizlist  = r'''          <li><a href="{quizzes_url}">{quizzes}</a>
           <span onclick="toggle_dropdown_menu();" id="quizzes-menu-icon"></span>
           <ul id="drop-down-menu" onclick="toggle_dropdown_menu();"></ul>
         </li>
 '''
 create_dropdown = r'''// construct the drop down menu if QuizTitles has some entries
-if (QuizTitles.length > 0 && document.getElementById("drop-down-menu")) {
+if (QuizTitles.length > 0 && drop_down) {
     create_drop_down_menu();
 }
 '''
@@ -72,18 +72,10 @@ button = r'        <div id="button{b}" class="button{cls}" content=" " onClick="
 discuss = r'        <li id="button-{b}" class="discussion" onClick="gotoQuestion(-{b})">{title}</li>'
 side_menu = r'''<div class="menu-icon">
       <span class="sidelabelclosed question-label" onclick="toggle_side_menu();">&#10070;</span>
-      <span class="sidelabelopen question-label" onclick="toggle_side_menu();">&#10006;&nbsp;{questions}
+      <span class="sidelabelopen question-label" onclick="toggle_side_menu();">&#10006;&nbsp;{side_questions}
       </span>
     </div>
-    <div id="sidemenu" class="side-menu">{discussion_list}
-      <div class="buttons">
-        <br>{buttons}
-      </div>
-      <table class="marking-key">
-         <tr><td style="color: #FFCC00; font-size:small;">&starf;</td><td style="width: 14ex;">{side_menu_star}</td></tr>
-         <tr><td style="color: green; font-size:medium;">&check;</td><td>{side_menu_tick}</td></tr>
-         <tr><td style="color: red; font-size:medium;">&cross;</td><td>{side_menu_cross}</td></tr>
-      </table>
+    <div id="sidemenu" class="side-menu">{discussion_list}{question_buttons}
       <div class="school">
         {department}<p>
         {institution}
@@ -92,32 +84,43 @@ side_menu = r'''<div class="menu-icon">
         <a href="http://www.maths.usyd.edu.au/u/mathas/WebQuiz/credits.html">
            WebQuiz {version}
         </a>
-        <br>&copy; Copyright<br><span style="overflow: visible;">2004-2018</span>
+        <br>&copy; Copyright<br><span style="overflow: visible;">{copyright_years}</span>
       </div>
     </div>'''
+
+question_buttons = r'''
+      <div class="buttons">
+        <br>{buttons}
+      </div>
+      <table class="marking-key">
+         <tr><td style="color: #FFCC00; font-size:small;">&starf;</td><td style="width: 14ex;">{side_menu_star}</td></tr>
+         <tr><td style="color: green; font-size:medium;">&check;</td><td>{side_menu_tick}</td></tr>
+         <tr><td style="color: red; font-size:medium;">&cross;</td><td>{side_menu_cross}</td></tr>
+      </table>'''
 
 # quiz title and navigation arrows
 quiz_header = r'''<div class="quiz-header">
         <div class="quiz-title">{title}</div><div></div>
-        <span class="question-label">{question} <span id="question-number">{question_number}</span></span>
         {arrows}
       </div>'''
-navigation_arrows = r'''<span class="arrows">
+navigation_arrows = r'''       <span class="question-label">{question}
+         <span id="question-number">{question_number}</span>
+       </span>
+       <span class="arrows">
           <a onClick="nextQuestion(-1);" title="{previous_question}">&#x25c4;</a>
           <span class="question-label">{questions}</span>
           <a onClick="nextQuestion(1);"  title="{next_question}">&#x25ba;</a>
         </span>'''
 
 # discussion item
-discussion = r'''<div id="question-{dnum}" class="question" style="displaynone;">
-        {discussion.text}{input_button}
+discussion = r'''<div id="question-{dnum}" class="question" style="display:{display};">
+        {discussion.text}
       </div>
 '''
-input_button = '<input type="button" name="next" value="Start quiz" onClick="return gotoQuestion(1);"/>\n'
 
 #quiz index
-quiz_index_div = r'''     <div class="quiz-list">
-        <h2>{unit} {quizzes}</h2>
+quiz_index_div = r'''     <div class="quiz-index">
+        <h2>{title}</h2>
         <ul>
           {quiz_index}
         </ul>
@@ -193,10 +196,13 @@ no_script = r'''<noscript>
 ###############################################################################
 
 initialise_introduction = r'''----
-To initialise WebQuiz you will be prompted for default settings and file
-locations. We try to explain what is needed at each step. If needed, more
-information can be found in section 3.2 of the manual. On many systems
-you open the WebQuiz manual by typing
+To initialise WebQuiz we need to copy some files to your web server and record
+their relative URL. We try to explain what is needed below. If you want to
+install these files into a "system" directory then you should run
+    webquiz --initialise
+from an import administrators account or using sudo. More information can be
+found in section 3.2 of the manual that, on many systems, can be found by
+typing
     texdoc webquiz
 from the command-line.
 '''
@@ -239,11 +245,20 @@ WebQuiz relative URL [{}]: '''
 
 initialise_ending = r'''
 You should now be able to build web pages using webquiz! As an initial
-test you can try to build the on-line version of the webquiz manual
-pages by going to the directory
-    {web_dir}/doc
+test you can try to build the example files fromn the webquiz manual
+by going to the directory
+    {web_dir}/doc/examples
+If pstricks and dvisgm are properly configured (see Section 3.3 of
+the manual), then you can also try building the on-line manual by going
+to the directory
+    {web_dir}/doc/examples
 and typing
     webquiz webquiz-online-manual
+from the command line.
+
+Finally, You may want to change the default webquiz settings, which you
+can do by typing:
+    webquiz --edit-settings
 '''
 
 webquiz_url_warning = r'''

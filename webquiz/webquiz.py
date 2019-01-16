@@ -144,14 +144,32 @@ class MakeWebQuiz(object):
         self.add_question_javascript()
         self.add_side_menu()
         self.add_quiz_header_and_questions()
+        self.add_breadcrumbs()
 
+        # add the initialisation warning if webquiz has not been initialised
+        if self.settings.initialise_warning != '':
+            self.breadcrumbs = self.settings.initialise_warning + self.breadcrumbs
+
+        # now write the quiz to the html file
+        with codecs.open(self.quiz_name + '.html', 'w', encoding='utf8') as file:
+            # write the quiz in the specified format
+            file.write(self.options.write_web_page(self))
+
+    def add_breadcrumbs(self):
+        r'''
+        Build the breadcrumbs by appropriately parsing the magic crumbs
+        '''
         self.breadcrumbs = ''
         if self.quiz.breadcrumbs != '':
             # build the bread crumbs
             crumbs = ''
             for crumb in self.quiz.breadcrumbs.split('|'):
                 crumb = crumb.strip()
-                if crumb == 'department':
+
+                if crumb == 'breadcrumb':
+                    crumbs += self.add_breadcrumb_line(self.quiz.breadcrumb, missing='breadcrumb')
+
+                elif crumb == 'department':
                     crumbs += self.add_breadcrumb_line(
                         text=self.quiz.department,
                         url=self.quiz.department_url,
@@ -162,18 +180,6 @@ class MakeWebQuiz(object):
                         text=self.quiz.institution,
                         url=self.quiz.institution_url,
                         missing='institution')
-
-                elif crumb == 'unitcode':
-                    crumbs += self.add_breadcrumb_line(
-                        text=self.quiz.unit_code,
-                        url=self.quiz.unit_url,
-                        missing='unit code')
-
-                elif crumb == 'unitname':
-                    crumbs += self.add_breadcrumb_line(
-                        text=self.quiz.unit_name,
-                        url=self.quiz.unit_url,
-                        missing='unit name')
 
                 elif crumb == 'quizindex':
                     if self.quiz.quiz_index == []:
@@ -193,6 +199,18 @@ class MakeWebQuiz(object):
                                   missing='title'
                               )
 
+                elif crumb == 'unitcode':
+                    crumbs += self.add_breadcrumb_line(
+                        text=self.quiz.unit_code,
+                        url=self.quiz.unit_url,
+                        missing='unit code')
+
+                elif crumb == 'unitname':
+                    crumbs += self.add_breadcrumb_line(
+                        text=self.quiz.unit_name,
+                        url=self.quiz.unit_url,
+                        missing='unit name')
+
                 elif crumb != '':
                     lastSpace = crumb.rfind(' ')
                     url = crumb[lastSpace:].strip()
@@ -201,20 +219,7 @@ class MakeWebQuiz(object):
                     else:
                         crumbs += self.add_breadcrumb_line(crumb)
 
-            # append breadcrumb on the end if it is non-empty
-            if self.quiz.breadcrumb != '':
-                crumbs += self.add_breadcrumb_line(self.quiz.breadcrumb, missing='breadcrumb')
-
             self.breadcrumbs = webquiz_templates.breadcrumbs.format(crumbs=crumbs)
-
-        # add the initialisation warning if webquiz has not been initialised
-        if self.settings.initialise_warning != '':
-            self.breadcrumbs = self.settings.initialise_warning + self.breadcrumbs
-
-        # now write the quiz to the html file
-        with codecs.open(self.quiz_name + '.html', 'w', encoding='utf8') as file:
-            # write the quiz in the specified format
-            file.write(self.options.write_web_page(self))
 
     def add_breadcrumb_line(self, text, url='', missing='??'):
         r'''
@@ -222,10 +227,10 @@ class MakeWebQuiz(object):
         '''
         if url == '':
             return webquiz_templates.breadcrumb_line_text.format(
-                text=text if text != '' else '?? ' + missing)
+                        text=text if text != '' else '?? ' + missing)
 
         return webquiz_templates.breadcrumb_line_url.format(
-            url=url, text=text if text != '' else '?? ' + missing)
+                    url=url, text=text if text != '' else '?? ' + missing)
 
     def htlatex_quiz_file(self):
         r'''
@@ -325,22 +330,32 @@ class MakeWebQuiz(object):
         else:
             discussion_list = ''
 
-        buttons = '\n' + '\n'.join(
-            webquiz_templates.button.format(b=q,
-                cls=' button-selected' if self.quiz.discussion_list == [] and q == 1 else ''
-            )
-            for q in range(1, self.number_quizzes + 1))
-
+        # department and institution links
         department = '''<a href="{0.department_url}">{0.department}</a>'''.format(self.quiz)
         institution = '''<a href="{0.institution_url}">{0.institution}</a>'''.format(self.quiz)
 
-        # end of progress buttons, now for the credits
+        # question buttons
+        if self.number_quizzes == 0:
+            question_buttons = ''
+        else:
+            buttons = '\n' + '\n'.join(
+                webquiz_templates.button.format(b=q,
+                    cls=' button-selected' if self.quiz.discussion_list == [] and q == 1 else ''
+                )
+                for q in range(1, self.number_quizzes + 1))
+            question_buttons=webquiz_templates.question_buttons.format(
+                buttons=buttons, **self.language
+            )
+
+        # the full side menu
         self.side_menu = webquiz_templates.side_menu.format(
             discussion_list=discussion_list,
-            buttons=buttons,
             version=metadata.version,
             department=department,
             institution=institution,
+            side_questions=self.language['questions'] if self.number_quizzes>0 else '',
+            question_buttons=question_buttons,
+            copyright_years=metadata.copyright[:metadata.copyright.index(' ')],
             **self.language)
 
     def add_question_javascript(self):
@@ -387,7 +402,7 @@ class MakeWebQuiz(object):
                     quiz_specs.write('onePage = true;\n')
                 if self.quiz.random_order:
                     quiz_specs.write('questionOrder = shuffle(questionOrder);\n')
-                quiz_specs.write('showQuestion( (dTotal > 0) ? -1 : 1 );')
+                quiz_specs.write('if (qTotal+dTotal>0) { showQuestion( (dTotal > 0) ? -1 : 1 ); }')
 
         except Exception as err:
             webquiz_error('error writing quiz specifications', err)
@@ -406,30 +421,29 @@ class MakeWebQuiz(object):
         r'''
         Write the quiz head and the main body of the quiz.
         '''
-        if self.number_quizzes == 0:
+        if self.number_quizzes==0 or self.quiz.one_page:
             arrows = ''
         else:
-            arrows = webquiz_templates.navigation_arrows.format(**self.language)
+            arrows = webquiz_templates.navigation_arrows.format(
+                        question_number=self.quiz.discussion_list[0].heading
+                                    if self.quiz.discussion_list != []
+                                    else '1' if self.quiz.question_list > []
+                                    else '',
+                        **self.language
+                    )
 
         # specify the quiz header - this will be wrapped in <div class="question-header>...</div>
-        if self.quiz.one_page:
-            self.quiz_header = ''
-        else:
-            self.quiz_header = webquiz_templates.quiz_header.format(
-                title=self.quiz.title,
-                question_number=self.quiz.discussion_list[0].heading
-                                        if self.quiz.discussion_list != []
-                                        else '1' if self.quiz.question_list > []
-                                        else '',
-                arrows=arrows,
-                **self.language
-            )
+        self.quiz_header = webquiz_templates.quiz_header.format(
+            title=self.quiz.title,
+            arrows=arrows,
+            **self.language
+        )
 
         # index for quiz
         if self.quiz.quiz_index != []:
             # add index to the web page
             self.quiz_questions += webquiz_templates.quiz_index_div.format(
-                unit=self.quiz.unit_name,
+                title=self.quiz.title if self.quiz.title!='' else self.quiz.unit_name,
                 quiz_index='\n          '.join(
                     webquiz_templates.index_item.format(url=q.url, title=q.title)
                     for q in self.quiz.quiz_index),
@@ -453,8 +467,8 @@ class MakeWebQuiz(object):
                 self.quiz_questions += webquiz_templates.discussion.format(
                     dnum=dnum,
                     discussion=d,
-                    input_button=webquiz_templates.input_button if self.quiz.question_list > []
-                    and dnum == len(self.quiz.discussion_list) else '')
+                    display='table' if self.quiz.one_page else 'none',
+                )
 
         # finally we print the questions
         if self.quiz.question_list != []:
