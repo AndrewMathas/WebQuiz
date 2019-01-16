@@ -1332,6 +1332,11 @@ to use both \ctan{pstrick} and  \ctan{tik} will probably compile.
     then you should also be able to compile the on-line manual using
     \WebQuiz.
 
+    \begin{trivlist}
+      \item[\textbf{Remark}] To remove all \WebQuiz files from your web server
+       use \BashCode|webquiz --uninstall|
+    \end{trivlist}
+
     Once \WebQuiz is initialised you may also want to run:
     \begin{bashcode}
        > webquiz --edit-settings
@@ -1345,12 +1350,12 @@ to use both \ctan{pstrick} and  \ctan{tik} will probably compile.
     When changing the settings \WebQuiz tries to explain what it is
     doing at each step. When you run \BashCode|webquiz --edit-settings|
     you will be prompted for the following:
-    \begin{description}[labelwidth=18ex, itemsep=0mm]
+    \begin{description}[nosep, labelwidth=18ex]
       \item[breadcrumbs] breadcrumbs at the top of quiz page
       \item[department] name of department
       \item[department-url] url for department
       \item[engine] default tex engine used to compile web pages
-      \item[hide-side-menu] do not display the side menu when quiz starts
+      \item[hide-side-menu] do not display the side menu at start of quiz
       \item[institution] institution or university
       \item[institution-url] url for institution or university
       \item[language] default language used on web pages
@@ -1364,7 +1369,7 @@ to use both \ctan{pstrick} and  \ctan{tik} will probably compile.
       \item[mathjax] url for mathjax
       \item[webquiz-format] name of python module that formats the quizzes
     \end{description}
-    The last three options are advanced options that you probably do not
+    The last three options are \textit{advanced options} that you probably do not
     want to change. For more details see \autoref{SS:rcfile}, which
     describes the \webquizrc file.  The default values of all of these
     settings can be overridden in the \LaTeX{} file for the  quiz and
@@ -1473,11 +1478,6 @@ option.
        \item[-h, --help] \CrossIndex{command-line options}{help}
           list the command-line options and exit
 
-          \textit{You will be given the option of saving the \WebQuiz settings to an rc-file,
-          \BashCode|.webquizrc|, in your home directory or another file if you do
-          not have permission to write to the system rc-file, which is in the
-          \WebQuiz scripts directory. }
-
        \item[-l, \ddash lau] Use lualatex to compile the quiz
        \index{lualatex}
 
@@ -1486,12 +1486,12 @@ option.
           Shell escape for htlatex/make4ht
 
        \item[-q, -qq, \ddash quiet] \CrossIndex{command-line options}{quiet mode}
-       Suppress tex4ht messages: \BashCode|--q| is quiet and
-       \BashCode|--qq| is  very quiet. If you use
-       \BashCode|webquiz --qq texfile.tex| then almost no output will
+       Suppress tex4ht messages: \BashCode|-q| is quiet and
+       \BashCode|-qq| is  very quiet. If you use
+       \BashCode|webquiz -qq texfile.tex| then almost no output will
        be printed by \WebQuiz when it is processing your quiz file. Be
        warned, however, that both of these options can make it harder to find and fix
-       errors, so using the \BashCode|--q| and \BashCode|\ddash qq| options is not
+       errors, so using the \BashCode|-q| and \BashCode|-qq| options is not
        recommended if your file is not compiling.
 
        \item[-x, \ddash xelatex] Use xelatex to compile the quiz
@@ -1519,20 +1519,34 @@ option.
        \item[\ddash settings {[SETTING]}] \CrossIndex{command-line options}{settings}
           \SeeIndex{rc file}{webquizrc}
           \SeeIndex{default settings}{webquizrc}
-          List system settings for webquiz stored in the  rc-file
+          List system settings for webquiz stored in the \WebQuiz rc-file
           (\textit{run-time configuration file}); see the
           \BashCode|--rcfile| command-line option below. Optionally, a single
           \BashCode|SETTING| can be given in which case the value of only that
           setting is returned. Typical settings returned by this
           command look like:
-
           \InputBashCode{webquiz.settings}
-
           These settings are used by all of the quizzes created by
           \WebQuiz unless the quiz overrides them. These defaults are
           normally set when \WebQuiz is initialised, using the command:
           \BashCode|webquiz --initialise|. The defaults can be changed any time using:
           \BashCode|webquiz --edit-settings|.
+
+          If \BashCode|SETTING| is omitted then the list of current
+          settings are printed. Use \BashCode|SETTING|$=$\BashCode|compact| for
+          a more compact list of the settings and
+          \BashCode|SETTING|$=$\BashCode|help| for a summary of the
+          settings.
+
+          \textit{If you do not have permission to write to the system
+          rc-file, which is in the \WebQuiz scripts directory, then you
+          will be given the option of saving the \WebQuiz settings to an
+          rc-file in your home directory or another file of your choice.
+          If you want to save the settings to a particular rc-file use
+          the \BashCode|--rcfile| option. If you want to change the
+          system \webquizrc file then use ad administrator account or,
+          on a unix-like system,
+          \BashCode|sudo webquiz --edit-settings|.}
 
        \item[-r RCFILE, \ddash rcfile RCFILE]\index{webquizrc}
           Specify the rc-file (\textit{run-time configuration file}), file
@@ -1554,6 +1568,12 @@ option.
           \begin{bashcode}
             webquiz --edit-settings
           \end{bashcode}
+
+          \item[\ddash uninstall] Remove all \WebQuiz files from your
+          web server directory. This command only removes files that
+          \WebQuiz may have installed on your web server. It does
+          \textit{not} remove \WebQuiz from your \LaTeX{} distribution.
+
         \end{description}
 
         \noindent

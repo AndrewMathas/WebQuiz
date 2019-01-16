@@ -95,7 +95,7 @@ class WebQuizSettings:
         hide_side_menu={
             'default': 'false',
             'advanced': False,
-            'help': 'Do not display the side menu when quiz starts',
+            'help': 'Do not display the side menu at start of quiz',
         },
         one_page={
             'default': 'false',
@@ -136,7 +136,6 @@ class WebQuizSettings:
     def __init__(self):
         '''
         First read the system webquizrc file and then read the
-        user .webquizrc file, if it exists. This allows the user
         to use some system settings and to override others.
 
         By default, there is no webquiz initialisation file. We first
@@ -321,7 +320,7 @@ class WebQuizSettings:
 
         elif setting=='help':
             for key in self.keys():
-                print('{}: {}'.format(key.replace('_', '-'), self.settings[key]['help'].lower()))
+                print('{:<15} {}'.format(key.replace('_', '-'), self.settings[key]['help'].lower()))
 
         else:
             print('WebQuiz settings from {}\n'.format(self.rc_file))
@@ -496,5 +495,25 @@ class WebQuizSettings:
         self.write_webquizrc()
         self.list_settings()
 
+    def uninstall_webquiz(self):
+        r'''
+        Remove all of the webquiz files from the webserver
+        '''
+
+        if os.path.isdir(self['webquiz_www']):
+            try:
+                shutil.rmtree(self['webquiz_www'])
+                print('All webquiz files removed from {}'.format(self['webquiz_www']))
+
+            except OSError as err:
+                webquiz_error('There was a problem removing webquiz files from {}'.format(self['webquiz_www']), err)
+
+            # now reset and save the locations of the webquiz files and URL
+            self['webquiz_url'] = ''
+            self['webquiz_www'] = ''
+            self.write_webquizrc()
+
+        else:
+            webquiz_error('uninstall: no webwquiz files for remove??')
 
 #################################################################################

@@ -20,18 +20,18 @@
   $BackGround:     #35383d;
   $LinkColor:       blue;
 
-  $Heading:        #5900b3;
-  $Subheading:     #e600e3;
+  $Heading:        #ec3913;
+  $Subheading:     red;
 
   $QuestionPart:   lighten($Heading, 20%);
 
   $BreadCrumbBG:   #800000;
   $BreadCrumbFG:   white;
 
-  $ButtonBG:       $BreadCrumbBG;
-  $ButtonBorder:   lighten($ButtonBG, 10%);
-  $ButtonHover:    lighten($ButtonBG, 20%);
-  $ButtonSelected: lighten($ButtonBG, 30%);
+  $ButtonBG:       #ad141f;
+  $ButtonBorder:   #50096b;
+  $ButtonHover:    lighten($ButtonBG, 5%);
+  $ButtonSelected: lighten($ButtonBG, 10%);
 
   $DropDownFG:     lighten($ButtonBG, 40%);
 

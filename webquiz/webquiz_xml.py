@@ -248,8 +248,12 @@ class QuizHandler(xml.sax.ContentHandler):
             self.question_list[-1].items[-1].response = self.text.strip()
 
         elif tag == 'question':
-            if hasattr(self.question_list[-1], 'items'):
-                # some error checking
+            # some error checking
+            debugging('tag: {} => {}.'.format(tag, self.question_list[-1].answer))
+            if self.question_list[-1].type == None:
+                    webquiz_error('question {} does have not an \answer or multiple choice'.format(len(self.question_list)+1))
+
+            elif hasattr(self.question_list[-1], 'items'):
                 if len(self.question_list[-1].items)==0:
                     webquiz_error('question {} has no multiple choice items'.format(len(self.question_list)+1))
 
@@ -259,6 +263,8 @@ class QuizHandler(xml.sax.ContentHandler):
                                     self.question_list[-1].correct
                                  )
                     )
+            elif not hasattr(self.question_list[-1], 'answer') or self.question_list[-1].answer=='':
+                webquiz_error('question {} does have not an \answer or multiple choice'.format(len(self.question_list)+1))
 
             if self.text.strip() != '':
                 self.question_list[-1].after_text += ' '+self.text.strip()

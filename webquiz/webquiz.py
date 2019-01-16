@@ -698,6 +698,12 @@ if __name__ == '__main__':
             dest='engine',
             help='Use xelatex to compile the quiz')
 
+        parser.add_argument(
+            '--uninstall',
+            action='store_true',
+            default=False,
+            help='Remove all webquiz files from the web server')
+
         # options suppressed from the help message
         parser.add_argument(
             '--version',
@@ -741,6 +747,11 @@ if __name__ == '__main__':
         # initialise and exit
         if options.edit_settings:
             settings.edit_settings()
+            sys.exit()
+
+        # uninstall and exit
+        if options.uninstall:
+            settings.uninstall_webquiz()
             sys.exit()
 
         # print short help and exit
