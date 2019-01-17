@@ -1,7 +1,7 @@
 answer             = Odpovědět
 check answer       = Zkontrolujte odpově
 choice             = Volba {} je
-correct            = správné!
+correct            = Správné!
 incorrect          = Nesprávné!
 multiple incorrect = Například volba {} by měla být
 next question      = Další otázka

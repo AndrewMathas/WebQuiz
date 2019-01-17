@@ -1,7 +1,7 @@
 answer             = Risposta
 check answer       = Controlla la risposta
 choice             = La scelta {} è
-correct            = corretta!
+correct            = Corretta!
 incorrect          = Non corretta.
 multiple incorrect = Ad esempio, dovrebbe essere scelta {}
 next question      = la prossima domanda senza risposta

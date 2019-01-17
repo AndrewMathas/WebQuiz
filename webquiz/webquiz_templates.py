@@ -34,13 +34,12 @@ html_meta = r'''<meta http-equiv="Content-Type" content="text/html; charset=utf-
 
 # javascript for setting up the questions
 questions_javascript = r'''  <script src="{webquiz_url}/webquiz.js"></script>
-  <script defer src="quiztitles.js"></script>
-  <script defer src="{mathjax}?config=MML_CHTML"></script>
-'''
+  <script defer src="{mathjax}?config=MML_CHTML"></script>'''
 
 mathjs=r'  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/5.4.0/math.min.js"></script>'
 
 webquiz_init = r'''<div style="display: none;">
+    <script src="quiztitles.js"></script>
     <script type="text/javascript">WebQuizInit({number_quizzes}, {number_discussions}, '{quiz_file}');</script>
   </div>'''
 
@@ -195,23 +194,28 @@ no_script = r'''<noscript>
 # the remaining templates are used to prompt the user when initialising webquiz
 ###############################################################################
 
-initialise_introduction = r'''----
-To initialise WebQuiz we need to copy some files to your web server and record
-their relative URL. We try to explain what is needed below. If you want to
-install these files into a "system" directory then you should run
+initialise_introduction = r'''
+WebQuiz Initialisation
+======================
+WebQuiz needs to copy some files onto your web server in order for the on-line
+quizzes to work. We will guide you through the process below.
+
+If you want to install these files into a "system" directory then you should
+quit this program (use control-C on unix-like systems) and then run
     webquiz --initialise
-from an import administrators account or using sudo. More information can be
-found in section 3.2 of the manual that, on many systems, can be found by
-typing
-    texdoc webquiz
-from the command-line.
+from an administrators account or, on unix-like systems, use:
+    sudo webquiz --initialise
+See Section 3.2 of the WebQuiz manual for more information about
+initialisation. On many systems, you can open the webquiz manual using
+the command: texdoc webquiz
 '''
 
 webroot_request = r'''----
 To make files accessible from your web server WebQuiz needs:
   o A directory, or folder, on your server that is visible from your
-    web server. This directory must be accessible from the web. It can
-    either be a "system" directory or in your own personal directories.
+    web server. This directory MUST be accessible from the web. It can
+    either be a "system" directory or in your personal web 
+    directories.
   o The relative URL for accessing these files from the web. This is
     the part of the URL that you have to add to your "root" URL to
     access the files. For example, if the URL for your department is
@@ -236,7 +240,8 @@ Error: {err}
 Please give a different directory
 '''
 
-webquiz_url_message = r'''Please give the relative URL for the WebQuiz web directory. For example,
+webquiz_url_message = r'''
+Please give the relative URL for the WebQuiz web directory. For example,
 if the base of your web server's directory is /var/www/html/ and the
 WebQuiz web directory is /var/www/html/courses/WebQuiz then the
 relative URL for the WebQuiz directory would be /courses/WebQuiz.
@@ -245,16 +250,15 @@ WebQuiz relative URL [{}]: '''
 
 initialise_ending = r'''
 You should now be able to build web pages using webquiz! As an initial
-test you can try to build the example files fromn the webquiz manual
+test you can try to build the example files from the webquiz manual
 by going to the directory
     {web_dir}/doc/examples
-If pstricks and dvisgm are properly configured (see Section 3.3 of
-the manual), then you can also try building the on-line manual by going
-to the directory
+If pstricks and dvisgvm are properly configured (see Section 3.3 of
+the manual), then you can also try building the on-line manual, by
+going to the directory
     {web_dir}/doc/examples
-and typing
+and typing:
     webquiz webquiz-online-manual
-from the command line.
 
 Finally, You may want to change the default webquiz settings, which you
 can do by typing:
@@ -316,7 +320,7 @@ WARNING: most of the time, but not always, the relative URL will be a
 suffix of the web directory name, which is not the case with your
 settings. Your URL may well be correct, however, if you have made a
 mistake then you can change this at any time using the command:
-    webquiz --edit-settings
+    webquiz --initialise
 '''
 
 edit_settings = r'''----

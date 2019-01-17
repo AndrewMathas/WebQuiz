@@ -16,13 +16,15 @@ r'''
 '''
 
 import codecs
+import glob
 import os
+import shutil
 import sys
 
 # imports of webquiz code
 import webquiz_util
 import webquiz_templates
-from webquiz_util import metadata, webquiz_error, webquiz_file
+from webquiz_util import copytree, metadata, webquiz_error, webquiz_file
 
 class WebQuizSettings:
     r'''
@@ -306,14 +308,14 @@ class WebQuizSettings:
                 'Please initialise WebQuiz using the command: webquiz --initialise\n'
             )
 
-        if setting not in ['all', 'compact', 'help']:
+        if setting not in ['all', 'verbose', 'help']:
             setting = setting.replace('-', '_')
             if setting in self.settings:
                 print(self.settings[setting]['value'])
             else:
                 webquiz_error('{} is an invalid setting'.format(setting))
 
-        elif setting=='compact':
+        elif setting=='all':
             print('WebQuiz settings from {}'.format(self.rc_file))
             for key in self.keys():
                 print('{:<15} = {}'.format(key.replace('_', '-'), self[key]))
@@ -323,14 +325,14 @@ class WebQuizSettings:
                 print('{:<15} {}'.format(key.replace('_', '-'), self.settings[key]['help'].lower()))
 
         else:
-            print('WebQuiz settings from {}\n'.format(self.rc_file))
+            print('WebQuiz settings from {}'.format(self.rc_file))
             for key in self.keys():
-                print('# {}{}\n{:<15} = {:<15}  {}\n'.format(
+                print('# {}{}\n{:<15} = {:<15}  {}'.format(
                         self.settings[key]['help'],
                         ' (advanced)' if self.settings[key]['advanced'] else '',
                         key.replace('_', '-'),
                         self[key],
-                        '(default value)' if self[key]==self.settings[key]['default'] else ''
+                        '(default)' if self[key]==self.settings[key]['default'] else ''
                         )
                 )
 
@@ -388,6 +390,7 @@ class WebQuizSettings:
                     # first delete files of the form webquiz.* files in web_dir
                     for file in glob.glob(os.path.join(web_dir, 'webquiz.*')):
                         os.remove(file)
+
                     # ... now remove the doc directory
                     web_doc = os.path.join(web_dir, 'doc')
                     if os.path.isfile(web_doc) or os.path.islink(web_doc):
@@ -400,19 +403,24 @@ class WebQuizSettings:
                         print('\nCopying web files to {} ...\n'.format(web_dir))
                         copytree(webquiz_file('www'), web_dir)
                     else:
+                        # get the root directory of the source code
+                        webquiz_src = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+
                         # assume this is a development version and add links
                         # from the web directory to the parent directory
+                        print('\nLinking web files {} -> {} ...\n'.format(web_dir, webquiz_src))
                         if not os.path.exists(web_dir):
                             os.makedirs(web_dir)
-                        # get the root directory of the source code
-                        webquiz_src = os.path.dirname(
-                            os.path.dirname(os.path.realpath(__file__)))
+
                         for (src, target) in [('javascript/webquiz.js', 'webquiz.js'),
                                               ('css', 'css'),
                                               ('doc', 'doc')]:
-                            os.symlink(
-                                os.path.join(webquiz_src, src),
-                                os.path.join(web_dir, target))
+                            newlink = os.path.join(web_dir, target)
+                            try:
+                                os.remove(newlink)
+                            except FileNotFoundError:
+                                pass
+                            os.symlink(os.path.join(webquiz_src,src), newlink)
 
                     self['webquiz_www'] = web_dir
                     self.settings['webquiz_www']['changed'] = True
@@ -422,7 +430,7 @@ class WebQuizSettings:
                     print(webquiz_templates.permission_error.format(web_dir))
 
                 except OSError as err:
-                    print(oserror_copying.format(web_dir=web_dir, err=err))
+                    print(webquiz_templates.oserror_copying.format(web_dir=web_dir, err=err))
 
         if self['webquiz_www'] != 'SMS':
             # now prompt for the relative url
@@ -501,9 +509,14 @@ class WebQuizSettings:
         '''
 
         if os.path.isdir(self['webquiz_www']):
+            remove = input('Do you really want to remove the WebQuiz from your web server [N/yes]? ')
+            if remove != 'yes':
+                print('WebQuiz unistall aborted!')
+                return
+
             try:
                 shutil.rmtree(self['webquiz_www'])
-                print('All webquiz files removed from {}'.format(self['webquiz_www']))
+                print('Webquiz files successfully removed from {}'.format(self['webquiz_www']))
 
             except OSError as err:
                 webquiz_error('There was a problem removing webquiz files from {}'.format(self['webquiz_www']), err)
@@ -514,6 +527,6 @@ class WebQuizSettings:
             self.write_webquizrc()
 
         else:
-            webquiz_error('uninstall: no webwquiz files for remove??')
+            webquiz_error('uninstall: no webwquiz files are installed on your web server??')
 
 #################################################################################

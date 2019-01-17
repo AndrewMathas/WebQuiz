@@ -41,8 +41,7 @@ quiz_page = r'''<!DOCTYPE HTML>
 </head>
 
 <body>
-  {no_script}
-  {breadcrumbs}
+  {no_script}{breadcrumbs}
   <div class="quiz-page">
     {side_menu}
     <div class="quiz-questions">

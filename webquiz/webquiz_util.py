@@ -98,3 +98,34 @@ def webquiz_error(msg, err=None):
         sys.exit(err.errno)
 
     sys.exit(1)
+
+
+###############################################################################
+def copytree(src, dst, symlinks=False, ignore=None):
+    r''' Recursively copy directory tree, fixing shutil.copytree
+         from https://stackoverflow.com/questions/1868714
+    '''
+    if not os.path.exists(dst):
+        os.makedirs(dst)
+        shutil.copystat(src, dst)
+    lst = os.listdir(src)
+    if ignore:
+        excl = ignore(src, lst)
+        lst = [x for x in lst if x not in excl]
+    for item in lst:
+        s = os.path.join(src, item)
+        d = os.path.join(dst, item)
+        if symlinks and os.path.islink(s):
+            if os.path.lexists(d):
+                os.remove(d)
+            os.symlink(os.readlink(s), d)
+            try:
+                st = os.lstat(s)
+                mode = stat.S_IMODE(st.st_mode)
+                os.lchmod(d, mode)
+            except OSError:
+                pass  # lchmod not available
+        elif os.path.isdir(s):
+            copytree(s, d, symlinks, ignore)
+        else:
+            shutil.copy2(s, d)

@@ -162,7 +162,7 @@ class MakeWebQuiz(object):
         self.breadcrumbs = ''
         if self.quiz.breadcrumbs != '':
             # build the bread crumbs
-            crumbs = ''
+            crumbs = '\n  '
             for crumb in self.quiz.breadcrumbs.split('|'):
                 crumb = crumb.strip()
 

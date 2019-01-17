@@ -1,7 +1,7 @@
 answer             = Απάντηση
 check answer       = Ελενξε την απάντηση
 choice             = Επιλογή {} είναι
-correct            = σωστός!
+correct            = Σωστός!
 incorrect          = Aνακριβής.
 multiple incorrect = Για παράδειγμα, η επιλογή {} θα πρέπει να είναι
 next question      = Επόμενη ερώτηση

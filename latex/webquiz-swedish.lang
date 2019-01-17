@@ -1,7 +1,7 @@
 answer             = Svar
 check answer       = Kolla svar
 choice             = Valet {} är
-correct            = rätta!
+correct            = Rätta!
 incorrect          = Felaktig.
 multiple incorrect = Till exempel bör valet {} vara
 next question      = Nästa fråga
