@@ -68,8 +68,8 @@ Andrew Mathas and the python, css and javascript code was written by
 Andrew Mathas (and Don Taylor), based on an initial protype of Don
 Taylor's from 2001. Since 2004 the program has been maintained and
 developed by Andrew Mathas. Although the program has changed
-substantially since 2004 some of Don's code and his idea of using TeX
-4ht are still very much in use.
+substantially since 2004 some of Don's idea of using TeX
+4ht, and some of his code, are still very much in use.
 
 Copyright (C) 2004-2017
 

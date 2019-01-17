@@ -85,13 +85,12 @@
     symbol CDATA         #REQUIRED
 >
 
+<!ELEMENT response (#PCDATA)>
+
 <!ELEMENT answer (when_right,when_wrong)>
 <!ATTLIST answer comparison CDATA #REQUIRED>
 
-<!ELEMENT response (#PCDATA)>
-
 <!ELEMENT when_right (#PCDATA)>
-
 <!ELEMENT when_wrong (#PCDATA)>
 
 <!ELEMENT text (#PCDATA)>

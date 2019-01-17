@@ -33,7 +33,7 @@ def ReadWebQuizXmlFile(quizfile, defaults):
     quiz = QuizHandler(defaults)
     parser.setContentHandler(quiz)
     parser.setErrorHandler(quiz)
-    parser.setDTDHandler(quiz)
+    parser.setDTDHandler(quiz) # as far as I can see this does nothing...
     parser.parse(quizfile)
     parser.close()
     return quiz
@@ -55,7 +55,7 @@ class Data(object):
 
     def __str__(self):
         r'''
-        A string methid, purely for debugging purposes...
+        A string method, purely for debugging purposes...
         '''
         return '\n - '.join('{} = {}'.format(k, getattr(self, k)) for k in self._items)
 
@@ -105,7 +105,7 @@ class QuizHandler(xml.sax.ContentHandler):
         self.unit_code = ''
         self.unit_name = ''
 
-        # keep track of current tags
+        # keep track of current tags for debugging...
         self.current_tags=[]
 
 
@@ -126,7 +126,6 @@ class QuizHandler(xml.sax.ContentHandler):
         '''
 
         self.current_tags.append(tag)
-        debugging('Processing tags "{}" with text={}'.format(' -> '.join(self.current_tags), self.text))
 
         # initialise the quiz
         if tag == 'webquiz':
@@ -217,7 +216,7 @@ class QuizHandler(xml.sax.ContentHandler):
         elif tag == 'index_item':
             self.quiz_index.append(Data(url=attributes.get('url'), title=''))
 
-        elif tag in ['when_right', 'when_wrong']:
+        elif tag == 'when':
             if self.text.strip() != '':
                 self.question_list[-1].after_text += ' '+self.text.strip()
                 debugging('After_text is now {}'.format(self.question_list[-1].after_text))
@@ -249,13 +248,14 @@ class QuizHandler(xml.sax.ContentHandler):
 
         elif tag == 'question':
             # some error checking
-            debugging('tag: {} => {}.'.format(tag, self.question_list[-1].answer))
             if self.question_list[-1].type == None:
-                    webquiz_error('question {} does have not an \answer or multiple choice'.format(len(self.question_list)+1))
+                    webquiz_error('question {} does have not an \answer or multiple choice'.format(
+                                  len(self.question_list)+1))
 
             elif hasattr(self.question_list[-1], 'items'):
                 if len(self.question_list[-1].items)==0:
-                    webquiz_error('question {} has no multiple choice items'.format(len(self.question_list)+1))
+                    webquiz_error('question {} has no multiple choice items'.format(
+                                  len(self.question_list)+1))
 
                 if self.question_list[-1].type=='single' and self.question_list[-1].correct!=1:
                     webquiz_error('question {} is single-choice but has {} correct answers'.format(
@@ -264,7 +264,8 @@ class QuizHandler(xml.sax.ContentHandler):
                                  )
                     )
             elif not hasattr(self.question_list[-1], 'answer') or self.question_list[-1].answer=='':
-                webquiz_error('question {} does have not an \answer or multiple choice'.format(len(self.question_list)+1))
+                webquiz_error('question {} does have not an \answer or multiple choice'.format(
+                              len(self.question_list)+1))
 
             if self.text.strip() != '':
                 self.question_list[-1].after_text += ' '+self.text.strip()
@@ -287,7 +288,6 @@ class QuizHandler(xml.sax.ContentHandler):
             text_used = False
 
         if text_used:
-            debugging('text "{}" added to {}'.format(self.text, tag))
             self.text = ''
 
     def characters(self, text):  #data,start,length):

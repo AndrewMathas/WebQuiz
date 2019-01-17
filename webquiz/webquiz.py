@@ -797,7 +797,7 @@ if __name__ == '__main__':
             else:
 
                 # the quiz name and the quiz_file will be if pst2pdf is used
-                quiz_name = quiz_file  
+                quiz_name = quiz_file
                 if options.quiet < 2:
                     print('WebQuiz generating web page for {}'.format(quiz_file))
 
@@ -810,24 +810,22 @@ if __name__ == '__main__':
 
                 options.pst2pdf = False
                 try:
-                    brac = doc.index(
-                        r'\documentclass[') + 15  # start of class options
+                    brac = doc.index(r'\documentclass[') + 15  # start of class options
                     if 'pst2pdf' in [
                             opt.strip()
-                            for opt in doc[brac:brac +
-                                           doc[brac:].index(']')].split(',')
+                            for opt in doc[brac:brac+doc[brac:].index(']')].split(',')
                     ]:
                         preprocess_with_pst2pdf(quiz_file[:-4])
                         options.pst2pdf = True
-                        quiz_file = quiz_file[:-4] + '-pdf-fixed.tex'  # now run webquiz on modified tex file
+                        # now run webquiz on the modified tex file
+                        quiz_file = quiz_file[:-4] + '-pdf-fixed.tex'  
                 except ValueError:
                     pass
 
                 # the file exists and is readable so make the quiz
                 MakeWebQuiz(quiz_name, quiz_file, options, settings)
 
-                quiz_name = quiz_name[:quiz_name.index(
-                    '.')]  # remove the extension
+                quiz_name = quiz_name[:quiz_name.index('.')]  # remove the extension
 
                 # move the css file into the directory for the quiz
                 css_file = os.path.join(quiz_name, quiz_name + '.css')
@@ -838,9 +836,8 @@ if __name__ == '__main__':
 
                 # now clean up unless debugging
                 if not options.debugging:
-                    for ext in [
-                            '4ct', '4tc', 'dvi', 'idv', 'lg', 'log', 'ps',
-                            'pdf', 'tmp', 'xml', 'xref'
+                    for ext in ['4ct', '4tc', 'dvi', 'idv', 'lg', 'log',
+                        'ps', 'pdf', 'tmp', 'xml', 'xref'
                     ]:
                         if os.path.isfile(quiz_name + '.' + ext):
                             os.remove(quiz_name + '.' + ext)
@@ -851,9 +848,11 @@ if __name__ == '__main__':
                             os.remove(file)
                         for file in glob.glob(quiz_name + '-pdf-fixed.*'):
                             os.remove(file)
-                        for extra in ['.preamble', '.plog', '-tmp.tex', '-pst.tex', '-fig.tex']:
-                            if os.path.isfile(quiz_name + extra):
-                                os.remove(quiz_name + extra)
+                        for extention in ['.preamble', '.plog', '-tmp.tex',
+                                '-pst.tex', '-fig.tex'
+                        ]:
+                            if os.path.isfile(quiz_name + extention):
+                                os.remove(quiz_name + extention)
                         if os.path.isdir(os.path.join(quiz_name, quiz_name)):
                             shutil.rmtree(os.path.join(quiz_name, quiz_name))
 
