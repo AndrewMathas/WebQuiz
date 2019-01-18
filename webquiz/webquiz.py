@@ -492,7 +492,7 @@ class MakeWebQuiz(object):
             question_options = webquiz_templates.input_answer.format(
                                  size=5+len('{}'.format(question.answer)),
                                  after_text=question.after_text,
-                                 **self.language
+                                 answer=self.language['answer'] if question.prompt else ''
             )
         elif question.type in ['single', 'multiple']:
             question_options = webquiz_templates.choice_answer.format(
@@ -549,13 +549,13 @@ class MakeWebQuiz(object):
                 response='true',
                 correct_answer=self.language.correct,
                 answer2='',
-                text=question.when_right)
+                text=question.when_Right)
             response += webquiz_templates.tf_response_text.format(
                 choice=qnum,
                 response='false',
                 correct_answer=self.language.incorrect,
                 answer2=self.language.try_again,
-                text=question.when_wrong)
+                text=question.when_Wrong)
         elif question.type == "single":
             response = '\n' + '\n'.join(
                 webquiz_templates.single_response.format(

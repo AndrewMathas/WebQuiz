@@ -1,0 +1,3 @@
+All of these files should result in error messages when run through
+pdflatex and through webquiz. More test filess, each of which compiles,
+are in the manual in the doc/examples directory

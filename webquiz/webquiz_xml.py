@@ -134,7 +134,7 @@ class QuizHandler(xml.sax.ContentHandler):
 
             # convert the following attibutes to booleans
             for key in ['hide_side_menu', 'one_page', 'pst2pdf', 'random_order']:
-                setattr(self, key, getattr(self,key)=='true')
+                setattr(self, key, getattr(self, key)=='true')
 
         # set up links, meta tags and department and unit data
         elif tag == 'link':
@@ -180,12 +180,13 @@ class QuizHandler(xml.sax.ContentHandler):
                 )
             self.question_list[-1].type = 'input'
             self.question_list[-1].answer = ''
-            self.question_list[-1].when_right = ''
-            self.question_list[-1].when_wrong = ''
+            self.question_list[-1].when_Right = ''
+            self.question_list[-1].when_Wrong = ''
             self.question_list[-1].text += self.text
             self.text = ''
 
             self.question_list[-1].comparison = attributes.get('comparison')
+            self.question_list[-1].prompt = attributes.get('prompt')=='true'
             if self.question_list[-1].comparison in ['complex', 'number']:
                 self.mathjs = True
 
@@ -214,7 +215,12 @@ class QuizHandler(xml.sax.ContentHandler):
 
         # finally look after the index file
         elif tag == 'index_item':
-            self.quiz_index.append(Data(url=attributes.get('url'), title=''))
+            self.quiz_index.append(Data(
+                    prompt=attributes.get('prompt')=='true',
+                    url=attributes.get('url'),
+                    title=''
+                )
+            )
 
         elif tag == 'when':
             if self.text.strip() != '':
@@ -273,11 +279,11 @@ class QuizHandler(xml.sax.ContentHandler):
         elif tag in ['breadcrumb', 'title', 'unit_code', 'unit_name']:
             setattr(self, tag, self.text.strip())
 
-        elif tag == 'when_right':
-            self.question_list[-1].when_right = self.text.strip()
+        elif tag == 'when_Right':
+            self.question_list[-1].when_Right = self.text.strip()
 
-        elif tag == 'when_wrong':
-            self.question_list[-1].when_wrong = self.text.strip()
+        elif tag == 'when_Wrong':
+            self.question_list[-1].when_Wrong = self.text.strip()
 
         elif tag == 'index_item':
             # ungainly hack to remove line breaks from titles...

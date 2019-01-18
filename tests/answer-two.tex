@@ -1,0 +1,13 @@
+% should give error as has two \answer's
+\documentclass[hidesidemenu]{webquiz}
+\title{String comparison for the answer}
+\begin{document}
+  \begin{question}     % a quiz question
+     What is the capital of Australia?
+     \answer[string]{Canberra}
+     \answer[string]{Sydney}
+     \whenRight  Yes, Sydney is the capital of NSW and Melbourne is the
+     capital of Victoria
+     \whenWrong Remember to correctly capitalise your answer!
+  \end{question}
+\end{document}

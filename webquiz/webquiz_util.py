@@ -83,7 +83,9 @@ def webquiz_error(msg, err=None):
     Consistent handling of errors in magthquiz: print the message `msg` and
     exist with error code `err.errno` if it is available.abs
     '''
-    print('WebQuiz error: {}'.format(msg))
+    print('WebQuiz error (run with --debugging for more information)\n{dash}\n{msg}\n{dash}\n'.format(
+           msg=msg, dash='-'*40)
+    )
 
     if metadata.debugging and err is not None:
         raise

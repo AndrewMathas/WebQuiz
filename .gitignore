@@ -21,6 +21,9 @@ doc/webquiz.languages
 doc/webquiz.settings
 doc/webquiz.themes
 doc/webquiz.usage
+tests/*.expected
+tests/*.output
+tests/*/
 javascript/webquiz-min.js
 install/*
 webquiz/webquizrc

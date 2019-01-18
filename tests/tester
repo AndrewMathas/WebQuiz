@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# test each of the test files and compare output with expected output
+
+function test_expected() {
+  for file in *.tex;
+  do
+    file=${file/.tex/}
+    /bin/rm -f $file.output
+    echo "Testing $file.tex"
+    latex -interaction=nonstopmode $file > $file.output
+    diff $file.output $file.expected
+  done
+}
+
+function generate_expected() {
+  for file in *.tex;
+  do
+    file=${file/.tex/}
+    /bin/rm -f $file.expected
+    echo "Generating test file for $file.tex"
+    file=${file/.tex/}
+    latex -interaction=nonstopmode $file > $file.expected
+  done
+}
+
+function help() {
+   echo "$0 [-generate_expected|--test]"
+}
+
+if [ $# -eq 0 ]; then
+  test_expected
+else
+  while [ $# -gt 0 ]
+  do
+     case $1 in
+       -g|--g** ) generate_expected
+                  shift;;
+       -t|--t** ) test_expected
+                  shift;;
+       *        ) help
+                  exit ;;
+      esac
+      echo "1 is $1 and # is $#..."
+  done
+fi

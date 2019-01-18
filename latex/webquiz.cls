@@ -82,21 +82,17 @@
 \RequirePackage{pgffor}
 
 % hack to fix two pgf bugs - apply only when when using tex4ht
-\ifdefined\HCode
- \def\pgfsysdriver{pgfsys-tex4ht-mq-fixed.def}
-\fi
 
 \ifTikz
-   \RequirePackage{tikz}
-   % from https://tex.stackexchange.com/questions/390592/
-   %   \ifdefined\HCode
-   %     \tikzset{every node/.style={/pgf/tex4ht node/escape=true}}
-   %   \fi
+  \ifdefined\HCode
+   \def\pgfsysdriver{pgfsys-tex4ht-mq-fixed.def}
+  \fi
+  \RequirePackage{tikz}
 \fi
 
-\def\MQ@error{\PackageError{webquiz}}
+\def\MQ@Error{\PackageError{webquiz}}
 \def\MQ@complain#1#2{%
-  \MQ@error{\noexpand#1 required in Question \number#2}\@ehc
+  \MQ@Error{\noexpand#1 required in Question \number#2}\@ehc
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -167,107 +163,198 @@
 }
 \AtBeginDocument{
   \maketitle%
-  \def\title{\MQ@error{\@backslashchar title can only be used in the preamble}\@ehc}
+  \def\title{\MQ@Error{\noexpand\title can only be used in the preamble}\@ehc}
   \thispagestyle{firstpage}%
   \ifdefined\HCode\else
      \textsc{WebQuiz} will process this quiz using \textbf{pst2pdf}.
   \fi
 }
 
-% define a quiz counter for keeping track of the question numbers
-\newcounter{quiz}
-\newcommand{\quiz}[2][\relax]{\refstepcounter{quiz}%
-  \ifx#1\relax\def\MQ@url{./quiz\thequiz.html}%
-  \else\def\MQ@url{#1}\fi%
-  \leavevmode\medskip\newline%
-  \textbf{Quiz~\arabic{quiz}}.\space #2. \newline
-  \phantom{XXX}\textit{URL}:\quad \MQ@url}
-\newenvironment{quizindex}{\bigskip}{}
-% \begin{dicussion}[short title][title -default-> Discussion]
-\NewDocumentEnvironment{discussion}{O{Discussion}o}{%
-\IfNoValueTF{#2}{\textbf{#1}}{\texbf{#2} (#1)}\newline}{\par\bigskip}
-\newenvironment{banner}{\centerline{Web page banner}}{}
+% -----------------------------------------------------------------------
+% WebQuiz macros
+% Define \MQ@XXXStart and \MQ@XXXEnd macros to avouid code duplication with
+% webquiz.cfg. The following switches are used for error checking.
+% -----------------------------------------------------------------------
 
-% As
-\newif\ifInQuestion
-\newif\ifInChoice
-\newif\ifInItem
+% These are all for error checking...
+\newif\ifInResponse
 \newif\ifInAnswer
-\newif\ifHaveResponse
+\newif\ifInChoice
+\newif\ifInDiscussion
+\newif\ifInItem
+\newif\ifInQuestion
+\newif\ifInQuizIndex
+\newif\ifInWhenRight
+\newif\ifInWhenWrong
 
+% -----------------------------------------------------------------------
+% the quizindex environment and \quiz macro
+% -----------------------------------------------------------------------
+
+% the quiz counter keeps track of the question numbers in a quizindex environement
+\newcounter{quiz}
+\renewcommand\thequiz{\arabic{quiz}}
+\def\MQ@QuizStart{%
+  \ifInQuizIndex\else\MQ@Error{\noexpand\quiz must appear inside a quizindex environment}\fi%
+  \refstepcounter{quiz}% increment the quiz counter for the URLs
+}
+\NewDocumentCommand\quiz{som}{%
+  \MQ@QuizStart%
+  \IfBooleanTF{#1}{\def\MQ@Quiz{}}{\def\MQ@Quiz{Quiz~\thequiz.\space}}%
+  \IfNoValueTF{#2}{\def\MQ@url{quiz\thequiz.html}}{\def\MQ@url{#2}}%
+  \leavevmode\medskip\newline%
+  \MQ@Quiz #3\newline%
+  \phantom{Quiz 10}\textit{URL}:\quad \MQ@url%
+}
+
+\def\MQ@QuizIndexStart{%
+  \ifInQuestion\MQ@Error{quizindex cannot appear in a question environment}\fi%
+  \ifInDiscussion\MQ@Error{quizindex environments cannot be inside a discussion environment}\fi
+  \ifInQuizIndex\MQ@Error{quizindex environments cannot be nested}\fi%
+  \global\InQuizIndextrue}
+\def\MQ@QuizIndexEnd{\global\InQuizIndexfalse}
+\newenvironment{quizindex}{\MQ@QuizIndexStart\bigskip}{\MQ@QuizIndexEnd}
+
+% -----------------------------------------------------------------------
+% discussion environment
+% -----------------------------------------------------------------------
+
+% \begin{dicussion}[short title][title -default-> Discussion]
+\def\MQ@DiscussionStart{%
+  \ifInDiscussion\MQ@Error{discussion environments cannot be nested}\fi%
+  \ifInQuestion\MQ@Error{discussion environments cannot be inside a question environment}\fi%
+  \ifInQuizIndex\MQ@Error{discussion environments cannot be inside a quizindex environment}\fi%
+  \global\InDiscussiontrue%
+}
+\def\MQ@DiscussionEnd{\global\InDiscussionfalse}
+\NewDocumentEnvironment{discussion}{O{Discussion}O{#1}}
+    {\MQ@DiscussionStart\textbf{#1} (#2)}{\MQ@DiscussionEnd\par\bigskip}
+
+% -----------------------------------------------------------------------
+% question environment
+% -----------------------------------------------------------------------
+
+% the question counter keeps track of the quiz question numbers
 \newcounter{question}
-\newenvironment{question}{\bigskip%
-  \refstepcounter{question}
-  \global\answerfalse
-  \global\InQuestiontrue
-  \global\InChoicefalse
-  \global\InItemfalse
+
+\def\MQ@QuestionStart{%
+  \ifInDiscussion\MQ@Error{question environments cannot be inside a discussion environment}\fi%
+  \ifInQuizIndex\MQ@Error{question environments cannot be inside a quizindex environment}\fi%
+  \ifInQuestion\MQ@Error{question environments cannot be nested!}\fi%%
   \global\InAnswerfalse
-  \textbf{Question \arabic{question}.\newline}}
-{\InQuestionfalse\par\bigskip}
+  \global\InChoicefalse
+  \global\InChoicefalse%
+  \global\InItemfalse%
+  \global\InQuestiontrue%
+  \global\InResponsefalse
+  \global\InWhenRightfalse
+  \global\InWhenWrongfalse
+  \refstepcounter{question}%
+}
+
+\def\MQ@QuestionEnd{
+  \ifInChoice\else\ifInAnswer\else%
+    \MQ@Error{Each question must contain a choice environment or an \noexpand\answer!}%
+  \fi\fi%
+  \global\InQuestionfalse%
+}
+
+\newenvironment{question}{\MQ@QuestionStart\bigskip\textbf{Question \arabic{question}.\newline}}
+                         {\par\bigskip\MQ@QuestionEnd}
+
+% -----------------------------------------------------------------------
+% choice environment, \correct and \incorrect choices and \response
+% -----------------------------------------------------------------------
+
+% the choice counter keeps track of the choices in a choice environment
+\newcounter{choice}
+\renewcommand\thechoice{(\alph{choice})}
+
+\def\MQ@ChoiceStart#1{%
+  \ifInQuestion\relax% Give a warning if we are not inside a question
+  \else\MQ@Error{Choice environments must be contained in a question}%
+  \fi%
+  \ifInAnswer\MQ@Error{choice environments cannot contain an \noexpand\answer!}\fi%
+  \ifInChoice\MQ@Error{choice environments cannot be nested}\fi%
+  \global\InChoicetrue%
+  \global\InItemfalse%
+  \pgfkeys{/webquiz checker, #1}%
+  \setcounter{choice}{0}% reset choice counter
+}
+
+\def\MQ@ChoiceEnd{\ifInItem\else\MQ@Error{Choice environment with no choices!}\fi\InChoicefalse}
 
 % \begin{choice}[choice type, number of columns] ... \end{choice} The
 % allowed choice types are "single" or "multiple". The type and number
 % of columns is allowed to appear in either order, so most of the fun
 % and games below is sanity checking of the argunments.
-\NewDocumentEnvironment{choice}{O{}}{%
-  \ifInQuestion\relax% Give a warning if we are not inside a question
-  \else\MQ@error{Choice environments must be contained in a question}%
-  \fi%
-  \pgfkeys{/webquiz checker, #1}%
-  \leavevmode\newline
-  (\textit{The choices will be printed in \pgfkeys{/webquiz checker/columns value} columns in the HTML version of the quiz})
-  \global\InChoicetrue%
+\NewDocumentEnvironment{choice}{O{single}}{%
+  \MQ@ChoiceStart{#1}%
+  \leavevmode\newline%
+  (\textit{The choices will be printed in \pgfkeys{/webquiz checker/columns value} columns in the HTML version of the quiz})%
   \par%
   \setcounter{choice}{0}%
-}{\InChoicefalse}
+}{\MQ@ChoiceEnd}
 
-% booleans for keeping track of where we are in an answer
-\newif\ifanswer
-\newif\ifWhenRight
-\newif\ifWhenWrong
+\def\MQ@ItemStart{%
+  \ifInChoice\relax%
+  \else\MQ@Error{\noexpand\correct and \noexpand\incorrect must be inside a choice environment}%
+  \fi%
+  \global\InItemtrue\global%
+  \InResponsefalse%
+  \refstepcounter{choice}%
+}
+
+\def\MQ@Item#1{\MQ@ItemStart\par\bigskip #1\quad\textit{Option} \thequestion\thechoice:\qquad}
+\def\correct{\MQ@Item\CheckmarkBold}
+\def\incorrect{\MQ@Item\XSolidBrush}
+
+\def\MQ@ResponseStart{%
+  \ifInItem\relax%
+  \else\MQ@Error{Missing \noexpand\correct or \noexpand\incorrect}%
+  \fi%
+  \ifInResponse\MQ@Error{Only one response per option is allowed!}\fi%
+  \InResponsetrue%
+}
+
+\def\response{\MQ@ResponseStart\leavevmode\medskip\newline\textit{Response:}\space}
+
+% -----------------------------------------------------------------------
+% The \answer macro and \whenRight, \whenWrong
+% -----------------------------------------------------------------------
+
 % supported answer comparisons
-\newcommand\answer[2][integer]{%
-  \answertrue%
+\def\MQ@AnswerStart#1{%
   \ifInQuestion\relax%
-  \else\MQ@error{\noexpand\answer\ must be contained in a question}%
+  \else\MQ@Error{\noexpand\answer\ must be contained in a question}%
   \fi%
-  \ifInChoice%
-  \MQ@error{You cannot have \noexpand\answer\ inside multiple choice}%
-  \fi%
+  \ifInChoice\MQ@Error{You cannot have \noexpand\answer inside a choice environment}\fi%
+  \ifInAnswer\MQ@Error{Each question can contain only one \noexpand\answer command}\fi%
   \pgfkeys{/webquiz checker/comparison/#1}%
   \InAnswertrue%
+  \global\InWhenRightfalse%
+  \global\InWhenWrongfalse%
+}
+
+\NewDocumentCommand\answer{s O{string} m}{%
+  \MQ@AnswerStart{#2}%
   \leavevmode\bigskip\newline%
-  \fbox{\textit{Answer (#1 comparison):}\quad#2}%
-  \WhenRightfalse\WhenWrongfalse}
-\newcounter{choice}
-\renewcommand\thechoice{(\alph{choice})}
-\def\MQ@option#1{%
-  \ifInChoice\relax%
-  \else\MQ@error{\noexpand\(in)correct must be inside a choice environment}
-  \fi
-  \InItemtrue\global\HaveResponsefalse
-  \refstepcounter{choice}\par
-  \bigskip #1\quad\textit{Option} \thequestion\thechoice:\qquad}
-\def\correct{\MQ@option\CheckmarkBold}
-\def\incorrect{\MQ@option\XSolidBrush}
-\def\response{%
-  \ifInItem\relax
-  \else\MQ@error{Missing \noexpand\(in)correct}
-  \fi
-  \ifHaveResponse\MQ@error{Only one response per option is allowed!}
-  \fi
-  \HaveResponsetrue
-  \leavevmode\medskip\newline\textit{Response:}\space
+  \IfBooleanTF{#1}{\fbox{\textit{(#2 comparison):}\quad#3}}%
+                  {\fbox{\textit{Answer (#2 comparison):}\quad#3}}%
 }
-\def\MQ@rightwrong#1{
-  \ifInAnswer\relax
-  \else\MQ@error{missing \noexpand\answer }
-  \fi
-  \leavevmode\medskip\newline\textit{Response when #1:}\space
+
+\def\MQ@WhenStart#1{%
+  \ifInAnswer\relax\else\MQ@Error{missing \noexpand\answer}\fi%
+  \ifbool{InWhen#1}{%
+    \MQ@Error{Only one \noexpand\when#1 per question is allowed!}%
+  }{}%
+  \global\booltrue{InWhen#1}%
 }
-\def\whenRight{\WhenRighttrue\MQ@rightwrong{right}}
-\def\whenWrong{\WhenWrongtrue\MQ@rightwrong{wrong}}
+
+\def\MQ@When#1{\MQ@WhenStart{#1}\leavevmode\medskip\newline\textit{Response when #1:}\space}
+\def\whenRight{\MQ@When{Right}}
+\def\whenWrong{\MQ@When{Wrong}}
+
 \endinput
 %%
 %% End of file `webquiz.cls'.

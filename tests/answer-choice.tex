@@ -1,0 +1,15 @@
+% should give error as \answer contains a choice environment
+\documentclass[hidesidemenu]{webquiz}
+\title{String comparison for the answer}
+\begin{document}
+  \begin{question}     % a quiz question
+     What is the capital of Australia?
+     \answer[string]{Canberra}
+     \whenRight  Yes, Sydney is the capital of NSW and Melbourne is the
+     capital of Victoria
+     \whenWrong Remember to correctly capitalise your answer!
+     \begin{choice}
+       \incorrect This should not be here
+     \end{choice}
+  \end{question}
+\end{document}
