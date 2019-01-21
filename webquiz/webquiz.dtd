@@ -24,10 +24,14 @@
    )
 >
 <!ATTLIST webquiz
-    showsidemenu  CDATA #REQUIRED
-    language      CDATA #REQUIRED
-    src           CDATA #REQUIRED
-    theme         CDATA #REQUIRED
+   debugging    CDATA #REQUIRED
+   language     CDATA #REQUIRED
+   one_page     CDATA #REQUIRED
+   pst2pdf      CDATA #REQUIRED
+   random_order CDATA #REQUIRED
+   showsidemenu CDATA #REQUIRED
+   src          CDATA #REQUIRED
+   theme        CDATA #REQUIRED
 >
 
 <!ELEMENT meta EMPTY>
@@ -58,7 +62,10 @@
 
 <!ELEMENT quizindex (indexitem*)>
 <!ELEMENT indexitem (text)>
-<!ATTLIST indexitem url    CDATA  #REQUIRED>
+<!ATTLIST indexitem 
+    prompt CDATA #REQUIRED
+    url    CDATA  #REQUIRED
+>
 
 <!ELEMENT discussion (heading, short_heading, text)>
 <!ELEMENT heading (#PCDATA)>
@@ -88,7 +95,10 @@
 <!ELEMENT response (#PCDATA)>
 
 <!ELEMENT answer (when_right,when_wrong)>
-<!ATTLIST answer comparison CDATA #REQUIRED>
+<!ATTLIST answer
+    prompt     CDATA #REQUIRED
+    comparison CDATA #REQUIRED
+>
 
 <!ELEMENT when_right (#PCDATA)>
 <!ELEMENT when_wrong (#PCDATA)>

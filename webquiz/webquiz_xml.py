@@ -21,7 +21,7 @@ import sys
 import xml.sax
 
 # imports of webquiz code
-from webquiz_util import debugging , webquiz_error
+from webquiz_util import debugging, metadata, webquiz_error
 
 # ---------------------------------------------------------------------------------------
 def ReadWebQuizXmlFile(quizfile, defaults):
@@ -133,8 +133,11 @@ class QuizHandler(xml.sax.ContentHandler):
                 self.set_default_attribute(key, attributes.get(key))
 
             # convert the following attibutes to booleans
-            for key in ['hide_side_menu', 'one_page', 'pst2pdf', 'random_order']:
+            for key in ['debugging', 'hide_side_menu', 'one_page', 'pst2pdf', 'random_order']:
                 setattr(self, key, getattr(self, key)=='true')
+
+            # set debugging mode from the latex file...from this point on
+            metadata.debugging = metadata.debugging or self.debugging
 
         # set up links, meta tags and department and unit data
         elif tag == 'link':
@@ -180,8 +183,8 @@ class QuizHandler(xml.sax.ContentHandler):
                 )
             self.question_list[-1].type = 'input'
             self.question_list[-1].answer = ''
-            self.question_list[-1].when_Right = ''
-            self.question_list[-1].when_Wrong = ''
+            self.question_list[-1].when_right = ''
+            self.question_list[-1].when_wrong = ''
             self.question_list[-1].text += self.text
             self.text = ''
 
@@ -279,11 +282,8 @@ class QuizHandler(xml.sax.ContentHandler):
         elif tag in ['breadcrumb', 'title', 'unit_code', 'unit_name']:
             setattr(self, tag, self.text.strip())
 
-        elif tag == 'when_Right':
-            self.question_list[-1].when_Right = self.text.strip()
-
-        elif tag == 'when_Wrong':
-            self.question_list[-1].when_Wrong = self.text.strip()
+        elif tag.startswith('when_'):
+            setattr(self.question_list[-1], tag, self.text.strip())
 
         elif tag == 'index_item':
             # ungainly hack to remove line breaks from titles...

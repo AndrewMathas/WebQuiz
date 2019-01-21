@@ -13,21 +13,26 @@
 % ----------------------------------------------------------------------
 
 \NeedsTeXFormat{LaTeX2e}[1996/12/01]
-\ProvidesClass{webquiz}
-  [2017/03/21 v5.0
-  WebQuiz LaTeX document class (based on article.cls)]
 
+% load webquiz-doc style
+\input{webquiz-ini.tex}
+
+% ----------------------------------------------------------------------
+\ProvidesClass{webquiz}[\webquiz{release date} Version \webquiz{version}]
 
 % initialise and then process document class options usng pgfopts
 \RequirePackage{etoolbox}
 \RequirePackage{pgfopts}
 \def\unknown@options{}%          unknown options are passed to article.cls
-\def\MQ@HideSideMenu{deFAULT}%     side menu visible by default
+\def\MQ@HideSideMenu{deFAULT}%   side menu visible by default
 \newif\ifTikz\Tikzfalse%         true if tikz a document class option
 
+\newif\ifMQ@Debugging  % for the debugging class option
 % Process the documentclass options using pgfkeys and \ProcessPgfOptions
 \pgfkeys{/latexquizoptions/.is family,
   /latexquizoptions,
+    % turn debugging on
+    debugging/.code           = {\MQ@Debuggingtrue},
     % pst2pdf
     pst2pdf/.style            = {pst2pdf value=true},
     pst2pdf value/.initial    = false,
@@ -91,9 +96,7 @@
 \fi
 
 \def\MQ@Error{\PackageError{webquiz}}
-\def\MQ@complain#1#2{%
-  \MQ@Error{\noexpand#1 required in Question \number#2}\@ehc
-}
+\def\MQ@Debugging#1{\ifMQ@Debugging\typeout{Debugging: #1}\fi}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \RequirePackage{amsfonts,amsmath}
@@ -123,12 +126,12 @@
 % Macros for defining the quiz web breadcrumbs using the unit code, name and
 % URL. The names of these macros are chosen so as to be compatible with the
 % in-house SMS package sms-uos.sty that specifies these for all units.
-\newcommand*{\UnitCode}[1]{\def\uos@code{#1}}
-\newcommand*{\UnitName}[1]{\def\uos@name{#1}}
-\newcommand*{\UnitURL}[1]{\def\uos@url{#1}}
-\newcommand*{\QuizzesURL}[1]{\def\MQ@quizzesUrl{#1}}
-\newcommand*{\BreadCrumb}[1]{\def\MQ@breadcrumb{#1}}
-\newcommand*{\BreadCrumbs}[1]{\def\MQ@breadcrumbs{#1}}
+\newcommand*\UnitCode[1]{\def\uos@code{#1}}
+\newcommand*\UnitName[1]{\def\uos@name{#1}}
+\newcommand*\UnitURL[1]{\def\uos@url{#1}}
+\newcommand*\QuizzesURL[1]{\def\MQ@quizzesUrl{#1}}
+\newcommand*\BreadCrumb[1]{\def\MQ@breadcrumb{#1}}
+\newcommand*\BreadCrumbs[1]{\def\MQ@breadcrumbs{#1}}
 
 % Default values - the university and department defaults can also be
 % set in the webquizrc file. The main purpose of these defaults is
@@ -184,8 +187,8 @@
 \newif\ifInItem
 \newif\ifInQuestion
 \newif\ifInQuizIndex
-\newif\ifInWhenRight
-\newif\ifInWhenWrong
+\newif\ifInWhenright
+\newif\ifInWhenwrong
 
 % -----------------------------------------------------------------------
 % the quizindex environment and \quiz macro
@@ -195,6 +198,7 @@
 \newcounter{quiz}
 \renewcommand\thequiz{\arabic{quiz}}
 \def\MQ@QuizStart{%
+  \MQ@Debugging{Starting \noexpand\quiz...}%
   \ifInQuizIndex\else\MQ@Error{\noexpand\quiz must appear inside a quizindex environment}\fi%
   \refstepcounter{quiz}% increment the quiz counter for the URLs
 }
@@ -208,11 +212,13 @@
 }
 
 \def\MQ@QuizIndexStart{%
+  \MQ@Debugging{Starting quizindex...}%
   \ifInQuestion\MQ@Error{quizindex cannot appear in a question environment}\fi%
   \ifInDiscussion\MQ@Error{quizindex environments cannot be inside a discussion environment}\fi
   \ifInQuizIndex\MQ@Error{quizindex environments cannot be nested}\fi%
-  \global\InQuizIndextrue}
-\def\MQ@QuizIndexEnd{\global\InQuizIndexfalse}
+  \global\InQuizIndextrue%
+}
+\def\MQ@QuizIndexEnd{\global\InQuizIndexfalse\MQ@Debugging{Ending quizindex...}}
 \newenvironment{quizindex}{\MQ@QuizIndexStart\bigskip}{\MQ@QuizIndexEnd}
 
 % -----------------------------------------------------------------------
@@ -221,12 +227,13 @@
 
 % \begin{dicussion}[short title][title -default-> Discussion]
 \def\MQ@DiscussionStart{%
+  \MQ@Debugging{Starting discussion...}%
   \ifInDiscussion\MQ@Error{discussion environments cannot be nested}\fi%
   \ifInQuestion\MQ@Error{discussion environments cannot be inside a question environment}\fi%
   \ifInQuizIndex\MQ@Error{discussion environments cannot be inside a quizindex environment}\fi%
   \global\InDiscussiontrue%
 }
-\def\MQ@DiscussionEnd{\global\InDiscussionfalse}
+\def\MQ@DiscussionEnd{\global\InDiscussionfalse\MQ@Debugging{Ending discussion...}}
 \NewDocumentEnvironment{discussion}{O{Discussion}O{#1}}
     {\MQ@DiscussionStart\textbf{#1} (#2)}{\MQ@DiscussionEnd\par\bigskip}
 
@@ -238,6 +245,7 @@
 \newcounter{question}
 
 \def\MQ@QuestionStart{%
+  \MQ@Debugging{Starting question...}%
   \ifInDiscussion\MQ@Error{question environments cannot be inside a discussion environment}\fi%
   \ifInQuizIndex\MQ@Error{question environments cannot be inside a quizindex environment}\fi%
   \ifInQuestion\MQ@Error{question environments cannot be nested!}\fi%%
@@ -247,8 +255,8 @@
   \global\InItemfalse%
   \global\InQuestiontrue%
   \global\InResponsefalse
-  \global\InWhenRightfalse
-  \global\InWhenWrongfalse
+  \global\InWhenrightfalse
+  \global\InWhenwrongfalse
   \refstepcounter{question}%
 }
 
@@ -257,6 +265,7 @@
     \MQ@Error{Each question must contain a choice environment or an \noexpand\answer!}%
   \fi\fi%
   \global\InQuestionfalse%
+  \MQ@Debugging{Ending question...}%
 }
 
 \newenvironment{question}{\MQ@QuestionStart\bigskip\textbf{Question \arabic{question}.\newline}}
@@ -271,6 +280,7 @@
 \renewcommand\thechoice{(\alph{choice})}
 
 \def\MQ@ChoiceStart#1{%
+  \MQ@Debugging{Starting choice...}%
   \ifInQuestion\relax% Give a warning if we are not inside a question
   \else\MQ@Error{Choice environments must be contained in a question}%
   \fi%
@@ -282,7 +292,11 @@
   \setcounter{choice}{0}% reset choice counter
 }
 
-\def\MQ@ChoiceEnd{\ifInItem\else\MQ@Error{Choice environment with no choices!}\fi\InChoicefalse}
+\def\MQ@ChoiceEnd{%
+  \ifInItem\else\MQ@Error{Choice environment with no choices!}\fi%
+  \MQ@Debugging{Ending choice...}%
+  \InChoicefalse%
+}
 
 % \begin{choice}[choice type, number of columns] ... \end{choice} The
 % allowed choice types are "single" or "multiple". The type and number
@@ -332,8 +346,8 @@
   \ifInAnswer\MQ@Error{Each question can contain only one \noexpand\answer command}\fi%
   \pgfkeys{/webquiz checker/comparison/#1}%
   \InAnswertrue%
-  \global\InWhenRightfalse%
-  \global\InWhenWrongfalse%
+  \global\InWhenrightfalse%
+  \global\InWhenwrongfalse%
 }
 
 \NewDocumentCommand\answer{s O{string} m}{%
@@ -352,9 +366,8 @@
 }
 
 \def\MQ@When#1{\MQ@WhenStart{#1}\leavevmode\medskip\newline\textit{Response when #1:}\space}
-\def\whenRight{\MQ@When{Right}}
-\def\whenWrong{\MQ@When{Wrong}}
-
+\def\whenRight{\MQ@When{right}}
+\def\whenWrong{\MQ@When{wrong}}
 \endinput
 %%
 %% End of file `webquiz.cls'.

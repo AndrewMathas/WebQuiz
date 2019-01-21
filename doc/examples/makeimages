@@ -150,6 +150,7 @@ pages = [
     Convert("answer-lowercase", js="document.forms['Q1Form'].elements[0].value='long'; setTimeout(checkAnswer(1), 20);"),
     Convert("answer-number", js="document.forms['Q1Form'].elements[0].value='0.75'; setTimeout(checkAnswer(1), 60);"),
     Convert("answer-string", js="document.forms['Q1Form'].elements[0].value='canberra'; setTimeout(checkAnswer(1), 20);"),
+    Convert("answer-star", js="document.forms['Q1Form'].elements[0].value='canberra'; setTimeout(checkAnswer(1), 20);"),
     Convert("breadcrumbs", js="setTimeout(create_drop_down_menu(),20)", delay=10),
     Convert("breadcrumbs", page_out="dropdown", js='setTimeout(create_drop_down_menu(),20); toggle_dropdown_menu();', delay=10),
     Convert("choice-dark"),

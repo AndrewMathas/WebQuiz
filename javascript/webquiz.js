@@ -293,7 +293,9 @@ function shuffle(a) {
     var i, j;
     for (i = a.length - 1; i > 0; i--) {
         j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
+        ai = a[i]
+        ai=a[j]
+        a[j]=ai
     }
     return a;
 }

@@ -336,7 +336,7 @@ In the webquizrc file you can set global defaults for the following:
 Leave these blank if you do not want default values. There are three
 additional "advanced: options:
     mathjax
-    webquiz_format
+    webquiz_layout
     webquiz_mk4
 Please only change these settings if you know what you are doing
 because incorrect values for these settings will break WebQuiz.

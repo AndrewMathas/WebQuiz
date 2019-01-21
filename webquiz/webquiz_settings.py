@@ -109,8 +109,8 @@ class WebQuizSettings:
             'advanced': False,
             'help': 'Randomly order the quiz questions',
         },
-        webquiz_format={
-            'default': 'webquiz_standard',
+        webquiz_layout={
+            'default': 'webquiz_layout',
             'advanced': True,
             'help': 'Name of python module that formats the quizzes',
         },
@@ -480,10 +480,10 @@ class WebQuizSettings:
                         print("  ** prepending '/' to webquiz_url **")
                         setting = '/' + setting
 
-                    elif key == 'webquiz_format':
+                    elif key == 'webquiz_layout':
                         setting = os.path.expanduser(setting)
                         if setting.endswith('.py'):
-                            print("  ** removing .py extension from webquiz_format **")
+                            print("  ** removing .py extension from webquiz_layout **")
                             setting = setting[:-3]
 
                     elif key == 'engine' and setting not in self.settings['engine'].values:

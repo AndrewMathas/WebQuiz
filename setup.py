@@ -36,7 +36,7 @@ class MetaData(dict):
                 if len(key.strip())>0:
                     setattr(self, key.strip().lower(), val.strip())
 
-settings = MetaData('webquiz.ini')
+settings = MetaData('latex/webquiz.ini')
 
 class WebQuizCtan(Command):
     r"""
@@ -146,9 +146,9 @@ class WebQuizCtan(Command):
                                    ('javascript/webquiz-min.js',       'scripts/www/webquiz.js'),
                                    ('latex/pgfsys-tex4ht-mq-fixed.def','latex'),
                                    ('latex/webquiz-*.lang',            'latex'),
-                                   ('latex/webquiz-doc.sty',           'latex'),
+                                   ('latex/webquiz-*.tex',             'latex'),
                                    ('latex/webquiz.c*',                'latex'),
-                                   ('webquiz.ini',                     'latex'),
+                                   ('latex/webquiz.ini',               'latex'),
                                    ('webquiz/webquiz*.py',             'scripts'),
                                    ('webquiz/webquiz.dtd',             'scripts'),
                                    ('webquiz/webquiz.bat',             'scripts'),

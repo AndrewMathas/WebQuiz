@@ -445,8 +445,10 @@ class MakeWebQuiz(object):
             self.quiz_questions += webquiz_templates.quiz_index_div.format(
                 title=self.quiz.title if self.quiz.title!='' else self.quiz.unit_name,
                 quiz_index='\n          '.join(
-                    webquiz_templates.index_item.format(url=q.url, title=q.title)
-                    for q in self.quiz.quiz_index),
+                    webquiz_templates.index_item.format(
+                        url=q.url,
+                        title='{} {}. {}'.format(self.language['quiz'],num+1,q.title) if q.prompt else q.title,
+                    ) for (num, q) in enumerate(self.quiz.quiz_index)),
                 **self.language)
             # write a javascript file for displaying the menu
             # quizmenu = the index file for the quizzes in this directory
@@ -549,13 +551,13 @@ class MakeWebQuiz(object):
                 response='true',
                 correct_answer=self.language.correct,
                 answer2='',
-                text=question.when_Right)
+                text=question.when_right)
             response += webquiz_templates.tf_response_text.format(
                 choice=qnum,
                 response='false',
                 correct_answer=self.language.incorrect,
                 answer2=self.language.try_again,
-                text=question.when_Wrong)
+                text=question.when_wrong)
         elif question.type == "single":
             response = '\n' + '\n'.join(
                 webquiz_templates.single_response.format(
@@ -666,11 +668,11 @@ if __name__ == '__main__':
             help='Shell escape for tex4ht/make4ht')
 
         parser.add_argument(
-            '--webquiz_format',
+            '--webquiz_layout',
             action='store',
             type=str,
-            dest='webquiz_format',
-            default=settings['webquiz_format'],
+            dest='webquiz_layout',
+            default=settings['webquiz_layout'],
             help='Local python code for generating the quiz web page')
 
         engine = parser.add_mutually_exclusive_group()
@@ -765,10 +767,10 @@ if __name__ == '__main__':
             sys.exit(1)
 
         # import the local page formatter
-        mod_dir, mod_format = os.path.split(options.webquiz_format)
+        mod_dir, mod_layout = os.path.split(options.webquiz_layout)
         if mod_dir != '':
             sys.path.insert(0, mod_dir)
-        options.write_web_page = __import__(mod_format).write_web_page
+        options.write_web_page = __import__(mod_layout).write_web_page
 
         # run() is a shorthand for executing system commands depending on the quietness
         #       - we need to use shell=True because otherwise pst2pdf gives an error
