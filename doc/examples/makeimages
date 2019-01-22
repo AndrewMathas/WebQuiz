@@ -24,7 +24,7 @@ Alternatively, it is possible to extract a png image of the PDF file created by 
 For the full extraction specifications see the pages array below
 '''
 
-import argparse, glob, os, re, shutil, subprocess
+import argparse, glob, os, re, shutil, subprocess, sys
 
 # location of the webquiz example web pages on a development server
 examplesURL = "http://localhost/WebQuiz/doc/examples"
@@ -190,6 +190,7 @@ if __name__ == '__main__':
     )
     parser.add_argument('images', nargs='*',type=str, default=None, help='list of one or images to extract')
     parser.add_argument('-c', '--cleaning', action='store_true', default=False, help='delete all extraneous files on exit')
+    parser.add_argument('-l', '--list', action='store_true', default=False, help='print list of generated image files')
     parser.add_argument('-d', '--debugging', action='store_true', default=False, help='turn on debugging')
 
     args = parser.parse_args()
@@ -198,6 +199,11 @@ if __name__ == '__main__':
     if args.debugging:
         webquiz_mode = '--debugging'
         webkit2png_mode = '--debug'
+
+    if args.list:
+        for page in pages:
+            print(page.page_out)
+        sys.exit()
 
     # By default all images are generated unless one or more output
     # image file names are given on the command line. The is_good_page

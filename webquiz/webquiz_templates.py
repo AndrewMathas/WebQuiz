@@ -144,7 +144,7 @@ question_text = r'''  {question_text}
 nextquestion='<input type="button" value="{next_question}" class="input-button" title="{next_question}" name="next" onClick="nextQuestion(1);"/>'
 
 # Questions and responses:
-input_answer = '{answer}:&nbsp;<input type="text"  onChange="checkAnswer();" size="{size}"/>{after_text}'
+input_answer = '{answer}&nbsp;<input type="text"  onChange="checkAnswer();" size="{size}"/>{after_text}'
 choice_answer = '<table class="question-choices">{choices}</table>{after_text}'
 input_single = '\n<input type="hidden" name="Q{qnum}hidden"/>'
 

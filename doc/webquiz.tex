@@ -35,7 +35,13 @@
 \indexsetup{level=\section*,toclevel=section,noclearpage}
 \makeindex[intoc,noautomatic,columns=3]
 
+% load webquiz-ini and webquiz-doc code -- doc needs ini so ini is first
+\input{webquiz-ini.tex}
 \input{webquiz-doc.tex}
+
+\newenvironment{heading}[1][]
+{\noindent\trivlist\item[\hskip\labelsep\textbf{\textcolor{ForestGreen}{#1}}]}
+  {\endtrivlist}
 
 \setcounter{secnumdepth}{3}
 \setcounter{tocdepth}{3}
@@ -159,9 +165,7 @@
         \Javascript. On-line quizzes written using \WebQuiz can contain any
         material that can be written using \LaTeX, including text,
         mathematics, graphics and diagrams.
-
         \ScreenShot{Example \WebQuiz web page}{examples/quiz-page}
-
         \begin{center}
           \hfil
           \begin{minipage}{0.7\textwidth}
@@ -176,7 +180,7 @@
       On-line quizzes provide a good way to reinforce learning, especially
       because they can give ``interactive'' feedback to the
       students\footnote{Throughout this manual, ``student'' means any
-      person taking the on-line quiz.} based on the answers that they
+      person taking the on-line quiz.\index{student}} based on the answers that they
       give. Unfortunately, in addition to writing the actual quiz content there
       are significant technical hurdles that need to be overcome when
       writing an on-line quiz -- and there are additional complications if
@@ -287,7 +291,7 @@
         \item Questions that require students to type in an answer. There
         are several different ``comparison'' methods available for
         comparing the students answer where
-        for example, the inputted answers can be a ``string'' or a number.
+        for example, the entered answers can be a ``string'' or a ``number''.
       \end{itemize}
 
       Questions can appear in either the same order that they appear in
@@ -500,87 +504,71 @@
     ``canberra'', instead of ``Canberra'' is given, looks something like
     the following:
     \ScreenShot{A question with an answer}{examples/answer-string}
-    This example code shows one way of using the \LatexCode|\answer| macro, which
-    asks for the student to type in an answer to the question. The syntax of the
-    \LatexCode|\answer| macro is:
+    This example shows one way of using the \LatexCode|\answer| macro, which
+    asks for the student to type in an answer to the question. The general syntax of
+    this macro is:
     \begin{latexcode}
         \answer[comparison type]{correct answer}
     \end{latexcode}
     where the optional \textit{comparison type} is one of:
-    \begin{description}
-        \item[complex] \CrossIndex*{answer}{complex}
-        The \textit{correct answer} and the inputted answer
-        are compared as \textit{complex} numbers
-        \item[integer] \CrossIndex*{answer}{integer}
-        The \textit{correct answer} and the inputted answer
-        are compared as \textit{integers}
-        \item[lowercase] \CrossIndex*{answer}{lowercase}
-        The \textit{correct answer} and the inputted answer
-        are converted to lower case and then compared as strings
-        \item[number] \CrossIndex*{answer}{number}
-        The \textit{correct answer} and the inputted answer
-        are compared as (real) \textit{numbers}. For example, if the
-        \textit{correct answer} was $0.8$ then $4/5$ would be marked as
-        correct.
-        \item[string] \CrossIndex*{answer}{string}
-        The \textit{correct answer} and the inputted answer are compared
-        as \textit{strings}, so they have to match exactly. In particular,
-        \textit{string} is case sensitive. This is the default.
-        % \item[eval] \CrossIndex*{answer}{eval}
-        % The inputted answer is marked correct if the \textit{difference}
-        % of the \textit{correct answer} and the inputted answer
-        % evaluates, as a mathematical expression, to $0$. Standard
-        % functions such as $\sin(x)$, $\cos(x)$ etc. are accepted.
-    \end{description}
-    In addition, there is a $*$-variant of the answer macro that does
-    not print the word ``Answer'' before the input box. The syntax for
-    the \LatexCode|\answer*| command is identical to that for the
-    \LatexCode|\answer|:
+    \begin{latexcode}
+        complex    integer    lowercase    number    string
+    \end{latexcode}
+    with \LatexCode|string| being the default.  In addition, there is a
+    $*$-variant of the answer macro that does not print the word
+    ``Answer'' (or equivalent in other languages) before the input box.
+    The syntax for the \LatexCode|\answer*| command is identical to that
+    for the \LatexCode|\answer| except, of course, that there is a~$*$:
     \begin{latexcode}
         \answer*[comparison type]{correct answer}
     \end{latexcode}
     As \LatexCode|string| is the default answer comparison method, if we
-    \LatexCode|\answer*{Canberra}| in the last example then the quiz
-    page looks like:
+    instead use \LatexCode|\answer*{Canberra}| in the last example then
+    the quiz page generated by \WebQuiz looks like:
     \ScreenShot{A question with answer$*$}{examples/answer-star}
-
-    The following code blocks and screen shots give examples of the
-    different \LatexCode|\answer| comparison types, using the
-    \LatexCode|\answer| command.
+    We now give a description of the other comparison types for the
+    \LatexCode|\answer| and \LatexCode|\answer*| macros together with
+    code examples and screenshots.
 
     \CrossIndex*{answer}{complex}
-    \textcolor{blue}{Complex answer} --- the answers are compared as complex
+    \begin{heading}[complex comparison] The answers are compared as complex
     numbers: the answer is marked as correct if it has the same real and
     imaginary parts.
     \InputLatexCode{examples/answer-complex}
     \ScreenShot{A question with a complex answer}{examples/answer-complex}
+    \end{heading}
 
-    \textcolor{blue}{Integer answer} --- the answers are compared as
+    \begin{heading}[integer comparison] The answers are compared as
     integers. If the correct answer was $18$ and the students entered
     $36/2$ then they would be marked wrong.
     \CrossIndex*{answer}{integer}
     \InputLatexCode{examples/answer-integer}
     \ScreenShot{A question with a integer answer}{examples/answer-integer}
+    \end{heading}
 
-    \textcolor{blue}{Lowercase string answer} --- the quiz answer and the
+    \begin{heading}[lowercase comparison] The quiz answer and the
     students' answer are both converted to lower case and then compared as
     strings.
     \CrossIndex*{answer}{lowercase}
     \InputLatexCode{examples/answer-lowercase}
     \ScreenShot{A question with a lowercase string answer}{examples/answer-lowercase}
+    \end{heading}
 
-    \textcolor{blue}{Numeric answer} --- the quiz answer and the students'
+    \begin{heading}[number comparison] The quiz answer and the students'
     answer are compared as numbers. For example, if the answer was $0.75$ and the student
     answered $\frac 34$ then they would be marked correct.
     \CrossIndex*{answer}{number}
     \InputLatexCode{examples/answer-number}
     \ScreenShot{A question with a numeric answer}{examples/answer-number}
+    \end{heading}
 
-    \textcolor{blue}{String answer answer}
-    This is the default: \LatexCode|\answer{some string}| and
-    \LatexCode|\answer[string]{some string}| are equivalent. The student's
-    answer is marked correct if it agrees exactly with the quiz answer.
+    \begin{heading}[string comparison]
+    This is the default, so \LatexCode|\answer{word}| and
+    \LatexCode|\answer[string]{word}| are equivalent. The student's
+    answer is marked correct if and only if it agrees exactly with
+    the quiz answer.
     \CrossIndex*{answer}{string}
+    \end{heading}
 
     \subsubsection{Multiple choice questions}
     \CrossIndex{environment}{choice}
@@ -608,19 +596,19 @@
   \end{itemize}
   The key difference between these two types of \LatexCode|choice|
   questions is that a \LatexCode|single|-choice environment uses radio
-  boxes, so it is only possible to select one correct answer, whereas in a
+  boxes, so it is only possible to select \textit{one correct answer}, whereas in a
   \LatexCode|multiple|-choice environment checkboxes are used, so that is
-  possible to select zero or more correct answers.
+  possible to select \textit{zero or more correct answers}.
 
-  A \LatexCode|choice| environment is similar to any of the standard
+  A \LatexCode|choice| environment modelled on the standard
   \LaTeX{} list environments (\textit{enumerate}, \textit{itemize},
-  \textit{description}, ...) except that instead of using the
+  \textit{description}, ...), except that instead of using the
   \LatexCode|\item| command to separate the items the
   \LatexCode|choice|-environment uses \LatexCode|\correct|
   \CrossIndex{choice environment}*{correct} \LatexCode|\incorrect|
   \CrossIndex{choice environment}*{incorrect}, which indicate correct
   and incorrect answers respectively.  In addition, after each
-  \LatexCode|\correct| or \LatexCode|\incorrect| you can , optionally, use
+  \LatexCode|\correct| or \LatexCode|\incorrect| you can, optionally, use
   \LatexCode|\response| \CrossIndex{choice environment}*{response} to give
   a feedback response to the student taking the quiz. Like
   \LatexCode|\whenRight| and \LatexCode|\whenWrong| this feedback is
@@ -630,6 +618,12 @@
   Here is an example of a \LatexCode|single|-choice question with a unique
   answer:
     \InputLatexCode{examples/choice-single}
+  Note that \LatexCode|single| is the default, so this could also be written as
+  \begin{latexcode}
+    \begin{choice}[columns=3, single]
+      ...
+    \end{choice}
+  \end{latexcode}
   It is not necessary to put the \LatexCode|\response| lines on the same
   line as the \LatexCode|\incorrect| and \LatexCode|\incorrect|; this is
   done only to make the example more compact. This results in the
@@ -640,20 +634,23 @@
   two correct answers:
     \InputLatexCode{examples/choice-multiple}\label{choice-multiple}
   Notice that this example uses the documentclass-option
-  \LatexCode{theme=vibrant}, which changes the colour scheme:
+  \LatexCode{theme=vibrant}, which changes the \WebQuiz colour theme;
+  see \autoref{SS:classOptions}.
   \ScreenShot{Multi-answer multiple choice question}{examples/choice-multiple}
 
-  When the optional argument \LatexCode|multiple| is used, as above, then the
-  question is marked correct if and only if all of the correct responses
-  are selected. Feedback to the students is randomly selected from the
-  feedback for their incorrect responses.
+  When the optional argument \LatexCode|multiple| is used, as above,
+  then the question is marked correct if and only if \textit{all} of the
+  correct responses are selected. Feedback to the students is randomly
+  selected from the feedback for their wrong responses (that is, the
+  \LatexCode|\correct| responses that they have not selected and the
+  \LatexCode|\incorrect| responses that they have selected).
 
-  Finally, observe that the multiple choice items in the screenshot above
-  are labelled by roman numerals. The items in a \LatexCode{choice} are
-  labelled by a standard \LaTeX{} counter, which is also called
+  Finally, observe that the multiple choice items in the screenshot
+  above are labelled by roman numerals. The items in a
+  \LatexCode{choice} are labelled by a standard \LaTeX{} counter, called
   \LatexCode|choice|. Redefining \LatexCode|\thechoice| changes how the
-  items in the on-line quiz are labelled. For example, to label the items
-  in a \LatexCode|choice| environment by A), B), C) $\dots$ add
+  items in the on-line quiz are labelled. For example, to label the
+  items in a \LatexCode|choice| environment by A), B), C) $\dots$ add
   \begin{latexcode}
     \renewcommand\thechoice{\Alph{choice})}
   \end{latexcode}
@@ -663,23 +660,30 @@
   \subsubsection{Discussion environments}\label{SS:discussion}
     \CrossIndex{environment}{discussion}
 
-  In addition to asking questions it is possible to have revision, or
-  discussion, material \textit{before} the question in the quiz. The
-  discussion items always appear before the quiz questions in the menu
-  down the left-hand side --- it is not possible to interleave discussion
-  items and questions in the side menu. Each quiz can have zero or more
-  discussion environments (and zero or more question environments) and
-  these environments can, in principle, contain arbitrary \LaTeX{} code.
+  In addition to asking questions, it is possible to display revision,
+  or discussion, material on the quiz web page using the
+  \LatexCode|discussion| environment.  All discussion material is
+  displayed on the quiz page \textit{before} the questions in the quiz
+  and the (short) titles for the discussion items appear before the quiz
+  questions in the menu on the left-hand side of the page --- it is
+  not possible to interleave discussion items and questions in the side
+  menu.
 
-  For example, running the \LaTeX\ file through \WebQuiz
-    \InputLatexCode{examples/discussion}
+  Each quiz can have zero or more discussion
+  environments (and zero or more question environments) and these
+  environments can, in principle, contain arbitrary \LaTeX{} code.
+
+  For example, running the following \LaTeX\ file, which uses
+  \LatexCode|theme=muted|, through \WebQuiz
+  \InputLatexCode{examples/discussion}
   produces the web page:
-  \ScreenShot[0.7]{Web page: discussion environment}{examples/discussion}
-  As with the questions, only one \LatexCode|discussion| environment is
-  displayed on the quiz web page at a time (unless the document-class
-  option \LatexCode|onepage| is used). It is possible to have quizzes
-  that contain only \LatexCode|discussion| environments, with no questions, and
-  quizzes that contain only \LatexCode|question| environments, with no
+  \ScreenShot[0.7]{Web page: discussion
+  environment}{examples/discussion} As with the questions, only one
+  \LatexCode|discussion| environment is displayed on the quiz web page
+  at a time (unless the document-class option \LatexCode|onepage| is
+  used). It is possible to have quizzes that contain only
+  \LatexCode|discussion| environments, with no questions, and quizzes
+  that contain only \LatexCode|question| environments, with no
   discussion.
 
   \subsubsection{Index pages for qizzes}\label{SS:index}
@@ -723,7 +727,7 @@
     breadcrumbs are disabled. Adding \LatexCode|\BreadCrumbs| command
     like:
     \begin{latexcode}
-        \BreadCrumbs{Mathematics /|Math1001 /u/Math1001|quiz_index|title}
+        \BreadCrumbs{Mathematics /|Math1001 /u/Math1001|quizindex|title}
     \end{latexcode}
     adds the following breadcrumbs, or navigation links,
     to the top of the quiz page:
@@ -747,7 +751,7 @@
       to in the last section, clicking on the~{\large\color{red} $\equiv$}
       symbol after \textit{Quizzes} causes a drop-down menu to appear that
       contains links to all of the quizzes for the current unit of study:
-      \ScreenShot{Drop-down menu giving index of quizzes}{examples/dropdown.png}
+      \ScreenShot{Drop-down menu giving index of quizzes}{examples/dropdown}
       This drop-down menu appears only if the current directory
       contains a \WebQuiz index file that has been compiled.
       \CrossIndex{breadcrumbs}{quizindex}.
@@ -765,13 +769,13 @@
     The breadcrumbs are given as a ``|-separated list''. For example,
     quite reasonable breadcrumbs are given by:
     \begin{latexcode}
-      \BreadCrumbs{ department | unitcode | quiz_index | title }
+      \BreadCrumbs{ department | unitcode | quizindex | title }
     \end{latexcode}
     To make this the default set of breadcrumbs use
     \BashCode{webquiz --edit-settings} to set breadcrumbs
     in the \webquizrc file to:
     \begin{latexcode}
-       department | unitcode | quiz-index | title
+       department | unitcode | quizindex | title
     \end{latexcode}
     More generally, the breadcrumbs can be specified as:
     \begin{latexcode}
@@ -803,12 +807,12 @@
       \macroIndex{Institution}\macroIndex{InstitutionURL}
       \CrossIndex*{BreadCrumb}{institution}
 
-      \item[quiz-index] This expands to ``Quizzes'', which is a link to
+      \item[quizindex] This expands to ``Quizzes'', which is a link to
       the index page for your unit, as defined by \LatexCode|\QuizzesURL|. In
       addition, a drop-down menu to the index page is added to the
       breadcrumbs, which is accessed via {\large\color{red} $\equiv$}.
       \macroIndex{QuizzesURL}
-      \CrossIndex*{BreadCrumb}{quiz-index}
+      \CrossIndex*{BreadCrumb}{quizindex}
 
       \item[Title] This expands to the full title of the quiz page, as given by
       the \LatexCode|\title|.
@@ -1137,8 +1141,7 @@
       \LatexCode|pst2pdf| document-class option:
       \InputLatexCode{examples/pst2pdf}
       It produces the quiz:
-      \ScreenShot{Example requiring the pst2pdf document class option}
-                 {examples/pst2pdf}
+      \ScreenShot{Example requiring the pst2pdf document class option}{examples/pst2pdf}
 
       \noindent
       \dbend{According to the \ctan{pst2pdf} manual:}
@@ -1370,10 +1373,10 @@
       then you should also be able to compile the \OnlineManual using
       \WebQuiz.
 
-      \begin{trivlist}
-        \item[\textbf{Remark}] To remove all \WebQuiz files from your web server
-         use \BashCode|webquiz --uninstall|
-      \end{trivlist}
+      \begin{heading}[Remark]
+        To remove all \WebQuiz files from your web server use
+        \BashCode|webquiz --uninstall|
+      \end{heading}
 
       Once \WebQuiz is initialised you may also want to run:
       \begin{bashcode}

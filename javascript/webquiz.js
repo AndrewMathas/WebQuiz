@@ -110,7 +110,7 @@ function showQuestion(newQ) { // newQ is an integer which is always in the corre
         if (currentQ>0) {
             realQ = questionOrder[currentQ-1];
         } else {
-            realQ = currentQ
+            realQ = currentQ;
         }
         if (currentQ !== 0) { // hide the current question and responses
             hideResponse();
@@ -127,7 +127,7 @@ function showQuestion(newQ) { // newQ is an integer which is always in the corre
         if (currentQ>0) {
             realQ = questionOrder[currentQ-1];
         } else {
-            realQ = currentQ
+            realQ = currentQ;
         }
         document.getElementById("question" + realQ).style.display = "table";
         button = document.getElementById("button" + currentQ);
@@ -227,9 +227,9 @@ function checkAnswer(qnum) {
         var answer = formObject.elements[0].value;
         switch(question.comparison) {
           case 'complex':
-            var a = math.complex(answer)
-            var b = math.complex(question.value)
-            correct[q] = (a.re==b.re && a.im==b.im)
+            var a = math.complex(answer);
+            var b = math.complex(question.value);
+            correct[q] = (a.re==b.re && a.im==b.im);
             break;
           case 'integer':
             correct[q] = (parseInt(answer)==parseInt(question.value));
@@ -293,9 +293,9 @@ function shuffle(a) {
     var i, j;
     for (i = a.length - 1; i > 0; i--) {
         j = Math.floor(Math.random() * (i + 1));
-        ai = a[i]
-        ai=a[j]
-        a[j]=ai
+        ai = a[i];
+        a[i]=a[j];
+        a[j]=ai;
     }
     return a;
 }
@@ -341,11 +341,11 @@ function WebQuizInit(questions, discussions, quizfile) {
         // ugly hack to position copyright message when there are no questions
         side_menu.style.height='60ex';
         var school = side_menu.getElementsByClassName('school')[0];
-        school.style.position = 'relative'
-        school.style.bottom = '-40ex'
+        school.style.position = 'relative';
+        school.style.bottom = '-40ex';
         var copyright = side_menu.getElementsByClassName('copyright')[0];
-        copyright.style.position = 'relative'
-        copyright.style.bottom = '-40ex'
+        copyright.style.position = 'relative';
+        copyright.style.bottom = '-40ex';
     }
 }
 

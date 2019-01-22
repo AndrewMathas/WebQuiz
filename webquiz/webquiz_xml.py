@@ -230,10 +230,11 @@ class QuizHandler(xml.sax.ContentHandler):
                 self.question_list[-1].after_text += ' '+self.text.strip()
                 debugging('After_text is now {}'.format(self.question_list[-1].after_text))
                 self.text = ''
+            self.current_tags[-1] = 'when_'+attributes.get('type')
 
 
     def endElement(self, tag):
-        self.current_tags.pop()  # remove the last tag from the tag list
+        debugging('popping '+self.current_tags.pop()) # remove the last tag from the tag list
 
         text_used = True # assume that we will use the text
 
@@ -282,7 +283,7 @@ class QuizHandler(xml.sax.ContentHandler):
         elif tag in ['breadcrumb', 'title', 'unit_code', 'unit_name']:
             setattr(self, tag, self.text.strip())
 
-        elif tag.startswith('when_'):
+        elif tag.startswith('when'):
             setattr(self.question_list[-1], tag, self.text.strip())
 
         elif tag == 'index_item':

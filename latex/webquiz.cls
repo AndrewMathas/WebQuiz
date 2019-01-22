@@ -294,8 +294,8 @@
 
 \def\MQ@ChoiceEnd{%
   \ifInItem\else\MQ@Error{Choice environment with no choices!}\fi%
-  \MQ@Debugging{Ending choice...}%
   \InChoicefalse%
+  \MQ@Debugging{Ending choice...}%
 }
 
 % \begin{choice}[choice type, number of columns] ... \end{choice} The
@@ -311,6 +311,7 @@
 }{\MQ@ChoiceEnd}
 
 \def\MQ@ItemStart{%
+  \MQ@Debugging{Starting item...}%
   \ifInChoice\relax%
   \else\MQ@Error{\noexpand\correct and \noexpand\incorrect must be inside a choice environment}%
   \fi%
@@ -324,6 +325,7 @@
 \def\incorrect{\MQ@Item\XSolidBrush}
 
 \def\MQ@ResponseStart{%
+  \MQ@Debugging{Starting response...}%
   \ifInItem\relax%
   \else\MQ@Error{Missing \noexpand\correct or \noexpand\incorrect}%
   \fi%
@@ -339,13 +341,14 @@
 
 % supported answer comparisons
 \def\MQ@AnswerStart#1{%
+  \MQ@Debugging{Starting answer...}%
   \ifInQuestion\relax%
   \else\MQ@Error{\noexpand\answer\ must be contained in a question}%
   \fi%
   \ifInChoice\MQ@Error{You cannot have \noexpand\answer inside a choice environment}\fi%
   \ifInAnswer\MQ@Error{Each question can contain only one \noexpand\answer command}\fi%
   \pgfkeys{/webquiz checker/comparison/#1}%
-  \InAnswertrue%
+  \global\InAnswertrue%
   \global\InWhenrightfalse%
   \global\InWhenwrongfalse%
 }
@@ -358,6 +361,7 @@
 }
 
 \def\MQ@WhenStart#1{%
+  \MQ@Debugging{Starting when#1...}%
   \ifInAnswer\relax\else\MQ@Error{missing \noexpand\answer}\fi%
   \ifbool{InWhen#1}{%
     \MQ@Error{Only one \noexpand\when#1 per question is allowed!}%
@@ -368,6 +372,6 @@
 \def\MQ@When#1{\MQ@WhenStart{#1}\leavevmode\medskip\newline\textit{Response when #1:}\space}
 \def\whenRight{\MQ@When{right}}
 \def\whenWrong{\MQ@When{wrong}}
+
 \endinput
-%%
 %% End of file `webquiz.cls'.
