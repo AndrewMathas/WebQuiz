@@ -22,6 +22,14 @@ function make_languages() {
               ) >> $LANG
 }
 
+function check_examples() {
+  /bin/rm -f examplefiles screenshots madeimages
+  ls -1 examples/*.tex | sed 's@.tex@@' | sed 's@examples.@@' | sort -u > examplefiles
+  ag ScreenShot webquiz.tex | sed 's@.*examples.@@'| sed 's@}@@' | sort -u >screenshots
+  examples/makeimages --list | sort > madeimages
+  gvim -d examplefiles madeimages screenshots 
+}
+
 function make_themes () {
   message " - Generating list of webquiz supported css themes"
 
@@ -99,7 +107,7 @@ function make_all() {
 }
 
 function usage() {
-  message "make [--fast|--quiet] [--examples|--languages|--manual|--online|--themes|]"
+  message "make --[fast|quiet] --[check-examples|examples|languages|manual|online|themes|]"
 }
 
 fast=false
@@ -113,6 +121,9 @@ else
      case $1 in
        -a|--all)
          command+="make_all "
+         shift ;;
+       -c|--check-examples)
+         command+="check_examples"
          shift ;;
        -e|--examples)
          command+="make_examples"
