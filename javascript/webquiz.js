@@ -223,6 +223,28 @@ function gotoQuestion(qnum) {
     showQuestion(qnum);
 }
 
+// dictionary of comparison methods for when question.type=='input'
+// each function in the dictionary returns true or false
+var compare = {
+  'complex': function(ans, val) {// check real and imaginary parts
+               var a = math.complex(ans);
+               var b = math.complex(val);
+               return a.re==b.re && a.im==b.im;
+             },
+  'integer': function(ans, val) {// compare as integers
+               return parseInt(ans)==parseInt(val);
+             },
+  'lowercase':  function(ans, val) {//convert to lowercase string and compare
+               return ans==String(val).toLowerCase();
+             },
+  'number':  function(ans, val) {// compare as numbers
+               return math.eval(ans)==math.eval(val);
+             },
+  'string':  function(ans, val) {// compare as strings
+               return ans==String(val);
+             }
+}
+
 // check to see whether the answer is correct and update the markers accordingly
 function checkAnswer(qnum) {
     var q = qnum - 1;
@@ -232,25 +254,12 @@ function checkAnswer(qnum) {
     var i;
     if (question.type == "input") {
         var answer = formObject.elements[0].value;
-        switch(question.comparison) {
-          case 'complex':
-            var a = math.complex(answer);
-            var b = math.complex(question.value);
-            correct[q] = (a.re==b.re && a.im==b.im);
-            break;
-          case 'integer':
-            correct[q] = (parseInt(answer)==parseInt(question.value));
-            break;
-          case 'number':
-            correct[q] = (math.eval(answer)==math.eval(question.value));
-            break;
-          case 'string':
-            correct[q] = (String(question.value)==answer);
-            break;
-          case 'lowercase':
-            correct[q] = (String(question.value).toLowerCase()==answer);
-            break;
+        try {
+          correct[q] = compare[question.comparison](answer, question.value);
+        } catch(err) {
+          correct[q] = False;
         }
+
         if (correct[q]) {
             showResponse("q" + realQ + "true");
         } else {
