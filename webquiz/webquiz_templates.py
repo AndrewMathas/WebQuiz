@@ -39,7 +39,7 @@ questions_javascript = r'''  <script src="{webquiz_url}/webquiz.js"></script>
 mathjs=r'  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/5.4.0/math.min.js"></script>'
 
 webquiz_init = r'''<div style="display: none;">
-    <script src="quiztitles.js"></script>
+    <script src="quizindex.js"></script>
     <script type="text/javascript">WebQuizInit({number_quizzes}, {number_discussions}, '{quiz_file}');</script>
   </div>'''
 
@@ -99,10 +99,10 @@ question_buttons = r'''
 
 # quiz title and navigation arrows
 quiz_header = r'''<div class="quiz-header">
-        <div class="quiz-title">{title}</div><div></div>
-        {arrows}
+        <div class="quiz-title">{title}</div><div></div>{arrows}
       </div>'''
-navigation_arrows = r'''       <span class="question-label">{question}
+navigation_arrows = r'''
+       <span class="question-label">{question}
          <span id="question-number">{question_number}</span>
        </span>
        <span class="arrows">
@@ -113,9 +113,11 @@ navigation_arrows = r'''       <span class="question-label">{question}
 
 # discussion item
 discussion = r'''<div id="question-{dnum}" class="question" style="display:{display};">
-        {discussion.text}
+        {heading}{discussion.text}
       </div>
 '''
+discussion_heading = r'''<div class="question-label">{}</div><br>
+        '''
 
 #quiz index
 quiz_index_div = r'''     <div class="quiz-index">
@@ -144,7 +146,7 @@ question_text = r'''  {question_text}
 nextquestion='<input type="button" value="{next_question}" class="input-button" title="{next_question}" name="next" onClick="nextQuestion(1);"/>'
 
 # Questions and responses:
-input_answer = '{answer}&nbsp;<input type="text"  onChange="checkAnswer();" size="{size}"/>{after_text}'
+input_answer = '{answer}&nbsp;<input type="text"  onChange="checkAnswer({qnum});" size="{size}"/>{after_text}'
 choice_answer = '<table class="question-choices">{choices}</table>{after_text}'
 input_single = '\n<input type="hidden" name="Q{qnum}hidden"/>'
 

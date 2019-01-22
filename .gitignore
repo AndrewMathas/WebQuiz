@@ -12,7 +12,7 @@ doc/examples/*.svg
 doc/examples/*.xml
 doc/examples/quiz-page-*.tex
 doc/examples/*/
-doc/examples/quiztitles.js
+doc/examples/quizindex.js
 doc/examples/pst2pdf-*
 doc/examples/theme-*.tex
 doc/webquiz-online-manual/

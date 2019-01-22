@@ -214,7 +214,7 @@ li:hover.nolink, div:hover.nolink  { text-decoration: none !important; }
 li.nolink, div:hover.nolink  { color:  $ButtonHover !important;}
 
 
-span.question-label {
+div.question-label, span.question-label {
     color: $Subheading;
     font-size: 12px;
     font-variant: small-caps;
@@ -314,6 +314,7 @@ div.quiz-questions {
             border-radius: 5px;
             display: none;
             padding: 0 1ex 0 1ex;
+            transition: height 0.66s ease-out;
 
             div {
                 text-align: left;
@@ -525,7 +526,7 @@ div.menu-icon:hover {
 }
 
 span#quizzes-menu-icon {
-  color: $Heading;
+  color: $BreadCrumbFG;
 }
 
 /*

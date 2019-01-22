@@ -50,20 +50,27 @@ var tick = {
     "name": "tick"
 };
 
+var drop_down_not_created = true;
+
 // create the drop down menu dynamically using the QuizTitles array
 function create_drop_down_menu() {
-    // add the menu icon for the quizzes menu - only called if there is at least one quiz
-    document.getElementById("quizzes-menu-icon").innerHTML = " &#9776;";
 
-    var max = 0, q, quiz_link, menu = document.createDocumentFragment();
-    for (q = 0; q < QuizTitles.length; q++) {
-        quiz_link = document.createElement("li");
-        quiz_link.innerHTML = '<a href="' + QuizTitles[q][1] + '">' + QuizTitles[q][0] + '</a>';
-        menu.appendChild(quiz_link);
-        max = Math.max(max, QuizTitles[q][0].length);
+    if (drop_down_not_created) {
+      // add the menu icon for the quizzes menu - only called if there is at least one quiz
+      document.getElementById("quizzes-menu-icon").innerHTML = " &#9776;";
+
+      var max = 0, q, quiz_link, menu = document.createDocumentFragment();
+      for (q = 0; q < QuizTitles.length; q++) {
+          quiz_link = document.createElement("li");
+          quiz_link.innerHTML = '<a href="' + QuizTitles[q][1] + '">' + QuizTitles[q][0] + '</a>';
+          menu.appendChild(quiz_link);
+          max = Math.max(max, QuizTitles[q][0].length);
+      }
+      drop_down.style.width = Math.round(max) + "ex";
+      drop_down.appendChild(menu);
+
+      drop_down_not_created = false
     }
-    drop_down.style.width = Math.round(max) + "ex";
-    drop_down.appendChild(menu);
 }
 
 // create an event listener so that we can close the drop-down menu
