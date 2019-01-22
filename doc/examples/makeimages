@@ -24,7 +24,14 @@ Alternatively, it is possible to extract a png image of the PDF file created by 
 For the full extraction specifications see the pages array below
 '''
 
-import argparse, glob, os, re, shutil, subprocess, sys
+import argparse
+import glob
+import os
+import re
+import shutil
+import subprocess
+import sys
+import time
 
 # location of the webquiz example web pages on a development server
 examplesURL = "http://localhost/WebQuiz/doc/examples"
@@ -142,6 +149,18 @@ class Convert:
         run('dvips {fin} > /dev/null'.format(fin=self.page))
         run('convert {fin}.ps {fout}.png && mogrify -trim {fout}.png'.format(fin=self.page, fout=self.page_out))
 
+    def modified(self):
+        r'''
+        Return `True` if the modification timestamp on the source file is newer
+        than the modification time on the image file.
+        '''
+        src_time = time.gmtime(os.path.getmtime(self.page+'.tex'))
+        try:
+            output_time = time.gmtime(os.path.getmtime(self.page_out+'.png'))
+        except FileNotFoundError:
+            return True
+
+        return src_time > output_time
 
 # Specify the pages to construct using the Convert class:
 pages = [
@@ -164,11 +183,11 @@ pages = [
     Convert("lion-image"),
     Convert("montypython", delay=5),
     Convert("nounits", delay=5),
-    Convert("onepage"),
+    Convert("onepage", js="document.forms['Q3Form'].elements[0].value='yes'; checkAnswer(3);"),
     Convert("pst2pdf"),
     Convert("pstricks-ex"),
     Convert("quiz-page", question="1:2", delay=15),
-    Convert("random", js="setTimeout(questionOrder=[4,3,2,1],40);showQuestion(3); document.forms['Q2Form'].elements[0].value='yes'; setTimeout(checkAnswer(3), 20);"),
+    Convert("random", js="questionOrder=[4,3,2,1]; document.forms['Q3Form'].elements[0].value='yes'; checkAnswer(2); showQuestion(2);"),
     Convert("simple", page_out='simple-html', question='1:1'),
     Convert("simple", src='pdf',  page_out='simple-pdf'),
     Convert("theme-dark", question="3:2"),
@@ -187,12 +206,14 @@ pages = [
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description = 'Python script to extract images for the webquiz manual',
-                                     epilog = 'Images for all pages are extracted if none are specified'
+                                     epilog = 'Images for all updated pages are extracted if none are specified'
     )
     parser.add_argument('images', nargs='*',type=str, default=None, help='list of one or images to extract')
     parser.add_argument('-c', '--cleaning', action='store_true', default=False, help='delete all extraneous files on exit')
-    parser.add_argument('-l', '--list', action='store_true', default=False, help='print list of generated image files')
     parser.add_argument('-d', '--debugging', action='store_true', default=False, help='turn on debugging')
+    parser.add_argument('-f', '--force', action='store_true', default=False, help='update all files without comparing timestamps')
+    parser.add_argument('-l', '--list', action='store_true', default=False, help='print list of generated image files')
+    parser.add_argument('-q', '--quiet', action='store_true', default=False, help='quiet output')
 
     args = parser.parse_args()
 
@@ -226,4 +247,7 @@ if __name__ == '__main__':
     # run through pages and extract the corresponding images
     for page in sorted(pages, key=lambda p: p.page_out):
         if is_good_page(page):
-            page.write_image(args.cleaning)
+            if args.force or page.modified():
+                page.write_image(args.cleaning)
+            elif not args.quiet:
+                print('{} is update to date'.format(page.page_out))

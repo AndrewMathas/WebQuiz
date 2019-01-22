@@ -1,16 +1,17 @@
 \documentclass[pst2pdf]{webquiz}
 \usepackage{pst-all,pst-3dplot}
-
-\title{A tikz example}
+\title{A pst2pdf example}
 \begin{document}
   \begin{question}     % a quiz question
       Which of the equations below could describe the following surface?
-      \begin{pspicture*}(-4,-4)(4,4)
-        \psplotThreeD[linecolor=blue, plotstyle=curve, drawStyle=yLines,
-                    yPlotpoints=30, xPlotpoints=30, linewidth=1pt](-4,1)(-4,1){
-                      x dup mul y dup mul add 1.01 exp}
-        \pstThreeDCoor[linewidth=1pt, xMin=-4,xMax=4,yMin=-4,yMax=4,zMin=-2,zMax=6]
-      \end{pspicture*}
+      \begin{displaymath}
+        \begin{pspicture*}(-4,-4)(4,4)
+          \psplotThreeD[linecolor=blue, plotstyle=curve, drawStyle=yLines,
+                      yPlotpoints=30, xPlotpoints=30, linewidth=1pt](-4,1)(-4,1){
+                        x dup mul y dup mul add 1.01 exp}
+          \pstThreeDCoor[linewidth=1pt, xMin=-4,xMax=4,yMin=-4,yMax=4,zMin=-2,zMax=6]
+        \end{pspicture*}
+      \end{displaymath}
       \begin{choice}
         \incorrect \( z=\log(x^2+y^2) \)
         \correct   \( z=e^{x^2+y^2} \)

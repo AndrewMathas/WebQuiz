@@ -23,6 +23,7 @@
 \usepackage{pdfpages}
 \usepackage{manfnt}
 \usepackage{booktabs}
+\usepackage{bbding}\let\ding\relax
 
 \usepackage{etoolbox}% to patch l@section to remove extraneous spacing
 \usepackage{appendix}
@@ -683,7 +684,7 @@
   For example, running the following \LaTeX\ file, which uses
   \LatexCode|theme=muted|, through \WebQuiz
   \InputLatexCode{examples/discussion}
-  produces the web page:
+  produces the quiz page:
   \ScreenShot[0.7]{Web page: discussion
   environment}{examples/discussion} As with the questions, only one
   \LatexCode|discussion| environment is displayed on the quiz web page
@@ -1039,7 +1040,7 @@
       separatepages, showsidemenu, theme, tikz
     \end{latexcode}
     This section describes all of these document-class options except for
-    \LatexCode|tikz| and \LatexCode|pst2pdf|, which are discussed in
+    \ctan{tikz} and \ctan{pst2pdf}, which are discussed in
     \autoref{SS:graphics}. Many of the document-class options below occur
     in pairs and defaults for all of them can be set in the \webquizrc
     file; see \autoref{SS:rcfile}. The settings given in the \LaTeX{} file
@@ -1076,81 +1077,86 @@
       \LatexCode|hidesidemenu| and \LatexCode|showsidemenu| class options
       can be found above above.
 
+      The side menu automatics disappears on small devices, such as
+      mobile phones.  The display of the side menu can is also toggled
+      by clicking on the {\textcolor{red}{\XSolidBold}} and
+      {\textcolor{red}{\ding{118}}} symbols.
+
     \item[onepage, separatepages]
     \CrossIndex{document class options}{onepage}
     \CrossIndex{document class options}{separatepages}
     By default, only one question, or discussion environment, is displayed
     by the quiz at any time. As \LatexCode|separatepages| is the default, every
     example so far is of this form. With the document-class option
-    \LatexCode|onepage| all questions and discussion environments are
+    \LatexCode|onepage| all questions, and discussion environments, are
     displayed at the same time. So, for example, the code:
     \InputLatexCode{examples/onepage}
-    produces the web page:
+    produces the quiz page:
     \ScreenShot{A one page quiz}{examples/onepage}
 
     \item[language=<lang>] \CrossIndex{document class options}{language}
     Set the language used by the \textit{webpages} constructed by \WebQuiz.
-    The currently supported languages are:
-
+    The following languages are currently supported by \WebQuiz:
       \begin{quote}
           \input{webquiz.languages}
       \end{quote}
+    The languages files are used to print the various buttons and text
+    that is generated on the web pages constructed by \WebQuiz. The
+    \LatexCode|language| option does not affect the DVI or
+    \BashCode|PDF| versions of the quiz and it does not load language
+    packages like \ctan{babel} or \ctan{polyglossia}.
 
-      The languages files are used to print the various buttons and text
-      that is generated on the web pages constructed by \WebQuiz. The
-      \LatexCode|language| option does not affect the DVI or \BashCode|PDF| versions of
-      the quiz and it does not load language packages like \ctan{babel} or
-      \ctan{polyglossia}.
+    Typical usage of the \LatexCode|language| option is the following:
+    \lstinputlisting[style=latexcode,extendedchars=false]{examples/french}
+    This produces a web page like this:
+    \ScreenShot{A web page with \textsf{language=french}}{examples/french}
+    As a general rule, \LaTeX{} and \TeXfht do not cope well with
+    unicode characters, so if your quiz contains (a lot of) unicode
+    characters then we recommend using Xe\LaTeX{} or Lau\LaTeX, which
+    corresponds to using \WebQuiz with the command-line options
+    \BashCode|webquiz -x| or \BashCode|webquiz -l|, respectively. The
+    default \TeX{} engine can be set in the \webquizrc file; see
+    \autoref{SS:rcfile} for more details.
+    \index{unicode}\index{lualatex}\index{xelatex}
 
-      Typical usage of the \LatexCode|language| option is the following:
-      \lstinputlisting[style=latexcode,extendedchars=false]{examples/french}
-      This produces a web page like this:
-      \ScreenShot{A web page with \textsf{language=french}}{examples/french}
-      As a general rule, \LaTeX{} and \TeXfht do not cope well with
-      unicode characters, so if your quiz contains (a lot of) unicode
-      characters then we recommend using Xe\LaTeX{} or Lau\LaTeX, which
-      corresponds to using \WebQuiz with the command-line options
-      \BashCode|webquiz -x| or \BashCode|webquiz -l|, respectively. The
-      default \TeX{} engine can be set in the \webquizrc file; see
-      \autoref{SS:rcfile} for more details.
-      \index{unicode}\index{lualatex}\index{xelatex}
-
-      The language files were created largely using google translate so
-      they may well need fine-tuning\footnote{For example, the word
-      ``Copyright'' in left-hand the side-margin is not translated but
-      perhaps it should be.}. You can use \BashCode|kpsewhich| to look at
-      the language files, which all have names of the form
-      \BashCode|webquiz-language.lang|.  For example, the
-      \textit{English} language file, which is the default, can be found
-      using the command:
-      \begin{bashcode}
-           > kpsewhich webquiz-english.lang
-      \end{bashcode}
-      This file contains the following:
-      \InputBashCode{webquiz-english.lang}
-      In these files, the material to the left of the equals signs are
-      effectively variables, and so they should never be changed, or
-      deleted, whereas anything the right of the equals signs is the text
-      that is written to the \WebQuiz web pages. To add \WebQuiz support
-      for a new language, say \LatexCode|XXX|, copy any \WebQuiz language
-      file and translate the material to the right of the equals signs and
-      then save the file as \BashCode|webquiz-XXX.lang|, and then put this
-      file anywhere in the \LaTeX{} search path. Note that the expressions
-      \LatexCode|{}| in the language files should be not be removed
-      because they expand to expressions like \LatexCode|(a)|, \LatexCode|(b)|
-      etc. when used in the on-line quizzes. Once the new language file
-      \BashCode|webquiz-XXX.lang| is in the \LaTeX{} search path it can be
-      used by \WebQuiz using the \LatexCode|language| document-class
-      option:
-      \begin{latexcode}
-         \documentclass[language=XXX]{webquiz}
-         \begin{document}
-              insert quiz code
-         \end{document}
-      \end{latexcode}
-      Please submit any new language files, or corrections to existing
-      language files, as a \textit{new issue} at:
-        \href{https://\webquiz{repository}}{\webquiz{repository}}.
+    The language files were created largely using google translate so
+    they may well need fine-tuning\footnote{For example, the word
+    ``Copyright'' in left-hand the side-margin is not translated but
+    perhaps it should be.}. You can use \BashCode|kpsewhich| to look at
+    the language files, which all have names of the form
+    \BashCode|webquiz-language.lang|.  For example, the
+    \textit{English} language file, which is the default, can be found
+    using the command:
+    \begin{bashcode}
+         > kpsewhich webquiz-english.lang
+    \end{bashcode}
+    This file contains the following:
+    \InputBashCode{webquiz-english.lang}
+    In these files, the material to the left of the equals signs are
+    effectively variables, and so they should never be changed, or
+    deleted, whereas anything to the right of the equals signs is the text
+    that is will appear on the \WebQuiz web pages. To add \WebQuiz support
+    for a new language, say language \LatexCode|XXX|, copy any \WebQuiz language
+    file and translate the material to the right of the equals signs and
+    then save the file as \BashCode|webquiz-XXX.lang|, and then put this
+    file anywhere in the \LaTeX{} search path. Note that the expressions
+    \LatexCode|{}| in the language files should be not be removed
+    because they expand to expressions like \LatexCode|(a)|, \LatexCode|(b)|
+    etc. when used in the on-line quizzes. Once the new language file
+    \BashCode|webquiz-XXX.lang| is in the \LaTeX{} search
+    path\footnote{For example, if you are using \TeX Live then you will
+    need to run \BashCode|mktexlsr| as an administrator.} it can be
+    used by \WebQuiz using \LatexCode|language=XXX| as a document-class
+    option:
+    \begin{latexcode}
+       \documentclass[language=XXX]{webquiz}
+       \begin{document}
+            insert quiz code
+       \end{document}
+    \end{latexcode}
+    Please submit any new language files, or corrections to existing
+    language files, as a \textit{new issue} at:
+      \href{https://\webquiz{repository}}{\webquiz{repository}}.
 
     \item[theme]\CrossIndex{document class options}{theme}
 
@@ -1165,7 +1171,7 @@
       This should be compared with the corresponding screenshot in section
       \autoref{choice-multiple}, which uses the default theme.
 
-      The list of currently supported themes is:
+      \WebQuiz currently supports the following themes:
         \begin{quote}
             \input{webquiz.themes}
         \end{quote}
@@ -1175,77 +1181,82 @@
   \end{description}
 
 
-  \subsection{Including graphics and using pstricks and tikz}\label{SS:graphics}
+  \subsection{Including graphics and using pstricks and
+  tikz}\label{SS:graphics} It is also possible to include complicated
+  diagrams in \WebQuiz quizzes using packages like \ctan{tikz} and
+  \ctan{pstricks}.  As there have been several recent updates it is
+  advisable to install the latest version of both of these packages, as
+  well as the packages \ctan{make4ht}, \ctan{pgf} and \TeXfht. In fact,
+  it is recommended that you update all of your packages.
 
   By far the easiest way to include images when using \WebQuiz is by
-  adding
+  adding the following lines to your document preamble:
   \begin{latexcode}
-      \usepackage[dvipdfmx]{graphicx}\DeclareGraphicsExtensions{.png}
+      \usepackage[dvipdfmx]{graphicx}
+      \DeclareGraphicsExtensions{.png}
   \end{latexcode}
   to your document preamble. You need to use
-  \LatexCode|\DeclareGraphicsExtensions| to tell \WebQuiz what types of
-  images you are using, so the code above works for \LatexCode{png}
-  images. More generally, you can use a comma separated list of
-  extensions. such as:
+  \LatexCode|\DeclareGraphicsExtensions| to tell \WebQuiz the different
+  types of images you are using, so the code above works for
+  \LatexCode{png} images. More generally, you can use a comma separated
+  list of extensions, such as:
   \begin{latexcode}
     \DeclareGraphicsExtensions{.png, .jpg, .gif}
   \end{latexcode}
   The option \LatexCode|dvipdfmx|
   to \LatexCode|graphicx| is only necessary if you want to be able to
   rescale images. For example, the code:
-
       \InputLatexCode{examples/lion-image}
-
-  produces the web page:
-
+  produces the quiz page:
   \ScreenShot{Including images}{examples/lion-image}
 
-  It is also possible to draw quite complicated diagrams in
-  \LaTeX\ documents using packages like \ctan{tikz} and \ctan{pstricks}.
-  These packages can be used in \WebQuiz quizzes although,
-  unfortunately, both of these packages have issues when used with \TeX
-  4ht. The good news is that \WebQuiz attempts to solve these problems for
-  you if you use the appropriate document class options.
+  Even though \ctan{tikz} and \ctan{pstricks} can be used in \WebQuiz
+  quizzes, unfortunately, both of these packages sometimes have problems
+  when used with \TeXfht and hence with \WebQuiz. WebQuiz tries to solve
+  some these problems for you provided that you use the appropriate
+  document class options.
 
-  As there have been several recent updates it is advisable to install the
-  latest version of both of these packages, as well as the packages
-  \ctan{make4ht}, \ctan{pgf} and \TeXfht. In fact, I recommend updating
-  all of your packages.
+  For example, the following \ctan{pstricks} code works out of the box:
+    \InputLatexCode{examples/pstricks-ex}
+  to produce the web page:
+    \ScreenShot{Pstricks example}{examples/pstricks-ex}
 
   \begin{description}
       \item[pst2pdf] \index{pstricks}\CrossIndex{document class options}{pst2pdf}
 
-      For the most part \ctan{pstricks} drawings will display correctly
-      and when they fail they can often be salvaged by using
-      \ctan{pst2pdf}. Try the \LatexCode|pst2pdf| document-class option if you are
-      having trouble displaying an image created using \ctan{pstricks}. It
-      is not guaranteed to work but it often fixes the problem.
+      For the most part, \ctan{pstricks} drawings display correctly.
+      When they do fail they can often be salvaged by using
+      \ctan{pst2pdf}. Applying \ctan{pst2pdf} to a \WebQuiz quiz is not
+      completely straightforward so \WebQuiz provides the document-class
+      option \ctan{pst2pdf} to automatically use \ctan{pst2pdf} as
+      part of the quiz web page build process. Using \ctan{pst2pdf} will
+      often, but not always fix problems when \ctan{pstricks} images do
+      not display correctly on a \WebQuiz quiz web page.
 
       For example, the following quiz compiles only with the
-      \LatexCode|pst2pdf| document-class option:
+      \ctan{pst2pdf} document-class option:
       \InputLatexCode{examples/pst2pdf}
       It produces the quiz:
       \ScreenShot{Example requiring the pst2pdf document class option}{examples/pst2pdf}
 
       \noindent
+      Unfortunately, \ctan{pst2pdf} can fail silently without giving any
+      warnings and it needs to be properly installed.
       \dbend{According to the \ctan{pst2pdf} manual:}
-
       \begin{quote}
-        \LatexCode|pst2pdf| needs Ghostscript (>=9.14), perl (>=5.18), pdf2svg, pdftoppm
+        \ctan{pst2pdf} needs Ghostscript (>=9.14), perl (>=5.18), pdf2svg, pdftoppm
         and pdftops (from poppler-utils or xpdf-utils) to process a file
         using \ctan{pst2pdf}.
       \end{quote}
-
-      Unfortunately, \LatexCode|pst2pdf| can fail silently without giving any
-      warnings. If using \LatexCode|pst2pdf| does not produce an image then
-      the problem might be that you have not installed all of the programs
-      that \LatexCode|pst2pdf| relies upon, so look in your log files for
-      error messages and check the list of programs given above. See
-      \autoref{SS:pstricks} for more details.
+      If using \ctan{pst2pdf} does not produce an image then the
+      problem might be that you have not installed all of the programs
+      that \ctan{pst2pdf} relies upon, so look in your log files
+      for error messages and check that the programs listed above are
+      correctly installed. See also \autoref{SS:pstricks}.
 
     \item[tikz]\CrossIndex{document class options}{tikz}
       Giving this class option both loads the \ctan[pgf]{tikz} package
-      (use the document-class option \LatexCode|tikz|, and not
+      (use the document-class option \ctan{tikz}, and not
       \LatexCode|\usepackage{tikz}|, in your \LaTeX\ file). As a bonus,
       this \ctan{tikz} document option fixes several issues with PGF that
       prevent it from working with \TeXfht. Thanks are due to Michal
