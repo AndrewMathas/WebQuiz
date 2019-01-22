@@ -151,7 +151,7 @@ pages = [
     Convert("answer-number", js="document.forms['Q1Form'].elements[0].value='0.75'; setTimeout(checkAnswer(1), 60);"),
     Convert("answer-string", js="document.forms['Q1Form'].elements[0].value='canberra'; setTimeout(checkAnswer(1), 20);"),
     Convert("answer-star", js="document.forms['Q1Form'].elements[0].value='canberra'; setTimeout(checkAnswer(1), 20);"),
-    Convert("breadcrumbs", js="setTimeout(create_drop_down_menu(),20)", delay=10),
+    Convert("breadcrumbs", js="setTimeout(toggle_drop_down_menu(),20)", delay=10),
     Convert("breadcrumbs", page_out="dropdown", js='setTimeout(create_drop_down_menu(),20); toggle_dropdown_menu();', delay=10),
     Convert("choice-dark"),
     Convert("choice-multiple"),
@@ -159,7 +159,8 @@ pages = [
     Convert("discussion"),
     Convert("display-as-image"),
     Convert("french", question='1:1'),
-    Convert("index"),
+    Convert("index-en"),
+    Convert("index-cz"),
     Convert("lion-image"),
     Convert("montypython", delay=5),
     Convert("nounits", delay=5),
@@ -223,6 +224,6 @@ if __name__ == '__main__':
                 args.images[page] = name[:name.index('.')]
 
     # run through pages and extract the corresponding images
-    for page in pages:
+    for page in sorted(pages, key=lambda p: p.page_out):
         if is_good_page(page):
             page.write_image(args.cleaning)

@@ -373,7 +373,8 @@ class MakeWebQuiz(object):
         try:
             os.makedirs(self.quiz_name, exist_ok=True)
             os.chmod(self.quiz_name, mode=0o755)
-            with codecs.open(os.path.join(self.quiz_name, 'wq-' + self.quiz_name + '.js'), 'w', encoding='utf8') as quiz_specs:
+            with codecs.open(os.path.join(self.quiz_name, 'wq-' + self.quiz_name + '.js'), 'w',
+                             encoding='utf8') as quiz_specs:
                 if self.number_discussions > 0:
                     for (i, d) in enumerate(self.quiz.discussion_list):
                         quiz_specs.write('Discussion[{}]="{}";\n'.format(i, d.heading))
@@ -421,7 +422,7 @@ class MakeWebQuiz(object):
         r'''
         Write the quiz head and the main body of the quiz.
         '''
-        if self.number_quizzes==0 or self.quiz.one_page:
+        if self.quiz.one_page:
             arrows = ''
         else:
             arrows = webquiz_templates.navigation_arrows.format(
@@ -452,7 +453,7 @@ class MakeWebQuiz(object):
                 **self.language)
             # write a javascript file for displaying the menu
             # quizmenu = the index file for the quizzes in this directory
-            with codecs.open('quiztitles.js', 'w', encoding='utf8') as quizmenu:
+            with codecs.open('quizindex.js', 'w', encoding='utf8') as quizmenu:
                 quizmenu.write('var QuizTitles = [\n{titles}\n];\n'.format(
                     titles=',\n'.join("  ['{}', '{}']".format(q.title, q.url)
                                       for q in self.quiz.quiz_index)
@@ -469,7 +470,9 @@ class MakeWebQuiz(object):
                 self.quiz_questions += webquiz_templates.discussion.format(
                     dnum=dnum,
                     discussion=d,
-                    display='table' if self.quiz.one_page else 'none',
+                    display='grid' if self.quiz.one_page else 'none',
+                    heading=webquiz_templates.discussion_heading.format(d.heading)
+                            if self.quiz.one_page else ''
                 )
 
         # finally we print the questions
@@ -478,7 +481,7 @@ class MakeWebQuiz(object):
                 webquiz_templates.question_wrapper.format(
                     qnum=qnum + 1,
                     question_number='{}. '.format(qnum+1) if self.quiz.one_page else '',
-                    display='table' if self.quiz.one_page else 'none',
+                    display='grid' if self.quiz.one_page else 'none',
                     question=self.print_question(quiz_question, qnum + 1),
                     response=self.print_responses(quiz_question, qnum + 1)
                 )
@@ -494,6 +497,7 @@ class MakeWebQuiz(object):
             question_options = webquiz_templates.input_answer.format(
                                  size=5+len('{}'.format(question.answer)),
                                  after_text=question.after_text,
+                                 qnum=qnum,
                                  answer=self.language['answer']+':' if question.prompt else ''
             )
         elif question.type in ['single', 'multiple']:

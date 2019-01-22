@@ -21,13 +21,13 @@
   $LinkColor:       blue;
 
   $Heading:        #C0B283;
-  $Subheading:     lighten($Heading, 20%);
+  $Subheading:     #bd960f;
 
   $QuestionPart:   lighten($Heading, 8%);
 
   $ButtonBG:       #DCD0C0;
   $ButtonBorder:   darken($ButtonBG, 40%);
-  $ButtonHover:    lighten($ButtonBG, 20%);
+  $ButtonHover:    #ecb007;
   $ButtonSelected: lighten($ButtonBG, 30%);
 
   $Dazzle:         #261868;
@@ -36,7 +36,7 @@
   $ResponseBorder: darken($ResponseBG, 40%);
   $ResponseText:   lighten($ResponseBG, 20%);
 
-  $SideMenuText:   #0479cc;
+  $SideMenuText:   #655d41;
 
   $WarningBG:      #E37222;
   $WarningBorder:  darken($WarningBG, 60%);

@@ -15,7 +15,7 @@
 \NeedsTeXFormat{LaTeX2e}[1996/12/01]
 
 % load webquiz-doc style
-\input{webquiz-ini.tex}
+\usepackage{webquiz-ini}
 
 % ----------------------------------------------------------------------
 \ProvidesClass{webquiz}[\webquiz{release date} Version \webquiz{version}]

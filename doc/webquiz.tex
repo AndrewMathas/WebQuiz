@@ -36,8 +36,8 @@
 \makeindex[intoc,noautomatic,columns=3]
 
 % load webquiz-ini and webquiz-doc code -- doc needs ini so ini is first
-\input{webquiz-ini.tex}
-\input{webquiz-doc.tex}
+\usepackage{webquiz-ini}
+\usepackage{webquiz-doc}
 
 \newenvironment{heading}[1][]
 {\noindent\trivlist\item[\hskip\labelsep\textbf{\textcolor{ForestGreen}{#1}}]}
@@ -83,16 +83,16 @@
 \newcommand\Ctan{\ctan[]{ctan}}
 \newcommand\ddash{\texttt{\textemdash\textemdash}}
 \newcommand\webquizrc{\index{webquizrc}%
-  \BashCode|webquizrc| (\autoref{SS:rcfile})\xspace%
+  \BashCode|webquizrc| file (\autoref{SS:rcfile})\xspace%
 }
 
-\newcommand{\HTML}{\href{https://www.w3schools.com/html/html_intro.asp}{HTML}}
-\newcommand\CSS{\href{https://www.w3schools.com/css}{CSS}}
-\newcommand\XML{\href{https://www.w3schools.com/xml/xml_whatis.asp}{XML}}
-\newcommand\Javascript{\href{https://www.w3schools.com/Js/}{Javascript}}
-\newcommand\python[1][python]{\href{https://www.python.org/}{#1}}
+\newcommand{\HTML}{\href{https://www.w3schools.com/html/html_intro.asp}{HTML}\xspace}
+\newcommand\CSS{\href{https://www.w3schools.com/css}{CSS}\xspace}
+\newcommand\XML{\href{https://www.w3schools.com/xml/xml_whatis.asp}{XML}\xspace}
+\newcommand\Javascript{\href{https://www.w3schools.com/Js/}{Javascript}\xspace}
+\newcommand\python[1][python]{\href{https://www.python.org/}{#1}\xspace}
 
-\newcommand\OnlineManual{\href{http://www.maths.usyd.edu.au/u/mathas/WebQuiz/webquiz-online-manual.html}{OnlineManual} (\hyperref[S:online]{Appendix B})}
+\newcommand\OnlineManual{\href{http://www.maths.usyd.edu.au/u/mathas/WebQuiz/webquiz-online-manual.html}{OnlineManual} (\hyperref[S:online]{Appendix B})\xspace}
 
 \indexprologue{\noindent\textit{This is an index only for the main
 \WebQuiz manual.  It does not index the \OnlineManual.}}
@@ -379,7 +379,7 @@
     the commands and environments that are used to construct the quiz web
     pages. All of the code examples given in this and other sections can
     be found in the \BashCode|examples| directory of the \WebQuiz web
-    directory.% \footnote{Once \WebQuiz is initialised you can find the
+    directory. Once \WebQuiz is initialised you can find the
     \WebQuiz web directory using the command:
     \begin{bashcode}
          webquiz --settings webquiz-www
@@ -604,7 +604,7 @@
   \LaTeX{} list environments (\textit{enumerate}, \textit{itemize},
   \textit{description}, ...), except that instead of using the
   \LatexCode|\item| command to separate the items the
-  \LatexCode|choice|-environment uses \LatexCode|\correct|
+  \LatexCode|choice| environment uses \LatexCode|\correct|
   \CrossIndex{choice environment}*{correct} \LatexCode|\incorrect|
   \CrossIndex{choice environment}*{incorrect}, which indicate correct
   and incorrect answers respectively.  In addition, after each
@@ -671,8 +671,15 @@
 
   Each quiz can have zero or more discussion
   environments (and zero or more question environments) and these
-  environments can, in principle, contain arbitrary \LaTeX{} code.
-
+  environments can, in principle, contain arbitrary \LaTeX{} code. The
+  syntax for the \LatexCode|discussion| environment is:
+  \begin{latexcode}
+    \begin{dicussion}[short heading][heading]
+      ...
+    \end{dicussion}
+  \end{latexcode}
+  Both the \textit{heading} and \textit{short-heading} are optional,
+  defaulting to \LatexCode|Discussion|.
   For example, running the following \LaTeX\ file, which uses
   \LatexCode|theme=muted|, through \WebQuiz
   \InputLatexCode{examples/discussion}
@@ -691,70 +698,85 @@
     \index{quizindex environment}
     \CrossIndex{environment}{quizindex}
 
-    Most quizzes occur in sets that cover related material. For example,
-    quizzes that cover the material each week in a particular unit of
-    study. The \LatexCode|quizindex| environment can be used to create an
-    index web page for related sets of quizzes, all of which must appear in the same
-    directory, or folder. The index web page is a \WebQuiz file of the
-    form:
-    \InputLatexCode{examples/index}
+    Most quizzes occur in sets that cover related material, such as for
+    a particular unit of study. The \LatexCode|quizindex| environment
+    creates an index web page for related sets of quizzes. The \LaTeX{}
+    files for all of these quizzes be in the same directory, or folder.
+    The index web page is a \WebQuiz file of the form:
+    \InputLatexCode{examples/index-en}
     which generates a web page that looks like:
-    \ScreenShot{Example index page}{examples/index}
-
+    \ScreenShot{Example index page}{examples/index-en}
     As the next section describes, index files are also used to
     automatically add a drop-down menu to the breadcrumbs on the quiz web
     pages. This drop-down menu accesses all of the quizzes for the unit.
-    As the example above shows, the entries in the \LatexCode|quizindex| are all
-    given using the \LatexCode|\quiz| command.
-    \CrossIndex{quizindex environment}*{quiz}
-    The syntax for this command is
 
+    As the example above shows, the entries in the \LatexCode|quizindex| are all
+    given using the \LatexCode|\quiz| or the \LatexCode|\quiz*| command.
+    \CrossIndex{quizindex environment}*{quiz}
+    \CrossIndex{quizindex environment}*{quiz*}
+    The syntax for these commands is
     \begin{latexcode}
         \quiz[URL for quiz]{Title for quiz}
+        \quiz*[URL for quiz]{Title for quiz}
     \end{latexcode}
+    The \LatexCode|\quiz| macro automatically inserts the quiz numbers
+    into the index listing. The \LatexCode|\quiz*| command is identical
+    \textit{except} that it does not add \BashCode|Quiz 1.|,
+    \BashCode|Quiz 2| etc to the index listing. By default, the URLs for
+    the quizzes in the index are of the form \BashCode|quiz1.html|,
+    \BashCode|quiz2.html|, \BashCode|quiz3.html|, .... These URLs can be
+    changed using the optional argument of the  \LatexCode|\quiz| and
+    \LatexCode|\quiz*| commands.
 
-    \noindent The \LatexCode|\quiz| macro automatically inserts the quiz
-    numbers into the index listing and, by default, it assumes that the
-    URL for the quiz is of the form \BashCode|quiz1.html|,
-    \BashCode|quiz2.html|, \BashCode|quiz3.html|, .... If the URL for the quiz
-    does not conform to this pattern then it can be given as a optional
-    argument to \LatexCode|\quiz|.
+    Index pages in other languages are similar. For example,
+    \InputLatexCode{examples/index-cz}
+    produces:
+    \ScreenShot{A Czech index}{examples/index-cz}
+    The next section describes the \LatexCode|\BreadCrumb| and
+    \LatexCode|\BreadCrumbs| commands.
+
+    At most one file in each directory should contain a
+    \LatexCode|quizindex| environment whenever a
+    \LatexCode|quizindex| environment is compiled with \WebQuiz a file
+    \BashCode|quizindex.js| is created in the current directory. As
+    described in the next section, this file is used to create drop-down
+    menus that list the quiz index in all of the quizzes in the current
+    directory.
+
+    \filbreak
 
     \subsubsection{Breadcrumbs}\label{SS:breadcrumbs}\index{breadcrumbs}
-
     \WebQuiz provides a straightforward way to place navigation breadcrumbs
     at the top of the quiz web page. By default the
     breadcrumbs are disabled. Adding \LatexCode|\BreadCrumbs| command
-    like:
+    like\footnote{In a web browser all of the parts of the breadcrumbs
+    have the same height. In contrast, in this manual the ``Quizzes''
+    breadcrumb is slightly fatter than the other crumbs. This is an
+    unfortunate artefact of how the images are generated for the
+    manual.}:
     \begin{latexcode}
         \BreadCrumbs{Mathematics /|Math1001 /u/Math1001|quizindex|title}
     \end{latexcode}
-    adds the following breadcrumbs, or navigation links,
-    to the top of the quiz page:
+    adds the following breadcrumbs, or navigation links, to the top of
+    the quiz page:
     \ScreenShot{Example breadcrumbs}{examples/breadcrumbs}
-    The breadcrumbs are typically navigation links\footnote{In a web browser all of the
-    parts of the breadcrumbs have the same height. In contrast, in this
-    manual the ``Quizzes'' breadcrumb is uneven. This is just an
-    unfortunate artefact of how the images are generated for the manual.}.
-    In the example above:
+    The breadcrumbs are typically navigation links. In this example:
     \begin{itemize}
-      \item clicking on \BashCode|Mathematics| takes you to the
-      \textit{relative URL} \BashCode{/}, the root directory for the web
+      \item In the \LatexCode|\BreadCrumbs|, the \BashCode|Mathematics /| inserts the text
+      \BashCode|Mathematics| as the first crumb with (relative) URL
+      \BashCode|/|, the root directory for the web
       server, which is often the correct URL for the department (or the
       institution)
-      \item clicking on
-      \BashCode|MATH1001| takes you to the
-      unit of study web page, which has relative URL \BashCode{/u/Math1001}, and,
-      \item clicking on \BashCode|Quizzes| takes you to the index page for
-      the quizzes for the current unit (see \autoref{SS:index}), that, by
-      default, has URL \textit{unit URL}\BashCode|/Quizzes|.  As alluded
-      to in the last section, clicking on the~{\large\color{red} $\equiv$}
-      symbol after \textit{Quizzes} causes a drop-down menu to appear that
-      contains links to all of the quizzes for the current unit of study:
-      \ScreenShot{Drop-down menu giving index of quizzes}{examples/dropdown}
-      This drop-down menu appears only if the current directory
-      contains a \WebQuiz index file that has been compiled.
-      \CrossIndex{breadcrumbs}{quizindex}.
+      \item The \BashCode|Math101 /u/math101| inserts the text
+      \BashCode|Math101| as the second breadcrumb with URL
+      \BashCode|/u/math101|.
+      \item The \BashCode|quizindex| inserts the text \BashCode|Quizzes|
+      together with the symbol $\equiv$, which opens a drop-down menu
+      that contains the list of quizzes in the quiz index for the unit.
+      This is described in more detail below.
+      \item Finally the \LatexCode|title| in the breadcrumbs inserts, as
+      text, the part of the title before the first colon in the title,
+      where the title is given by \LatexCode|\title{...}|.
     \end{itemize}
     The breadcrumbs for the quiz web page can be either be configured
     quiz-by-quiz, using the \LatexCode|\BreadCrumbs| macro
@@ -764,10 +786,10 @@
     \begin{bashcode}
       > webquiz --edit-settings
     \end{bashcode}
-    as described in \autoref{SS:commandline}.
-    (The breadcrumb are disabled by default.)
-    The breadcrumbs are given as a ``|-separated list''. For example,
-    quite reasonable breadcrumbs are given by:
+    as described in \autoref{SS:commandline}. Breadcrumbs are disabled by default.
+
+    The breadcrumbs inside the \LatexCode|\BreadCrumbs{...}| command are given as
+    a ``|-separated list''. For example, quite reasonable breadcrumbs are given by:
     \begin{latexcode}
       \BreadCrumbs{ department | unitcode | quizindex | title }
     \end{latexcode}
@@ -781,21 +803,19 @@
     \begin{latexcode}
       \BreadCrumbs{ crumb1 | crumb2 | crumb3 | crumb4 | ...  }
     \end{latexcode}
-    where the crumbs are interpreted as described below.
     In principle, there can be arbitrarily many crumbs in your
     breadcrumbs but, in practice, five is more than enough.
-
-    The \LatexCode|\BreadCrumbs| command accepts the following ``magic crumbs'':
+    The crumbs inside a \LatexCode|\BreadCrumbs| command are interpreted as follows:
 
     \begin{description}
-      \item[breadcrumb] The breadcrumb for the current quiz, which is set using \LatexCode|\BreadCrumb|.
-      This breadcrumb is purely descriptive with only
-      the \LatexCode|\BreadCrumb| text appearing. In particular, no
-      hyperlink is added.
+      \item[breadcrumb] The breadcrumb for the current quiz, which is
+      set using the \LatexCode|\BreadCrumb| macro.  This breadcrumb is
+      purely descriptive, with no hyperlink being added and only the text given by
+      \LatexCode|\BreadCrumb| appearing.
       \CrossIndex*{BreadCrumb}*{breadcrumb}
 
       \item[department] This expands to a link to your department, where
-      the department text is set using \LatexCode|\Department| and its URL is set by
+      the department text is set using the macro \LatexCode|\Department| and its URL is set by
       \LatexCode|\DepartmentURL|.
       \macroIndex{Department}\macroIndex{DepartmentURL}
       \CrossIndex*{BreadCrumb}{department}
@@ -807,22 +827,38 @@
       \macroIndex{Institution}\macroIndex{InstitutionURL}
       \CrossIndex*{BreadCrumb}{institution}
 
-      \item[quizindex] This expands to ``Quizzes'', which is a link to
-      the index page for your unit, as defined by \LatexCode|\QuizzesURL|. In
-      addition, a drop-down menu to the index page is added to the
-      breadcrumbs, which is accessed via {\large\color{red} $\equiv$}.
-      \macroIndex{QuizzesURL}
-      \CrossIndex*{BreadCrumb}{quizindex}
+      \item[quizindex] This expands to \BashCode|Quizzes|, which is a
+      link to the index page for your unit, as defined by
+      \LatexCode|\QuizzesURL|, which is described below.
+      In addition, if the directory contains an
+      index file (see \autoref{SS:index}), then the symbol
+      {\large$\equiv$} will appear, giving access to a drop-down menu to
+      the index page. The drop-down menu created by the
+      \LatexCode|quizindex| environment looks like this:
+      \ScreenShot{Drop-down menu giving index of
+      quizzes}{examples/dropdown} \macroIndex{QuizzesURL}
+      \CrossIndex*{BreadCrumb}{quizindex} This drop-down menu will only
+      appear as soon as a \WebQuiz \LatexCode|quizindex| environment has
+      been compiles in the current directory.
+      \CrossIndex{breadcrumbs}{quizindex}.
 
-      \item[Title] This expands to the full title of the quiz page, as given by
-      the \LatexCode|\title|.
+      For those interested in how this is done, whenever \WebQuiz
+      compiles a \LatexCode|quizindex| environment it creates a
+      \Javascript file \BashCode|quizindex.js|. Every quiz file includes
+      this \Javascript file, if it exists, and this allows it to display
+      a drop-down menu for the quiz index.
+
+      \item[Title] This expands to the full title of the quiz page,
+      without a hyperlink, as given by the \LatexCode|\title|.
       \CrossIndex*{BreadCrumb}*{Title}
 
       \item[title] This expands to the part of title of the quiz page,
-      as given by the \LatexCode|\title| command, that is
+      without a hyperlink, as given by the \LatexCode|\title| command.
+      That is, this expands to print the part of the title
       \textit{before} the first colon ``:'' in the title. So, for
       example, if the title is ``Quiz 1: The wonders of life'' then
-      ``Quiz 1'' will be added to the list of breadcrumbs.
+      ``Quiz 1'' will be added to the list of breadcrumbs. If the title
+      does not contain a colon then the complete title is printed.
       \CrossIndex*{BreadCrumb}*{title}
 
       \item[unitcode] This expands to a link to the unit code, where the
@@ -843,22 +879,26 @@
 
     \noindent
     In addition, each \textit{crumb} in a breadcrumb, except for the
-    ``magic crumbs'' listed above, is allowed to be arbitrary text. In
-    this case, the last ``word'' in the crumb is treated as a URL if it
-    either beings with a backslash, $\backslash$, or it begins with
+    ``magic crumbs'' listed above, is allowed to be arbitrary text ---
+    although, non-ascii characters may cause probnlems. In this case, the
+    last ``word'' in the crumb is treated as a URL if it either beings
+    with a backslash, $\backslash$, or if it begins with
     \BashCode|http|.  For example, the code:
     \InputLatexCode{examples/montypython}
     \noindent
     results in the following breadcrumbs:
     \ScreenShot{Guaranteed to offend some one}{examples/montypython}
     Notice that it is necessary to correctly escape spaces etc in
-    URLs that are specified this way.
+    URLs that are specified this way. Similarly, all of the characters
+    in the breadcrumbs should be ascii characters as unicode is like to
+    cause encoding issues (see the Czech index given in
+    \autoref{SS:index}).
 
     If any part of a ``magic'' breadcrumb has not been defined then it
     is printed with question marks on the web page. For example, the quiz
     file
     \InputLatexCode{examples/nounits}
-    leads to the breadcrumbs:
+    does not define the unit code, so it results in the ``bad'' breadcrumbs:
     \ScreenShot{Breadcrumbs with no unit code}{examples/nounits}
 
     Finally, here is the list of \WebQuiz commands that can be used to
@@ -875,7 +915,7 @@
           breadcrumbs = department | unitcode | breadcrumb
       \end{bashcode}
       Using \LatexCode|\BreadCrumb| allows you to set the last crumb to
-      something that describes the quiz.
+      some meaningful text that describes the quiz.
 
     \Item{Department}\macroIndex{Department}
       The \LatexCode|\Department| command sets the name of the
@@ -886,7 +926,7 @@
       The default department can be set in the \webquizrc file using
       \BashCode|webquiz --edit-settings|.
 
-      Default value: \BashCode{''}
+      Default value: \BashCode{''} \qquad(i.e. the empty string)
 
     \Item{DepartmentURL}\macroIndex{DepartmentURL}
       The \LatexCode|\DepartmentURL| command sets URL for the department. As
@@ -909,7 +949,7 @@
       The default institution can be set in the \webquizrc file using
       \BashCode|webquiz --edit-settings|.
 
-      Default value: \BashCode{''}
+      Default value: \BashCode{''} \qquad(i.e. the empty string)
 
 
       \Item{InstitutionURL}\macroIndex{InstitutionURL}
@@ -947,9 +987,52 @@
 
   \end{description}
 
+  It makes sense to set defaults for \LatexCode|\BreadCrumbs|
+  \LatexCode|\Department|, \LatexCode|\DepartmentURL|,
+  \LatexCode|\Institution| and \LatexCode|\InstitutionURL| in the
+  \webquizrc. After doing this, a typical \WebQuiz file might look like this:
+
+  \begin{latexcode}
+    \documentclass{webquiz}
+    \UnitName{Fundamental stuff}
+    \UnitCode{Stuff101}
+    \UnitURL{/courses/stuff101}
+
+    \title{Stuffing: the art of taxidermy}
+
+    \begin{document}
+      \begin{question}
+        first question...
+      \end{question}
+      \begin{question}
+        second question...
+      \end{question}
+    \end{document}
+  \end{latexcode}
+
+  If you have many quizzes for many different units then a better approach is to create
+  a \LaTeX{} ``package'', say \BashCode|ourunits.sty|, to set these variables:
+  \begin{latexcode}
+    % ourunits.sty - set unit names, codes and URLs
+    \DeclareOption{stuff101}{
+      \UnitName{Fundamental stuff}
+      \UnitCode{Stuff101}
+      \UnitURL{/courses/stuff101}
+    }
+    \DeclareOption{stuff102}{
+      \UnitName{Fundamental stuff too}
+      \UnitCode{Stuff102}
+      \UnitURL{/courses/stuff102}
+    }
+    \ProcessOptions
+    \endinput
+  \end{latexcode}
+  Then you can replace the opening lines of the quiz file with
+  \LatexCode|\usepackage[stuff101]{ourunits}|.
+
   \subsection{WebQuiz document class options}\label{SS:classOptions}
 
-    The \textbf{webquiz} document class: supports the following document
+    The \WebQuiz document class supports the following document
     class options:
     \begin{latexcode}
       fixedorder, hidesidemenu, language, onepage, pst2pdf,
@@ -966,14 +1049,15 @@
     \item[fixedorder, randomorder]
     \CrossIndex{document class options}{fixedorder}
     \CrossIndex{document class options}{randomorder}
-      By default, the questions in the quiz are displayed in
-      \DefaultValue{fixedorder}, which is the order that they appear in
-      the \LaTeX{} file for the quiz. That is, question~1 is the first
-      question appearing in the \LaTeX file,m question~2 is the second
-      question and so on. With the \LatexCode|randomorder| option the
-      questions in the quiz are displayed in a random order that
-      changes each time that the quiz is run and so is generally different for
-      each student. For example, the code:
+      By default, the questions in the quiz are displayed in a
+      \DefaultValue{fixedorder} for all students who take the quiz,
+      which is the order that they appear in the \LaTeX{} file for the
+      quiz. That is, question~1 is the first question appearing in the
+      \LaTeX file,m question~2 is the second question and so on. With
+      the \LatexCode|randomorder| option the questions in the quiz are
+      displayed in a random order that changes each time that the quiz
+      is run, and so the questions are generally in a different order
+      for every student. For example, the code:
       \InputLatexCode{examples/random}
       produces the quiz with randomly arranged quiz questions:
       \ScreenShot{Randomly ordered questions}{examples/random}
@@ -1033,7 +1117,7 @@
 
       The language files were created largely using google translate so
       they may well need fine-tuning\footnote{For example, the word
-      ``Copyright'' in lefthand the side-margin is not translated but
+      ``Copyright'' in left-hand the side-margin is not translated but
       perhaps it should be.}. You can use \BashCode|kpsewhich| to look at
       the language files, which all have names of the form
       \BashCode|webquiz-language.lang|.  For example, the
@@ -1882,8 +1966,9 @@
     or with \WebQuiz. If you can, please also test to see if your code
     compiles using \TeXfht directly.
 
+\filbreak
+
 \appendix
-\newpage
 \section*{Appendices}
   \addcontentsline{toc}{section}{Appendices}
 \renewcommand\thesection{}
