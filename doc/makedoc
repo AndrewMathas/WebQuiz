@@ -5,14 +5,15 @@
 # the images used by webquiz.tex
 
 WEBQUIZDOC="$PWD"
+PREFIX=""
 
 function message() {
   if [ "$quiet" = false ]; then
-     echo -e "$@"
+     echo -e "${PREFIX}$@"
   fi
 }
 function make_languages() {
-  message " - generating list of webquiz supported languages"
+  message "Generating list of webquiz supported languages"
   LANG="webquiz.languages"
   /bin/rm -f $LANG
   echo -e "% List of languages currently supported by WebQuiz -- generated $(date '+%Y-%m-%d')\n" > $LANG
@@ -23,28 +24,28 @@ function make_languages() {
 }
 
 function check_examples() {
-  /bin/rm -f examplefiles screenshots madeimages
-  ls -1 examples/*.tex | sed 's@.tex@@' | sed 's@examples.@@' | sort -u > examplefiles
-  ag ScreenShot webquiz.tex | sed 's@.*examples.@@'| sed 's@}@@' | sort -u >screenshots
-  examples/makeimages --list | sort > madeimages
-  gvim -d examplefiles madeimages screenshots 
+  message "Checking for unused images from the examples directory"
+  /bin/rm -f makedoc-{examples,images,screenshots}
+  ls -1 examples/*.tex | sed 's@.tex@@' | sed 's@examples.@@' | sort -u > makedoc-examples
+  ag ScreenShot webquiz.tex | sed 's@.*examples.@@'| sed 's@}@@' | sort -u > makedoc-screenshots
+  examples/makeimages --list | sort > makedoc-images
+  gvim -d makedoc-examples makedoc-images makedoc-screenshots
 }
 
 function make_themes () {
-  message " - Generating list of webquiz supported css themes"
+  message "Generating list of webquiz supported css themes"
 
   # next generate code to include screenshots for each theme in the appendix
   THEMESCREENSHOT="$WEBQUIZDOC/webquiz-themes.tex"
   /bin/rm -f $THEMESCREENSHOT
   MAKEIMAGES="$WEBQUIZDOC/examples/makeimages"
-  echo -e "% Include screen shots for each theme supported by WebQuiz -- generated $(date '+%Y-%m-%d')\n" > $THEMESCREENSHOT
+  echo -e "% Include screen shots for each theme supported by WebQuiz -- generated $(date '+%Y-%m-%d')" > $THEMESCREENSHOT
   ( cd ../css
     for theme in webquiz-*.scss ; do
         sass --style compressed $theme ${theme/scss/css}
         name=${theme/webquiz-/}
         name=${name/.scss/}
-        echo -e "\\ScreenShot[0.7]{Example of the \\\textbf{$name} theme}{examples/theme-$name}" >> $THEMESCREENSHOT
-        echo -e "\\index{theme!$name}\n" >> $THEMESCREENSHOT
+        echo -e "\\ShowcaseTheme{$name}" >> $THEMESCREENSHOT
         if [ ! -e "$WEBQUIZDOC/examples/theme-$name.tex" ]; then
           ( cd $WEBQUIZDOC/examples
             sed "s@default@$name@" theme.tex > "theme-$name.tex"
@@ -65,7 +66,7 @@ function make_themes () {
 }
 
 function make_examples() {
-  message " - Generating webquiz example images"
+  message "Generating webquiz example images"
   (cd examples
    if [ "$quiet" = true ]; then
      ./makeimages > /dev/null
@@ -75,13 +76,13 @@ function make_examples() {
 }
 
 function make_settings() {
-  message " - Generating webquiz settings file"
+  message "Generating webquiz settings file"
   /bin/rm -f webquiz.settings
   webquiz --settings >> webquiz.settings
 }
 
 function make_usage() {
-  message " - Generating webquiz usage file"
+  message "Generating webquiz usage file"
   /bin/rm -f webquiz.usage
   webquiz --shorthelp >> webquiz.usage
 }
@@ -93,12 +94,13 @@ function make_online_manual() {
 
 function make_all() {
   message "Making pdf for manual"
+  PREFEX=" - "
   make_languages
   make_settings
   make_themes
   make_usage
+  make_examples
   if  [[ "$fast" = false ]] ; then
-      make_examples
       make_online_manual
       pdflatex --interaction=batchmode webquiz
       pdflatex --interaction=batchmode webquiz
@@ -107,7 +109,7 @@ function make_all() {
 }
 
 function usage() {
-  message "make --[fast|quiet] --[check-examples|examples|languages|manual|online|themes|]"
+  message "Make --[fast|quiet] --[check-examples|examples|languages|manual|online|themes|]"
 }
 
 fast=false
