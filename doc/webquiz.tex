@@ -41,6 +41,8 @@
 \indexsetup{level=\section*,toclevel=section,noclearpage}
 \makeindex[intoc,noautomatic,columns=3]
 
+\newcommand\Heading[1]{\noindent\textcolor{ForestGreen}{\textbf{#1}}}
+
 \newenvironment{heading}[1][]
 {\noindent\trivlist\item[\hskip\labelsep\textbf{\textcolor{ForestGreen}{#1}}]}
   {\endtrivlist}
@@ -1540,13 +1542,10 @@
 
   \index{pstricks}
   \noindent
-  Using \ctan{pstricks} is, in some sense, easier that \ctan[pgf]{tikz}
-  because it seems to work better with \ctan{tex4ht}, however, because of
-  recent changes in \ctan{tex4ht} and \ctan{pstricks} you should install
-  the latest updates of both packages.  In addition, because \ctan{tikz}
-  uses  \ctan{dvisvgm} to convert the images created by \ctan{pstricks},
-  it is necessary to make sure that this package is correctly
-  installed. At first sight this looks OK because \ctan{dvisvgm} is
+  \WebQuiz, via \TeXfht, uses \ctan{dvisvgm} to convert certain images to
+  \href{https://en.wikipedia.org/wiki/Scalable_Vector_Graphics}{Scalable
+  Vector Graphics} (SVG). This is done using his is done
+  using \ctan{dvisvgm}. At first sight this is OK because \ctan{dvisvgm} is
   included in \TeXLive and Mik\TeX, however, \ctan{dvisvgm} uses
   \href{https://www.ghostscript.com/}{Ghostscript} and this needs to be
   correctly configured and, as outlined in
@@ -1582,59 +1581,48 @@
       accordingly
       \item the \BashCode|-h| output does not contain \BashCode|-libgs|
       and the \BashCode|-l| output does not contain \BashCode|ps|:
-      \ctan{dvisgm} was not built with postscript support. In this
+      \ctan{dvisvgm} was not built with postscript support. In this
       case, \WebQuiz will not be able to process \ctan{svg} images. You
-      need to reinstall \ctan{dvisgm} with ghostscript support.
+      need to reinstall \ctan{dvisvgm} with ghostscript support.
     \end{itemize}
 
   \section{The WebQuiz program} \index{usage}
 
       The \WebQuiz program was designed to be run from the command-line,
       so to process the file \BashCode|quiz.tex| using \WebQuiz type:
-
-      \BashCode|> webquiz quiz| \qquad or \qquad \BashCode|> webquiz quiz.tex|
-
-      \noindent (Here ``$>$'' is the command-line prompt.) One useful
-      feature of \WebQuiz is that you can ask it to process more than one
+      \begin{bashcode}
+        > webquiz quiz          or          > webquiz > quiz.tex
+      \end{bashcode}
+      One feature of \WebQuiz is that you can process more than one
       quiz file at a time. For example, if you have quiz files
       \BashCode|quiz1.tex|, ..., \BashCode|quiz9.tex| in the current directory
       then, on a UNIX system, you can rebuild the web pages for all of
       these quizzes using the single command:
-
-      \BashCode|> webquiz quiz[1-9].tex|
-
-      \noindent
-      This is useful if some aspect of all of the quizzes has changed. In
-      fact, one would probably use
-
-      \BashCode|> webquiz --qq quiz[1-9].tex|
-
-      \noindent
+      \begin{bashcode}
+        > webquiz quiz[1-9].tex
+      \end{bashcode}
+      This is useful if some generic aspect of all of the quizzes has
+      changed, such as breadcrumbs or a department URL. In fact, one
+      would probably use
+      \begin{bashcode}
+        > webquiz -qq quiz[1-9].tex
+      \end{bashcode}
       because the \BashCode|webquiz --qq| command-line option suppresses
       almost all of the output produced by \LaTeX\ and \TeXfht. The next
       section discusses the \WebQuiz command-line options.
 
       \subsection{Command-line options}\label{SS:commandline}
       \index{command-line options}
-
       \InputBashCode{webquiz.usage}
-
-  The command-line options are listed on separate lines here to improve
-  readability but they can appear in any order when you use them provided
-  that they are all on the same line.  The order that the command-line
-  options are listed in indicates how often you are likely to need this
-  option.
+      The command-line options are listed on separate lines to
+      improve readability but they can appear in any order when you use
+      them provided that they are all on the same line. We group the
+      command-line options by their functionality in order to describe
+      them.
 
       \begin{description}
          \item[-h, --help] \CrossIndex{command-line options}{help}
             list the command-line options and exit
-
-         \item[-l, \ddash lau] Use lualatex to compile the quiz
-         \index{lualatex}
-
-         \item[-s,\ddash shell-escape] \CrossIndex{command-line options}{shell-escape}
-         \item[-s,\ddash shell-escape] \CrossIndex{command-line options}{shell-escape}
-            Shell escape for htlatex/make4ht
 
          \item[-q, -qq, \ddash quiet] \CrossIndex{command-line options}{quiet mode}
          Suppress tex4ht messages: \BashCode|-q| is quiet and
@@ -1645,13 +1633,36 @@
          errors, so using the \BashCode|-q| and \BashCode|-qq| options is not
          recommended if your file is not compiling.
 
-         \item[-x, \ddash xelatex] Use xelatex to compile the quiz
+         \end{description}
+
+         \Heading{\TeX{} options}
+
+         \begin{description}
+
+         \item[-d, \ddash draft] draft mode. The \LaTeX file is processed
+         only once by \BashCode|htlatex|, which gives a much faster
+         compilation time but cross references etc may not be completely
+         up to date. This is equivalent to using
+         \BashCode|make4ht --mode draft|
+         \CrossIndex{command-line options}{draft mode}
+
+         \item[-s,\ddash shell-escape] Shell escape for htlatex/make4ht
+         \CrossIndex{command-line options}{shell-escape}
+
+         \item[-l,\ddash lua] Use lua\LaTeX{} to compile the quiz
+         \CrossIndex{command-line options}{lua}
+
+         \item[\ddash latex] Use \LaTeX{} to compile the quiz
+         \CrossIndex{command-line options}{lua}
+
+         \item[-x, \ddash xelatex] Use xe\LaTeX{} to compile the quiz
+         \CrossIndex{command-line options}{xelatex}
          \index{xelatex}
 
          \end{description}
 
-          \noindent
-         The following options relate to the settings for \WebQuiz:
+         \Heading{\WebQuiz settings and configuration}
+
          \begin{description}
 
          \item[-i, \ddash initialise] \CrossIndex{command-line options}{initialise}
@@ -1727,9 +1738,8 @@
 
           \end{description}
 
-          \noindent
-          The remaining options are for advanced usage and will not be
-          needed by most users:
+          \Heading{Advanced options}
+
           \textit{An incorrect value for these settings may stop \WebQuiz from working.}
 
           \begin{description}

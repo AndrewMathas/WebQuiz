@@ -86,12 +86,11 @@
 \RequirePackage{xparse}
 \RequirePackage{pgffor}
 
-\ifTikz
   % hack to fix two pgf bugs - apply only when when using tex4ht
-  %\ifdefined\HCode\def\pgfsysdriver{pgfsys-tex4ht-wq-fixed.def}\fi
-  %\ifdefined\HCode\def\pgfsysdriver{pgfsys-tex4ht-updated.def}\fi
-  \ifdefined\HCode\def\pgfsysdriver{pgfsys-dvisvgm4ht.def}\fi
-  \RequirePackage{tikz}
+  %\ifdefined\HCode \def\pgfsysdriver{pgfsys-tex4ht-wq-fixed.def}\fi
+  %\ifdefined\HCode \def\pgfsysdriver{pgfsys-tex4ht-updated.def}\fi
+\ifdefined\HCode
+  \def\pgfsysdriver{pgfsys-dvisvgm4ht.def}
 \fi
 
 \def\MQ@Error{\PackageError{webquiz}}
@@ -170,6 +169,7 @@
   \ifdefined\HCode\else
      \textsc{WebQuiz} will process this quiz using \textbf{pst2pdf}.
   \fi
+  \RequirePackage{tikz}
 }
 
 % -----------------------------------------------------------------------
