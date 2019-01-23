@@ -87,7 +87,7 @@
 }
 \lstnewenvironment{latexcode}{\lstset{style=latexcode}}{}
 \NewDocumentCommand\LatexCode{v}{\lstinline[style=latexcode]|#1|}
-\newcommand\InputLatexCode[1]{\lstinputlisting[style=latexcode]{#1}}
+\NewDocumentCommand\InputLatexCode{ O{examples/} m}{\lstinputlisting[style=latexcode]{#1#2}}
 
 \lstdefinestyle{bashcode}{
   language=bash,
@@ -125,7 +125,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \RequirePackage{tcolorbox}
 \tcbuselibrary{skins}
-\NewDocumentCommand\ScreenShot{ O{0.8} m m }{%
+\NewDocumentCommand\ScreenShot{ O{0.8} m O{examples/} m }{%
   \begin{center}
     \begin{tcolorbox}[width=#1\textwidth, title=#2, arc=3mm,
       colframe=Peru,
@@ -137,11 +137,14 @@
       fonttitle=\footnotesize,
       boxed title style={size=fbox, colback=white, arc=2mm},
       coltitle=Peru,
-    ] \includegraphics[width=\textwidth]{#3}
+    ] \includegraphics[width=\textwidth]{#3#4}
     \end{tcolorbox}
   \end{center}%
 }
-
+\newcommand\ShowcaseTheme[1]{%
+  \ScreenShot[0.7]{Example of the \textbf{#1} theme}{theme-#1}%
+  \index{theme!#1}%
+}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NewDocumentCommand{\Verb}{v}{{\color{blue}#1}}
 

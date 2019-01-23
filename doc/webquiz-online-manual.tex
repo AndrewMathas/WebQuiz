@@ -12,8 +12,9 @@
 %% This file is part of the WebQuiz class distribution
 \documentclass[svgnames]{webquiz}
 
-% load webquiz-doc style
-\input{webquiz-doc.tex}
+% load webquiz-ini and webquiz-doc code -- doc needs ini so ini is first
+\usepackage{webquiz-ini}
+\usepackage{webquiz-doc}
 
 \usepackage{pst-plot}
 \usepackage{hyperref}
