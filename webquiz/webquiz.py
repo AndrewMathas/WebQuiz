@@ -560,8 +560,11 @@ class WebQuizSettings:
                             print('setting not changed: {} must be True or False'.format(key))
                             setting = self[key]
 
+                    elif setting=='NONE':
+                        setting = ''
+
+                    self.settings[key]['changed'] = setting==self[key]
                     self[key] = setting
-                    self.settings[key]['changed'] = True
 
         # save the settings, print them and exit
         self.write_webquizrc()

@@ -86,12 +86,11 @@
 \RequirePackage{xparse}
 \RequirePackage{pgffor}
 
-% hack to fix two pgf bugs - apply only when when using tex4ht
-
 \ifTikz
-  \ifdefined\HCode
-   \def\pgfsysdriver{pgfsys-tex4ht-mq-fixed.def}
-  \fi
+  % hack to fix two pgf bugs - apply only when when using tex4ht
+  %\ifdefined\HCode\def\pgfsysdriver{pgfsys-tex4ht-wq-fixed.def}\fi
+  %\ifdefined\HCode\def\pgfsysdriver{pgfsys-tex4ht-updated.def}\fi
+  \ifdefined\HCode\def\pgfsysdriver{pgfsys-dvisvgm4ht.def}\fi
   \RequirePackage{tikz}
 \fi
 

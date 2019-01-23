@@ -45,6 +45,8 @@
 {\noindent\trivlist\item[\hskip\labelsep\textbf{\textcolor{ForestGreen}{#1}}]}
   {\endtrivlist}
 
+\newenvironment{dangerous}{\trivlist\item[\hskip\labelsep\textcolor{red}{\textdbend}]}{\endtrivlist}
+
 \setcounter{secnumdepth}{3}
 \setcounter{tocdepth}{3}
 \renewcommand\thesubsubsection{\thesubsection\alph{subsubsection}}
@@ -82,7 +84,7 @@
    {\href{https://www.ctan.org/#1}{\texttt{#2}}}
 \newcommand\TeXLive{\ctan[/]{\TeX Live}\xspace}
 \newcommand\TeXfht{\href{https://www.ctan.org/tex4ht}{TeX4ht}\xspace}
-\newcommand\Ctan{\ctan[]{ctan}}
+\newcommand\Ctan{\ctan[]{ctan}\xspace}
 \newcommand\ddash{\texttt{\textemdash\textemdash}}
 \newcommand\webquizrc{\index{webquizrc}%
   \BashCode|webquizrc| file (\autoref{SS:rcfile})\xspace%
@@ -1210,49 +1212,60 @@
   produces the quiz page:
   \ScreenShot{Including a lion}{lion-image}
 
-  Even though \ctan{tikz} and \ctan{pstricks} can be used in \WebQuiz
-  quizzes, unfortunately, both of these packages sometimes have problems
-  when used with \TeXfht and hence with \WebQuiz. WebQuiz tries to solve
-  some these problems for you provided that you use the appropriate
-  document class options.
-
-  For example, the following \ctan{pstricks} code works out of the box:
+  Using \ctan{pstricks} is often just as easy, such as the following
+  code that works out of the box:
     \InputLatexCode{pstricks-ex}
   to produce the web page:
     \ScreenShot{Pstricks example}{pstricks-ex}
+
+  Even though \ctan{tikz} and \ctan{pstricks} can be used in \WebQuiz
+  quizzes, both of these packages sometimes have problems. WebQuiz tries
+  to solve some these problems for you if you use the
+  \LatexCode|pst2pdf| or \LatexCode|tikz| document-class options, which
+  we now describe.
 
   \begin{description}
       \item[pst2pdf] \index{pstricks}\CrossIndex{document class options}{pst2pdf}
 
       For the most part, \ctan{pstricks} drawings display correctly.
-      When they do fail they can often be salvaged by using
+      When they do fail they can sometimes be salvaged using
       \ctan{pst2pdf}. Applying \ctan{pst2pdf} to a \WebQuiz quiz is not
-      completely straightforward so \WebQuiz provides the document-class
-      option \ctan{pst2pdf} to automatically use \ctan{pst2pdf} as
-      part of the quiz web page build process. Using \ctan{pst2pdf} will
-      often, but not always fix problems when \ctan{pstricks} images do
-      not display correctly on a \WebQuiz quiz web page.
+      completely straightforward, so \WebQuiz provides the
+      document-class option \ctan{pst2pdf} to automatically apply
+      \ctan{pst2pdf} as part of the quiz web page build process. If your
+      \ctan{pstricks} drawings do not display correctly it is worthwhile
+      to see if \ctan{pst2pdf} fixes the problems.
 
       For example, the following quiz compiles only with the
       \ctan{pst2pdf} document-class option:
       \InputLatexCode{pst2pdf}
-      It produces the quiz:
-      \ScreenShot{Example requiring the pst2pdf document class option}{pst2pdf}
+      to produce the quiz:
+      \ScreenShot{Example requiring the pst2pdf document class
+      option}{pst2pdf} The placement of the image is still not quite
+      perfect, although this adjusts with the screen size and it does,
+      in fact, displays well on a mobile device.  More importantly, if
+      you use the \LatexCode|pst2pdf| document-class option then
+      \WebQuiz is able to display this image.
 
       \noindent
       Unfortunately, \ctan{pst2pdf} can fail silently without giving any
-      warnings and it needs to be properly installed.
-      \dbend{According to the \ctan{pst2pdf} manual:}
-      \begin{quote}
+      warnings. If you plan to use the \LatexCode|pst2pdf|
+      document-class option then you should first check to make
+      that it is properly installed. According to the \ctan{pst2pdf}
+      manual:
+
+      \begin{dangerous}
         \ctan{pst2pdf} needs Ghostscript (>=9.14), perl (>=5.18), pdf2svg, pdftoppm
         and pdftops (from poppler-utils or xpdf-utils) to process a file
         using \ctan{pst2pdf}.
-      \end{quote}
-      If using \ctan{pst2pdf} does not produce an image then the
-      problem might be that you have not installed all of the programs
-      that \ctan{pst2pdf} relies upon, so look in your log files
-      for error messages and check that the programs listed above are
-      correctly installed. See also \autoref{SS:pstricks}.
+      \end{dangerous}
+
+      If using \ctan{pst2pdf} does not produce an image then, rather
+      than \ctan{pst2pdf} not working, the problem might be that you
+      have not installed all of the programs that \ctan{pst2pdf} relies
+      upon, so look in your log files for error messages and check that
+      all of the programs listed above are correctly installed, with the
+      specified version numbers. See also \autoref{SS:pstricks}.
 
     \item[tikz]\CrossIndex{document class options}{tikz}
       Giving this class option both loads the \ctan[pgf]{tikz} package
@@ -1261,21 +1274,17 @@
       this \ctan{tikz} document option fixes several issues with PGF that
       prevent it from working with \TeXfht. Thanks are due to Michal
       Hoftich for supplying both fixes!\footnote{The first issue is a bug
-      that has been recently been fixed by the PGF developers but the fix
-      may not be installed on all systems.  The second issue is that the
-      PGF files hard code \BashCode|ISO-8859-1| encoding, which is a problem
-      if you use UTF-8; see
-      \href{https://tex.stackexchange.com/questions/390421}{Make4ht, tikz
-      and UTF 8 encoding question}.  }
-
+      that was fixed by the PGF developers only in 2019.  The second issue is that
+      PGF hard codes \BashCode|ISO-8859-1| encoding, which is a problem
+      since \WebQuiz uses UTF-8; see
+      \href{https://tex.stackexchange.com/questions/390421}{tex.stackexchange.com/questions/390421}
+      for more details.}
       \InputLatexCode{tikz-ex}
-
       This produces:
-
       \ScreenShot{Tikz example}{tikz-ex}
   \end{description}
 
-  Most people use either \ctan{pstricks} or \ctan{tik}. A quiz that
+  Most people use either \ctan{pstricks} or \ctan{tikz}. A quiz that
   tries to use both \ctan{pstricks} and  \ctan{tikz} will probably not
   compile.
 
@@ -1294,24 +1303,26 @@
       more details.
 
     \WebQuiz uses \TeXfht{} to convert the quiz content from \LaTeX{} to
-    \HTML. If \TeXfht{} has not been configured to for some of the commands
-    or environments that you are using then they may not display correctly
-    in your on-line quizzes. The ``correct'' way to fix such problems is
-    to write appropriate \TeXfht{} configuration commands, however, this
-    can be tricky to do especially if you are not used to the inner
-    workings of \TeX{} and \TeXfht.
+    \HTML. If \TeXfht{} has not been configured to for some of the
+    commands or environments that you are using then they may not
+    display correctly in your on-line quizzes. The ``correct'' way to
+    fix such problems is to write appropriate \TeXfht{} configuration
+    commands, however, this can be tricky to do --- especially if you
+    are not familiar with the inner workings of \TeX{} and \TeXfht.
 
-    \WebQuiz provides the command \LatexCode|\DisplayAsImage|, which essentially
+    As a workaround, \WebQuiz provides the command \LatexCode|\DisplayAsImage|, which essentially
     tells \TeXfht to treat your command as an image when it creates the
     web page. This is an easy work-around that is much easier than writing
     your own \TeXfht configuration commands and it often produces good
-    results. For example, the \ctan{mhchem} package is a powerful package
+    results.
+
+    For example, the \ctan{mhchem} package is a powerful package
     that defines a macro \LatexCode{\ce} for writing chemical symbols but,
     unfortunately, the \LatexCode{\ce} macro has not (yet) been configured
     to work with \TeXfht, which means that this command does not work in
     \WebQuiz quizzes.  Putting the command \LatexCode{\DisplayAsImage{ce}}
     into your preamble fixes this and allows to you to produce quizzes
-    using \LatexCode{\ce}. For example, you can produce the quiz
+    using \LatexCode{\ce}. As a result, you can produce the quiz
     \ScreenShot{Using DisplayAsImage}{display-as-image}
     using the code:
     \InputLatexCode{display-as-image}
@@ -1373,12 +1384,12 @@
          \ctan{make4ht} installed.
 
          Unfortunately, the version of \ctan{make4ht} that was released
-         with \TeXLive{} 2018 had some bugs and there have been a number of
-         additional recent changes to \ctan{make4ht} and \ctan{pstricks},
-         so it is strongly recommended that you update all packages from \Ctan
-         before you try and use \WebQuiz.
+         with \TeXLive{} 2018 had some bugs and there have been many
+         recent changes to \ctan{make4ht} and \ctan{pstricks},
+         so it is strongly recommended that you update all packages
+         from \Ctan before you try and use \WebQuiz.
 
-          \item \python[Python 3]. As of writing python 3.7 is available.
+          \item \python[Python 3]. As of writing python 3.7.2 is available.
           \item \Javascript
           \item If your quizzes use \ctan{pstricks}, or if you want to
           compile the \OnlineManual, then you need to ensure that
@@ -1393,16 +1404,16 @@
       \CrossIndex{command-line options}{initialise}
       \index{installation}\index{initialisation}
 
-      \WebQuiz is a tool for creating on-line quizzes and in order for it
-      to work efficiently various files
+      \WebQuiz is a tool for creating on-line quizzes and in order for
+      it to work efficiently various files
       (\href{https://en.wikipedia.org/wiki/JavaScript}{javascript} and
-       \href{https://www.w3schools.com/css/css_intro.asp}{cascading style
-       sheets}) need to put onto your web server. \WebQuiz has an
-       \textit{initialisation} routine that helps to streamline
-       the process. In fact, until \WebQuiz has been initialised it will
-       ask you if you to run the initialisation routine each time you use
-       \WebQuiz. You can reinitialise \WebQuiz at any time using the
-       command-line option:
+      \href{https://www.w3schools.com/css/css_intro.asp}{cascading style
+      sheets}) need to put onto your web server. \WebQuiz has an
+      \textit{initialisation} routine for installing the web components
+      of the program. In fact, until \WebQuiz has been initialised it
+      will ask you if you to run the initialisation routine every time
+      you use \WebQuiz. You can reinitialise \WebQuiz at any time using
+      the command-line option:
       \begin{bashcode}
         > webquiz --initialise
       \end{bashcode}
@@ -1442,15 +1453,14 @@
       \end{bashcode}
       you will be prompted for the following:
       \begin{itemize}
-        \item The location of the \WebQuiz web directory,
-          which needs to be a directory on your local file system that is
-          visible from your web server
+        \item The location of the \WebQuiz web directory, which needs to
+        be a directory that is visible to your web server
         \item The relative URL for this directory, which tells your web
         browser where to find these files
       \end{itemize}
-      For example, on my system the base directory for our web server is
+      For example, on my system the web root for our web server is
       \BashCode|/usr/local/httpd/| and the \WebQuiz web files are in
-      \BashCode|/usr/local/httpd/UoS/WebQuiz|.  So, I set:
+      the directory \BashCode|/usr/local/httpd/UoS/WebQuiz|.  So, I set:
       \begin{quote}
         \begin{tabular}{lll} \WebQuiz web
               directory &=& \BashCode|/usr/local/httpd/UoS/WebQuiz|\\
@@ -1470,7 +1480,9 @@
 
       \begin{heading}[Remark]
         To remove all \WebQuiz files from your web server use
-        \BashCode|webquiz --uninstall|
+        \begin{bashcode}
+            > webquiz --uninstall
+        \end{bashcode}
       \end{heading}
 
       Once \WebQuiz is initialised you may also want to run:
@@ -1487,23 +1499,26 @@
       doing at each step. When you run \BashCode|webquiz --edit-settings|
       you will be prompted for the following:
       \begin{description}[nosep, labelwidth=18ex]
-        \item[breadcrumbs] breadcrumbs at the top of quiz page
-        \item[department] name of department
-        \item[department-url] url for department
-        \item[engine] default tex engine used to compile web pages
+        \item[breadcrumbs] breadcrumbs at the top of quiz page (\autoref{SS:breadcrumbs})
+        \item[department] name of department (\autoref{SS:breadcrumbs})
+        \item[department-url] url for department (\autoref{SS:breadcrumbs})
+        \item[engine] default tex engine used to compile web pages (\autoref{SS:classOptions})
         \item[hide-side-menu] do not display the side menu at start of quiz
-        \item[institution] institution or university
-        \item[institution-url] url for institution or university
-        \item[language] default language used on web pages
-        \item[one-page] display questions on one page
-        \item[random-order] randomly order the quiz questions
-        \item[theme] default colour theme used on web pages
+              (\autoref{SS:classOptions})
+        \item[institution] institution or university (\autoref{SS:breadcrumbs})
+        \item[institution-url] url for institution or university (\autoref{SS:breadcrumbs})
+        \item[language] default language used on web pages (\autoref{SS:classOptions})
+        \item[one-page] display questions on one page (\autoref{SS:classOptions})
+        \item[random-order] randomly order the quiz questions (\autoref{SS:classOptions})
+        \item[theme] default colour theme used on web pages (\autoref{SS:classOptions})
         \item[version] webquiz version number for webquizrc settings
-        \item[webquiz-url] relative url for webquiz web directory
-        \item[webquiz-www] full path to webquiz web directory
-        \item[make4ht] build file for make4ht
-        \item[mathjax] url for mathjax
+                    (\autoref{SS:rcfile})
+        \item[webquiz-url] relative url for webquiz web directory (\autoref{SS:Initialise})
+        \item[webquiz-www] full path to webquiz web directory (\autoref{SS:Initialise})
+        \item[make4ht] build file for make4ht (\autoref{SS:Initialise})
+        \item[mathjax] url for mathjax (\autoref{SS:Initialise})
         \item[webquiz-layout] name of \python module that formats the quizzes
+        (\autoref{SS:layout})
       \end{description}
       The last three options are \textit{advanced options} that you probably do not
       want to change. For more details see \autoref{SS:rcfile}, which
@@ -1513,14 +1528,14 @@
       \BashCode|webquiz --edit-settings|.
 
        When changing the settings for \WebQuiz if you are unsure what
-       a particular setting does then you should just hit return to accept
+       a particular setting does then \textit{press return} to accept
        the default value --- the default value is printed
        inside square brackets as \BashCode|[default]|. In particular, you
        are strongly recommended to accept the default values for all of
        the advanced options because it is very unlikely that you will need
        to change these when you first use \WebQuiz.
 
-      \subsection{Pstricks configuration and dvisgm}
+       \subsection{Graphics and \ctan{dvisvgm}}
       \label{SS:pstricks}
 
   \index{pstricks}
@@ -1887,14 +1902,13 @@
     corresponding  \LaTeX{} commands in the quiz file; see
     \autoref{SS:breadcrumbs} for more details.
 
-    \subsection{Changing the layout of the \WebQuiz web pages} \index{layout}
+    \subsection{Changing the layout of the \WebQuiz web pages} \index{SS:layout}
 
-    \begin{description}
-      \item[\raisebox{-12mm}{\dbend}] \vspace*{-12mm}
+    \begin{dangerous}
       \textit{This is an advanced \WebQuiz feature that most people will
       not need. To change the layout of the quiz web pages created by
       \WebQuiz requires working knowledge of \HTML and \python.}
-    \end{description}
+    \end{dangerous}
 
     The construction of the online quizzes is controlled by the \python
     file \PythonCode|webquiz_standard.py|. If you want to change the structure

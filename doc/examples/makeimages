@@ -34,7 +34,7 @@ import sys
 import time
 
 # location of the webquiz example web pages on a development server
-examplesURL = "http://localhost/WebQuiz/doc/examples"
+examplesURL = "https://localhost/WebQuiz/doc/examples"
 examplesDIR = os.path.join(os.environ['HOME'], 'Code/WebQuiz/doc/examples')
 os.chdir(examplesDIR)
 
@@ -46,8 +46,8 @@ webkit2png_mode = ''
 
 class Convert:
     r'''
-    Convert a webquiz example file into the a png image for use in the
-    manual. The following paramters are accepted:
+    Convert a webquiz example file into a png image for use in the
+    manual. The following parameters are accepted:
       - page     =  name of the page to be produced
       - src      = either pdf, html or ps which corresponds to the image
                    being generated starting with pdflatex, webkit2png or latex
@@ -56,33 +56,48 @@ class Convert:
       - question = a c| separated string of the form 'question:part',
                    where part is comma separated, to "guess" that these
                    parts are correct                                   (default: None)
-      - js       = javascript commands                                 (default: '')
+      - js       = javascript commands                                 (default: None)
+      - width    = width of image
     The actual conversion is done by using the write_image method of the class.
     '''
-    def __init__(self, page, src='html', page_out=None, delay=3,
-                 question=None, js=None, webquiz=''):
-        self.page = page
-        self.page_out = page_out if page_out is not None else self.page
-        self.delay = delay
-        self.javascript = js
-        self.webquiz = webquiz
 
-        if not question is None:
-            self.javascript = ''
-            for qp in question.split('|'):
+    def __init__(self, page, **args):
+        # set some default values and then process the arguments
+        defaults = dict(
+            delay = 3,
+            js = None,
+            page_out = None,
+            question = None,
+            src = 'html',
+            webquiz = '',
+            width =500
+        )
+        self.page = page
+        for key in defaults:
+            if key in args:
+                setattr(self, key, args[key])
+            else:
+                setattr(self, key, defaults[key])
+
+        if self.page_out is None:
+            self.page_out = self.page
+
+        if not self.question is None:
+            self.js = ''
+            for qp in self.question.split('|'):
                 quest, part = qp.split(':')
                 for p in part.split(','):
-                    self.javascript += "document.forms['Q{}Form'].elements[{}].checked=true;".format(quest, int(p)-1)
-                self.javascript += 'checkAnswer({});'.format(quest)
+                    self.js += "document.forms['Q{}Form'].elements[{}].checked=true;".format(quest, int(p)-1)
+                self.js += 'checkAnswer({});'.format(quest)
                 self.delay += 4
-            self.javascript += 'setTimeout(showQuestion({}), 20)'.format(quest)
+            self.js += 'setTimeout(showQuestion({}), 20)'.format(quest)
 
         # set conversion mechanism
-        if src == 'html':
+        if self.src == 'html':
             self.convert = self.webkit2png
-        elif src == 'pdf':
+        elif self.src == 'pdf':
             self.convert = self.pdf2png
-        elif src == 'ps':
+        elif self.src == 'ps':
             self.convert = self.ps2png
         else:
             raise ValueError('unknown src={} for {}'.format(src, page))
@@ -116,14 +131,15 @@ class Convert:
         run('webquiz {} {} {}'.format(self.webquiz, webquiz_mode, self.page))
 
         # extract a png image for the web page using webkit2png
-        cmd = r"webkit2png {debug} --ignore-ssl-check -o {fout} -W 400 -F --delay={delay} {js} {URL}/{fin}.html".format(
+        cmd = r"webkit2png {debug} --ignore-ssl-check -o {fout} {width} --delay={delay} {js} {URL}/{fin}.html".format(
                         URL=examplesURL,
                         debug = webkit2png_mode,
                         delay=self.delay,
                         fin=self.page,
                         fout=self.page_out,
-                        js='' if self.javascript is None 
-                              else '--js="{java};"'.format(java=self.javascript)
+                        js='' if self.js is None 
+                              else '--js="{java};"'.format(java=self.js),
+                        width='-W {}'.format(self.width) if self.width!='' else '-F'
                     )
         if webkit2png_mode == '--debug':
             print(cmd)
@@ -132,7 +148,7 @@ class Convert:
             shutil.move(self.page_out+'-full.png', self.page_out+'.png')
             run('mogrify -trim -gravity center {}.png'.format(self.page_out))
         else:
-            print('makeimages error: weblit2png failed because {}-full.png does not exist'.format(self.page_out))
+            print('makeimages error: webkit2png failed because {}-full.png does not exist'.format(self.page_out))
 
     def pdf2png(self):
         r'''
@@ -184,7 +200,7 @@ pages = [
     Convert("montypython", delay=5),
     Convert("nounits", delay=5),
     Convert("onepage", js="document.forms['Q3Form'].elements[0].value='yes'; checkAnswer(3);"),
-    Convert("pst2pdf"),
+    Convert("pst2pdf", width=500),
     Convert("pstricks-ex"),
     Convert("quiz-page", question="1:2", delay=15),
     Convert("random", js="questionOrder=[4,3,2,1]; document.forms['Q3Form'].elements[0].value='yes'; checkAnswer(2); showQuestion(2);"),
@@ -250,4 +266,4 @@ if __name__ == '__main__':
             if args.force or page.modified():
                 page.write_image(args.cleaning)
             elif not args.quiet:
-                print('{} is update to date'.format(page.page_out))
+                print('{} is up to date'.format(page.page_out))
