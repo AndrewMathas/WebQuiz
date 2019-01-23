@@ -205,7 +205,7 @@ class MakeWebQuiz(object):
             # time - in the cfg file, \Preamable{ext=xml} should lead to an xml
             # file being created but this doesn't seem to work ??
             try:
-                fix_img = re.compile(r'^src="([0-9]a-za-z]*.svg)" (.*)$')
+                fix_img = re.compile(r' (src|data)="([-0-9A-Za-z]*.svg)" (.*)$')
                 with codecs.open(self.quiz_file + '.html', 'r', encoding='utf8') as make4ht_file:
                     with codecs.open(self.quiz_name + '.xml', 'w', encoding='utf8') as xml_file:
                         for line in make4ht_file:
@@ -214,11 +214,10 @@ class MakeWebQuiz(object):
                                 xml_file.write(line)
                             else:
                                 # update html link and move file
-                                image, rest_of_line = match.groups()
-                                xml_file.write(r'src="{}/{}" {}'.format(
-                                    self.quiz_name, image, rest_of_line))
-                                shutil.move(
-                                    image, os.path.join(self.quiz_name, image))
+                                src, image, rest_of_line = match.groups()
+                                xml_file.write(r'{}="{}/{}" {}'.format(
+                                    src, self.quiz_name, image, rest_of_line))
+                                shutil.move(image, os.path.join(self.quiz_name, image))
 
             except OSError as err:
                 webquiz_error(
