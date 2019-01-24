@@ -1,3 +1,19 @@
+% -----------------------------------------------------------------------
+%   pgfsys-text4ht-wq-fixed.def | pgf/tikz driver for tex4ht
+% -----------------------------------------------------------------------
+%
+%   Copyright (C) Andrew Mathas, University of Sydney
+%
+%   Distributed under the terms of the GNU General Public License (GPL)
+%               http://www.gnu.org/licenses/
+%
+%   This file is part of the Math_quiz system.
+%
+%   <Andrew.Mathas@sydney.edu.au>
+% ----------------------------------------------------------------------
+
+% 2019-01-24 Replaced with pgfsys-dvisvgm4ht.def
+
 % Two fixes to pgfsys-tex4ht.def both due to Michal Hoftich
 \input pgfsys-tex4ht.def
 

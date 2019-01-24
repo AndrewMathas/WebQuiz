@@ -24,6 +24,7 @@ import sys
 import zipfile
 
 from setuptools import setup, find_packages, Command
+from webquiz.webquiz_util import kpsewhich
 
 class MetaData(dict):
     r"""
@@ -37,6 +38,76 @@ class MetaData(dict):
                     setattr(self, key.strip().lower(), val.strip())
 
 settings = MetaData('latex/webquiz.ini')
+
+class WebQuizDevelop(Command):
+    r"""
+    Custom develop command to install links for latex code
+    and for the web files.
+    """
+
+    description = 'Setup links for latex files and web files for code development'
+    user_options = []
+
+    def ask(self, message, default):
+        r'''
+        Prompt the user for input using the message `message` and with default
+        `default` and return the result.
+        '''
+        value = input('\n{}{}[{}] '.format(message,
+                                         '\n' if len(message)>50 else ' ',
+                                         default)
+        ).strip()
+        return default if value=='' else value
+
+    def run(self):
+        r'''
+        Install links for the latex files, executable and web files
+        '''
+        texmflocal = kpsewhich('-var TEXMFLOCAL')
+        cwd = os.path.dirname(os.path.realpath(__file__))
+
+        try:
+
+            # add a link to the latex files
+            texdir = self.ask('Install links to latex files in directory', texmflocal)
+            webquiz_tex = os.path.join(texdir,'tex', 'webquiz')
+            if os.path.exists(webquiz_tex):
+                print('Not installing tex files as {} already exists'.format(webquiz_tex))
+            else:
+                os.symlink(os.path.join(cwd,'latex'), webquiz_tex)
+
+                # update the tex search paths if not installed in home directory
+                subprocess.call('mktexlsr '+webquiz_tex, shell=True)
+
+            # add a link from /usr/local/bin/webquiz to executable
+            bindir = self.ask('Directory for executable', '/usr/local/bin')
+            webquiz = os.path.join(bindir, 'webquiz')
+
+            if os.path.exists(webquiz):
+                print('Not installing executable as {} already exists'.format(webquiz_tex))
+            else:
+                os.symlink(os.path.join(cwd,'webquiz','webquiz.py'), webquiz)
+
+            # now add links for web files
+            subprocess.call('{} --initialise'.format(webquiz), shell=True)
+
+            # generate the css files
+            print("Generating css files")
+            subprocess.call('doc/makedoc -t'.format(webquiz), shell=True)
+
+        except PermissionError as err:
+            print('Insufficient permissions. Try running using sudo')
+            raise err
+
+        except OSError as err:
+            print('There was a problem copying files or adding links')
+            raise err
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
 
 class WebQuizCtan(Command):
     r"""
@@ -144,8 +215,7 @@ class WebQuizCtan(Command):
                                    ('doc/examples/README-examples',    'scripts/www/doc/examples'),
                                    ('doc/README-doc',                  'doc'),
                                    ('javascript/webquiz-min.js',       'scripts/www/webquiz.js'),
-                                   ('latex/webquiz.ini',               'latex'),
-                                   ('latex/pgfsys-tex4ht-mq-fixed.def','latex'),
+                                   ('latex/pgfsys-dvisvgm4ht.def',     'latex'),
                                    ('latex/webquiz-*.lang',            'latex'),
                                    ('latex/webquiz.c*',                'latex'),
                                    ('latex/webquiz-*.sty',             'latex'),
@@ -160,7 +230,7 @@ class WebQuizCtan(Command):
                         zfile.write(file, os.path.join('webquiz', target, file.split('/')[-1]))
 
 
-
+#----------------------------------------------------------------------------------------
 setup(name             = settings.program,
       version          = settings.version,
       description      = settings.description,
@@ -176,7 +246,7 @@ setup(name             = settings.program,
       include_package_data=True,
       package_data     = {'webfiles' : '/'},
 
-      cmdclass         = {'ctan'   : WebQuizCtan },
+      cmdclass         = {'ctan': WebQuizCtan, 'develop': WebQuizDevelop},
 
       provides         = 'webquiz',
       entry_points     = { 'console_scripts': [ 'webquiz=webquiz.webquiz:main' ], },
