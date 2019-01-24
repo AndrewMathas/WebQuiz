@@ -4,7 +4,8 @@
 # That is, update the lists supported languages and themes and generate all of
 # the images used by webquiz.tex
 
-WEBQUIZDOC="$PWD"
+cd "$(dirname $0)/.."
+WebQuizDir="$PWD"
 PREFIX=""
 
 function message() {
@@ -16,8 +17,9 @@ function make_languages() {
   message "Generating list of webquiz supported languages"
   LANG="webquiz.languages"
   /bin/rm -f $LANG
-  echo -e "% List of languages currently supported by WebQuiz -- generated $(date '+%Y-%m-%d')\n" > $LANG
-  (cd ../latex && ls -1 *.lang | sort | xargs \
+  echo -e "% List of languages currently supported by WebQuiz" > $LANG
+  echo -e "% Generated using 'makedoc --languages' on $(date '+%Y-%m-%d')" >> $LANG
+  (cd $WebQuizDir/latex && ls -1 *.lang | sort | xargs \
               | sed 's@ \([^ ]*\)$@and\n\1@' \
               | sed -e 's@\s*webquiz-\([a-z]*\).lang@\u\1,\\CrossIndex{language}{\1}\n@g' \
               ) >> $LANG
@@ -36,18 +38,19 @@ function make_themes () {
   message "Generating list of webquiz supported css themes"
 
   # next generate code to include screenshots for each theme in the appendix
-  THEMESCREENSHOT="$WEBQUIZDOC/webquiz-themes.tex"
+  THEMESCREENSHOT="$WebQuizDir/doc/webquiz-themes.tex"
   /bin/rm -f $THEMESCREENSHOT
-  MAKEIMAGES="$WEBQUIZDOC/examples/makeimages"
-  echo -e "% Include screen shots for each theme supported by WebQuiz -- generated $(date '+%Y-%m-%d')" > $THEMESCREENSHOT
-  ( cd ../css
+  MAKEIMAGES="$WebQuizDir/doc/examples/makeimages"
+  echo -e "% Include screen shots for each theme supported by WebQuiz" > $THEMESCREENSHOT
+  echo -e "% Generated using 'makedoc --theme' on $(date '+%Y-%m-%d')" >> $THEMESCREENSHOT
+  ( cd $WebQuizDir/css
     for theme in webquiz-*.scss ; do
         sass --style compressed $theme ${theme/scss/css}
         name=${theme/webquiz-/}
         name=${name/.scss/}
         echo -e "\\ShowcaseTheme{$name}" >> $THEMESCREENSHOT
-        if [ ! -e "$WEBQUIZDOC/examples/theme-$name.tex" ]; then
-          ( cd $WEBQUIZDOC/examples
+        if [ ! -e "$WebQuizDir/doc/examples/theme-$name.tex" ]; then
+          ( cd $WebQuizDir/doc/examples
             sed "s@default@$name@" theme.tex > "theme-$name.tex"
             sed -i 's@    Convert("theme-default"),@&\n    Convert("theme-'"$name"'", question="1:2"),@' $MAKEIMAGES
           )
@@ -59,7 +62,7 @@ function make_themes () {
   /bin/rm -f $THEME
   echo -e "% List of themes currently supported by WebQuiz -- generated $(date '+%Y-%m-%d')\n" > $THEME
   # first generate a list of themes for the documentclass options section
-  (cd ../css && ls -1 webquiz-*.css | sort | xargs \
+  (cd $WebQuizDir/css && ls -1 webquiz-*.css | sort | xargs \
               | sed 's@ \([^ ]*\)$@and\n\1@' \
               | sed -e 's@\s*webquiz-\([a-z]*\).css@\1,\\CrossIndex{theme}{\1}\n@g' \
               ) >> $THEME
@@ -67,7 +70,7 @@ function make_themes () {
 
 function make_examples() {
   message "Generating webquiz example images"
-  (cd examples
+  (cd $WebQuizDir/doc/examples
    if [ "$quiet" = true ]; then
      ./makeimages > /dev/null
    else ./makeimages

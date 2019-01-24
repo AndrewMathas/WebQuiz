@@ -7,6 +7,8 @@
 %
 % See the file doc/generic/pgf/licenses/LICENSE for more details.
 
+% Modifications by Michal Hoftich
+% https://github.com/michal-h21/dvisvgm4ht
 
 % Driver commands for tex4ht
 
@@ -85,6 +87,6 @@
 \endinput
 
 
-%%% Local Variables: 
+%%% Local Variables:
 %%% mode: latex
 %%% End:
