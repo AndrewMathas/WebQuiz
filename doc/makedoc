@@ -15,18 +15,19 @@ function message() {
 }
 function make_languages() {
   message "Generating list of webquiz supported languages"
-  LANG="webquiz.languages"
-  /bin/rm -f $LANG
-  echo -e "% List of languages currently supported by WebQuiz" > $LANG
-  echo -e "% Generated using 'makedoc --languages' on $(date '+%Y-%m-%d')" >> $LANG
-  (cd $WebQuizDir/latex && ls -1 *.lang | sort | xargs \
-              | sed 's@ \([^ ]*\)$@and\n\1@' \
-              | sed -e 's@\s*webquiz-\([a-z]*\).lang@\u\1,\\CrossIndex{language}{\1}\n@g' \
-              ) >> $LANG
+  cd $WebQuizDir/latex
+  LANG=$(ls -1 webquiz-*.lang | xargs | sed 's@webquiz-@@g' | gsed -e 's@\([a-z]*\).lang@\u\1,@g' | sed 's@, \([A-Za-z]*\),$@,, \1@')
+  cd $WebQuizDir/doc
+  LANGS="webquiz.languages"
+  /bin/rm -f $LANGS
+  echo "% List of languages currently supported by WebQuiz" > $LANGS
+  echo "% Generated using 'makedoc --languages' on $(date '+%Y-%m-%d')" >> $LANGS
+  echo "\newcommand\WebQuizLanguages{$LANG}" >> $LANGS
 }
 
 function check_examples() {
   message "Checking for unused images from the examples directory"
+  cd $WebQuizDir/doc
   /bin/rm -f makedoc-{examples,images,screenshots}
   ls -1 examples/*.tex | sed 's@.tex@@' | sed 's@examples.@@' | sort -u > makedoc-examples
   ag ScreenShot webquiz.tex | sed 's@.*examples.@@'| sed 's@}@@' | sort -u > makedoc-screenshots
@@ -38,60 +39,54 @@ function make_themes () {
   message "Generating list of webquiz supported css themes"
 
   # next generate code to include screenshots for each theme in the appendix
-  THEMESCREENSHOT="$WebQuizDir/doc/webquiz-themes.tex"
-  /bin/rm -f $THEMESCREENSHOT
   MAKEIMAGES="$WebQuizDir/doc/examples/makeimages"
-  echo -e "% Include screen shots for each theme supported by WebQuiz" > $THEMESCREENSHOT
-  echo -e "% Generated using 'makedoc --theme' on $(date '+%Y-%m-%d')" >> $THEMESCREENSHOT
-  ( cd $WebQuizDir/css
-    for theme in webquiz-*.scss ; do
-        sass --style compressed $theme ${theme/scss/css}
-        name=${theme/webquiz-/}
-        name=${name/.scss/}
-        echo -e "\\ShowcaseTheme{$name}" >> $THEMESCREENSHOT
-        if [ ! -e "$WebQuizDir/doc/examples/theme-$name.tex" ]; then
-          ( cd $WebQuizDir/doc/examples
-            sed "s@default@$name@" theme.tex > "theme-$name.tex"
-            sed -i 's@    Convert("theme-default"),@&\n    Convert("theme-'"$name"'", question="1:2"),@' $MAKEIMAGES
-          )
-        fi
-    done
-  )
+  cd $WebQuizDir/css
+  for theme in webquiz-*.scss ; do
+      sass --style compressed $theme ${theme/scss/css}
+      name=${theme/webquiz-/}
+      name=${name/.scss/}
+      if [ ! -e "$WebQuizDir/doc/examples/theme-$name.tex" ]; then
+        # create theme-<theme>.tex if it does not already exist
+        sed "s@default@$name@" $WebQuizDir/doc/examples/theme.tex > "$WebQuizDir/doc/examples/theme-$name.tex"
+      fi
+  done
 
-  THEME="webquiz.themes"
+  message "Generating list of themes for the manual"
+  THEME="$WebQuizDir/doc/webquiz.themes"
   /bin/rm -f $THEME
-  echo -e "% List of themes currently supported by WebQuiz -- generated $(date '+%Y-%m-%d')\n" > $THEME
+  echo "% List of themes supported by WebQuiz -- generated $(date '+%Y-%m-%d')" > $THEME
   # first generate a list of themes for the documentclass options section
-  (cd $WebQuizDir/css && ls -1 webquiz-*.css | sort | xargs \
-              | sed 's@ \([^ ]*\)$@and\n\1@' \
-              | sed -e 's@\s*webquiz-\([a-z]*\).css@\1,\\CrossIndex{theme}{\1}\n@g' \
-              ) >> $THEME
+  cd $WebQuizDir/css
+  THEMES=$(ls -1 webquiz-*.scss | xargs | sed 's@webquiz-@@g' | sed 's@.scss@,@g' | sed 's@, \([a-z]*\),$@,, \1@')
+  echo "\newcommand\WebQuizThemes{$THEMES}" >> $THEME
 }
 
 function make_examples() {
   message "Generating webquiz example images"
-  (cd $WebQuizDir/doc/examples
-   if [ "$quiet" = true ]; then
+  cd $WebQuizDir/doc/examples
+  if [ "$quiet" = true ]; then
      ./makeimages > /dev/null
-   else ./makeimages
-   fi
-   )
+  else ./makeimages
+  fi
 }
 
 function make_settings() {
   message "Generating webquiz settings file"
+  cd $WebQuizDir/doc
   /bin/rm -f webquiz.settings
   webquiz --settings >> webquiz.settings
 }
 
 function make_usage() {
   message "Generating webquiz usage file"
+  cd $WebQuizDir/doc
   /bin/rm -f webquiz.usage
   webquiz --shorthelp >> webquiz.usage
 }
 
 function make_online_manual() {
   message "Making pdf for online manual"
+  cd $WebQuizDir/doc
   latex webquiz-online-manual && dvipdf webquiz-online-manual
 }
 
@@ -125,34 +120,34 @@ else
   do
      case $1 in
        -a|--all)
-         command+="make_all "
+         ake_all
          shift ;;
        -c|--check-examples)
-         command+="check_examples"
+         check_examples
          shift ;;
        -e|--examples)
-         command+="make_examples"
+         make_examples
          shift ;;
        -f|--fast)
          fast=true
          shift ;;
        -l|--languages)
-         command+="make_languages"
+         make_languages
          shift ;;
        -o|--online-manual)
-         command+="make_online_manual"
+         make_online_manual
          shift ;;
        -q|--quiet)
          quiet=true
          shift ;;
        -s|--settings)
-         command+="make_settings"
+         make_settings
          shift ;;
        -t|--theme)
-         command+="make_themes"
+         make_themes
          shift ;;
        -u|--usage)
-         command+="make_usage"
+         make_usage
          shift ;;
        *)
          usage && exit
@@ -160,5 +155,3 @@ else
      esac
    done
 fi
-[ "$command" = "" ] && command="make_all"
-$command

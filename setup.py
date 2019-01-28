@@ -202,6 +202,7 @@ class WebQuizCtan(Command):
             # now add the files
             for (src, target) in [ ('README.md',                       ''),
                                    ('LICENCE',                         'scripts'),
+                                   ('CHANGES.rst',                     'scripts'),
                                    ('css/webquiz-*.css',               'scripts/www/css'),
                                    ('doc/webquiz*.pdf',                'doc'),
                                    ('doc/webquiz*.tex',                'doc'),

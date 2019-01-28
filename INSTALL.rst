@@ -5,6 +5,7 @@ WebQuiz has the following components:
  - javascript for controlling the web pages
  - documentation
  - rudimentary tests
+
 This file quickly explains how the different components are organised. For
 developer installation instructions see the next section on setup tools.
 
@@ -101,4 +102,11 @@ in the doc/examples directory. The files here are:
  - *.expected  = expected log output from source files
  - tester      = shell script for comparing the expected and actual output for
                  all of the test files
+
+The main test for webquiz is to see if the quizzes in the doc/examples
+directory compile properly and produce appropriate images in the manual,
+for example using
+    doc/examples/makeimages -f
+Unfortunately, this s not automatic and requires eyeballing all of the
+images in the manual.
 

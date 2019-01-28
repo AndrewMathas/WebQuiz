@@ -47,12 +47,12 @@
 \begin{document}
 
 \begin{discussion}[Introduction]
-  \WebQuiz{} is a \LaTeX{} based system to create \textit{interactive}
+  \WebQuiz is a \LaTeX{} package for creating \textit{interactive}
   web quizzes.  The idea is that you write the quiz using \LaTeX{} and that
-  WebQuiz creates the web page from this file. Anything which you can
+  WebQuiz creates the web page from this file. Anything that you can
   write using \LaTeX{} will be converted to HTML by WebQuiz. This
   includes, for example, mathematics and graphics written using
-  PSTricks.  \WebQuiz{} supports three different types of quiz
+  PSTricks.  \WebQuiz supports three different types of quiz
   questions:
 
   \begin{enumerate}
@@ -61,20 +61,21 @@
   \item Multiple choice questions with \emph{several} (or no)
     correct answers.
  (See \qref{2})
-  \item Questions which require a \emph{numerical} answer.
- (See \qref{3})
+  \item Questions that require the student to enter an answer, which
+  can then be compared with the correct answer in several different
+  ways. (See \qref{3})
   \end{enumerate}
-The use of \WebQuiz{} is described in the next section. Later
-sections describe how each of the \WebQuiz{} environments are used.
+The use of \WebQuiz is described in the next section. Later
+sections describe how each of the \WebQuiz environments are used.
 
-The \verb|discussion| environment in \WebQuiz{} can also be used to
+The \LatexCode|discussion| environment in \WebQuiz can also be used to
 write Web Pages like this one (The pages you are reading here were
 written using \WebQuiz.)
 \end{discussion}
 \begin{discussion}[Basic Usage]
-Once you have a \WebQuiz{} file, you can run it through \LaTeX, in
+Once you have a \WebQuiz file, you can run it through \LaTeX, in
 the usual way, to produce a readable version of your quiz. When you
-are happy with the quiz, use \verb|webquiz| to create the HTML
+are happy with the quiz, use \WebQuiz to create the HTML
 version. Note that the printable version of the quiz does \emph{not}
 look like the web page; rather, it contains all of the information in
 an easily readable layout.
@@ -82,11 +83,11 @@ an easily readable layout.
   If, for example, your quiz file is called \emph{quiz1.tex} then you
   can use the following commands:
 \begin{latexcode}
-      > latex quiz1                % latex a quiz file
-      > pdflatex quiz1             % a PDF versio of the quiz
-      > xdvi quiz1                 % view the quiz using xdvi
-      > dvips quiz1                % print the quiz
-      > webquiz quiz1             % converts the quiz to html
+      > latex quiz1             % latex a quiz file
+      > pdflatex quiz1          % a PDF versio of the quiz
+      > xdvi quiz1              % view the quiz using xdvi
+      > dvips quiz1             % print the quiz
+      > webquiz quiz1           % converts the quiz to html
 \end{latexcode}
   Converting the quiz to html can take quite a long time, particularly
   if a large number of images need to be created.
@@ -94,7 +95,7 @@ an easily readable layout.
 \end{discussion}
 \begin{discussion}[WebQuiz files]
 
-  The basic structure of a \WebQuiz{} file is as follows:
+  The basic structure of a \WebQuiz file is as follows:
 \begin{latexcode}
       \documentclass{webquiz}
 
@@ -107,8 +108,8 @@ an easily readable layout.
 
       \begin{document}
 
-      \begin{discussion}[optional title] % optional "discussion"
-          . . .
+      \begin{discussion}[short heading][optional heading]
+          . . . % optional discussion
       \end{discussion}
 
       \begin{question} % question 1
@@ -122,7 +123,7 @@ an easily readable layout.
       .
       \end{document}
 \end{latexcode}
-  The preamble of the \LaTeX{} file specifies the unit code, the
+  In the preamble of the \LaTeX{} file you can specify the unit code, the
   name of the unit of study, the location of the homepage for the
   unit and the index file for the quizzes for this unit; this is
   done using the commands
@@ -131,46 +132,44 @@ an easily readable layout.
   \LatexCode|\UnitURL| and
   \LatexCode|\QuizzesURL| respectively. If the
   command \LatexCode|\QuizzesURL| is omitted then the URL for the quiz
-  index file is set to \LatexCode|\UnitURL/|Quizzes. (Within the School of
-  Mathematics and Statistics, there is also a package
-  \href{smsquiz.html}{smsquiz.sty} which sets the default
-  parameters from the unit code.)
+  index file is set to \LatexCode|\UnitURL/|Quizzes.
 
-  The title of the quiz should also be set in the preamble using the
+  The title of the quiz can be set in the preamble using the
   \LatexCode|\title| command. Note that the \LatexCode|\title|
   command \emph{must} appear before the \LatexCode|\begin{document}| command.
-  In the preamble you can also define macros and load
-  any packages that you want in the usual way .
+  As in any \LaTeX{} document, the preamble can define macros and load
+  other \LaTeX{} packages the usual way .
 
-  The \verb|discussion| environment can be used to add comments or
-  remarks to a quiz. For example, it can be used to summarize the
-  material being tested in the quiz or to give references to the
-  lecture notes for the unit. The syntax for the \verb|discussion| environment is as
-  follows:
+  By using the \LatexCode|discussion| environment you can summarise the
+  material for the students or add introductory material for the quiz.
+  For example, \LatexCode|discussion| environments can be used to recall
+  that main concepts being covered by the quiz or to give references to
+  the lecture notes for the unit. The syntax for the
+  \LatexCode|discussion| environment is as follows:
 \begin{latexcode}
-      \begin{discussion}[optional title]
+      \begin{discussion}[optional short heading][optional heading]
         . . .
       \end{discussion}
 \end{latexcode}
   Anything you like (text, mathematics, \ldots) can go inside
-  discussion environments.  The \emph{optional title} is used both as
+  discussion environments.  The \emph{optional heading}, which defaults
+  to Discussion'', is used both as
   the section heading on the web page and as the heading in the
-  navigation bar which runs down the left hand side of the page. The
-  headings should not be too long as they have to fit in the left hand
-  margin. By default, the title is \verb|discussion|. There can be
-  several \verb|discussion| environment, but they go all in front of the
-  questions.
+  side-menu on left hand side of the page. If a \textit{short heading}
+  is  also given then it is used in the side-menu. The quiz can contain
+  zero or more discussion items ( and zero or more quiz questions).
 
-  Questions are set inside a \verb|question| environment. The text is
+  Questions are set inside a \LatexCode|question| environment. The text is
   followed by the answers.
 
-  \WebQuiz{} supports three types of questions:
+  \WebQuiz supports three types of questions:
   \begin{itemize}
   \item Multiple choice questions with \emph{precisely one} correct
     answer;
-  \item Multiple choice questions with \emph{several or no} correct
+  \item Multiple choice questions with \emph{zero or more } correct
   answers;
-  \item Questions taking a \emph{numerical} answer.
+  \item Questions that require the students to enter an answer. Five
+  difference comparison methods are available.
   \end{itemize}
   With each of these types of questions you can (and should) provide
   feedback to the students depending on whether their answer is
@@ -185,26 +184,34 @@ an easily readable layout.
       . . .question text
       \begin{choice}
         \(in)correct . . . text for (in)correct option
-        \response    . . . feedback on response
+        \feedback    . . . feedback on response
 
         \(in)correct . . . text for (in)correct option
-        \response    . . . feedback on response
+        \feedback    . . . feedback on response
         .
         .
         .
       \end{choice}
     \end{question}
 \end{latexcode}
-  The multiple choice responses for each question go inside a choice environment.
-  The correct answer goes after \LatexCode|\correct|, incorrect answers
-  after \LatexCode|\incorrect|. Either can be followed by a
-  \LatexCode|\response|, providing comments on the students choice when
-  checking their answers.  The \LatexCode|\response| commands are optional;
-  however, it is recommended that you use them as good feedback is
-  very useful for the students.
+  The different choices in a multiple choice question must be inside a
+  \LatexCode|choice| environment. This environment behaves like a
+  standard \LaTeX{} list environment except that instead of using
+  \LatexCode|\item| for list item you use:
+  \begin{itemize}
+      \item \LatexCode|\correct| for a correct choice
+      \item \LatexCode|\incorrect| for an incorrect choice
+      \item \LatexCode|\feedback| to give feedback to the student when
+      they select this choice
+  \end{itemize}
+  At most one \LatexCode|\feedback| response should be given for each
+  \LatexCode|\correct| and each \LatexCode|\incorrect| response.
+  The \LatexCode|\feedback| commands are optional; however, it is
+  recommended that you use them because targetted feedback to ythe
+  students based on their responses can be beneficial.
   \par
-  For example, \qref{1} below was typed into \WebQuiz{}
-  using the following commands:
+  For example, the code below, when run through \WebQuiz, produces \qref{1}
+  in ghe on-line manual quiz.
 \begin{latexcode}
    \begin{question}
      The shaded region in the graph
@@ -224,52 +231,52 @@ an easily readable layout.
      is equal to which of the following sets of complex numbers?
      \begin{choice}
        \incorrect $\{z \in \C : (z-1)^{2}+(z-(i+1))^{2}<2\}$
-       \response  The equation of a circle in the complex plane with
+       \feedback  The equation of a circle in the complex plane with
        centre $a+ib$ and radius $r$ is
        \begin{displaymath}
          \{z\in\C : |z-(a+ib)|<r \}.
        \end{displaymath}
 
        \incorrect $\{z \in \C : z+(i+1)<2\}$
-       \response  You want the set of points whose \textit{distance}
+       \feedback  You want the set of points whose \textit{distance}
        from $1+i$ is less than $2$.
 
        \correct   $\{z \in \C : |z-(i+1)|<2\}$
-       \response  The graph shows the set of complex numbers whose
+       \feedback  The graph shows the set of complex numbers whose
        distance from $1+i$ is less than $2$.
 
        \incorrect $\{z \in \C : |z-2|<|i+1-2|\}$
-       \response  As $|i+1-2|=\sqrt 2$, this is the set of complex
+       \feedback  As $|i+1-2|=\sqrt 2$, this is the set of complex
        numbers whose distance from $2$ is less than
        $\sqrt 2$.
 
        \incorrect None of the above.
-       \response The graph shows the set of complex numbers whose
+       \feedback The graph shows the set of complex numbers whose
        distance from the centre of the circle is less than $2$.
      \end{choice}
    \end{question}
 \end{latexcode}
 \end{discussion}
 \begin{discussion}[Question 2]
- To allow multiple (or no) correct answer we add \verb|multiple| as an
-  optional argument to the \verb|choice| environment:
+ To allow multiple (or no) correct answer we add \LatexCode|multiple| as an
+  optional argument to the \LatexCode|choice| environment:
 \begin{latexcode}
     \begin{question}
       . . .question text. . .
       \begin{choice}[multiple]
         \(in)correct . . . text for (in)correct option
-        \response    . . . feedback on response
+        \feedback    . . . feedback on response
 
         \(in)correct . . . text for (in)correct option
-        \response    . . . feedback on response
+        \feedback    . . . feedback on response
         .
         .
         .
       \end{choice}
     \end{question}
 \end{latexcode}
-  The only difference to the previous case is that multiple (or no)
-  \LatexCode|\correct| commands may be used.
+  The only difference to the previous case is that zero or more
+  \LatexCode|\correct| commands can appear.
   \par
   For example, \qref{2} below was typed into WebQuiz
   using the following commands:
@@ -278,52 +285,53 @@ an easily readable layout.
       Which of the following numbers are prime?
       \begin{choice}[multiple]
         \incorrect 1
-        \response  By definition, a prime is a number greater than 1
+        \feedback  By definition, a prime is a number greater than 1
         whose only factors are 1 and itself.
 
         \correct   19
-        \response  The only factors of 19 are 1 and itself.
+        \feedback  The only factors of 19 are 1 and itself.
 
         \incorrect 6
-        \response  2 is a factor of 6
+        \feedback  2 is a factor of 6
 
         \correct   23
-        \response  The only factors of 23 are 1 and itself.
+        \feedback  The only factors of 23 are 1 and itself.
 
         \correct   191
-        \response  The only factors of 191 are 1 and itself.
+        \feedback  The only factors of 191 are 1 and itself.
       \end{choice}
     \end{question}
 \end{latexcode}
 \end{discussion}
 \begin{discussion}[Question 3]
 
-  By default, the \verb|choice| environments puts the multiple choice
-  options into two column format. Sometimes, however, the options look
-  better when listed in a single column and, sometimes, three or more
-  columns are better.  The \verb|choice|
-  environment lets you specify the number of columns in the HTML
-  version of the quiz.
+  By default, the \LatexCode|choice| environments puts the multiple
+  choice options into one column format. Sometimes the options look
+  better when listed in two or more columns, however, this should be
+  used apringly as multiple columns do not alsays display well if the
+  quiz is viewed on a mobile device.  By using the \LatexCode|columns|
+  key word in a \LatexCode|choice| environment you can specify the
+  number of columns in the HTML version of the quiz.
 
 \begin{latexcode}
     \begin{question}
       . . .question text. . .
       \begin{choice}[multiple, columns=n]     . . . n columns
         \(in)correct . . . text for (in)correct option
-        \response    . . . feedback on response
+        \feedback    . . . feedback on response
 
         \(in)correct . . . text for (in)correct option
-        \response    . . . feedback on response
+        \feedback    . . . feedback on response
         .
         .
         .
       \end{choice}
     \end{question}
 \end{latexcode}
-  If the optional argument \verb|[multiple]| is not present, then the
+  If the optional argument \LatexCode|[multiple]| is not present, then the
   question admits precisely one correct answer.
   \par
-  For example, \qref{3} below was typed into \WebQuiz{}
+  For example, \qref{3} below was typed into \WebQuiz
   using the following commands:
 \begin{latexcode}
     \begin{question}
@@ -339,7 +347,7 @@ an easily readable layout.
 
       \begin{choice}[columns=1]
         \incorrect $x=2\cos t + 1$, $y=3\sin t + 2$
-        \response This is an ellipse with centre $(1,2)$ and with axes of
+        \feedback This is an ellipse with centre $(1,2)$ and with axes of
         length $4$ in the $x$-direction and $6$ in the $y$-direction.
         \begin{center}
           \psset{unit=.6cm}
@@ -352,11 +360,11 @@ an easily readable layout.
         \end{center}
 
         \correct $x=3\cos t + 1$, $y=2\sin t + 2$
-        \response The curve is an ellipse centre (1,2) with axes length 6
+        \feedback The curve is an ellipse centre (1,2) with axes length 6
         in the $x$ direction and 4 in the $y$ direction.
 
         \incorrect $x=3\cos t - 1$, $y=2\sin t - 2$
-        \response This is an ellipse with centre $(-1,-2)$ and with axes
+        \feedback This is an ellipse with centre $(-1,-2)$ and with axes
         of length $6$ in the $x$-direction and $4$ in the $y$-direction.
         \begin{center}
           \psset{unit=.6cm}
@@ -369,7 +377,7 @@ an easily readable layout.
         \end{center}
 
         \incorrect $x=2\cos t - 1$, $y=3\sin t - 2$
-        \response This is an ellipse with centre $(-1,-2)$ and with axes
+        \feedback This is an ellipse with centre $(-1,-2)$ and with axes
         of length $4$ in the $x$-direction and $6$ in the $y$-direction.
         \begin{center}
           \psset{unit=.6cm}
@@ -385,12 +393,12 @@ an easily readable layout.
 \end{latexcode}
 \end{discussion}
 \begin{discussion}[Question 4]
-  The final type of question that \WebQuiz{} supports is a question
-  which requires an answer, which can be a number, string or
-  mathematical expression.  The answer is typeset using the
-  \LatexCode|\answer| macro. The \LatexCode|\answer| macro takes two
-  arguments: an optional comparision method, which defaults to
-  \textit{integer}, and the correct answer:
+  The final type of question that \WebQuiz supports is a question that
+  requires an answer, which can be a number or a string.  The answer is
+  typeset using the \LatexCode|\answer| macro. The \LatexCode|\answer|
+  macro takes two arguments: an optional comparision method, which
+  defaults to \LatexCode|string|, and the correct answer for the
+  question:
   \begin{latexcode}
     \answer[comparision method]{correct answer}
   \end{latexcode}
@@ -407,7 +415,7 @@ an easily readable layout.
   \end{latexcode}
   See the \WebQuiz manual for details of the different
   comparision types.  For example, \qref{4} below was typed into
-  \WebQuiz{} using the following commands:
+  \WebQuiz using the following commands:
 \begin{latexcode}
     \begin{question}
       If the vectors $\vect{a}$ (of magnitude 8 units) and $\vect{b}$
@@ -431,9 +439,9 @@ an easily readable layout.
 \end{latexcode}
 \end{discussion}
 \begin{discussion}[Index Files]
-  \WebQuiz{} also provides a mechanism for creating a web page
+  \WebQuiz also provides a mechanism for creating a web page
   containing an index of all quizzes for a given Unit of Study.
-  This is done with a \WebQuiz{} file which contains a \LatexCode|quizindex|
+  This is done with a \WebQuiz file that contains a \LatexCode|quizindex|
   environment. The syntax for this environment is as follows:
 \begin{latexcode}
     \begin{quizindex}
@@ -444,12 +452,12 @@ an easily readable layout.
 \end{latexcode}
 If no \textit{URL} is given as an optional argument to
 \LatexCode|\quiz| then
-  \WebQuiz{} sets the url(s) to \verb|quiz1.html|, \verb|quiz2.html|
+  \WebQuiz sets the url(s) to \BashCode|quiz1.html|, \BashCode|quiz2.html|
   and so on.
 \end{discussion}
 
 \begin{discussion}[Credits]
-    \WebQuiz{} was written and developed in the
+    \WebQuiz was written and developed in the
     \href{http://www.maths.usyd.edu.au/}{School of Mathematics and
     Statistics} at the \href{http://www.usyd.edu.au/}{University of
     Sydney}.  The system is built on \LaTeX{} with the conversion from
@@ -458,8 +466,8 @@ If no \textit{URL} is given as an optional argument to
     and Michal Hoftich's
     \href{https://github.com/michal-h21/make4ht}{make4ht}.
 
-    To write quizzes using \WebQuiz{} it is only necessary to know
-    \LaTeX, however, the \WebQuiz{} system has three components:
+    To write quizzes using \WebQuiz it is only necessary to know
+    \LaTeX, however, the \WebQuiz system has three components:
     \begin{itemize}
       \item A \LaTeX{} document class file, \texttt{webquiz.cls}, and
       a \TeX 4ht configuration file, \texttt{webquiz.cfg}, that enable the
@@ -469,13 +477,12 @@ If no \textit{URL} is given as an optional argument to
       \item Some javascript and css that controls the quiz web page.
     \end{itemize}
 
-   The \LaTeX{} component of \WebQuiz{} was written by Andrew Mathas
-   and the python, css and javascript code was written by Andrew Mathas
-   (and Don Taylor), based on an initial protype of Don Taylor's from
-   2001.  Since 2004 the program has been maintained and developed by
-   Andrew Mathas. Although the program has changed substantially since
-   2004 some of Don's code and his idea of using \TeX 4ht are still very
-   much in use.
+   The \LaTeX{} component of \WebQuiz was written by Andrew Mathas and
+   the python, css and javascript code was written by Andrew Mathas (and
+   Don Taylor), based on an initial protype of Don Taylor's from 2001.
+   Since 2004 the program has been maintained and developed by Andrew
+   Mathas. Although the program has changed substantially since 2004,
+   Don's idea of using \TeX 4ht, and some of his code, is still in use.
 
    Thanks are due to Bob Howlett for general help with CSS and, for
    Version~5, to  Michal Hoftich for technical advice.
@@ -499,27 +506,27 @@ If no \textit{URL} is given as an optional argument to
   is equal to which of the following sets of complex numbers?
   \begin{choice}
     \incorrect $\{z \in \C : (z-1)^{2}+(z-(i+1))^{2}<2\}$
-    \response  The equation of a circle in the complex plane with
+    \feedback  The equation of a circle in the complex plane with
     centre $a+ib$ and radius $r$ is
     \begin{displaymath}
       \{z\in\C : |z-(a+ib)|<r \}.
     \end{displaymath}
 
     \incorrect $\{z \in \C : z+(i+1)<2\}$
-    \response  You want the set of points whose \textit{distance}
+    \feedback  You want the set of points whose \textit{distance}
     from $1+i$ is less than $2$.
 
     \correct   $\{z \in \C : |z-(i+1)|<2\}$
-    \response  The graph shows the set of complex numbers whose
+    \feedback  The graph shows the set of complex numbers whose
     distance from $1+i$ is less than $2$.
 
     \incorrect $\{z \in \C : |z-2|<|i+1-2|\}$
-    \response  As $|i+1-2|=\sqrt 2$, this is the set of complex
+    \feedback  As $|i+1-2|=\sqrt 2$, this is the set of complex
     numbers whose distance from $2$ is less than
     $\sqrt 2$.
 
     \incorrect None of the above.
-    \response The graph shows the set of complex numbers whose
+    \feedback The graph shows the set of complex numbers whose
     distance from the centre of the circle is less than $2$.
   \end{choice}
 \end{question}
@@ -529,20 +536,20 @@ If no \textit{URL} is given as an optional argument to
   Which of the following numbers are prime?
   \begin{choice}[multiple]
     \incorrect 1
-    \response  By definition, a prime is a number greater than 1
+    \feedback  By definition, a prime is a number greater than 1
     whose only factors are 1 and itself.
 
     \correct   19
-    \response  The only factors of 19 are 1 and itself.
+    \feedback  The only factors of 19 are 1 and itself.
 
     \incorrect 6
-    \response  2 is a factor of 6
+    \feedback  2 is a factor of 6
 
     \correct   23
-    \response  The only factors of 23 are 1 and itself.
+    \feedback  The only factors of 23 are 1 and itself.
 
     \correct   191
-    \response  The only factors of 191 are 1 and itself.
+    \feedback  The only factors of 191 are 1 and itself.
   \end{choice}
 \end{question}
 
@@ -560,7 +567,7 @@ If no \textit{URL} is given as an optional argument to
 
   \begin{choice}[columns=1]
     \incorrect $x=2\cos t + 1$, $y=3\sin t + 2$
-    \response This is an ellipse with centre $(1,2)$ and with axes of
+    \feedback This is an ellipse with centre $(1,2)$ and with axes of
     length $4$ in the $x$-direction and $6$ in the $y$-direction.
     \begin{center}
       \psset{unit=.6cm}
@@ -573,11 +580,11 @@ If no \textit{URL} is given as an optional argument to
     \end{center}
 
     \correct $x=3\cos t + 1$, $y=2\sin t + 2$
-    \response The curve is an ellipse centre (1,2) with axes length 6
+    \feedback The curve is an ellipse centre (1,2) with axes length 6
     in the $x$ direction and 4 in the $y$ direction.
 
     \incorrect $x=3\cos t - 1$, $y=2\sin t - 2$
-    \response This is an ellipse with centre $(-1,-2)$ and with axes
+    \feedback This is an ellipse with centre $(-1,-2)$ and with axes
     of length $6$ in the $x$-direction and $4$ in the $y$-direction.
     \begin{center}
       \psset{unit=.6cm}
@@ -590,7 +597,7 @@ If no \textit{URL} is given as an optional argument to
     \end{center}
 
     \incorrect $x=2\cos t - 1$, $y=3\sin t - 2$
-    \response This is an ellipse with centre $(-1,-2)$ and with axes
+    \feedback This is an ellipse with centre $(-1,-2)$ and with axes
     of length $4$ in the $x$-direction and $6$ in the $y$-direction.
     \begin{center}
       \psset{unit=.6cm}

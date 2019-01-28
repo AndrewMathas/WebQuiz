@@ -225,8 +225,7 @@ class MakeWebQuiz(object):
                         self.quiz_name), err)
 
         except Exception as err:
-            webquiz_error(
-                'something when wrong when running htlatex on {}'.format(
+            webquiz_error( 'something went wrong when running htlatex on {}'.format(
                     self.quiz_file), err)
 
     def read_xml_file(self):
@@ -422,7 +421,7 @@ class MakeWebQuiz(object):
                     question_number='{}. '.format(qnum+1) if self.quiz.one_page else '',
                     display='grid' if self.quiz.one_page else 'none',
                     question=self.print_question(quiz_question, qnum + 1),
-                    response=self.print_responses(quiz_question, qnum + 1)
+                    feedback=self.print_feedback(quiz_question, qnum + 1)
                 )
                 for (qnum, quiz_question) in enumerate(self.quiz.question_list))
 
@@ -483,56 +482,55 @@ class MakeWebQuiz(object):
                 part, question.columns, len(question.items))
         return item
 
-    def print_responses(self, question, qnum):
+    def print_feedback(self, question, qnum):
         r'''
-        Generate the HTML for displaying the response help text when the user
+        Generate the HTML for displaying the feedback help text when the user
         answers a question.
         '''
         if question.type == 'input':
-            response = webquiz_templates.tf_response_text.format(
+            feedback = webquiz_templates.tf_feedback_text.format(
                 choice=qnum,
-                response='true',
+                feedback='true',
                 correct_answer=self.language.correct,
                 answer2='',
-                text=question.when_right)
-            response += webquiz_templates.tf_response_text.format(
+                text=question.feedback_right)
+            feedback += webquiz_templates.tf_feedback_text.format(
                 choice=qnum,
-                response='false',
+                feedback='false',
                 correct_answer=self.language.incorrect,
                 answer2=self.language.try_again,
-                text=question.when_wrong)
+                text=question.feedback_wrong)
         elif question.type == "single":
-            response = '\n' + '\n'.join(
-                webquiz_templates.single_response.format(
+            feedback = '\n' + '\n'.join(
+                webquiz_templates.single_feedback.format(
                     qnum=qnum,
                     part=snum + 1,
                     correct_answer=self.language.correct if s.correct == 'true' else self.language.incorrect,
                     alpha_choice=self.language.choice.format(s.symbol),
-                    response=s.response,
+                    feedback=s.feedback,
                     **self.language)
                 for (snum, s) in enumerate(question.items))
         elif question.type == "multiple":
-            response = '\n' + '\n'.join(webquiz_templates.multiple_response.format(
+            feedback = '\n' + '\n'.join(webquiz_templates.multiple_feedback.format(
                 qnum=qnum,
                 part=snum + 1,
                 correct_answer=s.correct.capitalize(),
-                response=s.response,
+                feedback=s.feedback,
                 multiple_choice_opener=self.language.multiple_incorrect.
                 format(s.symbol),
                 **self.language)
                 for (snum, s) in enumerate(question.items)
             )
-            response += webquiz_templates.multiple_response_correct.format(
+            feedback += webquiz_templates.multiple_feedback_correct.format(
                 qnum=qnum,
-                responses='\n'.join(
-                    webquiz_templates.multiple_response_answer.format(
-                        correct_answer=s.correct.capitalize(), reason=s.response)
-                    for s in question.items),
-                **self.language)
+                feedback='\n'.join(webquiz_templates.multiple_feedback_answer.format(
+                                correct_answer=s.correct.capitalize(), reason=s.feedback)
+                            for s in question.items),
+                            **self.language)
         else:
             webquiz_error('Unknown question type "{}" in question {}'.format(question.type, qnum))
 
-        return '<div class="answer">' + response + '</div>'
+        return '<div class="answer">' + feedback + '</div>'
 
 
 

@@ -19,7 +19,6 @@ r'''
 
 import argparse
 import codecs
-import codecs
 import errno
 import glob
 import os
@@ -32,10 +31,7 @@ import sys
 # imports of webquiz code
 import webquiz_templates
 from webquiz_main import MakeWebQuiz
-from webquiz_util import copytree, metadata, webquiz_error, webquiz_file
-
-# imports of webquiz code
-import webquiz_templates
+from webquiz_util import copytree, kpsewhich, metadata, webquiz_error, webquiz_file
 
 
 # ---------------------------------------------------------------------------------------
@@ -217,7 +213,11 @@ class WebQuizSettings:
 
         # define user and system rc file and load the ones that exist
 
-        self.system_rc_file = webquiz_file('webquizrc')
+        self.system_rc_file = os.path.join(kpsewhich('-var TEXMFLOCAL'),
+                                           'scripts',
+                                           'webquiz',
+                                           'webquizrc'
+        )
         self.read_webquizrc(self.system_rc_file)
 
         # the user rc file defaults to:
@@ -292,13 +292,11 @@ class WebQuizSettings:
                 self.rc_file = rc_file
 
             except OSError as err:
-                webquiz_error(
-                    'there was a problem reading the rc-file {}'.format(
-                        rc_file), err)
+                webquiz_error('there was a problem reading the rc-file {}'.format(
+                              rc_file), err)
 
             except Exception as err:
-                webquiz_error('there was an error reading the webquizrc file,',
-                             err)
+                webquiz_error('there was an error reading the webquizrc file,', err)
 
         elif external:
             # this is only an error if we have been asked to read this file
@@ -323,7 +321,7 @@ class WebQuizSettings:
         file_not_written = True
         while file_not_written:
             try:
-                dire, file = os.path.split(self.rc_file)
+                dire = os.path.dirname(self.rc_file)
                 if dire != '' and not os.path.isdir(dire):
                     os.makedirs(dire, exist_ok=True)
                 with codecs.open(self.rc_file, 'w', encoding='utf8') as rcfile:
@@ -380,7 +378,7 @@ class WebQuizSettings:
                 webquiz_error('{} is an invalid setting'.format(setting))
 
         elif setting=='all':
-            print('WebQuiz settings from {}'.format(self.rc_file))
+            print('WebQuiz rc-file = {}'.format(self.rc_file))
             for key in self.keys():
                 print('{:<15} = {}'.format(key.replace('_', '-'), self[key]))
 
@@ -490,7 +488,7 @@ class WebQuizSettings:
                     self.settings['webquiz_www']['changed'] = True
                     files_copied = True
 
-                except PermissionError as err:
+                except PermissionError:
                     print(webquiz_templates.permission_error.format(web_dir))
 
                 except OSError as err:
@@ -521,10 +519,15 @@ class WebQuizSettings:
         print(webquiz_templates.initialise_ending.format(web_dir=self['webquiz_www']))
         self.just_initialise = True
 
-    def edit_settings(self, ignored_settings=['webquiz_www', 'version']):
+    def edit_settings(self, rc_file=None, ignored_settings=['webquiz_www', 'version']):
         r'''
         Change current default values for the WebQuiz settings
         '''
+        if rc_file == 'system':
+            self.rc_file = self.system_rc_file
+        elif rc_file == 'user':
+            self.rc_file = self.user_rc_file 
+
         advanced_not_started = True
         for key in self.keys():
             if key not in ignored_settings:
@@ -618,58 +621,42 @@ if __name__ == '__main__':
             help='latex quiz files')
 
         parser.add_argument(
-            '-d', '--draft',
-            action='store_true',
-            default=False,
-            help='Use make4ht draft mode')
-
-        parser.add_argument(
-            '-e', '--edit-settings',
-            action='store_true',
-            default=False,
-            help='Edit webquiz settings')
-
-        parser.add_argument(
-            '-i',
-            '--initialise',
-            action='store_true',
-            default=False,
-            help='Initialise files and settings for webquiz')
-
-        parser.add_argument(
-            '-m',
-            '--make4ht',
-            action='store',
-            type=str,
-            dest='make4ht_options',
-            default=settings['make4ht'],
-            help='Options for make4ht')
-
-        parser.add_argument(
             '-q',
             '--quiet',
             action='count',
             default=0,
             help='suppress tex4ht messages (also -qq etc)')
 
-        parser.add_argument(
-            '-r',
-            '--rcfile',
+        settings_parser = parser.add_mutually_exclusive_group()
+        settings_parser.add_argument(
+            '-i',
+            '--initialise',
+            action='store_true',
+            default=False,
+            help='Initialise files and settings for webquiz')
+        settings_parser.add_argument(
+            '-e', '--edit-settings',
             action='store',
-            type=str,
-            dest='rcfile',
+            const='deFAULT',
             default='',
-            help='Set rcfile')
-
-        parser.add_argument(
-            '--settings',
             nargs='?',
             type=str,
-            const='all',
+            help='Edit webquiz settings')
+        settings_parser.add_argument(
+            '--settings',
             action='store',
-            dest='setting',
+            const='all',
             default='',
-            help='List system settings for webquiz')
+            nargs='?',
+            type=str,
+            help='List system settings for webquiz'
+        )
+
+        parser.add_argument(
+            '-d', '--draft',
+            action='store_true',
+            default=False,
+            help='Use make4ht draft mode')
 
         parser.add_argument(
             '-s',
@@ -677,14 +664,6 @@ if __name__ == '__main__':
             action='store_true',
             default=False,
             help='Shell escape for tex4ht/make4ht')
-
-        parser.add_argument(
-            '--webquiz_layout',
-            action='store',
-            type=str,
-            dest='webquiz_layout',
-            default=settings['webquiz_layout'],
-            help='Local python code for generating the quiz web page')
 
         engine = parser.add_mutually_exclusive_group()
         engine.add_argument(
@@ -694,7 +673,6 @@ if __name__ == '__main__':
             default=settings['engine'],
             dest='engine',
             help='Use latex to compile document with make4ht (default)')
-
         engine.add_argument(
             '-l',
             '--lua',
@@ -702,7 +680,6 @@ if __name__ == '__main__':
             const='lua',
             dest='engine',
             help='Use lualatex to compile the quiz')
-
         engine.add_argument(
             '-x',
             '--xelatex',
@@ -711,13 +688,33 @@ if __name__ == '__main__':
             dest='engine',
             help='Use xelatex to compile the quiz')
 
+        # options suppressed from the help message
+        parser.add_argument(
+            '-m',
+            '--make4ht',
+            action='store',
+            type=str,
+            dest='make4ht_options',
+            default=settings['make4ht'],
+            help=argparse.SUPPRESS
+        )
+
+        parser.add_argument(
+            '--webquiz_layout',
+            action='store',
+            type=str,
+            dest='webquiz_layout',
+            default=settings['webquiz_layout'],
+            help=argparse.SUPPRESS
+        )
+
         parser.add_argument(
             '--uninstall',
             action='store_true',
             default=False,
-            help='Remove all webquiz files from the web server')
+            help=argparse.SUPPRESS
+        )
 
-        # options suppressed from the help message
         parser.add_argument(
             '--version',
             action='version',
@@ -743,23 +740,19 @@ if __name__ == '__main__':
         # set debugging mode from options
         metadata.debugging = options.debugging
 
-        # set the rcfile to be used
-        if options.rcfile != '':
-            settings.read_webquizrc(options.rcfile, external=True)
-
         # initialise and exit
         if options.initialise:
             settings.initialise_webquiz()
             sys.exit()
 
         # initialise and exit
-        if options.setting != '':
-            settings.list_settings(options.setting)
+        if options.settings != '':
+            settings.list_settings(options.settings)
             sys.exit()
 
         # initialise and exit
         if options.edit_settings:
-            settings.edit_settings()
+            settings.edit_settings(rc_file=options.edit_settings)
             sys.exit()
 
         # uninstall and exit

@@ -15,9 +15,10 @@ r'''
 ------------------------------------------------------------------------------
 '''
 
-import errno
 import os
 import subprocess
+import shutil
+import stat
 import sys
 import traceback
 

@@ -14,7 +14,7 @@
 % common latex code in the documentation files
 \RequirePackage{cmap} % fix search and cut-and-paste in Acrobat
 
-\RequirePackage[cp1250]{inputenc}
+\RequirePackage[utf8]{inputenc}
 \RequirePackage[T1]{fontenc}
 
 \RequirePackage{enumitem}
@@ -67,6 +67,26 @@
     showtabs=false,
     showspaces=false,
     showstringspaces=false,
+    inputencoding=utf8,
+    extendedchars=true,
+    literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+      {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+      {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+      {À}{{\`A}}1 {È}{{\'E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1
+      {ä}{{\"a}}1 {ë}{{\"e}}1 {ï}{{\"i}}1 {ö}{{\"o}}1 {ü}{{\"u}}1
+      {Ä}{{\"A}}1 {Ë}{{\"E}}1 {Ï}{{\"I}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1
+      {â}{{\^a}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1 {û}{{\^u}}1
+      {Â}{{\^A}}1 {Ê}{{\^E}}1 {Î}{{\^I}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1
+      {œ}{{\oe}}1 {Œ}{{\OE}}1 {æ}{{\ae}}1 {Æ}{{\AE}}1 {ß}{{\ss}}1
+      {ű}{{\H{u}}}1 {Ű}{{\H{U}}}1 {ő}{{\H{o}}}1 {Ő}{{\H{O}}}1
+      {ç}{{\c c}}1 {Ç}{{\c C}}1 {ø}{{\o}}1 {å}{{\r a}}1 {Å}{{\r A}}1
+      {€}{{\euro}}1 {£}{{\pounds}}1 {«}{{\guillemotleft}}1
+      {»}{{\guillemotright}}1{ñ}{{\~n}}1{Ñ}{{\~N}}1{¿}{{?`}}1
+      {á}{{\'a}}1{í}{{\'i}}1{é}{{\'e}}1{ý}{{\'y}}1{ú}{{\'u}}1{ó}{{\'o}}1
+      {ě}{{\v{e}}}1{š}{{\v{s}}}1{č}{{\v{c}}}1{ř}{{\v{r}}}1{ž}{{\v{z}}}1{ď}{{\v{d}}}1
+      {ť}{{\v{t}}}1{ň}{{\v{n}}}1{ů}{{\r{u}}}1{Á}{{\'A}}1{Í}{{\'I}}1{É}{{\'E}}1
+      {Ý}{{\'Y}}1{Ú}{{\'U}}1{Ó}{{\'O}}1{Ě}{{\v{E}}}1{Š}{{\v{S}}}1{Č}{{\v{C}}}1
+      {Ř}{{\v{R}}}1{Ž}{{\v{Z}}}1{Ď}{{\v{D}}}1{Ť}{{\v{T}}}1{Ň}{{\v{N}}}1{Ů}{{\r{U}}}1
 }
 \lstdefinestyle{latexcode}{
   language=[LaTeX]TeX,
@@ -74,7 +94,7 @@
   classoffset=1,
   morekeywords={UnitCode,UnitName,UnitURL,QuizzesURL,BreadCrumbs,BreadCrumb,Department,DepartmentURL,
                 includegraphics,DeclareGraphicsExtensions,DisplayAsImage,thechoice,quiz,
-                Institution,InstitutionURL,response,correct,incorrect,whenRight,whenWrong,answer},
+                Institution,InstitutionURL,feedback,correct,incorrect,whenRight,whenWrong,answer},
   classoffset=2,
   morekeywords={quizindex, discussion, question, multiple, single, columns, choice, pspicture},
   classoffset=3,
@@ -141,10 +161,7 @@
     \end{tcolorbox}
   \end{center}%
 }
-\newcommand\ShowcaseTheme[1]{%
-  \ScreenShot[0.7]{Example of the \textbf{#1} theme}{theme-#1}%
-  \index{theme!#1}%
-}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NewDocumentCommand{\Verb}{v}{{\color{blue}#1}}
 

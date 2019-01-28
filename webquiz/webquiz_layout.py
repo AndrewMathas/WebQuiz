@@ -59,7 +59,6 @@ quiz_page = r'''<!DOCTYPE HTML>
   <title> {title} </title>
   {htmlpreamble}
 </head>
-
 <body>
   {no_script}{breadcrumbs}
   <div class="quiz-page">

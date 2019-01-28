@@ -1,5 +1,4 @@
-/*
- * -----------------------------------------------------------------------
+/* * -----------------------------------------------------------------------
  *   webquiz.js | javascript for controlling webquiz web pages
  * -----------------------------------------------------------------------
  *
@@ -21,7 +20,7 @@ var QuizTitles = [];
 var correct = [];
 var currentQ;
 var currentQuiz;
-var currentResponse = null;
+var currentFeedback = null;
 var dTotal;
 var qTotal;
 var questionOrder = [];
@@ -69,7 +68,7 @@ function create_drop_down_menu() {
       drop_down.style.width = Math.round(max) + "ex";
       drop_down.appendChild(menu);
 
-      drop_down_not_created = false
+      drop_down_not_created = false;
     }
 }
 
@@ -119,8 +118,8 @@ function showQuestion(newQ) { // newQ is an integer which is always in the corre
         } else {
             realQ = currentQ;
         }
-        if (currentQ !== 0) { // hide the current question and responses
-            hideResponse();
+        if (currentQ !== 0) { // hide the current question and feedback
+            hideFeedback();
             document.getElementById("question" + realQ).style.display = "none";
             button = document.getElementById("button" + currentQ);
             button.classList.remove("nolink");
@@ -148,18 +147,19 @@ function showQuestion(newQ) { // newQ is an integer which is always in the corre
     }
 }
 
-// Code to hide/show responses
+// Code to hide/show feedback
 
-function hideResponse() {
-    if (currentResponse) {
-        currentResponse.style.display = "none";
+function hideFeedback() {
+    if (currentFeedback) {
+        currentFeedback.style.display = "none";
     }
 }
 
-function showResponse(tag) {
-    hideResponse(); // hide current response
-    currentResponse = document.getElementById(tag);
-    currentResponse.style.display = "block";
+function showFeedback(tag) {
+    alert('showing feedback for '+tag+'.')
+    hideFeedback(); // hide current feedback
+    currentFeedback = document.getElementById(tag);
+    currentFeedback.style.display = "block";
 }
 
 // if increment==1 we find the next questions which has not
@@ -243,7 +243,7 @@ var compare = {
   'string':  function(ans, val) {// compare as strings
                return ans==String(val);
              }
-}
+};
 
 // check to see whether the answer is correct and update the markers accordingly
 function checkAnswer(qnum) {
@@ -261,9 +261,9 @@ function checkAnswer(qnum) {
         }
 
         if (correct[q]) {
-            showResponse("q" + realQ + "true");
+            showFeedback("q" + realQ + "true");
         } else {
-            showResponse("q" + realQ + "false");
+            showFeedback("q" + realQ + "false");
         }
     } else if (question.type == "single") {
         var checkedAnswer = 0;
@@ -274,7 +274,7 @@ function checkAnswer(qnum) {
                 break;
             }
         }
-        showResponse("q" + realQ + "response" + checkedAnswer);
+        showFeedback("q" + realQ + "feedback" + checkedAnswer);
     } else { // type is "multiple"
         var badAnswers = [];
         for (i = 0; i < question.length; i++) {
@@ -286,11 +286,11 @@ function checkAnswer(qnum) {
         // fully correct only if badAnswers == []
         if (badAnswers.length === 0) {
             correct[q] = true;
-            showResponse("q" + realQ + "response0");
+            showFeedback("q" + realQ + "feedback0");
         } else {
-            // randomly display a response for one of incorrect choices
+            // randomly display a feedback for one of incorrect choices
             correct[q] = false;
-            showResponse("q" + realQ + "response" + badAnswers[Math.floor(Math.random() * badAnswers.length)]);
+            showFeedback("q" + realQ + "feedback" + badAnswers[Math.floor(Math.random() * badAnswers.length)]);
         }
     }
     //
@@ -358,10 +358,10 @@ function WebQuizInit(questions, discussions, quizfile) {
         side_menu.style.height='60ex';
         var school = side_menu.getElementsByClassName('school')[0];
         school.style.position = 'relative';
-        school.style.bottom = '-40ex';
+        school.style.bottom = '-25ex';
         var copyright = side_menu.getElementsByClassName('copyright')[0];
         copyright.style.position = 'relative';
-        copyright.style.bottom = '-40ex';
+        copyright.style.bottom = '-35ex';
     }
 }
 

@@ -69,13 +69,16 @@ Versions 1 and 2:
 
 
 To do
-------
-    - (?) improve quiz "security"
-    - (?) randomise order of questions parts
-    - (?) allow variables in questions
+-----
+Rather than a to-do list, here are some possible future improvements:
+    - (?) improve quiz "security" (would be a side-effect of moving to vue...)
+    - (?) randomise order of questions parts with document-class option randomorder
+    - (?) allow variables in questions (hardest part is finding a good syntax)
     - (?) rewrite javascript to use vue to render and control quiz pages
     - (?) allow vertical/horizontal/none customisations of question buttons
     - (?) record marks of students...would need a interface for login details etc
     - (?) add timer and/or time limits to quiz
     - (?) responsive columns to replace columns=? in choice environments
+    - (?) dynamic themes (easy)
+    - (?) dynamic languages (harder)
 

@@ -131,7 +131,7 @@ index_item = r'''<li><a href={url}>{title}</a></li>'''
 # now we come to the question wrappers
 question_wrapper = r'''<div id="question{qnum}" class="question" style="display:{display};">
       {question_number}{question}
-      {response}
+      {feedback}
       </div>
 '''
 question_text = r'''  {question_text}
@@ -145,7 +145,7 @@ question_text = r'''  {question_text}
 '''
 nextquestion='<input type="button" value="{next_question}" class="input-button" title="{next_question}" name="next" onClick="nextQuestion(1);"/>'
 
-# Questions and responses:
+# Questions and feedback:
 input_answer = '{answer}&nbsp;<input type="text"  onChange="checkAnswer({qnum});" size="{size}"/>{after_text}'
 choice_answer = '<table class="question-choices">{choices}</table>{after_text}'
 input_single = '\n<input type="hidden" name="Q{qnum}hidden"/>'
@@ -157,25 +157,25 @@ multiple_item = '''<td><input type="checkbox" name="Q{qnum}option{optnum}"/></td
 <td class="brown" >{choice}</td><td><div class="question-choices">{text}</div></td>
 '''
 
-tf_response_text = r'''        <div id="q{choice}{response}" class="response"><em class="dazzle">{correct_answer}</em> <em>{answer2}</em>
+tf_feedback_text = r'''        <div id="q{choice}{feedback}" class="feedback"><em class="dazzle">{correct_answer}</em> <em>{answer2}</em>
            <div>{text}</div>
         </div>'''
-single_response = r'''        <div id="q{qnum}response{part}" class="response">
+single_feedback = r'''        <div id="q{qnum}feedback{part}" class="feedback">
               <em>{alpha_choice} <span class="dazzle">{correct_answer}</span></em>
-              <div>{response}</div>
+              <div>{feedback}</div>
         </div>'''
 
-multiple_response = r'''        <div id="q{qnum}response{part}" class="response">
+multiple_feedback = r'''        <div id="q{qnum}feedback{part}" class="feedback">
             <em>{one_mistake}</em><br>{multiple_choice_opener} <span class="dazzle">{correct_answer}</span>.
-            <div>{response}</div>
+            <div>{feedback}</div>
         </div>'''
-multiple_response_correct = r'''
-        <div id="q{qnum}response0" class="response"><em class="dazzle">{correct}</em>
+multiple_feedback_correct = r'''
+        <div id="q{qnum}feedback0" class="feedback"><em class="dazzle">{correct}</em>
             <ol>
-{responses}
+{feedback}
             </ol>
         </div>'''
-multiple_response_answer = '              <li><em>{correct_answer}</em> {reason}</li>'
+multiple_feedback_answer = '              <li><em>{correct_answer}</em> {reason}</li>'
 
 initialise_invite = r'''WebQuiz is a tool for creating on-line quizzes. For efficiency reasons,
 WebQuiz needs to be initialised and, in particular, it needs to copy some

@@ -8,7 +8,7 @@ function test_expected() {
     file=${file/.tex/}
     /bin/rm -f $file.output
     echo "Testing $file.tex"
-    latex -interaction=nonstopmode $file > $file.output
+    latex -interaction=nonstopmode $file | ag "Package webquiz Error"> $file.output
     diff $file.output $file.expected
   done
 }
@@ -20,7 +20,7 @@ function generate_expected() {
     /bin/rm -f $file.expected
     echo "Generating test file for $file.tex"
     file=${file/.tex/}
-    latex -interaction=nonstopmode $file > $file.expected
+    latex -interaction=nonstopmode $file | ag "Package webquiz Error"> $file.expected
   done
 }
 
