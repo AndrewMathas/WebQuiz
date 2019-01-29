@@ -413,7 +413,7 @@ class MakeWebQuiz(object):
                 self.quiz_questions += webquiz_templates.discussion.format(
                     dnum=dnum,
                     discussion=d,
-                    display='grid' if self.quiz.one_page else 'none',
+                    display='inline' if self.quiz.one_page else 'none',
                     heading=webquiz_templates.discussion_heading.format(d.heading)
                             if self.quiz.one_page else ''
                 )
@@ -424,7 +424,7 @@ class MakeWebQuiz(object):
                 webquiz_templates.question_wrapper.format(
                     qnum=qnum + 1,
                     question_number='{}. '.format(qnum+1) if self.quiz.one_page else '',
-                    display='grid' if self.quiz.one_page else 'none',
+                    display='inline' if self.quiz.one_page else 'none',
                     question=self.print_question(quiz_question, qnum + 1),
                     feedback=self.print_feedback(quiz_question, qnum + 1)
                 )

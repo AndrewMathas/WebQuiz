@@ -309,8 +309,8 @@ div.quiz-questions {
         table.question-choices td:nth-child(3n+1) { padding-right: 6px; }
         td.brown { color: $QuestionPart; }
         div.feedback {
-            background-color: $ResponseBG;
-            border: solid $ResponseBorder 2px;
+            background-color: $FeedbackBG;
+            border: solid $FeedbackBorder 2px;
             border-radius: 5px;
             display: none;
             padding: 0 1ex 0 1ex;
@@ -318,7 +318,7 @@ div.quiz-questions {
 
             div {
                 text-align: left;
-                color: $ResponseText;
+                color: $FeedbackText;
             }
 
             ol {
@@ -337,7 +337,7 @@ div.quiz-questions {
 
                 li {
                     text-align: left;
-                    color: $ResponseText;
+                    color: $FeedbackText;
                     padding-right: 2em;
 
                     em { color: $Dazzle; }

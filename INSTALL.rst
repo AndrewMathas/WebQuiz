@@ -212,7 +212,7 @@ It would be goods to add some javascript unit tests....
 Documentation
 -------------
 The main files in the documentation directory are:
- - webquiz.tex    = LateX source for the WebQuiz manual
+ - webquiz.tex    = LaTeX source for the WebQuiz manual
  - webquiz-on-line-manual.tex = LaTeX source for the on-line Webquiz manual
  - credits.tex    = LaTeX source for the credits
  - makedoc        = bash shell script that automatically generates the many

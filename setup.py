@@ -155,9 +155,7 @@ class WebQuizCtan(Command):
         by two spaces.
         '''
         print('Executing {}'.format(cmd))
-        for line in  subprocess.getoutput(cmd).split('\n'):
-            if line.strip() != '':
-                print('  {}'.format(line.rstrip()))
+        subprocess.call(cmd, shell=True)
 
     def build_files_for_zipping(self):
         r'''

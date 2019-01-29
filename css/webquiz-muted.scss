@@ -32,9 +32,9 @@
 
   $Dazzle:         #261868;
 
-  $ResponseBG:     $ButtonBG;
-  $ResponseBorder: darken($ResponseBG, 40%);
-  $ResponseText:   lighten($ResponseBG, 20%);
+  $FeedbackBG:     $ButtonBG;
+  $FeedbackBorder: darken($FeedbackBG, 40%);
+  $FeedbackText:   lighten($FeedbackBG, 20%);
 
   $SideMenuText:   #655d41;
 

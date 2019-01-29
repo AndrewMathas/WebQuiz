@@ -43,9 +43,9 @@
   $WarningBorder:  darken($WarningBG, 60%);
   $WarningFG:      lighten($WarningBG, 90%);
 
-  $ResponseBG:     $BreadCrumbBG;
-  $ResponseBorder: darken($ResponseBG, 40%);
-  $ResponseText:   lighten($ResponseBG, 20%);
+  $FeedbackBG:     $BreadCrumbBG;
+  $FeedbackBorder: darken($FeedbackBG, 40%);
+  $FeedbackText:   lighten($FeedbackBG, 20%);
 
   $Copyright:      $BreadCrumbBG;
   $School:         lighten($Copyright, 10%);
