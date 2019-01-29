@@ -50,7 +50,7 @@ configuration and use please see the
 [WebQuiz](https://bitbucket.org/AndrewsBucket/webquiz) manual and the
 [WebQuiz](https://bitbucket.org/AndrewsBucket/webquiz) on-line manual.
 
-Distrubution
+Distribution
 ------------
 
 To organisation of the the code in the
@@ -59,7 +59,7 @@ not suitable for distribution. To upload the package to ctan use:
 
 > python3 setup.py ctan
 
-To set up the system for use and code development use:
+To set up the system for development:
 
 > python3 setup.py develop
 

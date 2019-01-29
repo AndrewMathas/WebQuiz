@@ -8,10 +8,9 @@ The WebQuiz doc directory contains the follow files:
     - webquiz-online-manual.pdf   A PDF version of the on-line manual
 
 The following files are included by the WebQuiz manual:
-    - webquiz-themes.tex          Screenshots for the themes supported by WebQuiz.
-    - webquiz.languages           The languages of the themes supported by WebQuiz.
-    - webquiz.settings            The settings supported by WebQuiz.
-    - webquiz.themes              The themes supported by WebQuiz.
+    - webquiz.languages           List of languages of the themes supported by WebQuiz.
+    - webquiz.settings            List of settings supported by WebQuiz.
+    - webquiz.themes              List of themes supported by WebQuiz.
     - webquiz.usage               The command-line options supported by WebQuiz.
     - examples/                   A directory containing images that are
                                   included by the WebQuiz manual. Once WebQuiz
