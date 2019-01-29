@@ -11,7 +11,6 @@ r'''
     This file is part of the WebQuiz system.
 
     <Andrew.Mathas@sydney.edu.au>
-    <Donald.Taylor@sydney.edu.au>
 ----------------------------------------------------------------------
 '''
 

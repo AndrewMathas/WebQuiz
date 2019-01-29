@@ -20,7 +20,7 @@ using ctanupload, which is packaged with TeXLive.
 On a unix-like system, such as linux or macosx, to set up links for the latex
 and web files for the development version run:
     > python3 setup.py develop
-In fact, you may want to run this as root, so you may want:
+In fact, you may want to run this as root, in which case you want:
     > sudo python3 setup.py develop
 By default, links for the latex files will be put into the TEXMFLOCAL directory
 but this can be customised. You will then be prompted for links for the
@@ -34,7 +34,7 @@ Python code
 There are six python source files:
  - webquiz.py*           = processes command-line options and settings
  - webquiz_layout.py     = determines the final layout of the web pages
- - webquiz_main.py       = converts the XML into HTML
+ - webquiz_makequiz.py   = converts the XML into HTML
  - webquiz_templates.py  = template strings for HTML and
  - webquiz_util.py       = utility functions
  - webquiz_xml.py        = read and interpret the webquiz XML file
@@ -47,11 +47,13 @@ The LaTeX is in the latex directory. The main components are:
  - webquiz.cls             = webquiz document class file
  - webquiz.ini             = webquiz initialisation data. This is
                              also used by the python code
- - pgfsys-dvisvgm4ht.def   = custum tikz driver for tex4ht
-             from https://github.com/michal-h21/dvisvgm4ht
+ - webquiz-doc.code.tex    = macros used in the manuals
+ - webquiz-ini.code.tex    = code for reading and accessing the ini fle in latex
+ - pgfsys-dvisvgm4ht.def   = custom tikz driver for tex4ht
+                             from https://github.com/michal-h21/dvisvgm4ht
  - webquiz-*.lang          = language support files. These are
       actually used by webquiz_main.py when writing the web pages
-      but they need to be in the LaTeX search path
+      but we find them by putting them in the LaTeX search path
 
 
 Cascading style sheets
@@ -86,8 +88,7 @@ The main files in the documentation directory are:
  - makedoc        = bash shell script that automatically generates the many
                     different components of the manual. There are various
                     options; use makedoc -h to see a summary
- - examples       = directory of WebQuiz code snippets are are included in
-                    the manual
+ - examples       = directory of WebQuiz code snippets that are included in the manual
  - examples/makeimages = python script for generating the images used in the
                     manual. Requires webkit2png and mogrify. As with makedoc,
                     makeimages -h summaries the command-line options
