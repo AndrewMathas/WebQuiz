@@ -91,10 +91,6 @@ class WebQuizDevelop(Command):
             # now add links for web files
             subprocess.call('{} --initialise'.format(webquiz), shell=True)
 
-            # generate the css files
-            print("Generating css files")
-            subprocess.call('doc/makedoc -t'.format(webquiz), shell=True)
-
         except PermissionError as err:
             print('Insufficient permissions. Try running using sudo')
             raise err
@@ -172,14 +168,16 @@ class WebQuizCtan(Command):
         to ensure that they are correct for the ctan upload. We need to make
         webquiz-manual.pdf first because it is included in webquiz.pdf.
         '''
-        for css_file in glob.glob('webquiz-*.scss'):
-            self.shell_command('sass --style compress {} {}.css'.format(css_file, css_file[:-4]))
         # auto generate all of the data used in the manual and build the manuals
-        self.shell_command('cd doc && ./makedoc --fast --make-manual')
+        makedoc = input('Run makedoc [Y/n]? ')
+        if makedoc.lower() != 'n':
+            self.shell_command('doc/makedoc --all --fast')
+
         try:
-            os.remove('javascript/webquiz-min.js')
+            os.remove('javasript/webquiz-min.js')
         except OSError:
             pass
+        # minify the javascript code
         self.shell_command('cd javascript && uglifyjs --output webquiz-min.js --compress sequences=true,conditionals=true,booleans=true  webquiz.js ')
 
     def write_zip_file(self):
@@ -211,15 +209,16 @@ class WebQuizCtan(Command):
                                    ('doc/webquiz.settings',            'doc'),
                                    ('doc/webquiz.themes',              'doc'),
                                    ('doc/webquiz.usage',               'doc'),
-                                   ('doc/examples/*.png',              'doc/examples'),
+                                   ('doc/examples/[-a-z]*.png',        'doc/examples'),
                                    ('doc/examples/*.tex',              'scripts/www/doc/examples'),
                                    ('doc/examples/README-examples',    'scripts/www/doc/examples'),
                                    ('doc/README-doc',                  'doc'),
                                    ('javascript/webquiz-min.js',       'scripts/www/webquiz.js'),
                                    ('latex/pgfsys-dvisvgm4ht.def',     'latex'),
+                                   ('latex/webquiz.ini',               'latex'),
                                    ('latex/webquiz-*.lang',            'latex'),
                                    ('latex/webquiz.c*',                'latex'),
-                                   ('latex/webquiz-*.sty',             'latex'),
+                                   ('latex/webquiz-*.code.tex',        'latex'),
                                    ('webquiz/webquiz*.py',             'scripts'),
                                    ('webquiz/webquiz.bat',             'scripts'),
                                    ('webquiz/README-scripts',          'scripts'),

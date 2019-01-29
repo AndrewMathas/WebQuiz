@@ -20,8 +20,8 @@
 \synctex=1
 
 % load webquiz-ini and webquiz-doc code -- doc needs ini so ini is first
-\usepackage{webquiz-ini}
-\usepackage{webquiz-doc}
+\input{webquiz-ini.code}
+\input{webquiz-doc.code}
 %\usepackage{listingsutf8}
 %\lstset{inputencoding=utf8/cp1250}
 
@@ -600,8 +600,8 @@
     \end{heading}
 
     \begin{heading}[integer comparison] The answers are compared as
-    integers. If the correct answer was $18$ and the students entered
-    $36/2$ then they would be marked wrong.
+    integers. If the correct answer was $18$ and a student entered
+    $36/2$ then their answer would be marked wrong.
     \CrossIndex*{answer}{integer}
     \InputLatexCode{answer-integer}
     \ScreenShot{A question with a integer answer}{answer-integer}
@@ -1165,6 +1165,14 @@
     \BashCode|PDF| versions of the quiz and it does not load language
     packages like \ctan{babel} or \ctan{polyglossia}.
 
+    The \LatexCode|language| keyword can be in upper or lower case, with
+    the result that either (but not both!) of the following two lines would set the
+    quiz language to German:
+    \begin{latexcode}
+      \documentclass[language=German]{webquiz}
+      \documentclass[language=german]{webquiz}
+    \end{latexcode}
+
     Typical usage of the \LatexCode|language| option is the following:
     \lstinputlisting[style=latexcode,extendedchars=false]{examples/french}
     This produces a web page like this:
@@ -1617,11 +1625,13 @@
       changed, such as breadcrumbs or a department URL. In fact, one
       would probably use
       \begin{bashcode}
-        > webquiz -qq quiz[1-9].tex
+        > webquiz -dqq quiz[1-9].tex
       \end{bashcode}
       because the \BashCode|webquiz --qq| command-line option suppresses
-      almost all of the output produced by \LaTeX\ and \TeXfht. The next
-      section discusses the \WebQuiz command-line options.
+      almost all of the output produced by \LaTeX\ and \TeXfht and
+      \BashCode|-d| is faster and it is probably sufficient if the
+      quizzes were compiled recently. The next section discusses the
+      \WebQuiz command-line options.
 
       \subsection{Command-line options}\label{SS:commandline}
       \index{command-line option}

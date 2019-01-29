@@ -2,6 +2,7 @@ answer             = Svar
 check answer       = Kolla svar
 choice             = Valet {} är
 correct            = Rätta!
+false              = falsk
 incorrect          = Felaktig.
 multiple incorrect = Till exempel bör valet {} vara
 next question      = Nästa fråga
@@ -15,5 +16,6 @@ quizzes            = Frågesport
 side menu cross    = fel
 side menu star     = rätt första försök
 side menu tick     = höger
+true               = Sann
 try again          = Var god försök igen
 

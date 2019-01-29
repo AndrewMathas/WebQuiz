@@ -146,6 +146,7 @@ class QuizHandler(xml.sax.ContentHandler):
         for key in ['debugging', 'hide_side_menu', 'one_page', 'pst2pdf', 'random_order']:
             setattr(self, key, getattr(self, key)=='true')
 
+        setattr(self, 'language', self.language.lower())
         # set debugging mode from the latex file...from this point on
         metadata.debugging = metadata.debugging or self.debugging
 
