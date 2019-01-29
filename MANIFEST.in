@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 include  AUTHORS CHANGES.rst INSTALL.rst LICENCE MANIFEST.in README.rst
 recursive-include webquiz *.py webquiz.dtd
 exclude webquiz/mathquiz_sms.py
@@ -8,3 +9,23 @@ recursive-include css *.scss
 include javascript/webquiz.js
 recursive-include tests *.tex
 
+||||||| merged common ancestors
+include  AUTHORS README.rst MANIFEST.in LICENCE changes.rst
+recursive-include webquiz *.py
+exclude webquiz/webquiz.py webquiz/writepage*.py
+recursive-include doc *.tex  *.png
+recursive-include latex *.cfg  *.cls *.mk4
+recursive-include css *.css
+recursive-include javascript *.js
+=======
+include CHANGES.rst INSTALL.rst LICENCE MANIFEST.in README.rst
+recursive-include webquiz *.py webquiz.dtd
+exclude webquiz/mathquiz_sms.py
+recursive-include doc *.tex  *.png makedoc
+recursive-include doc/examples *.tex makeimages
+recursive-include latex pgfsys*.def *.cfg *.cls *.lang *.mk4 webquiz.ini
+recursive-include css *.scss
+include javascript/webquiz.js
+recursive-include tests *.tex
+
+>>>>>>> e452c4340aec65bb2988652773817b827c7e491f

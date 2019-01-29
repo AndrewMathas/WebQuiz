@@ -1,0 +1,52 @@
+% -----------------------------------------------------------------------
+%   webquiz-ini.sty | read the webquiz.ini file into pgfkeys
+% -----------------------------------------------------------------------
+%
+%   Copyright (C) Andrew Mathas, University of Sydney
+%
+%   Distributed under the terms of the GNU General Public License (GPL)
+%               http://www.gnu.org/licenses/
+%
+%   This file is part of the webquiz system.
+%
+%   <Andrew.Mathas@sydney.edu.au>
+% ----------------------------------------------------------------------
+
+%% Read the webquiz.ini file into \pgfkeys for later use so that we
+%% don't need to hard-code version information. We allow unknown keys so
+%% that we can slurp in all of the information in the file into
+%% \pgfkeys{/webquiz}
+\RequirePackage{pgfkeys}
+\pgfkeys{/webquiz/.is family, /webquiz,
+  % allow arbitrary unknown keys and set with \pgfkeyssetvalue
+  .unknown/.code={\pgfkeyssetvalue{\pgfkeyscurrentpath/\pgfkeyscurrentname}{#1}},
+}
+\newcommand\webquiz[1]{\pgfkeysvalueof{/webquiz/#1}}
+
+% split input line into key-value pairs -- necessary as commas can appear in the value
+\RequirePackage{xparse}
+% \AddIniFileKeyValue{key=value} - take a single argument and split it on =
+\NewDocumentCommand{\AddIniFileKeyValue}{ >{\SplitList{=}} m }{%
+  \AddIniFileValue #1%
+}
+% put a key-value pair into \pgfkeys{/webquiz}
+% \AddIniFile{key}{value}  - note that value may contain commas
+\newcommand\AddIniFileValue[2]{\expandafter\pgfkeys\expandafter{/webquiz,#1={#2}}}
+
+% read the webquiz.ini file into \pgfkeys{/webquiz}
+\newread\inifile% file handler
+\def\apar{\par}% \ifx\par won't work but \ifx\apar will
+\newcommand\AddEntry[1]{\expandafter\pgfkeys\expandafter{/webquiz, #1}}
+\openin\inifile=webquiz.ini% open file for reading
+\loop\unless\ifeof\inifile% loop until end of file
+  \read\inifile to \iniline% read line from file
+  \ifx\iniline\apar% test for, and ignore, \par
+  \else%
+    \ifx\iniline\empty\relax% skip over empty lines/comments
+    \else\expandafter\AddIniFileKeyValue\expandafter{\iniline}
+    \fi%
+  \fi%
+\repeat% end of file reading loop
+\closein\inifile% close input file
+
+\endinput
