@@ -1,4 +1,4 @@
-include  AUTHORS CHANGES.rst INSTALL.rst LICENCE MANIFEST.in README.rst
+include CHANGES.rst INSTALL.rst LICENCE MANIFEST.in README.rst
 recursive-include webquiz *.py webquiz.dtd
 exclude webquiz/mathquiz_sms.py
 recursive-include doc *.tex  *.png makedoc
