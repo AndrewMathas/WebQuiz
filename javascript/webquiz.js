@@ -15,22 +15,28 @@
  */
 
 // Global variables
-var Discussion = [];
-var QuizTitles = [];
 var correct = [];           // questions answered correctly
-var wrongAnswers = [];      // questions answered incorrectly
-var currentB;               // current button number
-var currentQ;               // current question number
-var currentFeedback = null; // feedback currently being displayed
-var dTotal;                 // number of discussion items
-var qTotal;                 // number of quiz questions
 var buttonOrder = [];       // map from button number to question number
 var questionOrder = [];     // map from question number to button number
-var drop_down, side_closed, side_menu, side_open;
+var wrongAnswers = [];      // questions answered incorrectly
+
+var currentB;               // current button number
+var currentFeedback = null; // feedback currently being displayed
+var currentQ;               // current question number
+var dTotal;                 // number of discussion items
+var drop_down               // handler for the drop-down menu, if it exists
+var qTotal;                 // number of quiz questions
+var side_closed             // handler for displaying sidelabelclosed
+var side_menu               // handler to open and close side
+var side_open;              // handler for displaying sidelabelopen
 
 // The following variables are redefined in the specifications file
 var QuizSpecifications = [];
+var Discussion = [];        // Headings of discussion environments
 var onePage = false;
+
+// Defined and read from in quizindex.js if it exists
+var QuizTitles = [];        // Quiz titles from a quizindex environment
 
 // Specification for the question buttons for use in updateQuestionMarker
 var blank = {
@@ -50,6 +56,7 @@ var tick = {
     "name": "tick"
 };
 
+// stop the dropdown menu from being created twice
 var drop_down_not_created = true;
 
 // create the drop down menu dynamically using the QuizTitles array
@@ -96,7 +103,7 @@ function toggle_dropdown_menu() {
     }
 }
 
-// toggle the display of the side menu and its labels
+// toggle the display of the side menu and its many associated labels
 function toggle_side_menu() {
     if (side_menu.style.display === "block" || side_menu.style.display === "") {
         side_menu.style.display = "none";
@@ -111,6 +118,7 @@ function toggle_side_menu() {
 
 // Code to hide/show questions
 function showQuestion(newB, newQ) { // newQ is an integer which is always in the correct range
+    // alert('showing newB='+newB+', newQ='+newQ+'.');
     if (!onePage && newQ !== currentQ) {
         if (currentQ !== 0) { // hide the current question and feedback
             hideFeedback();
@@ -120,19 +128,19 @@ function showQuestion(newB, newQ) { // newQ is an integer which is always in the
                 currentB.classList.remove("button-selected");
             }
         }
-
-        // now set currentQ = to the question indexed by newQ in questionOrder
-        // and currentB = current button
-        currentQ = newQ;
-        document.getElementById("question" + currentQ).style.display = "table";
-        currentB = document.getElementById("button" + newB);
-        currentB.classList.add("nolink");
-        if (currentQ > 0) {
-            currentB.classList.add("button-selected");
-            document.getElementById("question-number").innerHTML = newB;
-        } else if (Discussion[-currentQ]) {
-            document.getElementById("question-number").innerHTML = Discussion[-currentQ];
-        }
+        // display newQ
+        document.getElementById("question" + newQ).style.display = "table";
+    }
+    // now set currentQ = to the question indexed by newQ in questionOrder
+    // and currentB = current button
+    currentQ = newQ;
+    currentB = document.getElementById("button" + newB);
+    currentB.classList.add("nolink");
+    if (currentQ > 0) {
+        currentB.classList.add("button-selected");
+        document.getElementById("question-number").innerHTML = newB;
+    } else if (Discussion[-currentQ]) {
+        document.getElementById("question-number").innerHTML = Discussion[-currentQ];
     }
 }
 
@@ -182,8 +190,9 @@ function nextQuestion(increment) {
 
 var buttons = ['blank', 'cross', 'star', 'tick'];
 function updateQuestionMarker(bnum, qnum) {
+    // alert('updating bnum='+bnum+', qnum='+qnum+', currentQ='+currentQ+'.');
     // here qnum is assumed to be the question number in the web form
-    if (currentQ > 0) {
+    if (qnum > 0) {
         var marker;
         var button = document.getElementById('button'+bnum);
         if (correct[qnum]) {
@@ -238,6 +247,7 @@ var compare = {
 
 // check to see whether the answer is correct and update the markers accordingly
 function checkAnswer(qnum) {
+    // alert('checking qnum='+qnum+'.');
     var question = QuizSpecifications[qnum];
     var studentAnswer = document.forms["Q" + qnum + "Form"];
     var i;
