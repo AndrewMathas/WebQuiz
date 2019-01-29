@@ -8,9 +8,10 @@ using [WebQuiz](https://bitbucket.org/AndrewsBucket/webquiz), which is
 written in python. The conversion from LaTeX to HTML is done behind the
 scenes using [TeX4ht](http://www.tug.org/tex4ht/).
 
-To use [WebQuiz](https://bitbucket.org/AndrewsBucket/webquiz) you need to have the following programs installed:
+To use [WebQuiz](https://bitbucket.org/AndrewsBucket/webquiz) you need 
+to have the following programs installed:
 
-:   -   [LaTeX](https://www.latex-project.org/)
+    -   [LaTeX](https://www.latex-project.org/)
     -   [TeX4ht](http://www.tug.org/tex4ht/) (available with latest
         distribution of [texlive](https://www.tug.org/texlive/), for
         example)
@@ -19,9 +20,10 @@ To use [WebQuiz](https://bitbucket.org/AndrewsBucket/webquiz) you need to have t
 Once the system is installed,
 [WebQuiz](https://bitbucket.org/AndrewsBucket/webquiz) is used
 directly from the command line. For example, if quiz1.tex is a latex
-file for a quiz then: \* latex quiz1 produces a "readable" dvi file for
-the quiz \* pdflatex quiz1 produces a "readable" pdf file for the quiz
-\* webquiz quiz1 creates the web page quiz1.html
+file for a quiz then: 
+* latex quiz1 produces a "readable" dvi file for the quiz 
+* pdflatex quiz1 produces a "readable" pdf file for the quiz
+* webquiz quiz1 creates the web page quiz1.html
 
 Installation
 ------------
