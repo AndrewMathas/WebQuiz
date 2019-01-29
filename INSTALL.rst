@@ -1,3 +1,6 @@
+WebQuiz
+=======
+
 WebQuiz has the following components:
  - latex code that uses TeX4ht to generate an XML file
  - python code that reads the XML file and outputs an HTML file
@@ -13,15 +16,21 @@ developer installation instructions see the next section on setup tools.
 Setup tools
 -----------
 Python setup tools are used for packaging to CTAN:
+
     > python3 setup.py ctan
+
 creates a zipfile, webquiz.zip, and optionally uploads it to ctan
 using ctanupload, which is packaged with TeXLive.
 
 On a unix-like system, such as linux or macosx, to set up links for the latex
 and web files for the development version run:
+
     > python3 setup.py develop
+
 In fact, you may want to run this as root, in which case you want:
+
     > sudo python3 setup.py develop
+
 By default, links for the latex files will be put into the TEXMFLOCAL directory
 but this can be customised. You will then be prompted for links for the
 executable and the web components of WebQuiz. The install process assumes that
@@ -32,7 +41,7 @@ a windows PC.
 Python code
 -----------
 There are six python source files:
- - webquiz.py*           = processes command-line options and settings
+ - webquiz.py            = processes command-line options and settings
  - webquiz_layout.py     = determines the final layout of the web pages
  - webquiz_makequiz.py   = converts the XML into HTML
  - webquiz_templates.py  = template strings for HTML and
@@ -51,7 +60,7 @@ The LaTeX is in the latex directory. The main components are:
  - webquiz-ini.code.tex    = code for reading and accessing the ini fle in latex
  - pgfsys-dvisvgm4ht.def   = custom tikz driver for tex4ht
                              from https://github.com/michal-h21/dvisvgm4ht
- - webquiz-*.lang          = language support files. These are
+ - webquiz-\*.lang         = language support files. These are
       actually used by webquiz_main.py when writing the web pages
       but we find them by putting them in the LaTeX search path
 
@@ -60,11 +69,15 @@ Cascading style sheets
 -----------------------
 The CSS for WebQuiz are written using sass (https://sass-lang.com/). The main
 files are:
+
  - webquiz.scss
  - webquiz-THEME.scss
+
 The theme files all set the colours and then load the main sass file webquiz.scss.
 Use the shell script command
+
     makedoc -t
+
 to generate all of the css files.
 
 
@@ -78,6 +91,7 @@ For each quiz, WebQuiz writes another javascript file, wq-file.js, that
 specified the questions in the quiz. This is also automatically by the quiz
 page.
 
+It would be goods to add some javascript unit tests....
 
 Documentation
 -------------
@@ -92,22 +106,25 @@ The main files in the documentation directory are:
  - examples/makeimages = python script for generating the images used in the
                     manual. Requires webkit2png and mogrify. As with makedoc,
                     makeimages -h summaries the command-line options
- - examples/makeimages/*.tex = LaTeX source files for manual
+ - examples/makeimages/\*.tex = LaTeX source files for manual
 
 
 Tests
 -----
 Simple syntax checking tests for WebQuiz. The main tests are really the files
 in the doc/examples directory. The files here are:
- - *.tex       = latex source files that generate errors when run through webquiz
- - *.expected  = expected log output from source files
+
+ - \*.tex       = latex source files that generate errors when run through webquiz
+ - \*.expected  = expected log output from source files
  - tester      = shell script for comparing the expected and actual output for
                  all of the test files
 
 The main test for webquiz is to see if the quizzes in the doc/examples
 directory compile properly and produce appropriate images in the manual,
-for example using
-    doc/examples/makeimages -f
+for example using:
+
+    > doc/examples/makeimages -f
+
 Unfortunately, this s not automatic and requires eyeballing all of the
 images in the manual.
 
