@@ -139,10 +139,6 @@ class Convert:
                 for ext in ['.log', '.xml', '-[cft]*.png']:
                     for file in glob.glob(self.page_out+ext):
                         os.remove(file)
-                try:
-                    shutil.rmtree(self.page_out+'/')
-                except FileNotFoundError:
-                    pass
 
         else:
             print('{} is up to date'.format(page.page_out))
