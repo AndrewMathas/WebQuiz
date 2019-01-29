@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 r'''
 ------------------------------------------------------------------------------
-    webquiz_main | build the quiz page and output using webquiz_layout
+    webquiz_makequiz | build and generate the quiz page using webquiz_xml
+                     | and webquiz_layout
 ------------------------------------------------------------------------------
     Copyright (C) Andrew Mathas, University of Sydney
 
@@ -315,22 +316,22 @@ class MakeWebQuiz(object):
                              encoding='utf8') as quiz_specs:
                 if self.number_discussions > 0:
                     for (i, d) in enumerate(self.quiz.discussion_list):
-                        quiz_specs.write('Discussion[{}]="{}";\n'.format(i, d.heading))
+                        quiz_specs.write('Discussion[{}]="{}";\n'.format(i+1, d.heading))
                 if self.number_quizzes > 0:
                     for (i, question) in enumerate(self.quiz.question_list):
                         # QuizSpecifications is a 0-based array
-                        quiz_specs.write('QuizSpecifications[%d]=[];\n' % i)
-                        quiz_specs.write('QuizSpecifications[%d].type="%s";\n' % (i, question.type))
+                        quiz_specs.write('QuizSpecifications[{}]=[];\n'.format(i+1))
+                        quiz_specs.write('QuizSpecifications[{}].type="{}";\n'.format(i+1, question.type))
                         if question.type == 'input':
-                            quiz_specs.write('QuizSpecifications[{}].value="{}";\n'.format(i,
+                            quiz_specs.write('QuizSpecifications[{}].value="{}";\n'.format(i+1,
                                 question.answer.lower() if question.comparison=='lowercase'
                                                         else question.answer
                               )
                             )
-                            quiz_specs.write('QuizSpecifications[%d].comparison="%s";\n' % (i, question.comparison))
+                            quiz_specs.write('QuizSpecifications[{}].comparison="{}";\n'.format(i+1, question.comparison))
                         else:
                             quiz_specs.write(''.join(
-                                    'QuizSpecifications[%d][%d]=%s;\n' % (i, j, s.correct)
+                                    'QuizSpecifications[{}][{}]={}\n'.format(i+1, j, s.correct)
                                     for (j, s) in enumerate(question.items)
                                 )
                             )
@@ -340,8 +341,8 @@ class MakeWebQuiz(object):
                 if self.quiz.one_page:
                     quiz_specs.write('onePage = true;\n')
                 if self.quiz.random_order:
-                    quiz_specs.write('questionOrder = shuffle(questionOrder);\n')
-                quiz_specs.write('if (qTotal+dTotal>0) { showQuestion( (dTotal > 0) ? -1 : 1 ); }')
+                    quiz_specs.write('shuffleQuestions();\n')
+                quiz_specs.write('if (qTotal+dTotal>0) { gotoQuestion( (dTotal>0)?-1:1 ); }')
 
         except Exception as err:
             webquiz_error('error writing quiz specifications', err)
@@ -386,15 +387,19 @@ class MakeWebQuiz(object):
                 quiz_index='\n          '.join(
                     webquiz_templates.index_item.format(
                         url=q.url,
-                        title='{} {}. {}'.format(self.language['quiz'],num+1,q.title) if q.prompt else q.title,
+                        title='{} {}. {}'.format(self.language['quiz'],num+1,q.title)
+                                if q.prompt else q.title,
                     ) for (num, q) in enumerate(self.quiz.quiz_index)),
                 **self.language)
             # write a javascript file for displaying the menu
             # quizmenu = the index file for the quizzes in this directory
             with codecs.open('quizindex.js', 'w', encoding='utf8') as quizmenu:
                 quizmenu.write('var QuizTitles = [\n{titles}\n];\n'.format(
-                    titles=',\n'.join("  ['{}', '{}']".format(q.title, q.url)
-                                      for q in self.quiz.quiz_index)
+                    titles=',\n'.join("  ['{}', '{}']".format(
+                             '{} {}. {}'.format(self.language['quiz'],num+1,q.title) 
+                                       if q.prompt else q.title,
+                              q.url)
+                        for (num,q) in enumerate(self.quiz.quiz_index))
                     )
                 )
                 quizmenu.write(webquiz_templates.create_dropdown)
@@ -514,7 +519,7 @@ class MakeWebQuiz(object):
             feedback = '\n' + '\n'.join(webquiz_templates.multiple_feedback.format(
                 qnum=qnum,
                 part=snum + 1,
-                correct_answer=s.correct.capitalize(),
+                correct_answer=getattr(self.language, s.correct).capitalize(),
                 feedback=s.feedback,
                 multiple_choice_opener=self.language.multiple_incorrect.
                 format(s.symbol),
@@ -524,9 +529,9 @@ class MakeWebQuiz(object):
             feedback += webquiz_templates.multiple_feedback_correct.format(
                 qnum=qnum,
                 feedback='\n'.join(webquiz_templates.multiple_feedback_answer.format(
-                                correct_answer=s.correct.capitalize(), reason=s.feedback)
-                            for s in question.items),
-                            **self.language)
+                                        correct_answer=getattr(self.language, s.correct).capitalize(),
+                                        reason=s.feedback) for s in question.items),
+                                    **self.language)
         else:
             webquiz_error('Unknown question type "{}" in question {}'.format(question.type, qnum))
 

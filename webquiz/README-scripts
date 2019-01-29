@@ -6,9 +6,9 @@ The batch file webquiz.bat comes from
     https://tex.stackexchange.com/questions/40937/how-to-publish-a-package-that-includes-scripts-and-or-executables/40971
 
 The other files in this directory are:
-    - webquiz.py*           = processes command-line options and settings
-    - webquiz_layout.py     = determines the final layout of the web pages
-    - webquiz_main.py       = converts the XML into HTML
-    - webquiz_templates.py  = template strings for HTML and
-    - webquiz_util.py       = utility functions
-    - webquiz_xml.py        = read and interpret the webquiz XML file
+    - webquiz.py*          = processes command-line options and settings
+    - webquiz_layout.py    = determines the final layout of the web pages
+    - webquiz_makequiz.py  = converts the XML into HTML
+    - webquiz_templates.py = template strings for HTML and
+    - webquiz_util.py      = utility functions
+    - webquiz_xml.py       = read and interpret the webquiz XML file

@@ -64,9 +64,16 @@ function make_themes () {
 function make_examples() {
   message "Generating webquiz example images"
   cd $WebQuizDir/doc/examples
-  if [ "$quiet" = true ]; then
-     ./makeimages > /dev/null
-  else ./makeimages
+  if [[ "$quiet" == true ]]; then
+      q="-q"
+  else
+      q=""
+  fi
+  /bin/rm -f *-thumb.png *-clipped.png
+  if [[ "$fast" == false ]]; then
+    ./makeimages -f $q
+  else
+    ./makeimages $q
   fi
 }
 
@@ -120,7 +127,7 @@ else
   do
      case $1 in
        -a|--all)
-         ake_all
+         make_all
          shift ;;
        -c|--check-examples)
          check_examples

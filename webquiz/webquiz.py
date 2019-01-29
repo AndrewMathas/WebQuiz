@@ -30,7 +30,7 @@ import sys
 
 # imports of webquiz code
 import webquiz_templates
-from webquiz_main import MakeWebQuiz
+from webquiz_makequiz import MakeWebQuiz
 from webquiz_util import copytree, kpsewhich, metadata, webquiz_error, webquiz_file
 
 

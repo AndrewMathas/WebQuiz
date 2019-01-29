@@ -17,15 +17,16 @@
 // Global variables
 var Discussion = [];
 var QuizTitles = [];
-var correct = [];
-var currentQ;
-var currentQuiz;
-var currentFeedback = null;
-var dTotal;
-var qTotal;
-var questionOrder = [];
+var correct = [];           // questions answered correctly
+var wrongAnswers = [];      // questions answered incorrectly
+var currentB;               // current button number
+var currentQ;               // current question number
+var currentFeedback = null; // feedback currently being displayed
+var dTotal;                 // number of discussion items
+var qTotal;                 // number of quiz questions
+var buttonOrder = [];       // map from button number to question number
+var questionOrder = [];     // map from question number to button number
 var drop_down, side_closed, side_menu, side_open;
-var wrongAnswers = [];
 
 // The following variables are redefined in the specifications file
 var QuizSpecifications = [];
@@ -109,40 +110,28 @@ function toggle_side_menu() {
 }
 
 // Code to hide/show questions
-function showQuestion(newQ) { // newQ is an integer which is always in the correct range
-    var realQ;
-    var button;
+function showQuestion(newB, newQ) { // newQ is an integer which is always in the correct range
     if (!onePage && newQ !== currentQ) {
-        if (currentQ>0) {
-            realQ = questionOrder[currentQ-1];
-        } else {
-            realQ = currentQ;
-        }
         if (currentQ !== 0) { // hide the current question and feedback
             hideFeedback();
-            document.getElementById("question" + realQ).style.display = "none";
-            button = document.getElementById("button" + currentQ);
-            button.classList.remove("nolink");
+            document.getElementById("question" + currentQ).style.display = "none";
+            currentB.classList.remove("nolink");
             if (currentQ > 0) { // question and not discussion
-                button.classList.remove("button-selected");
+                currentB.classList.remove("button-selected");
             }
         }
 
-        // now set currentQ = newQ and display it
+        // now set currentQ = to the question indexed by newQ in questionOrder
+        // and currentB = current button
         currentQ = newQ;
-        if (currentQ>0) {
-            realQ = questionOrder[currentQ-1];
-        } else {
-            realQ = currentQ;
-        }
-        document.getElementById("question" + realQ).style.display = "table";
-        button = document.getElementById("button" + currentQ);
-        button.classList.add("nolink");
+        document.getElementById("question" + currentQ).style.display = "table";
+        currentB = document.getElementById("button" + newB);
+        currentB.classList.add("nolink");
         if (currentQ > 0) {
-            button.classList.add("button-selected");
-            document.getElementById("question-number").innerHTML = currentQ;
-        } else if (Discussion[-1 - currentQ]) {
-            document.getElementById("question-number").innerHTML = Discussion[-1 - currentQ];
+            currentB.classList.add("button-selected");
+            document.getElementById("question-number").innerHTML = newB;
+        } else if (Discussion[-currentQ]) {
+            document.getElementById("question-number").innerHTML = Discussion[-currentQ];
         }
     }
 }
@@ -156,7 +145,6 @@ function hideFeedback() {
 }
 
 function showFeedback(tag) {
-    alert('showing feedback for '+tag+'.')
     hideFeedback(); // hide current feedback
     currentFeedback = document.getElementById(tag);
     currentFeedback.style.display = "block";
@@ -166,45 +154,46 @@ function showFeedback(tag) {
 // been answered incorrectly and if increment==-1 we find the last
 // such question
 function nextQuestion(increment) {
-    if (currentQ < 0) { // a discussion item
+    if (currentQ < 0) { // a discussion item => go to either first or last question
         if (increment === 1) {
             gotoQuestion(1);
         } else {
             gotoQuestion(qTotal);
         }
     } else {
-        var q = currentQ;
+        var b = buttonOrder[currentQ], q;
         do {
-            q += increment;
-            if (q === 0) {
-                q = qTotal;
-            } else if (q > qTotal) {
-                q = 1;
+            b += increment;
+            if (b === 0) {
+                b = qTotal;
+            } else if (b > qTotal) {
+                b = 1;
             }
-        } while (q !== currentQ && correct[ q - 1]);
-        if (q === currentQ) {
+            q = questionOrder[b];
+        } while (q !== currentQ && correct[q]);
+        if (b === currentB) {
             alert("There are no more unanswered questions");
         } else {
-            gotoQuestion(q);
+            gotoQuestion(b);
         }
     }
 }
 
 
 var buttons = ['blank', 'cross', 'star', 'tick'];
-function updateQuestionMarker(qnum) {
-    var q = qnum - 1;
+function updateQuestionMarker(bnum, qnum) {
+    // here qnum is assumed to be the question number in the web form
     if (currentQ > 0) {
         var marker;
-        var button = document.getElementById("button" + currentQ);
-        if (correct[q]) {
-            if (wrongAnswers[q] === 0) {
+        var button = document.getElementById('button'+bnum);
+        if (correct[qnum]) {
+            if (wrongAnswers[qnum] === 0) {
                 marker = star;
             } else {
                 marker = tick;
             }
         } else {
-            if (wrongAnswers[q] > 0) {
+            if (wrongAnswers[qnum] > 0) {
                 marker = cross;
             } else {
                 marker = blank;
@@ -218,9 +207,11 @@ function updateQuestionMarker(qnum) {
     }
 }
 
-function gotoQuestion(qnum) {
-    updateQuestionMarker(qnum);
-    showQuestion(qnum);
+function gotoQuestion(bnum) {
+    // bnum is a button number so we need to convert to a question number
+    var qnum = questionOrder[bnum];
+    updateQuestionMarker(bnum, qnum);
+    showQuestion(bnum, qnum);
 }
 
 // dictionary of comparison methods for when question.type=='input'
@@ -247,73 +238,72 @@ var compare = {
 
 // check to see whether the answer is correct and update the markers accordingly
 function checkAnswer(qnum) {
-    var q = qnum - 1;
-    var realQ = questionOrder[q];
-    var question = QuizSpecifications[realQ-1];
-    var formObject = document.forms["Q" + realQ + "Form"];
+    var question = QuizSpecifications[qnum];
+    var studentAnswer = document.forms["Q" + qnum + "Form"];
     var i;
     if (question.type == "input") {
-        var answer = formObject.elements[0].value;
+        var answer = studentAnswer.elements[0].value;
         try {
-          correct[q] = compare[question.comparison](answer, question.value);
+          correct[qnum] = compare[question.comparison](answer, question.value);
         } catch(err) {
-          correct[q] = False;
+          correct[qnum] = False;
         }
 
-        if (correct[q]) {
-            showFeedback("q" + realQ + "true");
+        if (correct[qnum]) {
+            showFeedback("q" + qnum + "true");
         } else {
-            showFeedback("q" + realQ + "false");
+            showFeedback("q" + qnum + "false");
         }
     } else if (question.type == "single") {
         var checkedAnswer = 0;
         for (i = 0; i < question.length; i++) {
-            if (formObject.elements[i].checked) {
-                correct[q] = question[i];
+            if (studentAnswer.elements[i].checked) {
+                correct[qnum] = question[i];
                 checkedAnswer = i + 1;
                 break;
             }
         }
-        showFeedback("q" + realQ + "feedback" + checkedAnswer);
+        showFeedback("q" + qnum + "feedback" + checkedAnswer);
     } else { // type is "multiple"
         var badAnswers = [];
         for (i = 0; i < question.length; i++) {
-            if (formObject.elements[i].checked !== question[i]) {
+            if (studentAnswer.elements[i].checked !== question[i]) {
                 badAnswers.push(i + 1);
                 break;
             }
         }
         // fully correct only if badAnswers == []
         if (badAnswers.length === 0) {
-            correct[q] = true;
-            showFeedback("q" + realQ + "feedback0");
+            correct[qnum] = true;
+            showFeedback("q" + qnum + "feedback0");
         } else {
             // randomly display a feedback for one of incorrect choices
-            correct[q] = false;
-            showFeedback("q" + realQ + "feedback" + badAnswers[Math.floor(Math.random() * badAnswers.length)]);
+            correct[qnum] = false;
+            showFeedback("q" + qnum + "feedback" + badAnswers[Math.floor(Math.random() * badAnswers.length)]);
         }
     }
     //
-    if (!correct[q]) {
-        wrongAnswers[q] += 1;
+    if (!correct[qnum]) {
+        wrongAnswers[qnum] += 1;
     }
-    updateQuestionMarker(qnum);
+    updateQuestionMarker(buttonOrder[qnum], qnum);
 }
 
 /**
- * Shuffles array in place. ES6 version
- * @param {Array} a items An array containing the items.
- * https://stackoverflow.com/questions/6274339/how-can-i-shuffle-an-array
+ * Shuffle the questionOrder array and make buttonOrder its inverse
+ * Based on https://stackoverflow.com/questions/6274339/how-can-i-shuffle-an-array
  */
-function shuffle(a) {
-    var i, j;
-    for (i = a.length - 1; i > 0; i--) {
-        j = Math.floor(Math.random() * (i + 1));
-        ai = a[i];
-        a[i]=a[j];
-        a[j]=ai;
+function shuffleQuestions() {
+    var i, j, qi;
+    for (i = questionOrder.length-1; i > 0; i--) {
+        j = 1+Math.floor(Math.random() * i);
+        qi = questionOrder[i];
+        questionOrder[i]=questionOrder[j];
+        questionOrder[j]=qi;
     }
-    return a;
+    for (i = buttonOrder.length - 1; i > 0; i--) {
+        buttonOrder[questionOrder[i]] = i;
+    }
 }
 
 // initialise the quiz, loading specifications and setting up the first question
@@ -321,7 +311,6 @@ function WebQuizInit(questions, discussions, quizfile) {
     // process init options
     qTotal = questions;
     dTotal = discussions;
-    currentQuiz = quizfile;
 
     // display the first question or discussion item
     currentQ = 0;
@@ -329,16 +318,17 @@ function WebQuizInit(questions, discussions, quizfile) {
 
     // set up arrays for tracking how many times the questions have been attempted
     var i;
-    for (i = 0; i < qTotal; i++) {
+    for (i = 0; i < qTotal+1; i++) {
         wrongAnswers[i] = 0;    // the number of times the question has been attempted
         correct[i] = false;     // whether or not the supplied answer is correct
-        questionOrder[i] = i+1; // determine the order of the question
+        questionOrder[i] = i; // will determine the order of the questions
+        buttonOrder[i] = i;    // will determine the order of the buttons
     }
 
     // read the question specifications for the quiz
     // and then wait for the QuizSpecifications to load
     var script = document.createElement('script');
-    script.src =  currentQuiz + "/wq-" + currentQuiz + ".js";
+    script.src =  quizfile + "/wq-" + quizfile + ".js";
     script.type = "text/javascript";
     document.head.appendChild(script);
 
