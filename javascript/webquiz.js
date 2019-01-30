@@ -136,11 +136,13 @@ function showQuestion(newB, newQ) { // newQ is an integer which is always in the
     currentQ = newQ;
     currentB = document.getElementById("button" + newB);
     currentB.classList.add("nolink");
-    if (currentQ > 0) {
-        currentB.classList.add("button-selected");
-        document.getElementById("question-number").innerHTML = newB;
-    } else if (Discussion[-currentQ]) {
-        document.getElementById("question-number").innerHTML = Discussion[-currentQ];
+    if (!onePage) {
+      if (currentQ > 0) {
+          currentB.classList.add("button-selected");
+          document.getElementById("question-number").innerHTML = newB;
+      } else if (Discussion[-currentQ]) {
+          document.getElementById("question-number").innerHTML = Discussion[-currentQ];
+      }
     }
 }
 
