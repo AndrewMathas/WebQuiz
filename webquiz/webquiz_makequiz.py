@@ -423,7 +423,8 @@ class MakeWebQuiz(object):
             self.quiz_questions += ''.join(
                 webquiz_templates.question_wrapper.format(
                     qnum=qnum + 1,
-                    question_number='{}. '.format(qnum+1) if self.quiz.one_page else '',
+                    question_number='{} {}. '.format(self.language.question, qnum+1)
+                                    if self.quiz.one_page else '',
                     display='inline' if self.quiz.one_page else 'none',
                     question=self.print_question(quiz_question, qnum + 1),
                     feedback=self.print_feedback(quiz_question, qnum + 1)

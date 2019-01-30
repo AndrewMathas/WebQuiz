@@ -129,10 +129,11 @@ index_item = r'''<li><a href={url}>{title}</a></li>'''
 
 # now we come to the question wrappers
 question_wrapper = r'''<div id="question{qnum}" class="question" style="display:{display};">
-      {question_number}{question}
+      <span class="question-label">{question_number}</span>{question}
       {feedback}
       </div>
 '''
+
 question_text = r'''  {question_text}
       <form id="Q{qnum}Form" onSubmit="return false;" class="question">
         {question_options}
