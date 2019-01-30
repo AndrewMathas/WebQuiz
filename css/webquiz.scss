@@ -530,21 +530,24 @@ span#quizzes-menu-icon {
   color: $BreadCrumbFG;
 }
 
+span#sidelabelopen   { display: block; }
+span#sidelabelclosed { display: none; }
+
 /*
  * MEDIA QUERIES
  */
 @media (max-width : 600px) {
     div.side-menu { display: none; }
-    span#sidelabelopen { display: none; }
-    span#sidelabelclosed { display: block; }
+    #sidelabelopen   span { display: none; }
+    #sidelabelclosed span { display: block; }
     div.breadcrumbs {display: none; }
     div.quiz-page { top: 6px; }
 }
 
 @media (min-width : 601px) {
     div.side-menu { display: block; }
-    span#sidelabelopen { display: block; }
-    span#sidelabelclosed { display: none; }
+    #sidelabelopen   span { display: block; }
+    #sidelabelclosed span { display: none; }
     div.breadcrumbs {display: block; }
     div.quiz-page { top: 36px; }
 }
