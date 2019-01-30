@@ -147,6 +147,8 @@ class QuizHandler(xml.sax.ContentHandler):
             setattr(self, key, getattr(self, key)=='true')
 
         setattr(self, 'language', self.language.lower())
+        setattr(self, 'theme', self.theme.lower())
+
         # set debugging mode from the latex file...from this point on
         metadata.debugging = metadata.debugging or self.debugging
 

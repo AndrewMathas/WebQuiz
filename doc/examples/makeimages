@@ -53,9 +53,11 @@ class Convert:
                    being generated starting with pdflatex, webkit2png or latex
       - page_out = output file                                         (default: file_in)
       - delay    = time to wait in second before taking the screenshot (default: 3)
-      - question = a c| separated string of the form 'question:part',
+
+      - question = a |-separated string of the form 'question:part',
                    where part is comma separated, to "guess" that these
                    parts are correct                                   (default: None)
+      - Question = a |-separated list of pairs 'question:value'        (default: None)
       - js       = javascript commands                                 (default: '')
       - js_end   = final javascript commands                           (default: '')
       - width    = width of image
@@ -69,6 +71,7 @@ class Convert:
             js = '',
             js_end = '',
             page_out = None,
+            Question = None,
             question = None,
             src = 'html',
             webquiz = '',
@@ -84,14 +87,22 @@ class Convert:
         if self.page_out is None:
             self.page_out = self.page
 
+        if not self.Question is None:
+            for qval in self.Question.split('|'):
+                quest = qval.split(':')
+                self.js += "document.forms['Q{}Form'].elements[0].value='{}';".format(quest[0], quest[1])
+                if len(quest)==2: # checking is disabled by second colon: quest:value:
+                    self.js += 'gotoQuestion({q});checkAnswer({q});'.format(q=quest[0])
+                self.delay += 2
+
         if not self.question is None:
             for qp in self.question.split('|'):
-                quest, part = qp.split(':')
-                for p in part.split(','):
-                    self.js += "document.forms['Q{}Form'].elements[{}].checked=true;".format(quest, int(p)-1)
-                self.js += 'checkAnswer({});'.format(quest)
-                self.delay += 4
-            self.js += 'setTimeout(showQuestion({}), 20)'.format(quest)
+                quest = qp.split(':')
+                for p in quest[1].split(','):
+                    self.js += "document.forms['Q{}Form'].elements[{}].checked=true;".format(quest[0], int(p)-1)
+                if len(quest)==2: # checking is disabled by second colon: quest:parts:
+                    self.js += 'gotoQuestion({q});checkAnswer({q});'.format(q=quest)
+                self.delay += 2
 
         # add on the final bit of javascript
         self.js += self.js_end
@@ -106,28 +117,29 @@ class Convert:
         else:
             raise ValueError('unknown src={} for {}'.format(src, page))
 
-    def __call__(self, force, cleaning):
+    def __call__(self, options):
         r'''
             Expand any glob patterms and then pass to write_image to
             generate the images and clean up
         '''
+        self.options = options
         if '*' in self.page:
             pages = self.page
             for page in glob.glob(pages+'.tex'):
                 self.page = page[:-4]
                 self.page_out = page[:-4]
-                self.write_image(force, cleaning) # the actual conversion
+                self.write_image() # the actual conversion
         else:
-            self.write_image(force, cleaning) # the actual conversion
+            self.write_image() # the actual conversion
 
-    def write_image(self, force, cleaning):
+    def write_image(self):
         r'''
           Convert self.page to self.page_out.
 
           If `cleaning` is `True` then all unnecessary files are deleted
           once after the image is created
         '''
-        if force or self.modified():
+        if self.options.force or self.modified():
             print('\nExtracting image file {}...'.format(self.page_out))
             if os.path.exists(self.page_out+'.png'):
                 # remove png file if it already exists
@@ -135,7 +147,7 @@ class Convert:
 
             self.convert() # the actual conversion
 
-            if cleaning:
+            if self.options.cleaning:
                 for ext in ['.log', '.xml', '-[cft]*.png']:
                     for file in glob.glob(self.page_out+ext):
                         os.remove(file)
@@ -148,7 +160,8 @@ class Convert:
             Extract and trim and image using webquiz, webkit2png and mogrify
         '''
         # run the quiz file through webquiz
-        run('webquiz {} {} {}'.format(self.webquiz, webquiz_mode, self.page))
+        if not self.options.fast:
+            run('webquiz {} {} {}'.format(self.webquiz, webquiz_mode, self.page))
 
         # extract a png image for the web page using webkit2png
         cmd = r"webkit2png {debug} --ignore-ssl-check -o {fout} {width} --delay={delay} {js} {URL}/{fin}.html".format(
@@ -158,7 +171,7 @@ class Convert:
                         fin=self.page,
                         fout=self.page_out,
                         js='' if self.js is None 
-                              else '--js="{java};"'.format(java=self.js),
+                              else '--js="{java}"'.format(java=self.js),
                         width='-W {}'.format(self.width) if self.width!='' else '-F'
                     )
         if webkit2png_mode == '--debug':
@@ -200,14 +213,14 @@ class Convert:
 
 # Specify the pages to construct using the Convert class:
 pages = [
-    Convert("answer-complex", js="document.forms['Q1Form'].elements[0].value='i+7'; setTimeout(checkAnswer(1), 60);"),
-    Convert("answer-integer", js="document.forms['Q1Form'].elements[0].value=18; setTimeout(checkAnswer(1), 20);"),
-    Convert("answer-lowercase", js="document.forms['Q1Form'].elements[0].value='long'; setTimeout(checkAnswer(1), 20);"),
-    Convert("answer-number", js="document.forms['Q1Form'].elements[0].value='0.75'; setTimeout(checkAnswer(1), 60);"),
-    Convert("answer-string", js="document.forms['Q1Form'].elements[0].value='canberra'; setTimeout(checkAnswer(1), 20);"),
-    Convert("answer-star", js="document.forms['Q1Form'].elements[0].value='canberra'; setTimeout(checkAnswer(1), 20);"),
-    Convert("breadcrumbs", js="setTimeout(toggle_drop_down_menu(),20)", delay=10),
-    Convert("breadcrumbs", page_out="quizindex-dropdown", js='setTimeout(create_drop_down_menu(),20); toggle_dropdown_menu();', delay=10),
+        Convert("answer-complex", Question="1:i+7"),
+    Convert("answer-integer", Question="1:18"),
+    Convert("answer-lowercase", Question="1:long"),
+    Convert("answer-number", Question="1:0.75"),
+    Convert("answer-string", Question="1:canberra"),
+    Convert("answer-star", Question="1:canberra"),
+    Convert("breadcrumbs", js="toggle_drop_down_menu();"),
+    Convert("breadcrumbs", page_out="quizindex-dropdown", js='toggle_dropdown_menu();'),
     Convert("choice-dark"),
     Convert("choice-multiple"),
     Convert("choice-single"),
@@ -217,16 +230,16 @@ pages = [
     Convert("index-en"),
     Convert("index-cz"),
     Convert("lion-image"),
-    Convert("montypython", delay=5),
-    Convert("nounits", delay=5),
-    Convert("onepage", js="document.forms['Q3Form'].elements[0].value='yes'; checkAnswer(3);"),
+    Convert("montypython"),
+    Convert("nounits"),
+    Convert("onepage", Question="1:3"),
     Convert("pst2pdf", width=500),
     Convert("pstricks-ex"),
-    Convert("quiz-page", question="1:2", delay=15),
-    Convert("random", js="questionOrder=[4,3,2,1]; document.forms['Q3Form'].elements[0].value='yes';showQuestion(2);checkAnswer(2);"),
+    Convert("quiz-page", question="1:4|1:5|3:3|2:3"),
+    Convert("random", js="questionOrder=[0,4,3,2,1];", Question='1:1:', js_end="gotoQuestion(4);checkAnswer(1);"),
     Convert("simple", page_out='simple-html', question='1:1'),
     Convert("simple", src='pdf',  page_out='simple-pdf'),
-    Convert("theme-*", question="1:1,3|3:2", js_end='toggle_dropdown_menu();'),
+    Convert("theme-*", question="1:1,7|3:1|3:1,7|6:4", js_end='toggle_dropdown_menu();'),
     Convert("tikz-ex"),
 ]
 
@@ -238,6 +251,8 @@ if __name__ == '__main__':
     parser.add_argument('-c', '--nocleaning', dest='cleaning', action='store_false', default=True, 
                         help='do not delete all extraneous files on exit')
     parser.add_argument('-d', '--debugging', action='store_true', default=False, help='turn on debugging')
+    parser.add_argument('--fast', action='store_true', default=False,
+            help='generate image without first calling webquiz')
     parser.add_argument('-f', '--force', action='store_true', default=False, help='update all files without comparing timestamps')
     parser.add_argument('-l', '--list', action='store_true', default=False, help='print list of generated image files')
     parser.add_argument('-q', '--quiet', action='store_true', default=False, help='quiet output')
@@ -275,4 +290,4 @@ if __name__ == '__main__':
     # run through pages and extract the corresponding images
     for page in sorted(pages, key=lambda p: p.page_out):
         if is_good_page(page):
-            page(args.force, args.cleaning)
+            page(args)

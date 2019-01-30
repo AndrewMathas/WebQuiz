@@ -1,14 +1,14 @@
 WebQuiz: on-line quizzes using [LaTeX](https://www.latex-project.org/)
 =======================================================================
 
-[WebQuiz](https://bitbucket.org/AndrewsBucket/webquiz) makes it
+`WebQuiz` makes it
 possible to use LaTeX to write interactive web based quizzes. The
 quizzes are first written in LaTeX and then converted into HTML files
-using [WebQuiz](https://bitbucket.org/AndrewsBucket/webquiz), which is
+using `WebQuiz`, which is
 written in python. The conversion from LaTeX to HTML is done behind the
 scenes using [TeX4ht](http://www.tug.org/tex4ht/).
 
-To use [WebQuiz](https://bitbucket.org/AndrewsBucket/webquiz) you need 
+To use `WebQuiz` you need 
 to have the following programs installed:
 
     -   [LaTeX](https://www.latex-project.org/)
@@ -17,18 +17,16 @@ to have the following programs installed:
         example)
     -   [Python](https://www.python.org) (python3)
 
-Once the system is installed,
-[WebQuiz](https://bitbucket.org/AndrewsBucket/webquiz) is used
-directly from the command line. For example, if quiz1.tex is a latex
-file for a quiz then: 
-* latex quiz1 produces a "readable" dvi file for the quiz 
-* pdflatex quiz1 produces a "readable" pdf file for the quiz
-* webquiz quiz1 creates the web page quiz1.html
+`WebQuiz` is designed to be used from the command-line.
+For example, if `quiz1.tex` is a LaTeX file for a quiz then: 
+* `latex quiz1` produces a "readable" dvi file for the quiz 
+* `pdflatex quiz1` produces a "readable" pdf file for the quiz
+* `webquiz quiz1` creates the web page quiz1.html
 
 Installation
 ------------
 
-[WebQuiz](https://bitbucket.org/AndrewsBucket/webquiz) has three
+`WebQuiz` has three
 different components that need to be installed:
 
 > -   LaTeX files: webquiz.cls and webquiz.cfg need to be in the LaTeX
@@ -39,25 +37,24 @@ different components that need to be installed:
 > -   web files: although not strictly necessary, the files in the
 >     scripts web directory www should be put on the local web server
 
-Once [WebQuiz](https://bitbucket.org/AndrewsBucket/webquiz) is
+Once `WebQuiz` is
 available from ctan only the web files will need to be installed and
 this can be done using the command:
 
 > webquiz --initialise
 
-[WebQuiz](https://bitbucket.org/AndrewsBucket/webquiz) will still work
+`WebQuiz` will still work
 if the web files are not installed locally, however, the quiz pages will
 display a warning message. For more details about installation,
 configuration and use please see the
-[WebQuiz](https://bitbucket.org/AndrewsBucket/webquiz) manual and the
-[WebQuiz](https://bitbucket.org/AndrewsBucket/webquiz) on-line manual.
+`WebQuiz` manual and the
+`WebQuiz` on-line manual.
 
 Distribution
 ------------
 
-To organisation of the the code in the
-[WebQuiz](https://bitbucket.org/AndrewsBucket/webquiz) repository is
-not suitable for distribution. To upload the package to ctan use:
+To organisation of the the code in the `WebQuiz` repository is not suitable for
+distribution. To upload the package to ctan use:
 
 > python3 setup.py ctan
 
@@ -68,14 +65,12 @@ To set up the system for development:
 Authors
 =======
 
-The LaTeX component of
-[WebQuiz](https://bitbucket.org/AndrewsBucket/webquiz) was written by
-Andrew Mathas and the python, css and javascript code was written by
-Andrew Mathas (and Don Taylor), based on an initial protype of Don 
-Taylor's from 2001. Since 2004 the program has been maintained and
-developed by Andrew Mathas. Although the program has changed 
-substantially since 2004 Don's idea of using TeX 4ht, and some of 
-his code, are still very much in use.
+The LaTeX component of `WebQuiz` was written by Andrew Mathas and the python,
+css and javascript code was written by Andrew Mathas (and Don Taylor), based on
+an initial protype of Don Taylor's from 2001. Since 2004 the program has been
+maintained and developed by Andrew Mathas. Although the program has changed
+substantially since 2004 Don's idea of using TeX 4ht, and some of his code, are
+still very much in use.
 
 Copyright (C) 2004-2017
 

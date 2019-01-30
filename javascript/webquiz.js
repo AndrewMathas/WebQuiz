@@ -255,6 +255,10 @@ function checkAnswer(qnum) {
     var i;
     if (question.type == "input") {
         var answer = studentAnswer.elements[0].value;
+        if (answer=='') { //must have hit checkAnswer without answering, so ignore
+          alert('Please answer the question first!')
+          return
+        }
         try {
           correct[qnum] = compare[question.comparison](answer, question.value);
         } catch(err) {
