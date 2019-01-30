@@ -83,7 +83,7 @@ function create_drop_down_menu() {
 // create an event listener so that we can close the drop-down menu
 // whenever some one clicks outside of it
 function MenuEventListener(evnt) {
-    var menu_icon = document.getElementsByClassName('menu-icon')[0];
+    var menu_icon = document.getElementsByClassId('menu-icon');
     if (drop_down.contains(evnt.target)) {
       return; // inside the menu so just return
     } else {   // outside the menu so check the number of menu_clicks
@@ -344,8 +344,8 @@ function WebQuizInit(questions, discussions, quizfile) {
 
     // compute these only once
     side_menu = document.getElementById('sidemenu');
-    side_open = document.getElementsByClassName('sidelabelopen')[0];
-    side_closed = document.getElementsByClassName('sidelabelclosed')[0];
+    side_open = document.getElementById('sidelabelopen');
+    side_closed = document.getElementById('sidelabelclosed');
     drop_down = document.getElementById("drop-down-menu");
 
     // make the drop down menu if QuizTitles has some entries
@@ -356,10 +356,10 @@ function WebQuizInit(questions, discussions, quizfile) {
     if (qTotal==0) {
         // ugly hack to position copyright message when there are no questions
         side_menu.style.height='60ex';
-        var school = side_menu.getElementsByClassName('school')[0];
+        var school = side_menu.getElementById('school');
         school.style.position = 'relative';
         school.style.bottom = '-25ex';
-        var copyright = side_menu.getElementsByClassName('copyright')[0];
+        var copyright = side_menu.getElementById('copyright')
         copyright.style.position = 'relative';
         copyright.style.bottom = '-35ex';
     }

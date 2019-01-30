@@ -68,17 +68,17 @@ breadcrumbs = r'''<div class="breadcrumbs">
 # question buttons
 button = r'        <div id="button{b}" class="button{cls}" content=" " onClick="gotoQuestion({b})">{b}</div>'
 discuss = r'        <li id="button-{b}" class="discussion" onClick="gotoQuestion(-{b})">{title}</li>'
-side_menu = r'''<div class="menu-icon">
-      <span class="sidelabelclosed question-label" onclick="toggle_side_menu();">&#10070;</span>
-      <span class="sidelabelopen question-label" onclick="toggle_side_menu();">&#10006;&nbsp;{side_questions}
+side_menu = r'''<div id="menu-icon">
+      <span id="sidelabelclosed question-label" onclick="toggle_side_menu();">&#10070;</span>
+      <span id="sidelabelopen question-label" onclick="toggle_side_menu();">&#10006;&nbsp;{side_questions}
       </span>
     </div>
     <div id="sidemenu" class="side-menu">{discussion_list}{question_buttons}
-      <div class="school">
+      <div id="school">
         {department}<p>
         {institution}
       </div>
-      <div class="copyright">
+      <div id="copyright">
         <a href="http://www.maths.usyd.edu.au/u/mathas/WebQuiz/credits.html">
            WebQuiz {version}
         </a>

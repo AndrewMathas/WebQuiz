@@ -178,7 +178,7 @@ div.side-menu {
       padding-right: 2px !important;
     }
 
-    div.school {
+    div#school {
         font-family: arial, verdana, helvetica;
         font-weight: normal;
         font-size: xx-small;
@@ -196,17 +196,18 @@ div.side-menu {
         }
     }
 
-    div.copyright {
+    div#copyright {
         font-family: arial, verdana, helvetica;
         font-size: xx-small;
         font-weight: normal;
         text-align: center;
         color: darken($Copyright, 10);
-    }
-    div.copyright A, div.copyright A:link, div.copyright A:visited {
-        text-decoration: none;
-        color: $Copyright;
-        font-weight: bold;
+
+        A, A:link, A:visited {
+            text-decoration: none;
+            color: $Copyright;
+            font-weight: bold;
+        }
     }
 }
 
@@ -510,7 +511,7 @@ nav {
         }
 }
 
-div.menu-icon {
+div#menu-icon {
   display: inline-block;
   color: $Heading;
   float: left;
@@ -521,7 +522,7 @@ div.menu-icon {
   font-size: 14px !important;
 }
 
-div.menu-icon:hover {
+div#menu-icon:hover {
     background-color: $ButtonBG;
 }
 
@@ -534,16 +535,16 @@ span#quizzes-menu-icon {
  */
 @media (max-width : 600px) {
     div.side-menu { display: none; }
-    span.sidelabelopen { display: none; }
-    span.sidelabelclosed { display: block; }
+    span#sidelabelopen { display: none; }
+    span#sidelabelclosed { display: block; }
     div.breadcrumbs {display: none; }
     div.quiz-page { top: 6px; }
 }
 
 @media (min-width : 601px) {
     div.side-menu { display: block; }
-    span.sidelabelopen { display: block; }
-    span.sidelabelclosed { display: none; }
+    span#sidelabelopen { display: block; }
+    span#sidelabelclosed { display: none; }
     div.breadcrumbs {display: block; }
     div.quiz-page { top: 36px; }
 }
