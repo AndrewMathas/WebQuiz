@@ -1,0 +1,15 @@
+% should give error as too many correct ansers
+\documentclass{webquiz}
+\title{To choose or not to use}
+\begin{document}
+  \begin{question}     % a quiz question
+     Which is your favourite Monty Python sketch?
+     \begin{choice}[columns=3]% unique answer rendered in three columns
+       \correct The cheese shop
+       \correct The Dead Parrot
+       \correct The argument Clinic
+       \correct Four Yorkshiremen
+       \correct The Ministry Of Silly Walks
+     \end{choice}
+  \end{question}
+\end{document}

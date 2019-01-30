@@ -1,0 +1,13 @@
+% should give error as has no \incorrect or \correct inside choice
+\documentclass{webquiz}
+\title{A multiple choice question with a unique answer}
+\begin{document}
+  \begin{question}     % a quiz question
+     What is the cube root of $64$?
+     \begin{choice}[columns=3]% unique answer rendered in three columns
+         \correct Hello
+         \feedback First feedback
+         \feedback Second feedback
+     \end{choice}
+  \end{question}
+\end{document}

@@ -78,7 +78,7 @@ class MakeWebQuiz(object):
 
         # initialise number of quiz and discussion items
         self.number_discussions = len(self.quiz.discussion_list)
-        self.number_quizzes = len(self.quiz.question_list)
+        self.number_questions = len(self.quiz.question_list)
 
         self.add_meta_data()
         self.add_question_javascript()
@@ -274,14 +274,14 @@ class MakeWebQuiz(object):
         institution = '''<a href="{0.institution_url}">{0.institution}</a>'''.format(self.quiz)
 
         # question buttons
-        if self.number_quizzes == 0:
+        if self.number_questions == 0:
             question_buttons = ''
         else:
             buttons = '\n' + '\n'.join(
                 webquiz_templates.button.format(b=q,
                     cls=' button-selected' if self.quiz.discussion_list == [] and q == 1 else ''
                 )
-                for q in range(1, self.number_quizzes + 1))
+                for q in range(1, self.number_questions + 1))
             question_buttons=webquiz_templates.question_buttons.format(
                 buttons=buttons, **self.language
             )
@@ -292,7 +292,7 @@ class MakeWebQuiz(object):
             version=metadata.version,
             department=department,
             institution=institution,
-            side_questions=self.language['questions'] if self.number_quizzes>0 else '',
+            side_questions=self.language['questions'] if self.number_questions>0 else '',
             question_buttons=question_buttons,
             copyright_years=metadata.copyright[:metadata.copyright.index(' ')],
             **self.language)
@@ -317,7 +317,7 @@ class MakeWebQuiz(object):
                 if self.number_discussions > 0:
                     for (i, d) in enumerate(self.quiz.discussion_list):
                         quiz_specs.write('Discussion[{}]="{}";\n'.format(i+1, d.heading))
-                if self.number_quizzes > 0:
+                if self.number_questions > 0:
                     for (i, question) in enumerate(self.quiz.question_list):
                         # QuizSpecifications is a 0-based array
                         quiz_specs.write('QuizSpecifications[{}]=[];\n'.format(i+1))
@@ -342,7 +342,11 @@ class MakeWebQuiz(object):
                     quiz_specs.write('onePage = true;\n')
                 if self.quiz.random_order:
                     quiz_specs.write('shuffleQuestions();\n')
-                quiz_specs.write('if (qTotal+dTotal>0) { gotoQuestion( (dTotal>0)?-1:1 ); }')
+
+                if self.number_discussions+self.number_questions>0:
+                    quiz_specs.write('gotoQuestion({});'.format(
+                        -1 if self.number_discussions>0 else 1)
+                    )
 
         except Exception as err:
             webquiz_error('error writing quiz specifications', err)
@@ -352,7 +356,7 @@ class MakeWebQuiz(object):
             mathjax=self.settings['mathjax']
         )
         self.webquiz_init = webquiz_templates.webquiz_init.format(
-            number_quizzes=self.number_quizzes,
+            number_questions=self.number_questions,
             number_discussions=self.number_discussions,
             quiz_file=self.quiz_name,
         )

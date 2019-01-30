@@ -22,8 +22,6 @@
 % load webquiz-ini and webquiz-doc code -- doc needs ini so ini is first
 \input{webquiz-ini.code}
 \input{webquiz-doc.code}
-%\usepackage{listingsutf8}
-%\lstset{inputencoding=utf8/cp1250}
 
 \usepackage{textcomp}
 \usepackage{pdfpages}
@@ -373,7 +371,7 @@
       To process the file \BashCode|quiz.tex| using \WebQuiz you would
       type
       \begin{bashcode}
-      > webquiz quiz|         or         > webquiz quiz.tex|
+        > webquiz quiz         or         > webquiz quiz.tex
       \end{bashcode}
       \index{$>$ command-line prompt}\index{command-line prompt!$>$}
       (Throughout this manual, \BashCode|>| is used for the command-line
@@ -406,8 +404,8 @@
       \end{itemize}
 
      The \LaTeX{} component of \WebQuiz{} was written by Andrew Mathas and
-     the \python, \CSS and \Javascript code was written by Andrew Mathas (and
-     Don Taylor), based on an initial prototype of Don Taylor's from 2001.
+     the \python, \CSS and \Javascript code was written by Andrew Mathas
+     based on an initial prototype that was written by Don Taylor in 2001-2.
      Since 2004 the program has been maintained and developed by Andrew
      Mathas. Although the program has changed substantially since 2004,
      Don's idea of using \TeXfht, and some of his code, is still
