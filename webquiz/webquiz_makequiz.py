@@ -279,7 +279,7 @@ class MakeWebQuiz(object):
         else:
             buttons = '\n' + '\n'.join(
                 webquiz_templates.button.format(b=q,
-                    cls=' button-selected' if self.quiz.discussion_list == [] and q == 1 else ''
+                    cls='button-selected' if self.quiz.discussion_list==[] and q==1 else 'blank'
                 )
                 for q in range(1, self.number_questions + 1))
             question_buttons=webquiz_templates.question_buttons.format(
