@@ -29,32 +29,29 @@ Installation
 `WebQuiz` has three
 different components that need to be installed:
 
-> -   LaTeX files: webquiz.cls and webquiz.cfg need to be in the LaTeX
->     search path
-> -   python files: the main python is webquiz.py. On unix systems
->     create a link to it using something like ln -s &lt;path to
->     webquiz directory&gt;/webquiz.py /usr/local/bin/webquiz
-> -   web files: although not strictly necessary, the files in the
->     scripts web directory www should be put on the local web server
+- LaTeX files: all of the files in the `latex` directory, such as webquiz.cls and 
+  webquiz.cfg, need to be in the LaTeX search path
+- python files: the main python file is webquiz.py. On unix systems
+  create a link to it using something like:
 
-Once `WebQuiz` is
-available from ctan only the web files will need to be installed and
-this can be done using the command:
+        ln -s <path to webquiz directory>/webquiz.py /usr/local/bin/webquiz
+
+- web files: although not strictly necessary, the files in the css and
+  javascript direcxtories need to be placed on local web server
+
+Once `WebQuiz` is available from ctan only the web files will need to be
+installed, which can be done using the command:
 
 > webquiz --initialise
 
-`WebQuiz` will still work
-if the web files are not installed locally, however, the quiz pages will
-display a warning message. For more details about installation,
-configuration and use please see the
-`WebQuiz` manual and the
-`WebQuiz` on-line manual.
+For more details about installation, configuration and use please see the
+`WebQuiz` manual and the `WebQuiz` on-line manual.
 
 Distribution
 ------------
 
-To organisation of the the code in the `WebQuiz` repository is not suitable for
-distribution. To upload the package to ctan use:
+To organisation of the code in the `WebQuiz` repository is not suitable for
+distribution to ctan. To upload the package to ctan use:
 
 > python3 setup.py ctan
 

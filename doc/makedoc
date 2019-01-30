@@ -47,7 +47,7 @@ function make_themes () {
       name=${name/.scss/}
       if [ ! -e "$WebQuizDir/doc/examples/theme-$name.tex" ]; then
         # create theme-<theme>.tex if it does not already exist
-        sed "s@default@$name@" $WebQuizDir/doc/examples/theme.tex > "$WebQuizDir/doc/examples/theme-$name.tex"
+        sed "s@default@$name@g" $WebQuizDir/doc/examples/theme.tex > "$WebQuizDir/doc/examples/theme-$name.tex"
       fi
   done
 

@@ -91,7 +91,7 @@ class Convert:
             for qval in self.Question.split('|'):
                 quest = qval.split(':')
                 self.js += "document.forms['Q{}Form'].elements[0].value='{}';".format(quest[0], quest[1])
-                if len(quest)==2: # checking is disabled by second colon: quest:value:
+                if len(quest)==2: # checking is disabled by second colon: quest:value: => len=3
                     self.js += 'gotoQuestion({q});checkAnswer({q});'.format(q=quest[0])
                 self.delay += 2
 
@@ -100,8 +100,8 @@ class Convert:
                 quest = qp.split(':')
                 for p in quest[1].split(','):
                     self.js += "document.forms['Q{}Form'].elements[{}].checked=true;".format(quest[0], int(p)-1)
-                if len(quest)==2: # checking is disabled by second colon: quest:parts:
-                    self.js += 'gotoQuestion({q});checkAnswer({q});'.format(q=quest)
+                if len(quest)==2: # checking is disabled by second colon: quest:parts: => len=3
+                    self.js += 'gotoQuestion({q});checkAnswer({q});'.format(q=quest[0])
                 self.delay += 2
 
         # add on the final bit of javascript

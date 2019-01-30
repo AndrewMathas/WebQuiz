@@ -331,7 +331,7 @@ class MakeWebQuiz(object):
                             quiz_specs.write('QuizSpecifications[{}].comparison="{}";\n'.format(i+1, question.comparison))
                         else:
                             quiz_specs.write(''.join(
-                                    'QuizSpecifications[{}][{}]={}\n'.format(i+1, j, s.correct)
+                                    'QuizSpecifications[{}][{}]={};\n'.format(i+1, j, s.correct)
                                     for (j, s) in enumerate(question.items)
                                 )
                             )
