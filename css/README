@@ -1,0 +1,8 @@
+Use sass () to convert the scss iles in this directory to `css` using a command like:
+
+    sass --style compressed webquiz-default.scss webquiz.css
+
+Alternatively, the you can use the bash script `makedoc` in the `doc` directory
+to generate all of the `css` files with the command:
+
+    makedoc -t
