@@ -178,6 +178,21 @@ div.side-menu {
       padding-right: 2px !important;
     }
 
+    table.marking-key tbody tr td.cross {
+      font-size: medium;
+      color: $CrossButtonFG;
+    }
+
+    table.marking-key tbody tr td.star {
+      font-size: small;
+      color: $StarButtonFG;
+    }
+
+    table.marking-key tbody tr td.tick {
+      font-size: medium;
+      color: $TickButtonFG;
+    }
+
     div#school {
         font-family: arial, verdana, helvetica;
         font-weight: normal;

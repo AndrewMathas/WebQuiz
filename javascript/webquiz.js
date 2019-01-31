@@ -317,6 +317,7 @@ function shuffleQuestions() {
         questionOrder[i]=questionOrder[j];
         questionOrder[j]=qi;
     }
+    // ...and compute the inverse map
     for (i = buttonOrder.length - 1; i > 0; i--) {
         buttonOrder[questionOrder[i]] = i;
     }

@@ -6,6 +6,7 @@
 
 cd "$(dirname $0)/.."
 WebQuizDir="$PWD"
+WebQuizExamplesDir="$WebQuizDir/doc/examples"
 PREFIX=""
 
 function message() {
@@ -38,18 +39,23 @@ function check_examples() {
 function make_themes () {
   message "Generating list of webquiz supported css themes"
 
+  if [[ "$fast" == false ]]; then
+    /bin/rm -f $WebQuizExamplesDir/theme-*.tex
+  fi
+
   # next generate code to include screenshots for each theme in the appendix
-  MAKEIMAGES="$WebQuizDir/doc/examples/makeimages"
   cd $WebQuizDir/css
   for theme in webquiz-*.scss ; do
       sass --style compressed $theme ${theme/scss/css}
       name=${theme/webquiz-/}
       name=${name/.scss/}
-      if [ ! -e "$WebQuizDir/doc/examples/theme-$name.tex" ]; then
+      if [ ! -e "$WebQuizExamplesDir/theme-$name.tex" ]; then
         # create theme-<theme>.tex if it does not already exist
-        sed "s@default@$name@g" $WebQuizDir/doc/examples/theme.tex > "$WebQuizDir/doc/examples/theme-$name.tex"
+        sed "s@default@$name@g" $WebQuizExamplesDir/theme.tex > "$WebQuizExamplesDir/theme-$name.tex"
       fi
   done
+
+  $WebQuizExamplesDir/makeimages theme
 
   message "Generating list of themes for the manual"
   THEME="$WebQuizDir/doc/webquiz.themes"
@@ -63,7 +69,7 @@ function make_themes () {
 
 function make_examples() {
   message "Generating webquiz example images"
-  cd $WebQuizDir/doc/examples
+  cd $WebQuizExamplesDir
   if [[ "$quiet" == true ]]; then
       q="-q"
   else

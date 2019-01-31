@@ -20,16 +20,16 @@
   $BackGround:     #35383d;
   $LinkColor:       blue;
 
-  $Heading:        #ec3913;
-  $Subheading:     red;
+  $Heading:        #7800dd;
+  $Subheading:     #ba66ee;
 
   $QuestionPart:   lighten($Heading, 20%);
 
-  $BreadCrumbBG:   #800000;
-  $BreadCrumbFG:   white;
+  $BreadCrumbBG:   #4e0aee;
+  $BreadCrumbFG:   #aadafa;
 
-  $ButtonBG:       #ad141f;
-  $ButtonBorder:   #50096b;
+  $ButtonBG:       #656675;
+  $ButtonBorder:   #2c2d72;
   $ButtonHover:    lighten($ButtonBG, 5%);
   $ButtonSelected: lighten($ButtonBG, 10%);
 
@@ -43,30 +43,30 @@
   $WarningBorder:  darken($WarningBG, 60%);
   $WarningFG:      lighten($WarningBG, 90%);
 
-  $FeedbackBG:     $BreadCrumbBG;
+  $FeedbackBG:     #1f1f88;
   $FeedbackBorder: darken($FeedbackBG, 40%);
-  $FeedbackText:   lighten($FeedbackBG, 20%);
+  $FeedbackText:   #aabafa;
 
-  $Copyright:      $BreadCrumbBG;
+  $Copyright:      #9696ff;
   $School:         lighten($Copyright, 10%);
 
   $ListMarker:    '\027A3';
 
   $HeadingFont: Verdana, Arial, Helvetica, sans-serif;
 
-  $BlankButtonBG:  #FFF8DC;
-  $BlankButtonFG:  black;
+  $BlankButtonBG:  #656675;
+  $BlankButtonFG:  #2c2d72;
 
   $CrossButtonBot: slateblue;
   $CrossButtonFG:  red;
-  $CrossButtonTop: white;
+  $CrossButtonTop: #09020b;
 
-  $StarButtonBot: green;
-  $StarButtonFG:  yellow;
-  $StarButtonTop: yellow;
+  $StarButtonBot: purple;
+  $StarButtonFG:  white;
+  $StarButtonTop: red;
 
-  $TickButtonBot: yellow;
-  $TickButtonFG:  green;
-  $TickButtonTop: red;
+  $TickButtonBot: #fbf706;
+  $TickButtonFG:  #660090;
+  $TickButtonTop: #0aecac;
 
 @import "webquiz";

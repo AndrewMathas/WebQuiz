@@ -16,35 +16,35 @@
 
 // sass variables for the colours used in the quizzes
 
-  $Text:           #8E8D8A;
+  $Text:           #d77c04;
   $BackGround:     #EAE7DC;
   $LinkColor:       blue;
 
-  $Heading:        #E98074;
-  $Subheading:     lighten($Heading, 20%);
+  $Heading:        #6b1309;
+  $Subheading:     #7a4109;
 
-  $QuestionPart:   lighten($Heading, 8%);
+  $QuestionPart:   brown;
 
   $ButtonBG:       #D8C3A5;
-  $ButtonBorder:   darken($ButtonBG, 40%);
-  $ButtonHover:    lighten($ButtonBG, 20%);
-  $ButtonSelected: lighten($ButtonBG, 30%);
+  $ButtonBorder:   #c08206;
+  $ButtonSelected: #634b11e6;
+  $ButtonHover:    lighten($ButtonSelected, 10%);
 
-  $Dazzle:         yellow;
+  $Dazzle:         #6e5728;
 
   $FeedbackBG:     $ButtonBG;
   $FeedbackBorder: darken($FeedbackBG, 40%);
-  $FeedbackText:   lighten($FeedbackBG, 20%);
+  $FeedbackText:   #231f1b;
 
-  $SideMenuText:   lighten($Text, 10%);
+  $SideMenuText:   darken($Text, 20%);
 
   $WarningBG:      red;
   $WarningBorder:  darken($WarningBG, 60%);
   $WarningFG:      lighten($WarningBG, 90%);
 
-  $BreadCrumbBG:   darken($Heading, 50%);
+  $BreadCrumbBG:   #7b4f0d;
   $BreadCrumbFG:   lighten($BackGround, 30%);
-  $DropDownFG:     lighten($ButtonBG, 40%);
+  $DropDownFG:     darken($ButtonBG, 40%);
 
   $Copyright:      $BreadCrumbBG;
   $School:         lighten($Copyright, 10%);
@@ -54,18 +54,18 @@
   $HeadingFont: Verdana, Arial, Helvetica, sans-serif;
 
   $BlankButtonBG:  #FFF8DC;
-  $BlankButtonFG:  black;
+  $BlankButtonFG:  #775004;
 
-  $CrossButtonBot: slateblue;
+  $CrossButtonBot: white;
   $CrossButtonFG:  red;
-  $CrossButtonTop: white;
+  $CrossButtonTop: #e7aa00;
 
-  $StarButtonBot: green;
+  $StarButtonBot: #594466;
   $StarButtonFG:  yellow;
-  $StarButtonTop: yellow;
+  $StarButtonTop: #cf730c;
 
-  $TickButtonBot: yellow;
-  $TickButtonFG:  green;
-  $TickButtonTop: red;
+  $TickButtonBot: #eebb0f;
+  $TickButtonFG:  yellow;
+  $TickButtonTop: #390b00;
 
 @import "webquiz";

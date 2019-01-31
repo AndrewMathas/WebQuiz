@@ -91,9 +91,9 @@ question_buttons = r'''
         <br>{buttons}
       </div>
       <table class="marking-key">
-         <tr><td style="color: #FFCC00; font-size:small;">&starf;</td><td style="width: 14ex;">{side_menu_star}</td></tr>
-         <tr><td style="color: green; font-size:medium;">&check;</td><td>{side_menu_tick}</td></tr>
-         <tr><td style="color: red; font-size:medium;">&cross;</td><td>{side_menu_cross}</td></tr>
+         <tr><td class="star">&starf;</td><td style="width: 14ex;">{side_menu_star}</td></tr>
+         <tr><td class="tick">&check;</td><td>{side_menu_tick}</td></tr>
+         <tr><td class="cross">&cross;</td><td>{side_menu_cross}</td></tr>
       </table>'''
 
 # quiz title and navigation arrows
