@@ -36,21 +36,22 @@ development version run::
 
     > python3 setup.py develop
 
-In fact, you may want to run this as root, in which case you want::
+In fact, you may want to run this as root, in which case use::
 
     > sudo python3 setup.py develop
 
 This will add links from, by default, the TEXMFLOCAL directory to the WebQuiz_
 latex files, create a link to the WebQuiz_ executable and add a link from a
 location on your web server, which you will be prompted for, to the WebQuiz_
-CSS and javascript files.  The install process assumes that kpsewhich_ and
-sass_ are both installed on your computer. It is unlikely that the installation
-process will work on a windows PC.
+CSS and javascript files.  The install process assumes that kpsewhich_ is
+installed on your computer. You will now be able to run WebQuiz_, however, to
+view the web pages you need to generate the `CSS` files using sass_. On
+unix-like systems you can use the `bash` shell-script `doc/makedoc -t`.
 
 The structure of the files in the `WebQuiz github repository`_ is not suitable
 for uploading to ctan_.  WebQuiz_ is not distributed as a Python3_ package
-because it fits more naturally into the LaTeX_ ecosystem, which is a hard
-dependency for the program.
+because it fits more naturally into the LaTeX_ ecosystem, since LaTeX_ is a hard
+dependency for the program (and LaTeX_ cannot be installed with `pip`!).
 
 Python code
 -----------
@@ -104,17 +105,18 @@ webquiz-\*.lang
 
 Cascading style sheets
 -----------------------
-The CSS for WebQuiz_ are written using sass_. The main files are:
+The `CSS` files for WebQuiz_ are written using sass_. The main files are:
 
  - webquiz.scss
  - webquiz-THEME.scss
 
 The theme files all set the colours and then load the main sass file webquiz.scss.
-Use the bash shell script command::
+Use the `bash` shell script command::
 
-    > makedoc -t
+    > doc/makedoc -t
 
-to generate all of the css files, together with manual entries for them
+to generate all of the `CSS` files, together with manual entries for the
+themes.
 
 
 Javascript
@@ -131,6 +133,14 @@ It would be goods to add some javascript unit tests....
 
 Documentation
 -------------
+Once WebQuiz_ is installed you can build the documentation for the package
+using the `bash` shelll-script::
+
+    > doc/makedoc
+
+This generates the WebQuiz_ `CSS` files and all of the screen shots in the
+manual. It requires webkit2png_ and mogrify_.
+
 The main files in the documentation directory are:
 
 webquiz.tex
@@ -184,13 +194,18 @@ the manual, for example using::
 Unfortunately, this test is not completely automatic because it is not
 sufficient to check that all of these files compile. In addition, it is
 necessary to eyeball all of the images in the manual and make sure that
-every one of them is correct.
+every one of them is correct. In addition,::
+
+    doc/makedoc --check-examples
+
+uses gvim to open a three-way diff for checking that all of the source files in
+the `doc/examples` directory are being used in the manual.
 
 Authors
 =======
 
 The LaTeX_ component of WebQuiz_ was written by Andrew Mathas and the python,
-css and javascript code was written by Andrew Mathas (and Don Taylor), based on
+`CSS` and javascript code was written by Andrew Mathas (and Don Taylor), based on
 an initial prototype of Don Taylor's from 2001. Since 2004 the program has been
 maintained and developed by Andrew Mathas. Although the program has changed
 substantially since 2004 Don's idea of using TeX 4ht, and some of his code, are

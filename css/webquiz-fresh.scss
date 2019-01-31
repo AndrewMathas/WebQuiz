@@ -30,7 +30,7 @@
   $ButtonSelected: #1a0ee4;
   $ButtonHover:    lighten($ButtonSelected, 20%);
 
-  $Dazzle:         #d807d8;
+  $Dazzle:         #6bb6ff;
 
   $FeedbackBG:     $ButtonBG;
   $FeedbackBorder: darken($FeedbackBG, 40%);
@@ -56,16 +56,16 @@
   $BlankButtonBG:  #DCFFFE;
   $BlankButtonFG:  midnightblue;
 
-  $CrossButtonBot: #aacccc;
-  $CrossButtonFG:  yellow;
-  $CrossButtonTop: #3366ee;
+  $CrossButtonBot: #d1f6ff;
+  $CrossButtonFG:  red;
+  $CrossButtonTop: #1e90ff;
 
   $StarButtonBot: cyan;
   $StarButtonFG:  white;
   $StarButtonTop: #8484f0;
 
-  $TickButtonBot: purple;
-  $TickButtonFG:  white;
-  $TickButtonTop: aqua;
+  $TickButtonBot: #d1f6ff;
+  $TickButtonFG:  #ffff88;
+  $TickButtonTop: #1a0ee4;
 
 @import "webquiz";

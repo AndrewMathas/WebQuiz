@@ -30,7 +30,7 @@
   $ButtonHover:    darken($ButtonBG, 20%);
   $ButtonSelected: darken($ButtonBG, 30%);
 
-  $Dazzle:         #cafbfb;
+  $Dazzle:         #09dd34;
 
   $FeedbackBG:     darken($BackGround, 5%);
   $FeedbackBorder: #007a00;
@@ -60,12 +60,12 @@
   $CrossButtonFG:  red;
   $CrossButtonTop: $BlankButtonBG;
 
-  $StarButtonBot: limegreen;
-  $StarButtonFG:  yellow;
-  $StarButtonTop: yellow;
+  $StarButtonBot: #048022;
+  $StarButtonFG:  #ff0;
+  $StarButtonTop: #18cc44;
 
   $TickButtonBot: limegreen;
-  $TickButtonFG:  yellow;
+  $TickButtonFG:  white;
   $TickButtonTop: darkgreen;
 
 @import "webquiz";

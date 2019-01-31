@@ -4,6 +4,8 @@
 # That is, update the lists supported languages and themes and generate all of
 # the images used by webquiz.tex
 
+# TODO: rewrite in python to make cross-platform
+
 cd "$(dirname $0)/.."
 WebQuizDir="$PWD"
 WebQuizExamplesDir="$WebQuizDir/doc/examples"

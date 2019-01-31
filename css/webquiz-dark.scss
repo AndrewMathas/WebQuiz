@@ -17,25 +17,25 @@
 // sass variables for the colours used in the quizzes
 
   $Text:           #f3f7fb;
-  $BackGround:     #35383d;
+  $BackGround:     #0f203d;
   $LinkColor:       blue;
 
-  $Heading:        #7800dd;
-  $Subheading:     #ba66ee;
+  $Heading:        #156fc6;
+  $Subheading:     #25c6d3;
 
   $QuestionPart:   lighten($Heading, 20%);
 
-  $BreadCrumbBG:   #4e0aee;
+  $BreadCrumbBG:   #06469b;
   $BreadCrumbFG:   #aadafa;
 
   $ButtonBG:       #656675;
   $ButtonBorder:   #2c2d72;
   $ButtonHover:    lighten($ButtonBG, 5%);
-  $ButtonSelected: lighten($ButtonBG, 10%);
+  $ButtonSelected: #156fc6;
 
   $DropDownFG:     lighten($ButtonBG, 40%);
 
-  $Dazzle:         yellow;
+  $Dazzle:         #3705ae;
 
   $SideMenuText:   lighten($Text, 10%);
 
@@ -65,8 +65,8 @@
   $StarButtonFG:  white;
   $StarButtonTop: red;
 
-  $TickButtonBot: #fbf706;
-  $TickButtonFG:  #660090;
-  $TickButtonTop: #0aecac;
+  $TickButtonBot: #04707a;
+  $TickButtonFG:  #ffff88;
+  $TickButtonTop: #020436;
 
 @import "webquiz";

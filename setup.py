@@ -91,6 +91,8 @@ class WebQuizDevelop(Command):
             # now add links for web files
             subprocess.call('{} --initialise'.format(webquiz), shell=True)
 
+            print('To build the WebQuiz css files you should run doc/makedoc -t')
+
         except PermissionError as err:
             print('Insufficient permissions. Try running using sudo')
             raise err
