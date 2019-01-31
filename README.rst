@@ -3,8 +3,8 @@ WebQuiz_
 ========
 
 *This is the development version of* WebQuiz_. *Most users should use* WebQuiz_
-*as a standard* LaTeX_ *package by downloading and installing* WebQuiz_ *from*
-ctan_.
+*as a standard* LaTeX_ *package by downloading and installing the* WebQuiz_
+*package from (the soon-to-be-released version on)* ctan_.
 
 WebQuiz_ makes it possible to use LaTeX_ to write interactive web based
 quizzes. The quizzes are first written in LaTeX_ and then converted into
@@ -24,13 +24,13 @@ distributions such as TeXLive_), and Python3_. To use the development version,
 particularly, for building the manual and uploading to ctan_, you will also need
 mogrify_, sass_, uglifyjs_ and webkit2png_
 
-The README file explains how the different components of WebQuiz_ are organised. For
-installation instructions see the next section on setup tools.
+This README file explains how the different components of the development
+version of WebQuiz_ are organised.
 
 Installing the development version
 ----------------------------------
 
-First clone or download the WebQuiz_ github repository.  On a unix-like system,
+First clone or download the `WebQuiz github repository`_.  On a unix-like system,
 such as linux or macosx, to set up links for the latex and web files for the
 development version run::
 
@@ -40,27 +40,17 @@ In fact, you may want to run this as root, in which case you want::
 
     > sudo python3 setup.py develop
 
-By default, links for the latex files will be put into the TEXMFLOCAL directory
-but this can be customised. You will then be prompted for links for the
-executable and the web components of WebQuiz_. The install process assumes that
-kpsewhich_ and sass_ are both installed. It is unlikely that installation via
-setuptools will work on a windows PC.
+This will add links from, by default, the TEXMFLOCAL directory to the WebQuiz_
+latex files, create a link to the WebQuiz_ executable and add a link from a
+location on your web server, which you will be prompted for, to the WebQuiz_
+CSS and javascript files.  The install process assumes that kpsewhich_ and
+sass_ are both installed on your computer. It is unlikely that the installation
+process will work on a windows PC.
 
-WebQuiz_ distribution on ctan_
-------------------------------
-The organisation of the code in the WebQuiz_ repository is not suitable for
-distribution to ctan_. To upload the package to ctan_ use::
-
-    > python3 setup.py ctan
-
-creates a zipfile, `webquiz.zip`, and optionally uploads it to ctan_ using
-ctanupload_, which is packaged with TeXLive_::
-
-    > python3 setup.py ctan
-
-WebQuiz_ is not distributed as a Python3_ package because it fits more
-naturally into the LaTeX_ ecosystem, which is a hard dependency for the
-program.
+The structure of the files in the `WebQuiz github repository`_ is not suitable
+for uploading to ctan_.  WebQuiz_ is not distributed as a Python3_ package
+because it fits more naturally into the LaTeX_ ecosystem, which is a hard
+dependency for the program.
 
 Python code
 -----------
@@ -70,13 +60,13 @@ webquiz.py
     processes command-line options and settings
 
 webquiz_layout.py
-    determines the final layout of the web pages
+    determines the final layout of the quiz web pages
 
 webquiz_makequiz.py
     converts the XML into HTML
 
 webquiz_templates.py
-    template strings for HTML and
+    template strings for HTML
 
 webquiz_util.py
     utility functions
@@ -96,48 +86,46 @@ webquiz.cls
      WebQuiz_ document class file
 
 webquiz.ini
-     WebQuiz_ initialisation data. This is also used by the python code
+     WebQuiz_ initialisation data. This is used by the LaTeX_ and python components of WebQuiz_
 
 webquiz-doc.code.tex
-     macros used in the manuals
+     macros used in the two WebQuiz_ manuals
 
 webquiz-ini.code.tex
      code for reading and accessing the ini fle in latex
 
 pgfsys-dvisvgm4ht.def
-     custom tikz driver for tex4ht from dvisvgm4ht_
+     a custom tikz driver for tex4ht from dvisvgm4ht_ supplied by Michal Hoftich
 
 webquiz-\*.lang
-     language support files. These are actually used by webquiz_main.py when
-     writing the web pages but we find them by putting them in the LaTeX search
+     language support files. These are used by `webquiz_main.py` when writing
+     the quiz web pages but we find them by putting them in the LaTeX search
      path
-
 
 Cascading style sheets
 -----------------------
-The CSS for WebQuiz_ are written using sass (https://sass-lang.com/). The main
-files are:
+The CSS for WebQuiz_ are written using sass_. The main files are:
 
-webquiz.scss
-webquiz-THEME.scss
+ - webquiz.scss
+ - webquiz-THEME.scss
 
 The theme files all set the colours and then load the main sass file webquiz.scss.
-Use the shell script command::
+Use the bash shell script command::
 
     > makedoc -t
 
-to generate all of the css files.
+to generate all of the css files, together with manual entries for them
 
 
 Javascript
 ----------
 There is one javascript file, `webquiz.js`, in the javascript directory. In
-addition, the quizindex environment generates the javascript file `quizindex.js`,
-that generates a drop-down menu for the quizzes in the current directory. This
-file is automatically loaded at the end of each quiz HTML file, if it exits.
-For each quiz, WebQuiz_ writes another javascript file, `wq-file.js`, that
-specified the questions in the quiz. This is also automatically by the quiz
-page.
+addition, the `quizindex` environment generates the javascript file
+`quizindex.js`, that generates a drop-down menu for the quizzes in the current
+directory. This file is automatically loaded at the end of each quiz HTML file,
+if it exits.  For each quiz, WebQuiz_ writes another javascript file,
+`wq-file.js`, that specified the questions in the quiz. This file is
+automatically loaded by the quiz page.
 
 It would be goods to add some javascript unit tests....
 
@@ -152,30 +140,30 @@ webquiz-on-line-manual.tex
     LaTeX source for the on-line Webquiz_ manual
 
 credits.tex
-    LaTeX source for the credits
+    LaTeX source for the credits file
 
 makedoc
-    bash shell script that automatically generates the many
-                    different components of the manual. There are various
-                    options; use makedoc -h to see a summary
+    bash shell script that automatically generates the many different
+    components of the manual. There are various options; use `makedoc -h` to see
+    a summary
 
 examples
     directory of WebQuiz_ code snippets that are included in the manual
 
 examples/makeimages
-    python script for generating the images used in the
-                    manual. Requires webkit2png and mogrify. As with makedoc,
-                    makeimages -h summaries the command-line options
+    python script for generating the images used in the manual. Requires
+    webkit2png_ and mogrify_. As with `makedoc`, `makeimages -h` prints a
+    summary of the command-line options
 
 examples/makeimages/\*.tex
-    LaTeX source files for manual
+    LaTeX source files for manual. Use `makeimages -f` to automatically
+    generate the corresponding `png` files that are required for the manual
 
 
 Tests
 -----
-Simple syntax checking tests for WebQuiz_. The main tests are really the files
-in the doc/examples directory. The files here are:
-
+Very simple syntax tests for WebQuiz_. The main tests are really the files in
+the doc/examples directory. The files here are:
 
 \*.tex
     latex source files that generate errors when run through WebQuiz_
@@ -184,18 +172,19 @@ in the doc/examples directory. The files here are:
     expected log output from source files
 
 tester
-    shell script for comparing the expected and actual output for
-                 all of the test files
+    shell script for comparing the expected and actual output for all of the
+    test files
 
-The main test for WebQuiz_ is to see if the quizzes in the doc/examples
-directory compile properly and produce appropriate images in the manual,
-for example using::
+The main sets of tests for WebQuiz_ check that all of the WebQuiz_ quizzes in
+the doc/examples directory compile properly *and* that they produce appropriate images in
+the manual, for example using::
 
     > doc/examples/makeimages -f
 
-Unfortunately, this s not automatic and requires eyeballing all of the
-images in the manual.
-
+Unfortunately, this test is not completely automatic because it is not
+sufficient to check that all of these files compile. In addition, it is
+necessary to eyeball all of the images in the manual and make sure that
+every one of them is correct.
 
 Authors
 =======
@@ -227,6 +216,7 @@ Public License for more details.
 .. _TeX4ht: http://www.tug.org/tex4ht/
 .. _TeXLive: https://www.tug.org/texlive/
 .. _WebQuiz: https://www.ctan.org/pkg/webquiz/
+.. _`WebQuiz github repository`: https://github.com/AndrewAtLarge/WebQuiz
 .. _ctan: https://www.ctan.org/
 .. _ctanupload: https://ctan.org/pkg/ctanupload
 .. _kpsewhich: https://linux.die.net/man/1/kpsewhich
