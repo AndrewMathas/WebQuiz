@@ -1,16 +1,13 @@
-WebQuiz: a [LaTeX][LaTeX] package for on-line quizzes
-=======================================================================
-
-[WebQuiz] makes it
-possible to use LaTeX to write interactive web based quizzes. The
-quizzes are first written in LaTeX and then converted into HTML files
-using `WebQuiz`, which is
-written in python. The conversion from [LaTeX] to HTML is done behind the
-scenes using [TeX4ht].
+WebQuiz: a [LaTeX] package for on-line quizzes
+==============================================
+[WebQuiz] makes it possible to use LaTeX to write interactive web based
+quizzes. The quizzes are first written in LaTeX and then converted into HTML
+files using `WebQuiz`, which is written in python. The conversion from [LaTeX]
+to HTML is done behind the scenes using [TeX4ht].
 
 
-`WebQuiz` is designed to be used from the command-line.
-For example, if `quiz1.tex` is a LaTeX file for a quiz then: 
+`WebQuiz` is designed to be used from the command-line.  For example, if
+`quiz1.tex` is a LaTeX file for a quiz then:
 * `latex quiz1` produces a "readable" dvi file for the quiz 
 * `pdflatex quiz1` produces a "readable" pdf file for the quiz
 * `webquiz quiz1` creates the web page quiz1.html
@@ -29,7 +26,6 @@ If you want to install the web compnents of [WebQuiiz] into a system directory t
 
 Authors
 -------
-
 The LaTeX component of [WebQuiz] was written by Andrew Mathas and the python,
 css and javascript code was written by Andrew Mathas (and Don Taylor), based on
 an initial protype of Don Taylor's from 2001. Since 2004 the program has been
@@ -39,6 +35,8 @@ still very much in use.
 
 Copyright (C) 2004-2019
 
+License
+-------
 GNU General Public License, Version 3, 29 June 2007
 
 This program is free software: you can redistribute it and/or modify it

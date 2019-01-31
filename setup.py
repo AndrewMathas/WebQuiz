@@ -159,6 +159,22 @@ class WebQuizCtan(Command):
         print('Executing {}'.format(cmd))
         subprocess.call(cmd, shell=True)
 
+    def update_copyright(self):
+        r'''
+        Make sure that the end dates on the copyright notices are correct as
+        given by the copyright line in webquiz.ini
+        '''
+        copy = 'Copyright (C) '+settings.copyright[:9]
+        for file in [ 'README-ctan.md',
+                      'latex/webquiz-doc.code.tex',
+                      'doc/webquiz-online-manual.tex',
+                      'doc/webquiz.tex',
+                      'README.rst'
+                    ]:
+            self.shell_command(
+                "sed -i 's@Copyright (C) 2004-20[0-9][0-9]@{}@' {}".format(copy, file)
+            )
+
     def build_files_for_zipping(self):
         r'''
         Rebuilds the documentation files and css for inclusion in the zip file:
@@ -168,6 +184,9 @@ class WebQuizCtan(Command):
         to ensure that they are correct for the ctan upload. We need to make
         webquiz-manual.pdf first because it is included in webquiz.pdf.
         '''
+        # update the copyright notices in list of known files
+        self.update_copyright()
+
         # auto generate all of the data used in the manual and build the manuals
         makedoc = input('Run makedoc [Y/n]? ')
         if makedoc.lower() != 'n':

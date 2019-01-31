@@ -31,11 +31,14 @@ function make_languages() {
 function check_examples() {
   message "Checking for unused images from the examples directory"
   cd $WebQuizDir/doc
-  /bin/rm -f makedoc-{examples,images,screenshots}
-  ls -1 examples/*.tex | sed 's@.tex@@' | sed 's@examples.@@' | sort -u > makedoc-examples
-  ag ScreenShot webquiz.tex | sed 's@.*examples.@@'| sed 's@}@@' | sort -u > makedoc-screenshots
-  examples/makeimages --list | sort > makedoc-images
-  gvim -d makedoc-examples makedoc-images makedoc-screenshots
+  /bin/rm -f makedoc-{examples,images,manual}
+  echo "Example files" > makedoc-examples
+  ls -1 examples/*.tex | sed 's@.tex@@' | sed 's@examples.@@' | sort -u >> makedoc-examples
+  echo "Manual" > makedoc-manual
+  ag ScreenShot webquiz.tex|sed 's@.*}{\([^}]*\)}$@\1@'|ag -v Shot|sort -u >> makedoc-manual
+  echo "Available images" > makedoc-images
+  examples/makeimages --list | sort >> makedoc-images
+  gvim -d makedoc-manual makedoc-images makedoc-examples 
 }
 
 function make_themes () {

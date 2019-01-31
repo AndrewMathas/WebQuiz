@@ -267,7 +267,11 @@ if __name__ == '__main__':
 
     if args.list:
         for page in pages:
-            print(page.page_out)
+            if '*' in page.page_out:
+                for img in glob.glob(page.page_out+'.png'):
+                    print(img[:-4])
+            else:
+                print(page.page_out)
         sys.exit()
 
     # By default all images are generated unless one or more output

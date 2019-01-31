@@ -211,8 +211,10 @@ maintained and developed by Andrew Mathas. Although the program has changed
 substantially since 2004 Don's idea of using TeX 4ht, and some of his code, are
 still very much in use.
 
-Copyright (C) 2004-2017
+Copyright (C) 2004-2019
 
+License
+-------
 GNU General Public License, Version 3, 29 June 2007
 
 This program is free software: you can redistribute it and/or modify it
