@@ -43,6 +43,9 @@
 
   $BreadCrumbBG:   #994d00;
   $BreadCrumbFG:   $White;
+  @function breadcrumb-step($step) {
+    @return lighten($BreadCrumbBG, ($step*5%));
+  }
 
   $Dazzle:         #FF1A1A;
 

@@ -44,6 +44,10 @@
 
   $BreadCrumbBG:   dodgerblue;
   $BreadCrumbFG:   lighten($BackGround, 30%);
+  @function breadcrumb-step($step) {
+    @return lighten($BreadCrumbBG, ($step*5%));
+  }
+
   $DropDownFG:     steelblue;
 
   $Copyright:      #061fa8;

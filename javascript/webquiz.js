@@ -24,11 +24,12 @@ var currentB;               // current button number
 var currentFeedback = null; // feedback currently being displayed
 var currentQ;               // current question number
 var dTotal;                 // number of discussion items
-var drop_down               // handler for the drop-down menu, if it exists
+var quizindex_menu               // handler for the drop-down menu, if it exists
 var qTotal;                 // number of quiz questions
 var side_closed             // handler for displaying sidelabelclosed
 var side_menu               // handler to open and close side
 var side_open;              // handler for displaying sidelabelopen
+//var theme_menu              // handler for the theme_menu
 
 // The following variables are redefined in the specifications file
 var QuizSpecifications = [];
@@ -57,12 +58,11 @@ var tick = {
 };
 
 // stop the dropdown menu from being created twice
-var drop_down_not_created = true;
+var quizindex_menu_not_created = true;
 
 // create the drop down menu dynamically using the QuizTitles array
-function create_drop_down_menu() {
-
-    if (drop_down_not_created) {
+function create_quizindex_menu() {
+    if (quizindex_menu_not_created) {
       // add the menu icon for the quizzes menu - only called if there is at least one quiz
       document.getElementById("quizzes-menu-icon").innerHTML = " &#9776;";
 
@@ -73,35 +73,47 @@ function create_drop_down_menu() {
           menu.appendChild(quiz_link);
           max = Math.max(max, QuizTitles[q][0].length);
       }
-      drop_down.style.width = Math.round(max) + "ex";
-      drop_down.appendChild(menu);
-
-      drop_down_not_created = false;
+      quizindex_menu.style.width = Math.round(max) + "ex";
+      quizindex_menu.appendChild(menu);
+      quizindex_menu_not_created = false;
     }
 }
 
 // create an event listener so that we can close the drop-down menu
 // whenever some one clicks outside of it
 function MenuEventListener(evnt) {
-    var menu_icon = document.getElementsByClassId('menu-icon');
-    if (drop_down.contains(evnt.target)) {
+    var menu_icon = document.getElementById('quzzes-menu-icon');
+    if (quizindex_menu.contains(evnt.target)) {
       return; // inside the menu so just return
     } else {   // outside the menu so check the number of menu_clicks
-      if (drop_down.style.display === 'block' || menu_icon.contains(evnt.target)) {
+      if (quizindex_menu.style.display === 'block' || menu_icon.contains(evnt.target)) {
         evnt.stopPropagation();
-        toggle_dropdown_menu();
+        toggle_quizindex_menu();
       }
+      //if (theme_menu.style.display === 'block' || menu_icon.contains(evnt.target)) {
+      //  evnt.stopPropagation();
+      //  toggle_quizindex_menu();
+      //}
     }
 }
 
-function toggle_dropdown_menu() {
-    if (drop_down.style.display === 'block') {
-      drop_down.style.display = 'none';
+function toggle_quizindex_menu() {
+    if (quizindex_menu.style.display === 'block') {
+      quizindex_menu.style.display = 'none';
     } else {
-      drop_down.style.display = 'block';
+      quizindex_menu.style.display = 'block';
       window.addEventListener('click', MenuEventListener, true);
     }
 }
+
+// function toggle_theme_menu() {// unused
+//     if (theme_menu.style.display === 'block') {
+//       theme_menu.style.display = 'none';
+//     } else {
+//       theme_menu.style.display = 'block';
+//       window.addEventListener('click', MenuEventListener, true);
+//     }
+// }
 
 // toggle the display of the side menu and its many associated labels
 function toggle_side_menu() {
@@ -353,11 +365,12 @@ function WebQuizInit(questions, discussions, quizfile) {
     side_menu = document.getElementById('sidemenu');
     side_open = document.getElementById('sidelabelopen');
     side_closed = document.getElementById('sidelabelclosed');
-    drop_down = document.getElementById("drop-down-menu");
+    quizindex_menu = document.getElementById("quizindex-menu");
+    //theme_menu = document.getElementById('theme-menu');
 
     // make the drop down menu if QuizTitles has some entries
-    if (QuizTitles.length > 0 && drop_down) {
-        create_drop_down_menu();
+    if (QuizTitles.length > 0 && quizindex_menu) {
+        create_quizindex_menu();
     }
 
     if (qTotal==0) {

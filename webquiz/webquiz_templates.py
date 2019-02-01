@@ -43,27 +43,44 @@ webquiz_init = r'''<div style="display: none;">
   </div>'''
 
 # Bread crumbs including a drop down menu for all of the quizzes for the unit.
-# The drop-down-menu is added by create_drop_down_menu() in webquiz.js
-breadcrumb_line_text = '          <li>{text}</li>\n'
-breadcrumb_line_url  = '          <li><a href="{url}">{text}</a></li>\n'
-breadcrumb_quizlist  = r'''          <li><a href="{quizzes_url}">{quizzes}</a>
-          <span onclick="toggle_dropdown_menu();" id="quizzes-menu-icon"></span>
-          <ul id="drop-down-menu" onclick="toggle_dropdown_menu();"></ul>
-        </li>
+# The drop-down-menu is added by create_quizindex_menu() in webquiz.js
+breadcrumb_line_text = '            <li>{text}</li>\n'
+breadcrumb_line_url  = '            <li><a href="{url}">{text}</a></li>\n'
+breadcrumb_quizindex  = r'''              <li><a href="{quizzes_url}">{quizzes}</a>
+                  <span onclick="toggle_quizindex_menu();" id="quizzes-menu-icon"></span>
+                  <ul id="quizindex-menu" onclick="toggle_quizindex_menu();"></ul>
+              </li>
 '''
-create_dropdown = r'''// construct the drop down menu if QuizTitles has some entries
-if (QuizTitles.length > 0 && drop_down) {
-    create_drop_down_menu();
+create_quizindex_menu = r'''// construct the drop down menu if QuizTitles has some entries
+if (QuizTitles.length > 0 && quizindex_menu) {
+    create_quizindex_menu();
 }
 '''
 breadcrumbs = r'''<div class="breadcrumbs">
     <nav>
-        <ul>
-{crumbs}
-        </ul>
+        <div class="navleft">
+            <ul>{crumbs}            </ul>
+        </div>
     </nav>
   </div>
 '''
+
+# Should we add a menu to change the theme dynamically? If so then the code
+# below should be added to the breadcrumbs and then fixed a little. Perhaps the
+# trickiest bit is finding the current list of supported themes.
+theme_menu=r'''
+        <div class="navright" >
+            <span onclick="toggle_theme_menu();">Theme &#9881;</span>
+            <ul><li>
+                <ul id="theme-menu" onclick="toggle_theme_menu();">
+                  <li>one</li><li>two</li>
+                </ul>
+              </li>
+            </ul>
+        </div>
+'''
+
+# Add a drop-down menu to the navigation to dynamically change the theme?
 
 # question buttons
 button = r'        <div id="button{b}" class="button {cls}" content=" " onClick="gotoQuestion({b})">{b}</div>'

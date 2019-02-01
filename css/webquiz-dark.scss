@@ -16,26 +16,29 @@
 
 // sass variables for the colours used in the quizzes
 
-  $Text:           #f3f7fb;
-  $BackGround:     #0f203d;
-  $LinkColor:       blue;
+  $Text:           white;
+  $BackGround:     #2d2d2d;
+  $LinkColor:      darkorange;
 
-  $Heading:        #156fc6;
-  $Subheading:     #25c6d3;
+  $Heading:        #E31230;
+  $Subheading:     lighten($Heading, 10%);
 
   $QuestionPart:   lighten($Heading, 20%);
 
-  $BreadCrumbBG:   #06469b;
-  $BreadCrumbFG:   #aadafa;
+  $BreadCrumbBG:   #990000;
+  $BreadCrumbFG:   #ffe6e6;
+  @function breadcrumb-step($step) {
+    @return lighten($BreadCrumbBG, $step*5%);
+  }
 
-  $ButtonBG:       #656675;
-  $ButtonBorder:   #2c2d72;
-  $ButtonHover:    lighten($ButtonBG, 5%);
-  $ButtonSelected: #156fc6;
+  $ButtonBG:       $BreadCrumbBG;
+  $ButtonBorder:   #FF0033;
+  $ButtonHover:    #F2BAC2;
+  $ButtonSelected: #FF007F;
 
-  $DropDownFG:     lighten($ButtonBG, 40%);
+  $DropDownFG:     #FFE5E7;
 
-  $Dazzle:         #3705ae;
+  $Dazzle:         #e31230;
 
   $SideMenuText:   lighten($Text, 10%);
 
@@ -43,30 +46,30 @@
   $WarningBorder:  darken($WarningBG, 60%);
   $WarningFG:      lighten($WarningBG, 90%);
 
-  $FeedbackBG:     #1f1f88;
+  $FeedbackBG:     #99182C;
   $FeedbackBorder: darken($FeedbackBG, 40%);
-  $FeedbackText:   #aabafa;
+  $FeedbackText:   #f2bac2;
 
-  $Copyright:      #9696ff;
-  $School:         lighten($Copyright, 10%);
+  $Copyright:      #FF0033;
+  $School:         darken($Copyright, 10%);
 
   $ListMarker:    '\027A3';
 
   $HeadingFont: Verdana, Arial, Helvetica, sans-serif;
 
-  $BlankButtonBG:  #656675;
-  $BlankButtonFG:  #2c2d72;
+  $BlankButtonBG:  $BreadCrumbBG;
+  $BlankButtonFG:  #FEE7EC;
 
-  $CrossButtonBot: slateblue;
+  $CrossButtonBot: #f2bac2;
   $CrossButtonFG:  red;
-  $CrossButtonTop: #09020b;
+  $CrossButtonTop: #e60000;
 
   $StarButtonBot: purple;
   $StarButtonFG:  white;
   $StarButtonTop: red;
 
-  $TickButtonBot: #04707a;
+  $TickButtonBot: #e31230;
   $TickButtonFG:  #ffff88;
-  $TickButtonTop: #020436;
+  $TickButtonTop: #f3687c;
 
 @import "webquiz";

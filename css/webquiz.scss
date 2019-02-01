@@ -366,6 +366,7 @@ div.quiz-questions {
 
 
 input.input-button {
+    color: $BlankButtonFG;
     background-color: $ButtonBG;
     border: solid $ButtonBorder 2px;
     border-radius: 5px;
@@ -397,134 +398,143 @@ nav {
     padding: 4px 0 4px 0;
     height: 20px;
     z-index: 99;
-        position: absolute;
-        left: 5%;
-        top: 10px;
-        font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-        font-size: 9px;
-        font-weight: bold;
-        min-width: 600px;
+    position: absolute;
+    left: 5%;
+    top: 10px;
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    font-size: 9px;
+    font-weight: bold;
+    min-width: 600px;
 
-        ul {
-            margin: 0;
-            padding: 0;
-            list-style-type: none;
-            position: absolute; /* Ensures that the menu doesn’t affect other elements */
+    div.navleft {
+      float: left;
+    }
 
-            li {
-                text-align: center;  /* All text is placed in the center of the box */
-                margin: 0;
-                -webkit-transition: all 0.2s;
-                padding: 2px 4px 2px 18px;
-                background-color: $Heading;
-                position: relative;
-                float: left;
+    div.navright {
+      float: right;
+    }
 
-                a {
-                    text-decoration: none;
-                    display: contents;
-                    -webkit-transition: all 0.5s;
-                }
-                span { color: $BreadCrumbFG; }
+    div ul {
+      margin: 0;
+      padding: 0;
+      list-style-type: none;
+      position: absolute; /* Ensures that the menu doesn’t affect other elements */
 
-                ul {
-                    display: none;  /* Hides the drop-down menu */
-                    padding-left: 4px;
-                    margin: 0; /* Aligns drop-down box underneath the menu item */
-                    -webkit-transition: all 1s;
-                    border: solid $ButtonBorder 2px;
-                    border-radius: 5px;
-                    background-color: $ButtonBG;
+      li {
+          text-align: center;  /* All text is placed in the center of the box */
+          margin: 0;
+          -webkit-transition: all 0.2s;
+          padding: 2px 4px 2px 18px;
+          background-color: $Heading;
+          position: relative;
+          float: left;
 
-                    li {
-                        width: 100%;
-                        text-align: left;
-                        -webkit-transition: height 0.5s;
-                        padding: 1px 0 0 4px;
-                        a {
-                            color: $DropDownFG !important;
-                        }
-                    }
+          a {
+              text-decoration: none;
+              display: contents;
+              -webkit-transition: all 0.5s;
+          }
+          span { color: $BreadCrumbFG; }
 
-                    li::after { content:none;}
-                    li:first-child { padding-top: 2px; }
-
-                    // turn off "triangle" colouring inside the ul
-                    li:nth-child(n) {
-                        background:   $ButtonBG;
-                        padding-left: 0px;
-                    }
-                    li:nth-child(n):after {
-                        border-left-color: $ButtonBG;
-                        border: 7px solid ;
-                    }
-                    li:hover {
-                        background: $ButtonBorder;
-                        color: red;
-                    }
-                }
-            }
-
-            li:hover { background-color: $ButtonBG; }
-            li a { color: green; }
-            li a:hover { color: yellow; }
-        }
-
-        // pseduo elements give the navigation triangles
-        ul > li::after {
-              content: "";
-              display: block;
-              width: 0;
-              height: 0;
-              border-top: 7px solid transparent;
-              border-bottom: 7px solid transparent;
-              border-left: 14px solid $Heading;
-              position: absolute;
-              top: 50%;
-              margin-top: -7px;
-              left: 100%;
-              z-index: 99;
-        }
-
-        // the white shadow of the triangles
-        ul > li::before {
-              content: "";
-              display: block;
-              width: 0;
-              height: 0;
-              border-top: 7px solid transparent;
-              border-bottom: 7px solid transparent;
-              border-left: 14px solid $BackGround;
-              position: absolute;
-              top: 50%;
-              margin-top: -7px;
-              margin-left: 2px;
-              left: 100%;
-              z-index: 98;
-        }
-
-        // We only have five levels of crumbs so we can style them individuality
-        ul > li:nth-child(1){
+          ul {
+              display: none;  /* Hides the drop-down menu */
               padding-left: 4px;
+              margin: 0; /* Aligns drop-down box underneath the menu item */
+              -webkit-transition: all 1s;
+              border: solid $ButtonBorder 2px;
+              border-radius: 5px;
+              background-color: $ButtonBG;
+
+              li {
+                  width: 100%;
+                  text-align: left;
+                  -webkit-transition: height 0.5s;
+                  padding: 1px 0 0 4px;
+                  a {
+                      color: $DropDownFG !important;
+                  }
+              }
+
+              li::after { content:none;}
+              li:first-child { padding-top: 2px; }
+
+              // turn off "triangle" colouring inside the ul
+              li:nth-child(n) {
+                  background:   $ButtonBG;
+                  padding-left: 0px;
+              }
+              li:nth-child(n):after {
+                  border-left-color: $ButtonBG;
+                  border: 7px solid ;
+              }
+              li:hover {
+                  background: $ButtonBorder;
+                  color: red;
+              }
+          }
+      }
+      span { color: $BreadCrumbFG; }
+
+      li:hover { background-color: $ButtonBG; }
+      li a { color: green; }
+      li a:hover { color: yellow; }
+    }
+
+    // pseduo elements give the navigation triangles
+    div ul > li::after {
+        content: "";
+        display: block;
+        width: 0;
+        height: 0;
+        border-top: 7px solid transparent;
+        border-bottom: 7px solid transparent;
+        border-left: 14px solid $Heading;
+        position: absolute;
+        top: 50%;
+        margin-top: -7px;
+        left: 100%;
+        z-index: 99;
+    }
+
+    // the white shadow of the triangles
+    div ul > li::before {
+        content: "";
+        display: block;
+        width: 0;
+        height: 0;
+        border-top: 7px solid transparent;
+        border-bottom: 7px solid transparent;
+        border-left: 14px solid $BackGround;
+        position: absolute;
+        top: 50%;
+        margin-top: -7px;
+        margin-left: 2px;
+        left: 100%;
+        z-index: 98;
+    }
+
+    // We only have five levels of crumbs so we can style them individuality
+    div ul > li:nth-child(1){
+      padding-left: 4px;
+    }
+
+    $step: 0; // Set the initial step value
+
+    @while $step <=6  {
+        div ul >  li:nth-child(#{$step+1}) {
+            background: breadcrumb-step($step);
+            color: $BreadCrumbFG;
+            font-family: Arial, Verdana, sans-serif !important;
+            a { color: $BreadCrumbFG; }
+            ul li a { color: $BreadCrumbFG; }
+        }
+        div ul > li:nth-child(#{$step+1}):after {
+            border-left-color: breadcrumb-step($step);
         }
 
-        $step: 0; // Set the initial step value
-
-        @while $step <=6  {
-            ul >  li:nth-child(#{$step+1}) {
-                    background: lighten($BreadCrumbBG, ($step*5%));
-                    color: $BreadCrumbFG;
-                    font-family: Arial, Verdana, sans-serif !important;
-                    a { color: $BreadCrumbFG; }
-                    ul li a { color: $BreadCrumbFG; }
-            }
-            ul > li:nth-child(#{$step+1}):after {
-                    border-left-color: lighten($BreadCrumbBG, ($step*5%));
-            }
-
-            // Increment the step up by 1
-            $step: $step + 1;
-        }
+        // Increment the step up by 1
+        $step: $step + 1;
+    }
 }
 
 div#menu-icon {
@@ -544,6 +554,7 @@ div#menu-icon:hover {
 
 span#quizzes-menu-icon {
   color: $BreadCrumbFG;
+  font-size:8px;
 }
 
 span#sidelabelopen   { display: block; }

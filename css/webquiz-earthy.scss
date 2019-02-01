@@ -20,21 +20,21 @@
   $BackGround:     #E3E2DF;
   $LinkColor:       blue;
 
-  $Heading:        #9A1750;
-  $Subheading:     lighten($Heading, 20%);
+  $Heading:        #873600;
+  $Subheading:     #900C3F;
 
   $QuestionPart:   lighten($Heading, 8%);
 
-  $ButtonBG:       #EE4C7C;
+  $ButtonBG:       #FAE5D3;
   $ButtonBorder:   darken($ButtonBG, 40%);
-  $ButtonHover:    lighten($ButtonBG, 20%);
-  $ButtonSelected: lighten($ButtonBG, 30%);
+  $ButtonHover:    #943126;
+  $ButtonSelected: #C0392B;
 
-  $Dazzle:         #F76C6C;
+  $Dazzle:         #BA4A00;
 
   $FeedbackBG:     $ButtonBG;
   $FeedbackBorder: darken($FeedbackBG, 40%);
-  $FeedbackText:   lighten($FeedbackBG, 20%);
+  $FeedbackText:   #784212;
 
   $SideMenuText:   lighten($Text, 10%);
 
@@ -42,9 +42,13 @@
   $WarningBorder:  darken($WarningBG, 60%);
   $WarningFG:      lighten($WarningBG, 90%);
 
-  $BreadCrumbBG:   darken($Heading, 50%);
-  $BreadCrumbFG:   darken($BackGround, 30%);
-  $DropDownFG:     #E3AFFFF;
+  $BreadCrumbBG:   #6E2C00;
+  $BreadCrumbFG:   #FEF5E7;
+  @function breadcrumb-step($step) {
+    @return lighten($BreadCrumbBG, ($step*5%));
+  }
+
+  $DropDownFG:     #873600;
 
   $Copyright:      $BreadCrumbBG;
   $School:         lighten($Copyright, 10%);
@@ -53,19 +57,19 @@
 
   $HeadingFont: Verdana, Arial, Helvetica, sans-serif;
 
-  $BlankButtonBG:  #FFF8DC;
+  $BlankButtonBG:  #FEF9E7;
   $BlankButtonFG:  black;
 
-  $CrossButtonBot: slateblue;
+  $CrossButtonBot: #fae5d3;
   $CrossButtonFG:  red;
-  $CrossButtonTop: white;
+  $CrossButtonTop: #784212;
 
-  $StarButtonBot: green;
+  $StarButtonBot: #90002e;
   $StarButtonFG:  yellow;
-  $StarButtonTop: yellow;
+  $StarButtonTop: #e5791c;
 
-  $TickButtonBot: yellow;
-  $TickButtonFG:  green;
-  $TickButtonTop: red;
+  $TickButtonBot: #fef7e7;
+  $TickButtonFG:  #271096;
+  $TickButtonTop: #e5791c;
 
 @import "webquiz";

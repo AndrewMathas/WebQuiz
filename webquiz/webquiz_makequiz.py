@@ -123,7 +123,7 @@ class MakeWebQuiz(object):
 
                 elif crumb == 'quizindex':
                     if self.quiz.quiz_index == []:
-                        crumbs += webquiz_templates.breadcrumb_quizlist.format(
+                        crumbs += webquiz_templates.breadcrumb_quizindex.format(
                             quizzes_url=self.quiz.quizzes_url,
                             **self.language)
                     else:
@@ -406,7 +406,7 @@ class MakeWebQuiz(object):
                         for (num,q) in enumerate(self.quiz.quiz_index))
                     )
                 )
-                quizmenu.write(webquiz_templates.create_dropdown)
+                quizmenu.write(webquiz_templates.create_quizindex_menu)
 
         # now comes the main page text
         # discussion(s) masquerade as negative questions

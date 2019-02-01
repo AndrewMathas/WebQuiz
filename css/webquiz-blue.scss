@@ -16,35 +16,39 @@
 
 // sass variables for the colours used in the quizzes
 
-  $Text:           #0E0B16;
-  $BackGround:     lighten(#E7DF0D, 40%);
-  $LinkColor:       blue;
+  $Text:           #003366;
+  $BackGround:     #e6f0ff;
+  $LinkColor:      #0c106a;
 
-  $Heading:        #4717F6;
-  $Subheading:     lighten($Heading, 20%);
+  $Heading:        #333399;
+  $Subheading:     #1a1aff;
+
+  $BreadCrumbBG:   #3366cc;
+  $BreadCrumbFG:   $BackGround;
+  @function breadcrumb-step($step) {
+    @return lighten($BreadCrumbBG, $step*10%);
+  }
 
   $QuestionPart:   lighten($Heading, 8%);
 
-  $ButtonBG:       #A239Ca;
-  $ButtonBorder:   darken($ButtonBG, 40%);
-  $ButtonHover:    lighten($ButtonBG, 20%);
-  $ButtonSelected: lighten($ButtonBG, 30%);
+  $ButtonBG:       #ccebff;
+  $ButtonBorder:   #002db3;
+  $ButtonHover:    #1a1aff;
+  $ButtonSelected: #3399ff;
 
-  $Dazzle:         #F76C6C;
+  $DropDownFG:     lighten($BreadCrumbBG, 20%);
+
+  $Dazzle:         #3366cc;
 
   $FeedbackBG:     $ButtonBG;
   $FeedbackBorder: darken($FeedbackBG, 40%);
-  $FeedbackText:   lighten($FeedbackBG, 20%);
+  $FeedbackText:   darkslateblue;
 
   $SideMenuText:   lighten($Text, 10%);
 
   $WarningBG:      #00ff00;
   $WarningBorder:  darken($WarningBG, 60%);
   $WarningFG:      lighten($WarningBG, 90%);
-
-  $BreadCrumbBG:   darken($Heading, 50%);
-  $BreadCrumbFG:   lighten($BackGround, 30%);
-  $DropDownFG:     lighten($ButtonBG, 40%);
 
   $Copyright:      $BreadCrumbBG;
   $School:         lighten($Copyright, 10%);
@@ -53,19 +57,19 @@
 
   $HeadingFont: Verdana, Arial, Helvetica, sans-serif;
 
-  $BlankButtonBG:  #FFF8DC;
+  $BlankButtonBG:  #AFE4FD;
   $BlankButtonFG:  black;
 
-  $CrossButtonBot: slateblue;
+  $CrossButtonBot: #ccebff;
   $CrossButtonFG:  red;
-  $CrossButtonTop: white;
+  $CrossButtonTop: #00befe;
 
-  $StarButtonBot: green;
+  $StarButtonBot: #004d99;
   $StarButtonFG:  yellow;
-  $StarButtonTop: yellow;
+  $StarButtonTop: #3399ff;
 
-  $TickButtonBot: yellow;
-  $TickButtonFG:  green;
-  $TickButtonTop: red;
+  $TickButtonBot: #1a1aff;
+  $TickButtonFG:  silver;
+  $TickButtonTop: #ccebff;
 
 @import "webquiz";

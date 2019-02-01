@@ -4,7 +4,7 @@
 # That is, update the lists supported languages and themes and generate all of
 # the images used by webquiz.tex
 
-# TODO: rewrite in python to make cross-platform
+# TODO: rewrite in python to make cross-platform and merge with makeimages
 
 cd "$(dirname $0)/.."
 WebQuizDir="$PWD"
@@ -45,6 +45,7 @@ function make_themes () {
   message "Generating list of webquiz supported css themes"
 
   if [[ "$fast" == false ]]; then
+    message "Rebuilding latex files for the themes"
     /bin/rm -f $WebQuizExamplesDir/theme-*.tex
   fi
 

@@ -44,6 +44,10 @@
 
   $BreadCrumbBG:   #185522;
   $BreadCrumbFG:   #f5f5f5;
+  @function breadcrumb-step($step) {
+    @return lighten($BreadCrumbBG, ($step*5%));
+  }
+
   $DropDownFG:     lighten($ButtonBG, 40%);
 
   $Copyright:      white;
