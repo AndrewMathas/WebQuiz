@@ -38,7 +38,7 @@
 \def\subsubsectionautorefname{\S\kern-0.8ex}
 \def\appendixautorefname{Appendix}
 
-\usepackage[nonewpage]{imakeidx}
+\usepackage{imakeidx}
 \indexsetup{level=\section*,toclevel=section,noclearpage}
 \makeindex[intoc,noautomatic,columns=3]
 
@@ -119,7 +119,7 @@
   \foreach \theme in \WebQuizThemes {
     \ifx\theme\empty\relax%
     \else%
-       \ScreenShot[0.72]{Example of the \textbf{\theme} theme}{theme-\theme}%
+       \ScreenShot[0.68]{Example of the \textbf{\theme} theme}{theme-\theme}%
        \CrossIndex{theme}{\theme}%
     \fi
   }
@@ -2090,17 +2090,20 @@
   of the on-line quizzes, which can be set using the \LatexCode|theme|
   document-class option or in the \webquizrc; see
   \autoref{SS:classOptions} for more details. Themes are easy to
-  construct in principle although finding colour that work well together
-  can be tricky in practice.  Some of the available themes are quite
-  garish, so perhaps the different themes should be interpreted as
-  proof-of-concept rather than the final product.  \ShowcaseThemes I am
-  happy to include any new themes sent to me and to make modifications
-  of existing themes, although there is a potential technical issue here
-  in that the underlying \CSS files are written using
-  \href{http://sass-lang.com/}{sass}.  Any new themes can be sent to me
-  using the \textit{issue} tracker at
-  \href{https://\webquiz{repository}}{\webquiz{repository}}.
+  construct in principle although finding colours that work well together
+  can be tricky in practice so, as a result, there are some themes that
+  I would not use!
 
+  Please send new themes, and modifications to existing themes,  sent to me and to make
+  modifications of existing themes, although there is a potential
+  technical issue here in that the underlying \CSS files are written
+  using \href{http://sass-lang.com/}{sass}.  Any new themes can be sent
+  to me using the \textit{issue} tracker at
+  \begin{quote}
+  \href{https://\webquiz{repository}}{\webquiz{repository}}.
+  \end{quote}
+
+  \ShowcaseThemes
 
 \subsection{The on-line WebQuiz manual}\label{S:online}
 

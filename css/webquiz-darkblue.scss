@@ -1,6 +1,6 @@
 /*
  * -----------------------------------------------------------------------
- *   webquiz.css | colour specifications for dark theme 
+ *   webquiz.css | colour specifications for dark blue theme 
  * -----------------------------------------------------------------------
  *
  *   Copyright (C) Andrew Mathas, University of Sydney
@@ -16,29 +16,29 @@
 
 // sass variables for the colours used in the quizzes
 
-  $Text:           white;
-  $BackGround:     #2d2d2d;
-  $LinkColor:      darkorange;
+  $Text:           #f5f5f5;
+  $BackGround:     #0f203d;
+  $LinkColor:       blue;
 
-  $Heading:        #E31230;
-  $Subheading:     lighten($Heading, 10%);
+  $Heading:        #156fc6;
+  $Subheading:     royalblue;
 
   $QuestionPart:   lighten($Heading, 20%);
 
-  $BreadCrumbBG:   #990000;
-  $BreadCrumbFG:   #ffe6e6;
+  $BreadCrumbBG:   #06469b;
+  $BreadCrumbFG:   #f5f5f5;
   @function breadcrumb-step($step) {
-    @return lighten($BreadCrumbBG, $step*5%);
+    @return lighten($BreadCrumbBG, $step*10%);
   }
 
-  $ButtonBG:       $BreadCrumbBG;
-  $ButtonBorder:   #FF0033;
-  $ButtonHover:    #F2BAC2;
-  $ButtonSelected: #FF007F;
+  $ButtonBG:       #aaaaaa;
+  $ButtonBorder:   blue;
+  $ButtonHover:    skyblue;
+  $ButtonSelected: darkslateblue;
 
-  $DropDownFG:     #FFE5E7;
+  $DropDownFG:     lighten($ButtonBG, 40%);
 
-  $Dazzle:         #e31230;
+  $Dazzle:         #ff0;
 
   $SideMenuText:   lighten($Text, 10%);
 
@@ -46,30 +46,30 @@
   $WarningBorder:  darken($WarningBG, 60%);
   $WarningFG:      lighten($WarningBG, 90%);
 
-  $FeedbackBG:     #99182C;
+  $FeedbackBG:     #1f1f88;
   $FeedbackBorder: darken($FeedbackBG, 40%);
-  $FeedbackText:   #f2bac2;
+  $FeedbackText:   #aabafa;
 
-  $Copyright:      #FF0033;
-  $School:         darken($Copyright, 10%);
+  $Copyright:      #9696ff;
+  $School:         lighten($Copyright, 10%);
 
   $ListMarker:    '\027A3';
 
   $HeadingFont: Verdana, Arial, Helvetica, sans-serif;
 
-  $BlankButtonBG:  $BreadCrumbBG;
-  $BlankButtonFG:  #FEE7EC;
+  $BlankButtonBG:  #aaaaaa;
+  $BlankButtonFG:  #2c2d72;
 
-  $CrossButtonBot: #f2bac2;
+  $CrossButtonBot: #250bc5;
   $CrossButtonFG:  red;
-  $CrossButtonTop: #e60000;
+  $CrossButtonTop: #f8f8f8;
 
-  $StarButtonBot: purple;
-  $StarButtonFG:  white;
-  $StarButtonTop: red;
+  $StarButtonBot: #07f3f2;
+  $StarButtonFG:  yellow;
+  $StarButtonTop: #1609e0;
 
-  $TickButtonBot: #e31230;
-  $TickButtonFG:  #ffff88;
-  $TickButtonTop: #f3687c;
+  $TickButtonBot: #1b02ec;
+  $TickButtonFG:  white;
+  $TickButtonTop: aqua;
 
 @import "webquiz";
