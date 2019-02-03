@@ -24,10 +24,10 @@ var currentB;               // current button number
 var currentFeedback = null; // feedback currently being displayed
 var currentQ;               // current question number
 var dTotal;                 // number of discussion items
-var quizindex_menu               // handler for the drop-down menu, if it exists
+var quizindex_menu;         // handler for the drop-down menu, if it exists
 var qTotal;                 // number of quiz questions
-var side_closed             // handler for displaying sidelabelclosed
-var side_menu               // handler to open and close side
+var side_closed;            // handler for displaying sidelabelclosed
+var side_menu;              // handler to open and close side
 var side_open;              // handler for displaying sidelabelopen
 //var theme_menu              // handler for the theme_menu
 
@@ -130,32 +130,36 @@ function toggle_side_menu() {
 
 // Code to hide/show questions
 function showQuestion(newB, newQ) { // newQ is an integer which is always in the correct range
-    // alert('showing newB='+newB+', newQ='+newQ+'.');
-    if (!onePage && newQ !== currentQ) {
-        if (currentQ !== 0) { // hide the current question and feedback
+    alert('showing newB='+newB+', newQ='+newQ+', currentQ='+currentQ+'.');
+    if (!onePage) {
+      // hide the current question and feedback
+      if (newQ!=currentQ && currentQ!=0) {
             hideFeedback();
             document.getElementById("question" + currentQ).style.display = "none";
-            currentB.classList.remove("nolink");
             if (currentQ > 0) { // question and not discussion
+                currentB.classList.remove("nolink");
                 currentB.classList.remove("button-selected");
             }
-        }
-        // display newQ
-        document.getElementById("question" + newQ).style.display = "table";
+      }
+      // display the new question
+      document.getElementById("question" + newQ).style.display = "table";
+
+      // update the question/discussion header and select question button
+      if (currentQ > 0) {
+          document.getElementById("question-label").style.display = 'contents';
+          document.getElementById("question-number").innerHTML = newB;
+          currentB = document.getElementById("button" + newB);
+          currentB.classList.add("button-selected");
+          currentB.classList.add("nolink");
+      } else {
+          document.getElementById("question-label").style.display = 'none';
+          document.getElementById("question-number").innerHTML = Discussion[-newQ];
+      }
     }
+
     // now set currentQ = to the question indexed by newQ in questionOrder
     // and currentB = current button
     currentQ = newQ;
-    currentB = document.getElementById("button" + newB);
-    currentB.classList.add("nolink");
-    if (!onePage) {
-      if (currentQ > 0) {
-          currentB.classList.add("button-selected");
-          document.getElementById("question-number").innerHTML = newB;
-      } else if (Discussion[-currentQ]) {
-          document.getElementById("question-number").innerHTML = Discussion[-currentQ];
-      }
-    }
 }
 
 // Code to hide/show feedback
@@ -167,6 +171,7 @@ function hideFeedback() {
 }
 
 function showFeedback(tag) {
+  alert('Showing feedback for '+tag+'.');
     hideFeedback(); // hide current feedback
     currentFeedback = document.getElementById(tag);
     currentFeedback.style.display = "block";
@@ -232,7 +237,8 @@ function updateQuestionMarker(bnum, qnum) {
 
 function gotoQuestion(bnum) {
     // bnum is a button number so we need to convert to a question number
-    var qnum = questionOrder[bnum];
+
+    var qnum = (bnum>0) ? questionOrder[bnum] : bnum;
     updateQuestionMarker(bnum, qnum);
     showQuestion(bnum, qnum);
 }
@@ -268,8 +274,8 @@ function checkAnswer(qnum) {
     if (question.type == "input") {
         var answer = studentAnswer.elements[0].value;
         if (answer=='') { //must have hit checkAnswer without answering, so ignore
-          alert('Please answer the question first!')
-          return
+          alert('Please answer the question first!');
+          return;
         }
         try {
           correct[qnum] = compare[question.comparison](answer, question.value);
@@ -342,6 +348,7 @@ function WebQuizInit(questions, discussions, quizfile) {
     dTotal = discussions;
 
     // display the first question or discussion item
+    currentB = 0;
     currentQ = 0;
     var newQ = (dTotal > 0) ? -1 : 1;
 
@@ -376,10 +383,10 @@ function WebQuizInit(questions, discussions, quizfile) {
     if (qTotal==0) {
         // ugly hack to position copyright message when there are no questions
         side_menu.style.height='60ex';
-        var school = side_menu.getElementById('school');
+        var school = side_menu.getElementsByClassName('school')[0];
         school.style.position = 'relative';
-        school.style.bottom = '-25ex';
-        var copyright = side_menu.getElementById('copyright')
+        school.style.bottom = '-40ex';
+        var copyright = side_menu.getElementsByClassName('copyright')[0];
         copyright.style.position = 'relative';
         copyright.style.bottom = '-35ex';
     }

@@ -239,7 +239,7 @@ pages = [
     Convert("random", js="questionOrder=[0,4,3,2,1];", Question='1:1:', js_end="gotoQuestion(4);checkAnswer(1);"),
     Convert("simple", page_out='simple-html', question='1:1'),
     Convert("simple", src='pdf',  page_out='simple-pdf'),
-    Convert("theme-*", question="1:1,7|3:1|3:1,7|6:4", js_end='toggle_quizindex_menu();'),
+    Convert("theme-*", width=500, question="1:1,7|3:1|3:1,7|6:4", js_end='toggle_quizindex_menu();'),
     Convert("tikz-ex"),
 ]
 

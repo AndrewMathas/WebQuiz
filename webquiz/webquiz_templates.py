@@ -91,11 +91,11 @@ side_menu = r'''<div id="menu-icon">
       </span>
     </div>
     <div id="sidemenu" class="side-menu">{discussion_list}{question_buttons}
-      <div id="school">
+      <div class="school">
         {department}<p>
         {institution}
       </div>
-      <div id="copyright">
+      <div class="copyright">
         <a href="http://www.maths.usyd.edu.au/u/mathas/WebQuiz/credits.html">
            WebQuiz {version}
         </a>
@@ -118,9 +118,8 @@ quiz_header = r'''<div class="quiz-header">
         <div class="quiz-title">{title}</div><div></div>{arrows}
       </div>'''
 navigation_arrows = r'''
-       <span class="question-label">{question}
-         <span id="question-number">{question_number}</span>
-       </span>
+       <span id="question-label" class="question-label">{question}</span>
+       <span id="question-number" class="question-label">{question_number}</span>
        <span class="arrows">
           <a onClick="nextQuestion(-1);" title="{previous_question}">&#x25c4;</a>
           <span class="question-label">{questions}</span>
