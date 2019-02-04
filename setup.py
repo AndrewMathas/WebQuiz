@@ -216,39 +216,51 @@ class WebQuizCtan(Command):
         self.build_distribution()
 
         # save the files as a TDS (Tex directory standard) zip file
-        with zipfile.ZipFile(self.zipfile, 'w', zipfile.ZIP_DEFLATED) as zfile:
+        with zipfile.ZipFile(self.zipfile, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+            with zipfile.ZipFile('webquiz.tds.zip', 'w', zipfile.ZIP_DEFLATED) as tds_file:
 
-            # now add the files
-            for (src, target) in [ ('README-ctan.md',                'README.md'),
-                                   ('CHANGES.rst',                   'scripts'),
-                                   ('LICENCE',                       'scripts'),
-                                   ('latex/webquiz-*.code.tex',      'latex'),
-                                   ('latex/webquiz-*.lang',          'latex'),
-                                   ('latex/webquiz.c*',              'latex'),
-                                   ('latex/webquiz.ini',             'latex'),
-                                   ('latex/pgfsys-dvisvgm4ht.def',   'latex'),
-                                   ('doc/webquiz*.tex',              'doc'),
-                                   ('doc/webquiz*.pdf',              'doc'),
-                                   ('doc/webquiz.languages',         'doc'),
-                                   ('doc/webquiz.settings',          'doc'),
-                                   ('doc/webquiz.themes',            'doc'),
-                                   ('doc/webquiz.usage',             'doc'),
-                                   ('doc/README-doc',                'doc'),
-                                   ('webquiz/README-scripts',        'scripts'),
-                                   ('webquiz/webquiz*.py',           'scripts'),
-                                   ('webquiz/webquiz.bat',           'scripts'),
-                                   ('javascript/webquiz-min.js',     'scripts/www/webquiz.js'),
-                                   ('css/webquiz-*.css',             'scripts/www/css'),
-                                   ('doc/webquiz-online-manual.tex', 'scripts/www/doc'),
-                                   ('doc/examples/README-examples',  'scripts/www/doc/examples'),
-                                   ('doc/examples/*.tex',            'scripts/www/doc/examples'),
-                                   ('doc/examples/[-a-z]*.png',      'doc/examples'),
+                # now add the files
+                for (src, target, tds_target) in [ 
+                    ('README-ctan.md',                'README.md',                'tex/latex/webquiz'),
+                    ('latex/webquiz-*.code.tex',      'latex',                    'tex/latex/webquiz'),
+                    ('latex/webquiz-*.lang',          'latex',                    'tex/latex/webquiz'),
+                    ('latex/webquiz.c*',              'latex',                    'tex/latex/webquiz'),
+                    ('latex/webquiz.ini',             'latex',                    'tex/latex/webquiz'),
+                    ('latex/pgfsys-dvisvgm4ht.def',   'latex',                    'tex/latex/webquiz'),
+                    ('CHANGES.rst',                   'scripts',                  'scripts/webquiz'),
+                    ('LICENCE',                       'scripts',                  'scripts/webquiz'),
+                    ('webquiz/README-scripts',        'scripts',                  'scripts/webquiz'),
+                    ('webquiz/webquiz*.py',           'scripts',                  'scripts/webquiz'),
+                    ('webquiz/webquiz.bat',           'scripts',                  'scripts/webquiz'),
+                    ('javascript/webquiz-min.js',     'scripts/www/webquiz.js',   'scripts/webquiz/www/webquiz.js'),
+                    ('css/webquiz-*.css',             'scripts/www/css',          'scripts/webquiz/www/css'),
+                    ('doc/webquiz-online-manual.tex', 'scripts/www/doc',          'scripts/webquiz/www/doc'),
+                    ('doc/examples/README-examples',  'scripts/www/doc/examples', 'scripts/webquiz/www/doc/examples'),
+                    ('doc/examples/*.tex',            'scripts/www/doc/examples', 'scripts/webquiz/www/doc/examples'),
+                    ('doc/webquiz*.tex',              'doc',                      'doc/latex/webquiz'),
+                    ('doc/webquiz*.pdf',              'doc',                      'doc/latex/webquiz'),
+                    ('doc/webquiz.languages',         'doc',                      'doc/latex/webquiz'),
+                    ('doc/webquiz.settings',          'doc',                      'doc/latex/webquiz'),
+                    ('doc/webquiz.themes',            'doc',                      'doc/latex/webquiz'),
+                    ('doc/webquiz.usage',             'doc',                      'doc/latex/webquiz'),
+                    ('doc/README-doc',                'doc',                      'doc/latex/webquiz'),
+                    ('doc/examples/[-a-z]*.png',      'doc/examples',             'doc/latex/webquiz/examples'),
                 ]:
-                for file in glob.glob(src):
-                    if '.' in target:
-                        zfile.write(file, os.path.join(self.zipfile[:-4], target))
-                    else:
-                        zfile.write(file, os.path.join(self.zipfile[:-4], target, file.split('/')[-1]))
+                    for file in glob.glob(src):
+                        # first save in the main zipfile
+                        if '.' in target:
+                            zip_file.write(file, os.path.join(self.zipfile[:-4], target))
+                        else:
+                            zip_file.write(file, os.path.join(self.zipfile[:-4], target, file.split('/')[-1]))
+                        # now save in the tds
+                        if '.' in target:
+                            tds_file.write(file, os.path.join('textmf', tds_target))
+                        else:
+                            tds_file.write(file, os.path.join('textmf', tds_target, file.split('/')[-1]))
+
+            # now add the tds file to the zip file
+            zip_file.write('webquiz.tds.zip', os.path.join(self.zipfile[:-4], 'webquiz.tds.zip'))
+
 
 
 #----------------------------------------------------------------------------------------
