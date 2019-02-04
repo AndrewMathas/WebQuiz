@@ -23,7 +23,6 @@ doc/webquiz.settings
 doc/webquiz.themes
 doc/webquiz.usage
 doc/makedoc-*
-tests/*.expected
 tests/*.output
 tests/*/
 javascript/webquiz-min.js

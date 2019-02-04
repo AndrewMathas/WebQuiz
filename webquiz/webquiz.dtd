@@ -94,13 +94,13 @@
 
 <!ELEMENT response (#PCDATA)>
 
-<!ELEMENT answer (when_right,when_wrong)>
+<!ELEMENT answer (when*)>
 <!ATTLIST answer
     prompt     CDATA #REQUIRED
     comparison CDATA #REQUIRED
 >
 
-<!ELEMENT when_right (#PCDATA)>
-<!ELEMENT when_wrong (#PCDATA)>
+<!ELEMENT when (text)>
+<!ATTLIST when type (right|wrong) #REQUIRED>
 
 <!ELEMENT text (#PCDATA)>

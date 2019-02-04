@@ -124,7 +124,7 @@ class QuizHandler(xml.sax.ContentHandler):
             At the start of each webquiz xml tag we need to pull out the
             attributes and place
         '''
-
+        debugging('Starting tag for '+tag)
         self.current_tags.append(tag)
 
         if hasattr(self, 'start_'+tag):
@@ -274,7 +274,7 @@ class QuizHandler(xml.sax.ContentHandler):
     #---- end of start elements ---------------------------------------------
 
     def endElement(self, tag):
-        debugging('end element for '+self.current_tags[-1]) # remove the last tag from the tag list
+        debugging('ending tag for {} (should be {})'.format(tag, self.current_tags[-1])) 
 
         reset_text = True
         if hasattr(self, 'end_'+tag):
@@ -298,6 +298,7 @@ class QuizHandler(xml.sax.ContentHandler):
         if reset_text:
             self.text = ''
 
+        # remove the last tag from the tag list
         self.current_tags.pop()
 
     #---- start of the end elements ------------------------------------------

@@ -1,4 +1,4 @@
-<!-- README file for the LaTeX package -->
+<!-- README file to be distributed with the LaTeX package -->
 WebQuiz: a [LaTeX] package for on-line quizzes
 ==============================================
 [WebQuiz] makes it possible to use LaTeX to write interactive web based quizzes. The quizzes are first written in LaTeX and then converted into HTML files using [WebQuiz], which is written in python. The conversion from [LaTeX] to HTML is done behind the scenes using [TeX4ht].

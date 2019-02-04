@@ -182,8 +182,8 @@ the doc/examples directory. The files here are:
     expected log output from source files
 
 tester
-    shell script for comparing the expected and actual output for all of the
-    test files
+    hell script for comparing the expected and actual output for all of the
+    test files. This checks only for syntax errors
 
 The main sets of tests for WebQuiz_ check that all of the WebQuiz_ quizzes in
 the doc/examples directory compile properly *and* that they produce appropriate images in
@@ -194,7 +194,7 @@ the manual, for example using::
 Unfortunately, this test is not completely automatic because it is not
 sufficient to check that all of these files compile. In addition, it is
 necessary to eyeball all of the images in the manual and make sure that
-every one of them is correct. In addition,::
+every one of them is correct. In addition::
 
     doc/makedoc --check-examples
 

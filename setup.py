@@ -110,7 +110,7 @@ class WebQuizDevelop(Command):
 
 class WebQuizCtan(Command):
     r"""
-    Create TDS zip file for submission to ctan/texlive.
+    Create zip file for submission to ctan/texlive.
     """
 
     description = 'Build and publish the package.'
