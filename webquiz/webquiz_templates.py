@@ -115,7 +115,7 @@ question_buttons = r'''
 
 # quiz title and navigation arrows
 quiz_header = r'''<div class="quiz-header">
-        <div class="quiz-title">{title}</div><div></div>{arrows}
+       <div class="quiz-title">{title}</div><div></div>{arrows}
       </div>'''
 navigation_arrows = r'''
        <span id="question-label" class="question-label">{question}</span>
@@ -124,7 +124,7 @@ navigation_arrows = r'''
           <a onClick="nextQuestion(-1);" title="{previous_question}">&#x25c4;</a>
           <span class="question-label">{questions}</span>
           <a onClick="nextQuestion(1);"  title="{next_question}">&#x25ba;</a>
-        </span>'''
+       </span>'''
 
 # discussion item
 discussion = r'''<div id="question-{dnum}" class="question" style="display:{display};">
@@ -173,15 +173,18 @@ multiple_item = '''<td><input type="checkbox" name="Q{qnum}option{optnum}"/></td
 <td class="brown" >{choice}</td><td><div class="question-choices">{text}</div></td>
 '''
 
-tf_feedback_text = r'''        <div id="q{choice}{feedback}" class="feedback"><em class="dazzle">{correct_answer}</em> <em>{answer2}</em>
+tf_feedback_text = r'''
+        <div id="q{choice}{feedback}" class="feedback"><em class="dazzle">{correct_answer}</em> <em>{answer2}</em>
            <div>{text}</div>
         </div>'''
-single_feedback = r'''        <div id="q{qnum}feedback{part}" class="feedback">
+single_feedback = r'''
+        <div id="q{qnum}feedback{part}" class="feedback">
               <em>{alpha_choice} <span class="dazzle">{correct_answer}</span></em>
               <div>{feedback}</div>
         </div>'''
 
-multiple_feedback = r'''        <div id="q{qnum}feedback{part}" class="feedback">
+multiple_feedback = r'''
+        <div id="q{qnum}feedback{part}" class="feedback">
             <em>{one_mistake}</em><br>{multiple_choice_opener} <span class="dazzle">{correct_answer}</span>.
             <div>{feedback}</div>
         </div>'''

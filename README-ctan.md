@@ -1,16 +1,14 @@
+<!-- README file for the LaTeX package -->
 WebQuiz: a [LaTeX] package for on-line quizzes
 ==============================================
-[WebQuiz] makes it possible to use LaTeX to write interactive web based
-quizzes. The quizzes are first written in LaTeX and then converted into HTML
-files using `WebQuiz`, which is written in python. The conversion from [LaTeX]
-to HTML is done behind the scenes using [TeX4ht].
+[WebQuiz] makes it possible to use LaTeX to write interactive web based quizzes. The quizzes are first written in LaTeX and then converted into HTML files using [WebQuiz], which is written in python. The conversion from [LaTeX] to HTML is done behind the scenes using [TeX4ht].
 
 
-`WebQuiz` is designed to be used from the command-line.  For example, if
+[WebQuiz] is designed to be used from the command-line.  For example, if
 `quiz1.tex` is a LaTeX file for a quiz then:
-* `latex quiz1` produces a "readable" dvi file for the quiz 
-* `pdflatex quiz1` produces a "readable" pdf file for the quiz
-* `webquiz quiz1` creates the web page quiz1.html
+* `latex quiz1` produces a "readable" DVI file for the quiz 
+* `pdflatex quiz1` produces a "readable" PDF file for the quiz
+* `webquiz quiz1` creates the web page `quiz1.html`
 
 Installation
 ------------
@@ -26,12 +24,7 @@ If you want to install the web compnents of [WebQuiiz] into a system directory t
 
 Authors
 -------
-The LaTeX component of [WebQuiz] was written by Andrew Mathas and the python,
-css and javascript code was written by Andrew Mathas (and Don Taylor), based on
-an initial protype of Don Taylor's from 2001. Since 2004 the program has been
-maintained and developed by Andrew Mathas. Although the program has changed
-substantially since 2004 Don's idea of using TeX 4ht, and some of his code, are
-still very much in use.
+The LaTeX component of [WebQuiz] was written by Andrew Mathas and the python, css and javascript code was written by Andrew Mathas (and Don Taylor), based on an initial protype of Don Taylor's from 2001. Since 2004 the program has been maintained and developed by Andrew Mathas. Although the program has changed substantially since 2004 Don's idea of using TeX 4ht, and some of his code, are still very much in use.
 
 Copyright (C) 2004-2019
 
@@ -51,8 +44,8 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
 Public License for more details.
 
 [LaTeX]:    https://www.latex-project.org/
-[Python3]:   https://www.python.org
+[Python3]:  https://www.python.org
 [TeX4ht]:   http://www.tug.org/tex4ht/
 [TeXLive]:  https://www.tug.org/texlive/
-[WebQuiz]:  https://www.ctan.org/pkg/webquiz/
+[WebQuiz]:  https://github.com/AndrewAtLarge/WebQuiz/
 

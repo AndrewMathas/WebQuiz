@@ -274,7 +274,7 @@ class QuizHandler(xml.sax.ContentHandler):
     #---- end of start elements ---------------------------------------------
 
     def endElement(self, tag):
-        debugging('popping '+self.current_tags.pop()) # remove the last tag from the tag list
+        debugging('end element for '+self.current_tags[-1]) # remove the last tag from the tag list
 
         reset_text = True
         if hasattr(self, 'end_'+tag):
@@ -291,15 +291,14 @@ class QuizHandler(xml.sax.ContentHandler):
         elif tag in ['breadcrumb', 'title', 'unit_code', 'unit_name']:
             setattr(self, tag, self.text.strip())
 
-        elif tag.startswith('when'):
-            setattr(self.question_list[-1], tag, self.text.strip())
-
         else:
             # self.text lives to be used another day
             reset_text = False
 
         if reset_text:
             self.text = ''
+
+        self.current_tags.pop()
 
     #---- start of the end elements ------------------------------------------
 
@@ -359,6 +358,13 @@ class QuizHandler(xml.sax.ContentHandler):
         Process end tag when tag="index_item"
         '''
         self.quiz_index[-1].title = self.text.strip().replace('\n',' ').replace('\r',' ')
+
+    def end_when(self):
+        r'''
+        Process end tag when tag="index_item"
+        '''
+        debugging('WHEN: Adding text to '+self.current_tags[-1])
+        setattr(self.question_list[-1], self.current_tags[-1], self.text.strip())
 
     #---- end of end elements -----------------------------------------------
 

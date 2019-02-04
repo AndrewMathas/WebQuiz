@@ -91,7 +91,8 @@ class WebQuizDevelop(Command):
             # now add links for web files
             subprocess.call('{} --initialise'.format(webquiz), shell=True)
 
-            print('To build the WebQuiz css files you should run doc/makedoc -t')
+            print('To build the WebQuiz css files run the bash script doc/makedoc -t')
+            print('To build the WebQuiz documentation run the bash script doc/makedoc --all')
 
         except PermissionError as err:
             print('Insufficient permissions. Try running using sudo')
@@ -126,7 +127,6 @@ class WebQuizCtan(Command):
                'notes' : 'See README file in tex/latex/webquiz',
              'license' : 'free',
          'freeversion' : 'gpl',
-                'file' : 'webquiz.zip',
     }
 
     @staticmethod
@@ -142,6 +142,8 @@ class WebQuizCtan(Command):
 
     def run(self):
         # write the zip file for uploading to ctan
+        self.zipfile = 'webquiz-{}.zip'.format(settings.version)
+        self.ctan_data['file'] = self.zipfile
         self.write_zip_file()
 
         # upload the zip file to ctan using ctanupload
@@ -172,10 +174,10 @@ class WebQuizCtan(Command):
                       'README.rst'
                     ]:
             self.shell_command(
-                "sed -i 's@Copyright (C) 2004-20[0-9][0-9]@{}@' {}".format(copy, file)
+                "sed -i.bak 's@Copyright (C) 2004-20[0-9][0-9]@{}@' {}".format(copy, file)
             )
 
-    def build_files_for_zipping(self):
+    def build_distribution(self):
         r'''
         Rebuilds the documentation files and css for inclusion in the zip file:
             - doc/webquiz-manual.tex
@@ -207,46 +209,46 @@ class WebQuizCtan(Command):
         '''
         # if the ctan directory already exists then delete it
         try:
-            os.remove('webquiz.zip')
+            os.remove(self.zipfile)
         except OSError:
             pass
 
-        self.build_files_for_zipping()
+        self.build_distribution()
 
         # save the files as a TDS (Tex directory standard) zip file
-        with zipfile.ZipFile('webquiz.zip', 'w', zipfile.ZIP_DEFLATED) as zfile:
+        with zipfile.ZipFile(self.zipfile, 'w', zipfile.ZIP_DEFLATED) as zfile:
 
             # now add the files
             for (src, target) in [ ('README-ctan.md',                'README.md'),
-                                   ('LICENCE',                       'scripts'),
                                    ('CHANGES.rst',                   'scripts'),
-                                   ('css/webquiz-*.css',             'scripts/www/css'),
-                                   ('doc/webquiz*.pdf',              'doc'),
+                                   ('LICENCE',                       'scripts'),
+                                   ('latex/webquiz-*.code.tex',      'latex'),
+                                   ('latex/webquiz-*.lang',          'latex'),
+                                   ('latex/webquiz.c*',              'latex'),
+                                   ('latex/webquiz.ini',             'latex'),
+                                   ('latex/pgfsys-dvisvgm4ht.def',   'latex'),
                                    ('doc/webquiz*.tex',              'doc'),
-                                   ('doc/webquiz-online-manual.tex', 'scripts/www/doc'),
+                                   ('doc/webquiz*.pdf',              'doc'),
                                    ('doc/webquiz.languages',         'doc'),
                                    ('doc/webquiz.settings',          'doc'),
                                    ('doc/webquiz.themes',            'doc'),
                                    ('doc/webquiz.usage',             'doc'),
-                                   ('doc/examples/[-a-z]*.png',      'doc/examples'),
-                                   ('doc/examples/*.tex',            'scripts/www/doc/examples'),
-                                   ('doc/examples/README-examples',  'scripts/www/doc/examples'),
                                    ('doc/README-doc',                'doc'),
-                                   ('javascript/webquiz-min.js',     'scripts/www/webquiz.js'),
-                                   ('latex/pgfsys-dvisvgm4ht.def',   'latex'),
-                                   ('latex/webquiz.ini',             'latex'),
-                                   ('latex/webquiz-*.lang',          'latex'),
-                                   ('latex/webquiz.c*',              'latex'),
-                                   ('latex/webquiz-*.code.tex',      'latex'),
+                                   ('webquiz/README-scripts',        'scripts'),
                                    ('webquiz/webquiz*.py',           'scripts'),
                                    ('webquiz/webquiz.bat',           'scripts'),
-                                   ('webquiz/README-scripts',        'scripts'),
+                                   ('javascript/webquiz-min.js',     'scripts/www/webquiz.js'),
+                                   ('css/webquiz-*.css',             'scripts/www/css'),
+                                   ('doc/webquiz-online-manual.tex', 'scripts/www/doc'),
+                                   ('doc/examples/README-examples',  'scripts/www/doc/examples'),
+                                   ('doc/examples/*.tex',            'scripts/www/doc/examples'),
+                                   ('doc/examples/[-a-z]*.png',      'doc/examples'),
                 ]:
                 for file in glob.glob(src):
                     if '.' in target:
-                        zfile.write(file, os.path.join('webquiz', target))
+                        zfile.write(file, os.path.join(self.zipfile[:-4], target))
                     else:
-                        zfile.write(file, os.path.join('webquiz', target, file.split('/')[-1]))
+                        zfile.write(file, os.path.join(self.zipfile[:-4], target, file.split('/')[-1]))
 
 
 #----------------------------------------------------------------------------------------

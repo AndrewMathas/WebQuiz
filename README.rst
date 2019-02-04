@@ -22,7 +22,7 @@ WebQuiz_ has the following components:
 WebQuiz_ relies on having the following programs installed: LaTeX_, TeX4ht_, (available with most LaTeX_
 distributions such as TeXLive_), and Python3_. To use the development version,
 particularly, for building the manual and uploading to ctan_, you will also need
-mogrify_, sass_, uglifyjs_ and webkit2png_
+mogrify_, sass_, uglifyjs_ and webkit2png_ (and ctanupload_).
 
 This README file explains how the different components of the development
 version of WebQuiz_ are organised.
@@ -208,7 +208,7 @@ The LaTeX_ component of WebQuiz_ was written by Andrew Mathas and the python,
 `CSS` and javascript code was written by Andrew Mathas (and Don Taylor), based on
 an initial prototype of Don Taylor's from 2001. Since 2004 the program has been
 maintained and developed by Andrew Mathas. Although the program has changed
-substantially since 2004 Don's idea of using TeX 4ht, and some of his code, are
+substantially since 2004 Don's idea of using TeX 4ht, and some of his code, is
 still very much in use.
 
 Copyright (C) 2004-2019

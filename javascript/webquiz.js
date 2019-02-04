@@ -130,7 +130,7 @@ function toggle_side_menu() {
 
 // Code to hide/show questions
 function showQuestion(newB, newQ) { // newQ is an integer which is always in the correct range
-    alert('showing newB='+newB+', newQ='+newQ+', currentQ='+currentQ+'.');
+    // alert('showing newB='+newB+', newQ='+newQ+', currentQ='+currentQ+'.');
     if (!onePage) {
       // hide the current question and feedback
       if (newQ!=currentQ && currentQ!=0) {
@@ -145,9 +145,9 @@ function showQuestion(newB, newQ) { // newQ is an integer which is always in the
       document.getElementById("question" + newQ).style.display = "table";
 
       // update the question/discussion header and select question button
-      if (currentQ > 0) {
+      if (newQ > 0) {
           document.getElementById("question-label").style.display = 'contents';
-          document.getElementById("question-number").innerHTML = newB;
+          document.getElementById("question-number").innerHTML = String(newB);
           currentB = document.getElementById("button" + newB);
           currentB.classList.add("button-selected");
           currentB.classList.add("nolink");
@@ -171,7 +171,7 @@ function hideFeedback() {
 }
 
 function showFeedback(tag) {
-  alert('Showing feedback for '+tag+'.');
+    // alert('Showing feedback for '+tag+'.');
     hideFeedback(); // hide current feedback
     currentFeedback = document.getElementById(tag);
     currentFeedback.style.display = "block";
