@@ -230,6 +230,7 @@ class WebQuizCtan(Command):
                     ('CHANGES.rst',                   'scripts',                  'scripts/webquiz'),
                     ('LICENCE',                       'scripts',                  'scripts/webquiz'),
                     ('webquiz/README-scripts',        'scripts',                  'scripts/webquiz'),
+                    ('webquiz/webquiz',           'scripts',                  'scripts/webquiz/webquiz'),
                     ('webquiz/webquiz*.py',           'scripts',                  'scripts/webquiz'),
                     ('webquiz/webquiz.bat',           'scripts',                  'scripts/webquiz'),
                     ('javascript/webquiz-min.js',     'scripts/www/js/webquiz.js','scripts/webquiz/www/js/webquiz.js'),
@@ -257,6 +258,16 @@ class WebQuizCtan(Command):
                             tds_file.write(file, tds_target)
                         else:
                             tds_file.write(file, os.path.join(tds_target, file.split('/')[-1]))
+
+                # add symlinks for webquiz.py
+                webquiz = zipfile.ZipInfo()
+                webquiz.filename = 'scripts/webquiz.py'
+                webquiz.create_system = 3
+                webquiz.external_attr |= 0120000 << 16L # symlink file type
+                webquiz.compress_type = ZIP_STORED
+                zip_file.writestr(webquiz, 'webquiz.py')
+                webquiz.filename = 'scripts/webquiz/webquiz.py'
+                tds_file.writestr(webquiz, 'webquiz.py')
 
             # now add the tds file to the zip file
             zip_file.write('webquiz.tds.zip', os.path.join(self.zipfile[:-4], 'webquiz.tds.zip'))
