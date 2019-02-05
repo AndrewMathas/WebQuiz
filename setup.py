@@ -232,7 +232,7 @@ class WebQuizCtan(Command):
                     ('webquiz/README-scripts',        'scripts',                  'scripts/webquiz'),
                     ('webquiz/webquiz*.py',           'scripts',                  'scripts/webquiz'),
                     ('webquiz/webquiz.bat',           'scripts',                  'scripts/webquiz'),
-                    ('javascript/webquiz-min.js',     'scripts/www/webquiz.js',   'scripts/webquiz/www/webquiz.js'),
+                    ('javascript/webquiz-min.js',     'scripts/www/js/webquiz.js','scripts/webquiz/www/js/webquiz.js'),
                     ('css/webquiz-*.css',             'scripts/www/css',          'scripts/webquiz/www/css'),
                     ('doc/webquiz-online-manual.tex', 'scripts/www/doc',          'scripts/webquiz/www/doc'),
                     ('doc/examples/README-examples',  'scripts/www/doc/examples', 'scripts/webquiz/www/doc/examples'),
@@ -254,9 +254,9 @@ class WebQuizCtan(Command):
                             zip_file.write(file, os.path.join(self.zipfile[:-4], target, file.split('/')[-1]))
                         # now save in the tds
                         if '.' in target:
-                            tds_file.write(file, os.path.join('textmf', tds_target))
+                            tds_file.write(file, tds_target)
                         else:
-                            tds_file.write(file, os.path.join('textmf', tds_target, file.split('/')[-1]))
+                            tds_file.write(file, os.path.join(tds_target, file.split('/')[-1]))
 
             # now add the tds file to the zip file
             zip_file.write('webquiz.tds.zip', os.path.join(self.zipfile[:-4], 'webquiz.tds.zip'))

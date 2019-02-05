@@ -266,7 +266,7 @@
       The easiest way to explain how \WebQuiz works is by example. The
       following \LaTeX\ file defines a quiz with a single multiple choice
       question that has four possible answers, each of which has a
-      customised response. Giving feedback to the students in each
+      customised feedback. Giving feedback to the students in each
       question is optional but the capability of being able to give
       students feedback on their answer is one of the main pedagogical
       advantages of on-line quizzes.
@@ -298,7 +298,7 @@
       and, if so, whether it was answered correctly or incorrectly on the
       first or subsequent attempts. One of the main points of \WebQuiz is
       that (optional) targeted feedback can be given to the student taking
-      the quiz based on their responses.
+      the quiz based on their answer.
 
   \subsection{What WebQuiz does and does not do}
 
@@ -670,11 +670,13 @@
   \CrossIndex{choice environment}*{incorrect}, which indicate correct
   and incorrect answers respectively.  In addition, after each
   \LatexCode|\correct| or \LatexCode|\incorrect| you can, optionally, use
-  \LatexCode|\feedback| \CrossIndex{choice environment}*{response} to give
-  a feedback response to the student taking the quiz. Like
+  \LatexCode|\feedback| \CrossIndex{choice environment}*{feedback} to give
+  feedback to the student taking the quiz. Like
   \LatexCode|\whenRight| and \LatexCode|\whenWrong| this feedback is
   displayed only when the student checks their answer.
-  \index{feedback!response}
+  \index{feedback}
+  \CrossIndex{feedback}{whenRight}
+  \CrossIndex{feedback}{whenWrong}
 
   Here is an example of a \LatexCode|single|-choice question with a unique
   answer:
@@ -699,19 +701,24 @@
   see \autoref{SS:classOptions}.
   \ScreenShot{Multi-answer multiple choice question}{choice-multiple}
 
-  When the optional argument \LatexCode|multiple| is used, as above,
-  then the question is marked correct if and only if \textit{all} of the
-  correct responses are selected. Feedback to the students is randomly
-  selected from the feedback for their wrong responses (that is, the
-  \LatexCode|\correct| responses that they have not selected and the
-  \LatexCode|\incorrect| responses that they have selected).
+  When the optional argument \LatexCode|multiple| to the
+  \LatexCode|choice| environment is used, as above, then the question is
+  marked correct if and only if \textit{all} of the correct choices, and
+  none of the incorrect choices, are selected. When the student answer
+  is incorrect then they they are given feedback that is randomly
+  selected from the wrong choices (that is, the feedback is
+  randomly selected from the set of \LatexCode|\correct| choices that
+  were not selected and the \LatexCode|\incorrect| choices that were
+  selected).
 
   Finally, observe that the multiple choice items in the screenshot
   above are labelled by roman numerals. The items in a
-  \LatexCode{choice} are labelled by a standard \LaTeX{} counter, called
-  \LatexCode|choice|. Redefining \LatexCode|\thechoice| changes how the
-  items in the on-line quiz are labelled. For example, to label the
-  items in a \LatexCode|choice| environment by A), B), C) $\dots$ add
+  \LatexCode{choice} environment are labelled by a standard \LaTeX{}
+  counter, that is also called \LatexCode|choice|. Redefining the
+  \LaTeX{} macro \LatexCode|\thechoice| changes how the corresponding
+  question choices are labelled in the on-line quiz. For example, to
+  label the items in a \LatexCode|choice| environment by A), B), C)
+  $\dots$ add
   \begin{latexcode}
     \renewcommand\thechoice{\Alph{choice})}
   \end{latexcode}
@@ -739,10 +746,12 @@
       ...
     \end{dicussion}
   \end{latexcode}
-  Both the \textit{heading} and \textit{short-heading} are optional,
-  defaulting to \LatexCode|Discussion|.
-  For example, running the following \LaTeX\ file, which uses
-  \LatexCode|theme=muted|, through \WebQuiz
+  The \textit{short heading} is used in the side-menu.  Both the
+  \textit{heading} and \textit{short-heading} are optional, both
+  defaulting to \LatexCode|Discussion|. If only one heading is given
+  then this sets both the \textit{short heading} and \textit{heading}
+  for the discussion item. For example, running the following \LaTeX\
+  file, which uses \LatexCode|theme=muted|, through \WebQuiz
   \InputLatexCode{discussion}
   produces the quiz page:
   \ScreenShot{Web page: discussion environment}{discussion}
@@ -1484,19 +1493,28 @@
   quiz web pages that are created before initialisation will be
   emblazoned with a message reminding you to initialise \WebQuiz.
 
-  \textit{If you want to install the \WebQuiz files for general use on
-  your system, or to save system wide settings, then you need to run
-  the initialisation command }\BashCode|webquiz --initialise|
-  \textit{using an administrator account or using \BashCode|sudo| on a
-  UNIX or Mac OSX system.}
-
   The location of the files on the web server depends both on the
   operating system that is running on your computer and how your web
   server has been configured. It is essential that the \WebQuiz files
   are installed in a directory that is accessible from the web. It
   does not matter if they are put into a user web directory or into a
-  system web directory.  If necessary please consult your system
+  system web directory.  If in doubt please consult your system
   administrator.
+
+  \begin{dangerous}
+      \textit{To install the \WebQuiz files for general use on
+      your system, or to save system wide settings, you need to run
+      the initialisation command }\BashCode|webquiz --initialise|
+      \textit{using an administrator account or using \BashCode|sudo| on a
+      UNIX or Mac OSX system.}
+
+     If you have already saved a \textit{user} \webquizrc file then to
+     change the \textit{system} \webquizrc* you will use need to
+     use the \BashCode|--rcfile| command-line option:
+     \begin{latexcode}
+         > webquiz --rcfile <path to system rc-file> --initialise
+     \end{latexcode}\index{rcfile}
+  \end{dangerous}
 
   Common locations for the \textit{web root} of the server are:
   \begin{center}
@@ -1688,13 +1706,18 @@
 
          \begin{description}
 
-         \item[-i, \ddash initialise] \CrossIndex{command-line option}{initialisation}
-            Initialise files and settings for webquiz. See
-            \autoref{SS:Initialise} for more details.
+            \item[-r {[RCFILE]}, \ddash rcfile{[RCFILE]}]
+            \CrossIndex{command-line option}{rcfile} Specify the
+            location of the \webquizrc file to use. This setting is only
+            necessary if you want to override the default \webquizrc*.
 
-         \item[\ddash edit-settings] \CrossIndex{command-line option}{edit-settings}
-            Edit the webquiz settings in the \WebQuiz rc-file. See
-            \autoref{SS:rcfile} for more details.
+            \item[-i, \ddash initialise] \CrossIndex{command-line
+            option}{initialisation} Initialise files and settings for
+            webquiz. See \autoref{SS:Initialise} for more details.
+
+            \item[\ddash edit-settings] \CrossIndex{command-line
+            option}{edit-settings} Edit the webquiz settings in the
+            \WebQuiz rc-file. See \autoref{SS:rcfile} for more details.
 
             \textit{If you do not have permission to write to the system
             rc-file, which is in the \WebQuiz scripts directory, then you
@@ -1705,7 +1728,7 @@
             system \webquizrc then use a administrator account or,
             on a unix-like system,} use \BashCode|sudo webquiz --edit-settings|.
 
-         \item[\ddash settings {[SETTING]}] \CrossIndex{command-line option}{settings}
+            \item[\ddash settings {[SETTING]}] \CrossIndex{command-line option}{settings}
             \SeeIndex{rc file}{webquizrc}
             \SeeIndex{default settings}{webquizrc}
             List system settings for webquiz stored in \webquizrc, the
@@ -1726,20 +1749,6 @@
             \InputBashCode{webquiz.settings}
             See \autoref{SS:rcfile} for more details.
 
-       % \item[-r RCFILE, \ddash rcfile RCFILE]\index{webquizrc}
-       %    Specify the rc-file (\textit{run-time configuration file}), file
-       %    that \WebQuiz should read (and write to).
-       %    By default, \WebQuiz will first read the system rc-file (the
-       %    file \webquizrc in the \WebQuiz script directory),
-       %    followed by the users rc-file in your home directory, which
-       %    will typically be in the home directory but first preference
-       %    will be given to the \BashCode|.dotfiles/config| directory
-       %    if it exists (see \autoref{SS:rcfile}). If \WebQuiz is unable to
-       %    write to the system rc-file then \WebQuiz will create an
-       %    rc-file in your home directory, which it will subsequently
-       %    read whenever you run \WebQuiz. This setting is only
-       %    necessary if you want to override the default rc-file.
-
           \end{description}
 
           \subsubsection*{Advanced command-line options}
@@ -1749,25 +1758,25 @@
 
           \begin{description}
              \item[\ddash make4ht MAKE4HT-OPTIONS]
-             \CrossIndex{command-line option}{make4ht}
-            Options to be passed to \ctan{make4ht} when converting the
-            \LaTeX{} to \XML. This option is equivalent to setting
-            the \BashCode|make4ht| in the \webquizrc; see
-            \autoref{SS:rcfile}. At least under UNIX, multiple arguments
-            should be enclosed in quotes.  For example, to give
-            \ctan{make4ht} a custom mk4 file (note that
-            \BashCode|myquiz.mk4| is included, if it exists), you would use
-            \begin{bashcode}
-                      > webquiz --make4ht "-e file.mk4" myquiz.tex
-            \end{bashcode}
-            The \BashCode|make4ht| command-line option will be required
-            only in rare instances.
-            \index{lualatex}\index{xelatex}
+                 \CrossIndex{command-line option}{make4ht}
+                Options to be passed to \ctan{make4ht} when converting the
+                \LaTeX{} to \XML. This option is equivalent to setting
+                the \BashCode|make4ht| in the \webquizrc; see
+                \autoref{SS:rcfile}. At least under UNIX, multiple arguments
+                should be enclosed in quotes.  For example, to give
+                \ctan{make4ht} a custom mk4 file (note that
+                \BashCode|myquiz.mk4| is included, if it exists), you would use
+                \begin{bashcode}
+                          > webquiz --make4ht "-e file.mk4" myquiz.tex
+                \end{bashcode}
+                The \BashCode|make4ht| command-line option will be required
+                only in rare instances.
+                \index{lualatex}\index{xelatex}
 
             \item[\ddash uninstall] Remove all \WebQuiz files from your
-            web server directory. This command only removes files that
-            \WebQuiz may have installed on your web server. It does
-            \textit{not} remove \WebQuiz from your \LaTeX{} distribution.
+                web server directory. This command only removes files that
+                \WebQuiz may have installed on your web server. It does
+                \textit{not} remove \WebQuiz from your \LaTeX{} distribution.
 
            \item[\ddash webquiz-layout WEBQUIZ-LAYOUT]
            \CrossIndex{command-line option}{layout}
@@ -1834,17 +1843,13 @@
     for all of the advanced options because it is very unlikely that you
     will need to change these initially.
 
-    So that settings are not lost when \WebQuiz, or \TeX Live is
-    upgraded, the system rc-file, \webquizrc*, is saved in the
-    \BashCode|scripts/webquiz| subdirectory of the \BashCode|TEXMFLOCAL|
-    directory. A typically location for this file is
+    The first line of output from \BashCode|webquiz --settings| gives
+    the location of the rc-fuke being used.  The system rc-file,
+    \webquizrc*, is saved in the \BashCode|scripts/webquiz| subdirectory
+    of the \BashCode|TEXMFLOCAL| directory. A typically location for
+    this file is
     \begin{bashcode}
         /usr/local/texlive/texmf-local/scripts/webquiz/webquizrc
-    \end{bashcode}
-    If you are using \TeXLive (and possibly Mik\TeX?) you can find this
-    directory using the command
-    \begin{bashcode}
-            kpsewhich -var-value=TEXMFLOCAL
     \end{bashcode}
     By default, the \WebQuiz settings are saved here so that you do not
     need to reinitialise \WebQuiz whenever you update your \TeX{}
@@ -1852,20 +1857,28 @@
     directory then you will be asked if you would like to save the
     rc-file somewhere else. The location of the user rc-file is:
     \begin{itemize}
-      \item \BashCode|~/.dotfiles/config/webquizrc| if the directory
-             \BashCode|.dotfiles/config| exists
-      \item \BashCode|~/.config/webquizrc| if the directory \BashCode|.config| exists
-      \item  and otherwise to\BashCode|~/.webquizrc|.
+        \item \BashCode|~/.dotfiles/config/webquizrc|}
+             if the directory \BashCode|~/.dotfiles/config| exists,
+        \item \BashCode|~/.config/webquizrc|}
+             if the directory \BashCode|~/.config| exists,
+        \item \BashCode|~/.webquizrc|}  otherwise.
     \end{itemize}
-    Each time \WebQuiz is run it first reads the system rc-file, if it
-    exists, followed by the \textit{users rc-file}, if it exists. If you
-    do not have permission to write to the specified rc-file then you
-    will be asked for a different install location.
+    Each time \WebQuiz is run it first reads the system rc-file followed
+    by the \textit{users rc-file}, if they exist. When using
+    \BashCode|webquiz --edit-settings| you will be promoted for a
+    different installation location if you do not have permission to
+    write to the specified rc-file.  To use a particular \webquizrc*
+    use the \BashCode|--rcfile| command-line option:
+    \begin{bashcode}
+        > webquiz --rcfile <full path to rc-file> ...
+    \end{bashcode}
+    If you save the settings to a non-standard location then you will
+    need to use the command-line \BashCode|webquiz --rcfile| to access
+    these settings.
 
-    To describe these settings in more detail we break them up by
-    category.
+  \noindent To describe the \WebQuiz defaults settings we consider them by category.
 
-    \subsubsection*{Institution settings}
+  \subsubsection*{Institution settings}
     \begin{description}
 
       \item[department]
@@ -1912,7 +1925,7 @@
           correspond to invoking \ctan{make4ht} with the
           \BashCode|--lua| and \BashCode|--xelatex| options,
           respectively. The \BashCode|engine| setting in the
-          \webquizrc* file can be overridden by the webquizrc
+          \webquizrc* can be overridden by the webquizrc
           \BashCode|--latex|, \BashCode|--lua| and \BashCode|--xelatex|.
           \CrossIndex{webquizrc}{engine}
           \CrossIndex{webquizrc}{latex}
@@ -1999,15 +2012,15 @@
     \end{dangerous}
 
     The construction of the online quizzes is controlled by the \python
-    file \PythonCode|webquiz_standard.py|. If you want to change the structure
-    of the web pages for the quizzes then the easiest way to do this is
-    to make a copy of \PythonCode|webquiz_standard.py|, say
+    file \PythonCode|webquiz_standard.py|. If you want to change the
+    structure of the web pages for the quizzes then the easiest way to
+    do this is to make a copy of \PythonCode|webquiz_standard.py|, say
     \PythonCode|webquiz_myformat.py|, and then edit this file directly.
-    This will require working knowledge of \python and \HTML. To give you
-    an idea of what needs to be done, the \python file
+    This will require working knowledge of \python and \HTML. To give
+    you an idea of what needs to be done, the \python file
     \PythonCode|webquiz_standard| contains a single function
-    \PythonCode|write_web_page| that returns the \HTML for the page as
-    a string using the following:
+    \PythonCode|write_web_page| that returns the \HTML for the page as a
+    string using the following:
     \begin{htmlcode}
       quiz_page = r'''<!DOCTYPE HTML>
       <html lang="en">
@@ -2031,14 +2044,15 @@
     \end{htmlcode}
     By changing this output you can change the layout of the quizzes
     produced by \WebQuiz. For example, by adding code to the
-    \HTMLCode|<head>...</head>| section of \HTMLCode|quiz_page| it is easy
-    to include new \CSS code and by modifying
-    \HTMLCode|<body>....</body>|.  More sophisticated versions of
-    \PythonCode|webquiz_standard.py|, where you change the underlying
-    \python code, are possible.  For example, at the University of Sydney
-    we have a custom version of \PythonCode|webquiz_standard| that calls
-    our content management system and, in this way, embeds the quiz web
-    page inside a standard web page for our university.
+    \HTMLCode|<head>...</head>| section of \HTMLCode|quiz_page| it is
+    easy to include new \CSS code and by modifying
+    \HTMLCode|<body>....</body>| you can change the layout of the page.
+    More sophisticated versions of \PythonCode|webquiz_standard.py|,
+    where you change the underlying \python code, are possible.  At the
+    University of Sydney we have a custom version of
+    \PythonCode|webquiz_standard.py| that calls our content management
+    system and, in this way, embeds the quiz web page inside a web page
+    that used the official ``branding'' required by our university.
 
     When experimenting with a new layout can run
     \WebQuiz using the command:
@@ -2050,10 +2064,11 @@
     in the \webquizrc using \BashCode|webquiz --edit-settings|.
     \index{edit-settings}\index{webquiz-layout}
 
-    If you do make modifications to any of these files it is advisable to
-    create a version of the file \textit{with a different name}. This
-    will make it easier for you to integrate your changes with any future
-    released of \WebQuiz.
+    If you do make modifications to any of these files then, by the
+    \WebQuiz Licensing agreement, you are required to create a new
+    version of this file that has a \textit{different name}. Doing this
+    will also make it easier for you to integrate your changes with any
+    future releases of \WebQuiz.
 
   \subsection{Bugs, issues and feature requests}\index{bug reports}
     Please report any bugs, issues or feature requests using the

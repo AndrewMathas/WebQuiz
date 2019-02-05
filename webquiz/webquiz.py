@@ -30,7 +30,7 @@ import sys
 # imports of webquiz code
 import webquiz_templates
 from webquiz_makequiz import MakeWebQuiz
-from webquiz_util import copytree, kpsewhich, metadata, webquiz_error, webquiz_file
+from webquiz_util import copytree, debugging, kpsewhich, metadata, webquiz_error, webquiz_file
 
 
 # ---------------------------------------------------------------------------------------
@@ -192,7 +192,7 @@ class WebQuizSettings:
         })
 
     # to stop execution from command-line options after initialised() has been called
-    just_initialise = False
+    just_initialised = False
 
     def __init__(self):
         '''
@@ -206,7 +206,6 @@ class WebQuizSettings:
         self.settings['version']['default'] = metadata.version,
         for key in self.settings:
             self.settings[key]['value'] = self.settings[key]['default']
-            self.settings[key]['changed'] = False
             if not 'editable' in self.settings[key]:
                 self.settings[key]['editable'] = False
 
@@ -229,8 +228,8 @@ class WebQuizSettings:
             self.user_rc_file = os.path.join(os.path.expanduser('~'), '.config', 'webquizrc')
         else:
             self.user_rc_file = os.path.join(os.path.expanduser('~'), '.webquizrc')
-        if os.path.isfile(self.user_rc_file):
-            self.read_webquizrc(self.user_rc_file)
+
+        self.read_webquizrc(self.user_rc_file)
 
         # if webquiz_url is empty then assume that we need to initialise
         self.initialise_warning = ''
@@ -250,7 +249,7 @@ class WebQuizSettings:
         if key in self.settings:
             return self.settings[key]['value']
 
-        webquiz_error('(get) unknown setting "{}" in webquizrc.'.format(key))
+        webquiz_error('getitem: unknown setting "{}" in webquizrc.'.format(key))
 
     def __setitem__(self, key, value):
         r'''
@@ -261,9 +260,9 @@ class WebQuizSettings:
         if key in self.settings:
             self.settings[key]['value'] = value
         else:
-            webquiz_error('(set) unknown setting "{}" in webquizrc'.format(key))
+            webquiz_error('setitem: unknown setting "{}" in webquizrc'.format(key))
 
-    def read_webquizrc(self, rc_file, external=False):
+    def read_webquizrc(self, rc_file, must_exist=False):
         r'''
         Read the settings from the specified webquizrc file - if it exists, in
         which case set self.rc_file equal to this directory. If the file does
@@ -282,7 +281,6 @@ class WebQuizSettings:
                             if key in self.settings:
                                 if value != self[key]:
                                     self[key] = value
-                                    self.settings[key]['changed'] = True
                             elif key != '':
                                 webquiz_error('unknown setting "{}" in {}'.format(
                                     key, rc_file))
@@ -297,9 +295,9 @@ class WebQuizSettings:
             except Exception as err:
                 webquiz_error('there was an error reading the webquizrc file,', err)
 
-        elif external:
+        elif must_exist:
             # this is only an error if we have been asked to read this file
-            webquiz_error('the rc-file {} does not exist'.format(rc_file))
+            webquiz_error('the rc-file "{}" does not exist'.format(rc_file))
 
     def keys(self):
         r'''
@@ -317,6 +315,7 @@ class WebQuizSettings:
             # when initialising an rc_file will not exist yet
             self.rc_file = self.system_rc_file
 
+        debugging('Writing to rcfile {}'.format(self.rc_file))
         file_not_written = True
         while file_not_written:
             try:
@@ -329,7 +328,8 @@ class WebQuizSettings:
                         # Note that changed means changed from the last read
                         # rcfile rather than from the default (of course, the
                         # defaults serve as the "initial rcfile")
-                        if key == 'version' or self.settings[key]['changed']:
+                        if key == 'version' or self.settings[key]['default']!=self[key]:
+                            debugging('Writing {}={} to rcfile={}'.format(key, self[key], self.rc_file))
                             rcfile.write('# {}\n{:<15} = {}\n'.format(
                                            self.settings[key]['help'],
                                            key.replace('_','-'),
@@ -351,14 +351,12 @@ class WebQuizSettings:
                 if response.startswith('2'):
                     self.rc_file = alt_rc_file
                 elif response.startswith('3'):
-                    rc_file = input('rc_file: ')
+                    rc_file = input('WebQuiz rc-file: ')
+                    print('\nTo access this rc-file you will need to use: webquiz --rcfile {} ...'.format(rc_file))
                     self.rc_file = os.path.expanduser(rc_file)
                 elif not response.startswith('1'):
                     print('exiting...')
                     sys.exit(1)
-
-                # if still here then try to write the rc-file again
-                self.write_webquizrc()
 
     def list_settings(self, setting='all'):
         r'''
@@ -403,7 +401,7 @@ class WebQuizSettings:
         this directory. Once this is done save the settings to webquizrc.
         This method should only be used when WebQuiz is being set up.
         '''
-        if self.just_initialise:  # stop initialising twice with webquiz --initialise
+        if self.just_initialised:  # stop initialising twice with webquiz --initialise
             return
 
         # prompt for directory and copy files - are these reasonable defaults
@@ -448,11 +446,7 @@ class WebQuizSettings:
 
             else:
                 try:
-                    # first delete files of the form webquiz.* files in web_dir
-                    for file in glob.glob(os.path.join(web_dir, 'webquiz.*')):
-                        os.remove(file)
-
-                    # ... now remove the doc directory
+                    # ...remove the doc directory
                     web_doc = os.path.join(web_dir, 'doc')
                     if os.path.isfile(web_doc) or os.path.islink(web_doc):
                         os.remove(web_doc)
@@ -473,9 +467,7 @@ class WebQuizSettings:
                         if not os.path.exists(web_dir):
                             os.makedirs(web_dir)
 
-                        for (src, target) in [('javascript/webquiz.js', 'webquiz.js'),
-                                              ('css', 'css'),
-                                              ('doc', 'doc')]:
+                        for (src, target) in [('javascript', 'js'), ('css', 'css'), ('doc', 'doc')]:
                             newlink = os.path.join(web_dir, target)
                             try:
                                 os.remove(newlink)
@@ -484,7 +476,6 @@ class WebQuizSettings:
                             os.symlink(os.path.join(webquiz_src,src), newlink)
 
                     self['webquiz_www'] = web_dir
-                    self.settings['webquiz_www']['changed'] = True
                     files_copied = True
 
                 except PermissionError:
@@ -511,25 +502,18 @@ class WebQuizSettings:
 
                 self['webquiz_url'] = mq_url
 
-        self.settings['webquiz_url']['changed'] = (self['webquiz_url']!=self.settings['webquiz_url']['default'])
-
         # save the settings and exit
         self.write_webquizrc()
         print(webquiz_templates.initialise_ending.format(web_dir=self['webquiz_www']))
-        self.just_initialise = True
+        self.just_initialised = True
 
-    def edit_settings(self, rc_file=None, ignored_settings=['webquiz_www', 'version']):
+    def edit_settings(self):
         r'''
         Change current default values for the WebQuiz settings
         '''
-        if rc_file == 'system':
-            self.rc_file = self.system_rc_file
-        elif rc_file == 'user':
-            self.rc_file = self.user_rc_file 
-
         advanced_not_started = True
         for key in self.keys():
-            if key not in ignored_settings:
+            if key not in ['webquiz_www', 'version']:
                 if advanced_not_started and self.settings[key]['advanced']:
                     print(webquiz_templates.advanced_settings)
                     advanced_not_started = False
@@ -565,7 +549,6 @@ class WebQuizSettings:
                     elif setting=='NONE':
                         setting = ''
 
-                    self.settings[key]['changed'] = setting==self[key]
                     self[key] = setting
 
         # save the settings, print them and exit
@@ -603,7 +586,7 @@ class WebQuizSettings:
 if __name__ == '__main__':
     try:
         settings = WebQuizSettings()
-        if settings.just_initialise:
+        if settings.just_initialised:
             sys.exit()
 
         # parse the command line options
@@ -625,31 +608,6 @@ if __name__ == '__main__':
             action='count',
             default=0,
             help='suppress tex4ht messages (also -qq etc)')
-
-        settings_parser = parser.add_mutually_exclusive_group()
-        settings_parser.add_argument(
-            '-i',
-            '--initialise',
-            action='store_true',
-            default=False,
-            help='Initialise files and settings for webquiz')
-        settings_parser.add_argument(
-            '-e', '--edit-settings',
-            action='store',
-            const='deFAULT',
-            default='',
-            nargs='?',
-            type=str,
-            help='Edit webquiz settings')
-        settings_parser.add_argument(
-            '--settings',
-            action='store',
-            const='all',
-            default='',
-            nargs='?',
-            type=str,
-            help='List system settings for webquiz'
-        )
 
         parser.add_argument(
             '-d', '--draft',
@@ -686,6 +644,35 @@ if __name__ == '__main__':
             const='xelatex',
             dest='engine',
             help='Use xelatex to compile the quiz')
+
+        parser.add_argument(
+            '-r',
+            '--rcfile',
+            action='store',
+            default=None,
+            help='specify location of the webquiz rc-file ')
+
+        settings_parser = parser.add_mutually_exclusive_group()
+        settings_parser.add_argument(
+            '-i',
+            '--initialise',
+            action='store_true',
+            default=False,
+            help='Install web components of webquiz')
+        settings_parser.add_argument(
+            '-e', '--edit-settings',
+            action='store_true',
+            default=False,
+            help='Edit default settings for webquiz')
+        settings_parser.add_argument(
+            '--settings',
+            action='store',
+            const='all',
+            default='',
+            nargs='?',
+            type=str,
+            help='List default settings for webquiz'
+        )
 
         # options suppressed from the help message
         parser.add_argument(
@@ -739,19 +726,28 @@ if __name__ == '__main__':
         # set debugging mode from options
         metadata.debugging = options.debugging
 
+        # read the rcfile and throw an error if we are not adjusting the settings
+        if options.rcfile is not None:
+            rcfile = os.path.expanduser(options.rcfile)
+            if options.initialise or options.edit_settings:
+                settings.read_webquizrc(rcfile, must_exist=False)
+                settings.rc_file = rcfile
+            else:
+                settings.read_webquizrc(rcfile, must_exist=True)
+
         # initialise and exit
         if options.initialise:
             settings.initialise_webquiz()
             sys.exit()
 
-        # initialise and exit
+        # list settings and exit
         if options.settings != '':
             settings.list_settings(options.settings)
             sys.exit()
 
-        # initialise and exit
+        # edit settings and exit
         if options.edit_settings:
-            settings.edit_settings(rc_file=options.edit_settings)
+            settings.edit_settings()
             sys.exit()
 
         # uninstall and exit

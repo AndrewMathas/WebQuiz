@@ -32,7 +32,7 @@ html_meta = r'''<meta http-equiv="Content-Type" content="text/html; charset=utf-
 '''
 
 # javascript for setting up the questions
-questions_javascript = r'''  <script src="{webquiz_url}/webquiz.js"></script>
+questions_javascript = r'''  <script src="{webquiz_url}/js/webquiz.js"></script>
   <script defer src="{mathjax}?config=MML_CHTML"></script>'''
 
 mathjs=r'  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/5.4.0/math.min.js"></script>'
@@ -226,7 +226,7 @@ quit this program (use control-C on unix-like systems) and then run
     webquiz --initialise
 from an administrators account or, on unix-like systems, use:
     sudo webquiz --initialise
-See Section 3.2 of the WebQuiz manual for more information about
+See Section 3.2 of the WebQuiz manual for more information about WebQuiz
 initialisation. On many systems, you can open the webquiz manual using
 the command: texdoc webquiz
 '''
@@ -235,8 +235,7 @@ webroot_request = r'''----
 To make files accessible from your web server WebQuiz needs:
   o A directory, or folder, on your server that is visible from your
     web server. This directory MUST be accessible from the web. It can
-    either be a "system" directory or in your personal web 
-    directories.
+    either be a "system" directory or in your personal web directories.
   o The relative URL for accessing these files from the web. This is
     the part of the URL that you have to add to your "root" URL to
     access the files. For example, if the URL for your department is
@@ -244,9 +243,6 @@ To make files accessible from your web server WebQuiz needs:
     and the WebQuiz files can be accessed as
         http://www.maths.usyd.edu.au/u/MOW/WebQuiz
     then the relative URL for the WebQuiz files is /u/MOW/WebQuiz
-
-WARNING: WebQuiz will delete any files of the form webquiz.* from the
-WebQuiz web directory during initialisation.
 
 We recommended that you create a separate directory for WebQuiz on your
 web server. The location of the files on your web server will depend on
@@ -261,8 +257,7 @@ Error: {err}
 Please give a different directory
 '''
 
-webquiz_url_message = r'''
-Please give the relative URL for the WebQuiz web directory. For example,
+webquiz_url_message = r'''Please give the relative URL for the WebQuiz web directory. For example,
 if the base of your web server's directory is /var/www/html/ and the
 WebQuiz web directory is /var/www/html/courses/WebQuiz then the
 relative URL for the WebQuiz directory would be /courses/WebQuiz.
@@ -319,11 +314,11 @@ To write the WebQuiz rc-file into this directory you may need to quit
 and run webquiz again, either using an administrator account, or using
 sudo on linux/macosx.
 
-Press the following key, followed by return, to:
-    1. To try to save to {rc_file} again
-    2. To save to {alt_rc_file}
-    3. To give a different filename for the rc-file
-Press any other key to exit.
+Press the key 1-3, followed by return, to:
+    1. Try to save to {rc_file} again
+    2. Save to {alt_rc_file}
+    3. Give a different location for the rc-file
+Press any other key to exit without saving.
 '''
 
 permission_error = r'''

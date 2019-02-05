@@ -136,10 +136,9 @@ function showQuestion(newB, newQ) { // newQ is an integer which is always in the
       if (newQ!=currentQ && currentQ!=0) {
             hideFeedback();
             document.getElementById("question" + currentQ).style.display = "none";
-            if (currentQ > 0) { // question and not discussion
-                currentB.classList.remove("nolink");
-                currentB.classList.remove("button-selected");
-            }
+            // "de-select" the current button
+            currentB.classList.remove("nolink");
+            currentB.classList.remove("button-selected");
       }
       // display the new question
       document.getElementById("question" + newQ).style.display = "table";
@@ -148,17 +147,17 @@ function showQuestion(newB, newQ) { // newQ is an integer which is always in the
       if (newQ > 0) {
           document.getElementById("question-label").style.display = 'contents';
           document.getElementById("question-number").innerHTML = String(newB);
-          currentB = document.getElementById("button" + newB);
-          currentB.classList.add("button-selected");
-          currentB.classList.add("nolink");
       } else {
           document.getElementById("question-label").style.display = 'none';
           document.getElementById("question-number").innerHTML = Discussion[-newQ];
       }
+      // set currentB = the current button and "select" the current button
+      currentB = document.getElementById("button" + newB);
+      currentB.classList.add("button-selected");
+      currentB.classList.add("nolink");
     }
 
-    // now set currentQ = to the question indexed by newQ in questionOrder
-    // and currentB = current button
+    // finally set currentQ = current question
     currentQ = newQ;
 }
 
