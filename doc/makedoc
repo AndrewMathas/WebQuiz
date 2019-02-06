@@ -61,8 +61,10 @@ function make_themes () {
       fi
   done
 
-  message "Generating theme screenshots for inclusion in manual"
-  $WebQuizExamplesDir/makeimages theme
+  if [[ "$makeall" = false ]]; then
+    message "Generating theme screenshots for inclusion in manual"
+    $WebQuizExamplesDir/makeimages theme
+  fi
 
   message "Generating list of themes for the manual"
   THEME="$WebQuizDir/doc/webquiz.themes"
@@ -111,6 +113,7 @@ function make_online_manual() {
 }
 
 function make_all() {
+  makeall=true # so that themes are not built twice
   message "Making pdf for manual"
   PREFEX=" - "
   make_languages
@@ -130,6 +133,7 @@ function usage() {
   message "Make --[fast|quiet] --[check-examples|examples|languages|manual|online|themes|]"
 }
 
+makeall=false
 fast=false
 quiet=false # TODO
 command=""  # what we need to execute

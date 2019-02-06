@@ -131,7 +131,7 @@ discussion = r'''<div id="question-{dnum}" class="question" style="display:{disp
         {heading}{discussion.text}
       </div>
 '''
-discussion_heading = r'''<div class="question-label">{}</div><br>
+discussion_heading = r'''<div class="question-label">{}</div>
         '''
 
 #quiz index
@@ -151,7 +151,7 @@ question_wrapper = r'''<div id="question{qnum}" class="question" style="display:
 '''
 
 question_text = r'''  {question_text}
-      <form id="Q{qnum}Form" onSubmit="return false;" class="question">
+      <form id="Q{qnum}Form" onSubmit="return false;">
         {question_options}
         <p>
           <input type="button" value="{check_answer}" name="answer" class="input-button" onClick="checkAnswer({qnum});"/>
