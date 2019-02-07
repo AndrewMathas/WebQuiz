@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 r'''
 ------------------------------------------------------------------------------
-    webquiz | On-line quizzes generated from LaTeX using python and TeX4ht
+    webquiz | Online quizzes generated from LaTeX using python and TeX4ht
             | This module mainly deals with command-line options and settings
             | and then calls MakeWebQuiz to build the quiz
 ------------------------------------------------------------------------------

@@ -32,9 +32,9 @@ function check_examples() {
   message "Checking for unused images from the examples directory"
   cd $WebQuizDir/doc
   /bin/rm -f makedoc-{examples,images,manual}
-  echo "Example tex files" > makedoc-examples
+  echo "Source files" > makedoc-examples
   ls -1 examples/*.tex | sed 's@.tex@@' | sed 's@examples.@@' | sort -u >> makedoc-examples
-  echo "Included in manual" > makedoc-manual
+  echo "Images in manual" > makedoc-manual
   ag ScreenShot webquiz.tex|sed 's@.*}{\([^}]*\)}$@\1@'|ag -v Shot|sort -u >> makedoc-manual
   echo "Available images" > makedoc-images
   examples/makeimages --list | sort >> makedoc-images

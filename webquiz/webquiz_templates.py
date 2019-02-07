@@ -196,7 +196,7 @@ multiple_feedback_correct = r'''
         </div>'''
 multiple_feedback_answer = '              <li><em>{correct_answer}</em> {reason}</li>'
 
-initialise_invite = r'''WebQuiz is a tool for creating on-line quizzes. For efficiency reasons,
+initialise_invite = r'''WebQuiz is a tool for creating online quizzes. For efficiency reasons,
 WebQuiz needs to be initialised and, in particular, it needs to copy some
 files into a directory that is accessible from your webserver.
 
@@ -218,7 +218,7 @@ no_script = r'''<noscript>
 initialise_introduction = r'''
 WebQuiz Initialisation
 ======================
-WebQuiz needs to copy some files onto your web server in order for the on-line
+WebQuiz needs to copy some files onto your web server in order for the online
 quizzes to work. We will guide you through the process below.
 
 If you want to install these files into a "system" directory then you should
@@ -270,7 +270,7 @@ test you can try to build the example files from the webquiz manual
 by going to the directory
     {web_dir}/doc/examples
 If pstricks and dvisgvm are properly configured (see Section 3.3 of
-the manual), then you can also try building the on-line manual, by
+the manual), then you can also try building the online manual, by
 going to the directory
     {web_dir}/doc/examples
 and typing:
@@ -373,5 +373,5 @@ advanced_settings = r'''
 
 # and now for the webquiz help message
 webquiz_help_message = r'''
-WebQuiz allows you to write interactive on-line quizzes using latex
+WebQuiz allows you to write interactive online quizzes using latex
 '''

@@ -221,7 +221,6 @@ pages = [
     Convert("answer-star", Question="1:canberra"),
     Convert("breadcrumbs", js="toggle_quizindex_menu();"),
     Convert("breadcrumbs", page_out="quizindex-dropdown", js='toggle_quizindex_menu();'),
-    Convert("choice-dark"),
     Convert("choice-multiple"),
     Convert("choice-single"),
     Convert("discussion"),

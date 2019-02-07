@@ -251,16 +251,16 @@ var compare = {
                return a.re==b.re && a.im==b.im;
              },
   'integer': function(ans, val) {// compare as integers
-               return parseInt(ans)==parseInt(val);
+               return parseInt(val)==parseInt(ans);
              },
   'lowercase':  function(ans, val) {//convert to lowercase string and compare
-               return ans==String(val).toLowerCase();
+               return val==String(ans).toLowerCase();
              },
   'number':  function(ans, val) {// compare as numbers
-               return math.eval(ans)==math.eval(val);
+               return math.eval(val)==math.eval(ans);
              },
   'string':  function(ans, val) {// compare as strings
-               return ans==String(val);
+               return val==String(ans);
              }
 };
 
@@ -377,17 +377,6 @@ function WebQuizInit(questions, discussions, quizfile) {
     // make the drop down menu if QuizTitles has some entries
     if (QuizTitles.length > 0 && quizindex_menu) {
         create_quizindex_menu();
-    }
-
-    if (qTotal==0) {
-        // ugly hack to position copyright message when there are no questions
-        side_menu.style.height='60ex';
-        var school = side_menu.getElementsByClassName('school')[0];
-        school.style.position = 'relative';
-        school.style.bottom = '-40ex';
-        var copyright = side_menu.getElementsByClassName('copyright')[0];
-        copyright.style.position = 'relative';
-        copyright.style.bottom = '-35ex';
     }
 }
 

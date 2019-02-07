@@ -28,12 +28,12 @@
 
 \UnitName{WebQuiz Manual}
 \UnitURL{/u/MOW/WebQuiz/doc/webquiz-manual.html}
-\BreadCrumb{WebQuiz on-line manual}
+\BreadCrumb{WebQuiz online manual}
 \University{University of Sydney}
 \Department{School of Mathematics and Statistics}
 \QuizzesURL{MOW/WebQuiz/doc/}
 
-\hypersetup{pdftitle={WebQuiz on-line manual}}
+\hypersetup{pdftitle={WebQuiz online manual}}
 
 \newcommand\qref[1]{%
   \ifdefined\HCode\relax
@@ -206,11 +206,11 @@ an easily readable layout.
   At most one \LatexCode|\feedback| response should be given for each
   \LatexCode|\correct| and each \LatexCode|\incorrect| response.
   The \LatexCode|\feedback| commands are optional; however, it is
-  recommended that you use them because targetted feedback to ythe
+  recommended that you use them because targeted feedback to the
   students based on their responses can be beneficial.
   \par
   For example, the code below, when run through \WebQuiz, produces \qref{1}
-  in ghe on-line manual quiz.
+  in the online manual quiz.
 \begin{latexcode}
    \begin{question}
      The shaded region in the graph
@@ -307,7 +307,7 @@ an easily readable layout.
   By default, the \LatexCode|choice| environments puts the multiple
   choice options into one column format. Sometimes the options look
   better when listed in two or more columns, however, this should be
-  used apringly as multiple columns do not alsays display well if the
+  used sparingly as multiple columns do not always display well if the
   quiz is viewed on a mobile device.  By using the \LatexCode|columns|
   key word in a \LatexCode|choice| environment you can specify the
   number of columns in the HTML version of the quiz.
@@ -395,11 +395,11 @@ an easily readable layout.
   The final type of question that \WebQuiz supports is a question that
   requires an answer, which can be a number or a string.  The answer is
   typeset using the \LatexCode|\answer| macro. The \LatexCode|\answer|
-  macro takes two arguments: an optional comparision method, which
+  macro takes two arguments: an optional comparison method, which
   defaults to \LatexCode|string|, and the correct answer for the
   question:
   \begin{latexcode}
-    \answer[comparision method]{correct answer}
+    \answer[comparison method]{correct answer}
   \end{latexcode}
   Feedback for correct and incorrect answers is given
   using the macros \LatexCode|\whenRight| and \LatexCode|\whenWrong|,
@@ -413,7 +413,7 @@ an easily readable layout.
          \end{question}
   \end{latexcode}
   See the \WebQuiz manual for details of the different
-  comparision types.  For example, \qref{4} below was typed into
+  comparison types.  For example, \qref{4} below was typed into
   \WebQuiz using the following commands:
 \begin{latexcode}
     \begin{question}
@@ -478,7 +478,7 @@ If no \textit{URL} is given as an optional argument to
 
    The \LaTeX{} component of \WebQuiz was written by Andrew Mathas and
    the python, css and javascript code was written by Andrew Mathas (and
-   Don Taylor), based on an initial protype of Don Taylor's from 2001.
+   Don Taylor), based on an initial prototype of Don Taylor's from 2001.
    Since 2004 the program has been maintained and developed by Andrew
    Mathas. Although the program has changed substantially since 2004,
    Don's idea of using \TeX 4ht, and some of his code, is still in use.

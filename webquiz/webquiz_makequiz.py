@@ -29,7 +29,7 @@ import webquiz_templates
 #################################################################################
 class MakeWebQuiz(object):
     """
-    Convert a webquiz latex file to an on-line quiz.
+    Convert a webquiz latex file to an online quiz.
 
     There are several steps:
       1. If given a LaTeX file then run htlatex/make4ht on the latex file to generate an

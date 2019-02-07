@@ -146,8 +146,8 @@ The main files in the documentation directory are:
 webquiz.tex
     LaTeX source for the WebQuiz_ manual
 
-webquiz-on-line-manual.tex
-    LaTeX source for the on-line Webquiz_ manual
+webquiz-online-manual.tex
+    LaTeX source for the online Webquiz_ manual
 
 credits.tex
     LaTeX source for the credits file
