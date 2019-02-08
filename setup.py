@@ -122,7 +122,7 @@ class WebQuizCtan(Command):
                 'name' : settings.authors,
                'email' : settings.author_email,
              'summary' : settings.description,
-           'directory' : '/scripts/webquiz, tex/latex/webquiz and doc/latex/webquiz',
+           'directory' : 'scripts/webquiz, tex/latex/webquiz and doc/latex/webquiz',
             'announce' : settings.description,
                'notes' : 'See README file in tex/latex/webquiz',
              'license' : 'free',
