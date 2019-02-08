@@ -14,7 +14,11 @@ Installation
 ------------
 To use [WebQuiz] you need to have a standard [LaTeX] distribution installed, such as [TeXLive], that includes [TeX4ht]. In addition, you need to have [Python3] installed.
 
-The main executable for [WebQuiz] is the python file `webquiz/webquiz.py`.
+The main executable for [WebQuiz] is the python file `webquiz/webquiz.py`. On a unix-like system create a soft link to file using something like:
+
+> ln -s $(kpsewhich  -var TEXMFMAIN)/scripts/webquiz/webquiz.py /usr/local/bin/webquiz
+
+On windows, put the supplied webquiz.bat file or equivalent somewhere in the system search path.
 
 Once the [WebQuiz] package has been installed from [ctan][ctan] then you can install the web components of [WebQuiz] using the following command, which needs to be run  from the command line:
 

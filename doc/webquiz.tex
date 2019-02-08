@@ -98,7 +98,7 @@
 \newcommand\python[1][python]{\href{https://www.python.org/}{#1}\xspace}
 \newcommand\Ghostscript{\href{https://www.ghostscript.com/}{Ghostscript}\xspace}
 \NewDocumentCommand\OnlineManual{s}{%
-  \href{http://www.maths.usyd.edu.au/u/mathas/WebQuiz/webquiz-online-manual.html}{OnlineManual}%
+  \href{http://www.maths.usyd.edu.au/u/mathas/WebQuiz/webquiz-online-manual.html}{Online manual}%
   \IfBooleanF{#1}{ (\hyperref[S:online]{Appendix B})}\xspace%
 }
 
@@ -471,7 +471,7 @@
     document. When you are satisfied with the content of the quiz, then
     you can convert the quiz to an online quiz using the command
     \begin{bashcode}
-       > webquiz quiz    or    > webquiz -d quiz  # -d = draft mode = quicker!
+       > webquiz quiz    or    > webquiz -d quiz  # -d = draft mode = faster!
     \end{bashcode}
     The quiz file, \BashCode|quiz.tex|, should be in a directory on your
     web server because \WebQuiz creates a number of different files and
@@ -986,8 +986,8 @@
     \autoref{SS:index}).
 
     If any part of a ``magic'' breadcrumb has not been defined then it
-    is printed with question marks on the web page. For example, the quiz
-    file
+    is printed with a question mark on the web page. For example, the
+    quiz file
     \InputLatexCode{nounits}
     does not define the unit code, so it results in the ``questionable'' first breadcrumb:
     \ScreenShot{Breadcrumbs with no unit code}{nounits}
@@ -1304,9 +1304,9 @@
   The option \LatexCode|dvipdfmx|
   to \LatexCode|graphicx| is only necessary if you want to be able to
   rescale images. For example, the code:
-      \InputLatexCode{lion-image}
+      \InputLatexCode{ctanLion}
   produces the quiz page:
-  \ScreenShot{Including a lion}{lion-image}
+  \ScreenShot{Including a lion}{ctanLion}
   Note that \WebQuiz assumes that all images are \BashCode|SVG| images by
   default so it is necessary to give the full filename in any
   \LatexCode|\includegraphics| command.
@@ -1340,11 +1340,11 @@
       \InputLatexCode{pst2pdf}
       to produce the quiz:
       \ScreenShot{Example requiring the pst2pdf document class option}{pst2pdf}
-      The placement of the image is still not quite perfect, although
-      this adjusts with the screen size and it does, in fact, display
-      well on a mobile device.  More importantly, if you use the
-      \LatexCode|pst2pdf| document-class option then \WebQuiz is able to
-      display this image.
+      The placement of the image is still not perfect --- although the
+      position of the image adjusts with the screen size and it does, in
+      fact, display well on a mobile device.  More importantly, if you
+      use the \LatexCode|pst2pdf| document-class option then \WebQuiz is
+      able to display this image.
 
       \begin{dangerous}
         Unfortunately, \ctan{pst2pdf} can fail silently without giving any
@@ -1473,6 +1473,31 @@
     systems. Several people have used \WebQuiz on windows computers,
     but I have not tested the program on a windows computer myself.
 
+  \subsection{System requirements}\index{system requirements}
+
+  In order to work \WebQuiz needs the following programs to be
+  installed on your system:
+  \begin{itemize}
+     \item An up-to-date \LaTeX{} distribution, such as that provided
+     by \TeXLive. In particular, you need to have \TeXfht{} and
+     \ctan{make4ht} installed.
+
+     Unfortunately, the version of \ctan{make4ht} that was released
+     with \TeXLive{} 2018 had some bugs and there have been many
+     recent changes to \ctan{make4ht} and \ctan{pstricks},
+     so it is strongly recommended that you update all packages
+     from \Ctan before you try and use \WebQuiz.
+
+      \item \python[Python 3]. As of writing python 3.7.2 is available.
+      \item \Javascript
+      \item If your quizzes use \ctan{pstricks}, or if you want to
+      compile the \OnlineManual, then you need to ensure that
+      \Ghostscript and \ctan{dvisvgm} are installed and properly
+      configured; see \autoref{SS:pstricks} for more details.
+      \item A web server. As detailed in \autoref{SS:Initialise}, you
+      will need to install the web components of \WebQuiz.
+  \end{itemize}
+
   \subsection{Initialising \texorpdfstring{\WebQuiz}{WebQuiz}}\label{SS:Initialise}
   \CrossIndex{command-line option}{initialise}
   \index{initialisation}
@@ -1565,7 +1590,7 @@
      change the \textit{system} \webquizrc* you will use need to
      use the \BashCode|--rcfile| command-line option:
      \begin{latexcode}
-         > webquiz --rcfile <path to system rc-file> --initialise
+         > webquiz --rcfile /path/to/system/rc-file --initialise
      \end{latexcode}\index{rcfile}
   \end{dangerous}
 
@@ -1575,31 +1600,6 @@
         > webquiz --uninstall
     \end{bashcode}
   \end{heading}
-
-  \subsection{System requirements}\index{system requirements}
-
-  In order to work \WebQuiz needs the following programs to be
-  installed on your system:
-  \begin{itemize}
-     \item An up-to-date \LaTeX{} distribution, such as that provided
-     by \TeXLive. In particular, you need to have \TeXfht{} and
-     \ctan{make4ht} installed.
-
-     Unfortunately, the version of \ctan{make4ht} that was released
-     with \TeXLive{} 2018 had some bugs and there have been many
-     recent changes to \ctan{make4ht} and \ctan{pstricks},
-     so it is strongly recommended that you update all packages
-     from \Ctan before you try and use \WebQuiz.
-
-      \item \python[Python 3]. As of writing python 3.7.2 is available.
-      \item \Javascript
-      \item If your quizzes use \ctan{pstricks}, or if you want to
-      compile the \OnlineManual, then you need to ensure that
-      \Ghostscript and \ctan{dvisvgm} are installed and properly
-      configured; see \autoref{SS:pstricks} for more details.
-      \item A web server. As detailed in \autoref{SS:Initialise}, you
-      will need to install the web components of \WebQuiz.
-  \end{itemize}
 
   \subsection{Graphics and \texorpdfstring{\ctan{dvisvgm}}{dvisvgm}}
   \label{SS:pstricks}
@@ -1650,8 +1650,9 @@
 
   \section{The \WebQuiz program} \index{usage}
 
-      The \WebQuiz program was designed to be run from the command-line,
-      so to process the file \BashCode|quiz.tex| using \WebQuiz type:
+      The \WebQuiz program was designed to be run from the command-line.
+      To produce an online quiz from a \WebQuiz \LaTeX{} file \BashCode|quiz.tex|
+      type:
       \begin{bashcode}
         > webquiz quiz          or          > webquiz quiz.tex
       \end{bashcode}
@@ -1664,10 +1665,10 @@
         > webquiz quiz[1-9].tex
       \end{bashcode}
       This is useful if some generic aspect of all of the quizzes has
-      changed, such as breadcrumbs or a department URL. In fact, one
-      would probably use
+      changed, such as the theme, the language, thebreadcrumbs or a
+      department URL. In fact, one would probably use
       \begin{bashcode}
-        > webquiz -dqq quiz[1-9].tex
+        > webquiz -dqq quiz*.tex
       \end{bashcode}
       because the \BashCode|webquiz --qq| command-line option suppresses
       almost all of the output produced by \LaTeX\ and \TeXfht and
@@ -1677,12 +1678,16 @@
 
       \subsection{Command-line options}\label{SS:commandline}
       \index{command-line option}
+      Typing \BashCode|webquiz -h|, or \BashCode|webquiz --help| on
+      the command-line gives the following summary of the \WebQuiz
+      command-line options:
       \InputBashCode{webquiz.usage}
-      The command-line options are listed on separate lines to
-      improve readability but they can appear in any order when you use
-      them provided that they are all on the same line. We group the
-      command-line options by their functionality in order to describe
-      them.
+      The command-line options are listed on separate lines above to
+      improve readability. In practice, the different options need to be
+      one the same line, although they can appear in any order.
+
+      We describe the different options, grouping them according to
+      functionality.
 
       \begin{description}
          \item[-h, --help] \CrossIndex{command-line option}{help}

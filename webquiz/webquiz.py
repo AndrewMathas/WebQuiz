@@ -375,9 +375,11 @@ class WebQuizSettings:
                 webquiz_error('{} is an invalid setting'.format(setting))
 
         elif setting=='all':
-            print('WebQuiz rc-file = {}'.format(self.rc_file))
+            dash = '-'*len('WebQuiz rc-file = {}'.format(self.rc_file))
+            print('{dash}\nWebQuiz rc-file = {rcfile}\n{dash}'.format(rcfile=self.rc_file, dash=dash))
             for key in self.keys():
                 print('{:<15} = {}'.format(key.replace('_', '-'), self[key]))
+            print('{dash}'.format(dash=dash))
 
         elif setting=='help':
             for key in self.keys():
@@ -590,10 +592,7 @@ if __name__ == '__main__':
             sys.exit()
 
         # parse the command line options
-        parser = argparse.ArgumentParser(
-            description=metadata.description,
-            epilog=webquiz_templates.webquiz_help_message
-        )
+        parser = argparse.ArgumentParser(description=metadata.description)
 
         parser.add_argument(
             'quiz_file',
@@ -607,7 +606,7 @@ if __name__ == '__main__':
             '--quiet',
             action='count',
             default=0,
-            help='suppress tex4ht messages (also -qq etc)')
+            help='Suppress tex4ht messages (also -qq etc)')
 
         parser.add_argument(
             '-d', '--draft',
@@ -650,7 +649,7 @@ if __name__ == '__main__':
             '--rcfile',
             action='store',
             default=None,
-            help='specify location of the webquiz rc-file ')
+            help='Specify location of the webquiz rc-file ')
 
         settings_parser = parser.add_mutually_exclusive_group()
         settings_parser.add_argument(

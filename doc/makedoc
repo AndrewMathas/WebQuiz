@@ -103,7 +103,7 @@ function make_usage() {
   message "Generating webquiz usage file"
   cd $WebQuizDir/doc
   /bin/rm -f webquiz.usage
-  webquiz --shorthelp >> webquiz.usage
+  webquiz --help >> webquiz.usage
 }
 
 function make_online_manual() {
