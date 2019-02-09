@@ -242,14 +242,14 @@ function updateQuestionMarker(bnum, qnum) {
     }
 }
 
-// jumps to a chosen question an pushes the nr of this question to the browser history
+// jumps to a chosen question and pushes the number of this question to the browser history
 function gotoQuestion(bnum) {
     var qnum = (bnum>0) ? questionOrder[bnum] : bnum;
     gotoQuestionHelper(qnum);
     history.pushState(qnum, null, null);
 }
 
-// jumps to question corresponding to bnum-th button 
+// jumps to the specified question (without pushing it to the browser history) 
 function gotoQuestionHelper(qnum) { 
     var bnum = (qnum>0) ? buttonOrder[qnum] : qnum;
     updateQuestionMarker(bnum, qnum);
