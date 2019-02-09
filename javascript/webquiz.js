@@ -244,6 +244,8 @@ function updateQuestionMarker(bnum, qnum) {
 
 // jumps to a chosen question and pushes the number of this question to the browser history
 function gotoQuestion(bnum) {
+    // bnum is a button number so we need to convert to a question number
+    
     var qnum = (bnum>0) ? questionOrder[bnum] : bnum;
     gotoQuestionHelper(qnum);
     history.pushState(qnum, null, null);
