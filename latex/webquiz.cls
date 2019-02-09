@@ -372,5 +372,29 @@
 \def\whenRight{\WQ@When{right}}
 \def\whenWrong{\WQ@When{wrong}}
 
+% ---------------------------------------------------------------------------
+% Navigation buttons \questionButton \questionLink
+%
+% these insert a button or link, which takes the user to the question given
+% in the second argument. The first argument gives the text for the button / link.
+% ---------------------------------------------------------------------------
+
+\ifdefined\HCode % when called by make4th insert html code
+\NewDocumentCommand\questionButton{mm}{%
+  \HCode{<input type="button" value="#1" class="input-button" title="#1" name="next" onClick="gotoQuestion(#2);"/>}
+}
+\NewDocumentCommand\questionLink{mm}{%
+  \HCode{<a href="javascript:gotoQuestion(#2);">#1</a>}
+  }
+\else % when called by LaTeX show button text / link text and describe the intended action
+\NewDocumentCommand\questionButton{mm}{%
+  \framebox{#1 (jumps to question #2)}
+}
+\NewDocumentCommand\questionLink{mm}{%
+  \underline{#1} (jumps to question #2)
+  }
+\fi
+
+
 \endinput
 %% End of file `webquiz.cls'.
