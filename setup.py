@@ -15,7 +15,8 @@ r'''
 -----------------------------------------------------------------------------------------
 '''
 
-# ctan: python setup.py ctan --> create zup file for upload to ctan )
+# python setup.py ctan    --> create zip file for upload to ctan
+# python setup.py develop --> set up links etc for code development
 
 import glob
 import os
@@ -122,7 +123,7 @@ class WebQuizCtan(Command):
                 'name' : settings.authors,
                'email' : settings.author_email,
              'summary' : settings.description,
-           'directory' : 'scripts/webquiz, tex/latex/webquiz and doc/latex/webquiz',
+           'directory' : '/macros/latex/contrib/webquiz',
             'announce' : settings.description,
                'notes' : 'See README file in tex/latex/webquiz',
              'license' : 'free',
@@ -219,9 +220,10 @@ class WebQuizCtan(Command):
         with zipfile.ZipFile(self.zipfile, 'w', zipfile.ZIP_DEFLATED) as zip_file:
             with zipfile.ZipFile('webquiz.tds.zip', 'w', zipfile.ZIP_DEFLATED) as tds_file:
 
-                # now add the files
+                # now add the files: the target is assume to be a directory
+                # unless it contains a '.', in which case we change the filename
                 for (src, target, tds_target) in [ 
-                    ('README-ctan.md',                'README.md',                'tex/latex/webquiz'),
+                    ('README-ctan.md',                'README.md',                'tex/latex/webquiz/README.md'),
                     ('latex/webquiz.c*',              'latex',                    'tex/latex/webquiz'),
                     ('latex/webquiz-*.code.tex',      'latex',                    'tex/latex/webquiz'),
                     ('latex/webquiz.ini',             'latex',                    'tex/latex/webquiz'),
@@ -247,15 +249,14 @@ class WebQuizCtan(Command):
                     ('doc/examples/[-a-z]*.png',      'doc/examples',             'doc/latex/webquiz/examples'),
                 ]:
                     for file in glob.glob(src):
-                        # first save in the main zipfile
+                        # first save in the main zipfile and in the tds
                         if '.' in target:
+                            # take filename from target
                             zip_file.write(file, os.path.join(self.zipfile[:-4], target))
-                        else:
-                            zip_file.write(file, os.path.join(self.zipfile[:-4], target, file.split('/')[-1]))
-                        # now save in the tds
-                        if '.' in target:
                             tds_file.write(file, tds_target)
                         else:
+                            # copy file to the directory specified by target
+                            zip_file.write(file, os.path.join(self.zipfile[:-4], target, file.split('/')[-1]))
                             tds_file.write(file, os.path.join(tds_target, file.split('/')[-1]))
 
                 # # add symlinks for webquiz.py

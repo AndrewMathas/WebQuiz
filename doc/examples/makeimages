@@ -107,16 +107,6 @@ class Convert:
         # add on the final bit of javascript
         self.js += self.js_end
 
-        # set conversion mechanism
-        if self.src == 'html':
-            self.convert = self.webkit2png
-        elif self.src == 'pdf':
-            self.convert = self.pdf2png
-        elif self.src == 'ps':
-            self.convert = self.ps2png
-        else:
-            raise ValueError('unknown src={} for {}'.format(src, page))
-
     def __call__(self, options):
         r'''
             Expand any glob patterms and then pass to write_image to
@@ -132,6 +122,13 @@ class Convert:
         else:
             self.write_image() # the actual conversion
 
+    # dictionary of conversion methods used in self.wrie_image()
+    convert = dict(
+        html = 'webkit2png',
+        pdf  = 'pdf2png',
+        ps   = 'ps2png'
+    )
+
     def write_image(self):
         r'''
           Convert self.page to self.page_out.
@@ -145,7 +142,11 @@ class Convert:
                 # remove png file if it already exists
                 os.remove(self.page_out+'.png')
 
-            self.convert() # the actual conversion
+            try:
+                getattr(self, self.convert[self.src])()
+
+            except KeyError:
+                raise ValueError('unknown src={} for {}'.format(self.src, self.page))
 
             if self.options.cleaning:
                 for ext in ['.log', '.xml', '-[cft]*.png']:
