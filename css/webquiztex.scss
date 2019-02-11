@@ -244,6 +244,9 @@ div.question-label, span.question-label {
     margin-bottom: 10px;
     text-align: left;
 }
+span#question-label {
+    display: none;
+}
 
 /* container for the quiz questions, answers and feedback */
 div.quiz-questions {

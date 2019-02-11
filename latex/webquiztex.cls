@@ -237,17 +237,13 @@
     {\WQ@DiscussionStart\textbf{#1} (#2)}{\WQ@DiscussionEnd\par\bigskip}
 
 % ---------------------------------------------------------------------------
-% Navigation buttons \questionButton \questionLink
-%
-% insert a button or link, which takes the user to the question given
-% in the second argument. The first argument gives the text for the button / link.
+% Cross referencing question and discussion environments
 % ---------------------------------------------------------------------------
-\NewDocumentCommand\questionButton{mm}{%
-  \framebox{#1 (jumps to question #2)}
+\NewDocumentCommand\WQ@ref{ O{} s o m }{%
+\fbox{\IfBooleanTF{#2}{link}{button} to \IfNoValueTF{#3}{to \ref{#4}}{ to ``#3'' (\ref{#4})}}%
 }
-\NewDocumentCommand\questionLink{mm}{%
-  \underline{#1} (jumps to question #2)
-}
+\newcommand\dref{\WQ@ref[-1]}
+\newcommand\qref{\WQ@ref}
 
 % -----------------------------------------------------------------------
 % question environment

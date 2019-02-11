@@ -132,7 +132,7 @@
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% WebQuiz title box for front page
+%% WebQuizTeX title box for front page
 \usepackage{tikz}
 \usetikzlibrary{shadows.blur}
 
@@ -766,6 +766,18 @@
   questions, and quizzes that contain only \LatexCode|question|
   environments, with no discussion.
 
+  If you have a mixture of \LatexCode|discussion| and \LatexCode|question| environments then
+  it is useful to be able to add thinks between them.
+  \LaTeX{} provides the \LatexCode|\label| and \LatexCode|\ref| commands
+  for cross-referencing, so \WebQuizTeX  builds on this idea to
+  \LaTexCode|\dref| and \LaTexCode|\qref| to reference
+  \LatexCode|discussion| and \LatexCode|question| environments,
+  respectively. Here is an example that shows how they are used:
+  \InputLatexCode{discussion-ref}\macroIndex{ref}\macroIndex{dref}\macroIndex{dref}\macroIndex{label}
+  which produces the online quiz:
+  \ScreenSchot{Crossing-referencing question and discussion environments}{discussion-ref}
+
+
   \subsubsection{Index pages for quizzes}\label{SS:index}
 
     \index{quizindex environment}
@@ -1112,7 +1124,7 @@
   Then you can replace the opening lines of the quiz file with
   \LatexCode|\usepackage[stuff101]{ourunits}|.
 
-  \subsection{WebQuiz document class options}\label{SS:classOptions}
+  \subsection{\WebQuizTeX document class options}\label{SS:classOptions}
 
     The \WebQuizTeX document class supports the following options:
     \begin{latexcode}
@@ -1183,7 +1195,7 @@
 
     \item[language=<lang>] \CrossIndex{document class options}{language}
     Set the language used by the \textit{web pages} constructed by \WebQuizTeX.
-    The following languages are currently supported by \WebQuiz:
+    The following languages are currently supported by \WebQuizTeX:
     \ListWebQuizLanguages
     The languages files are used to print the various buttons and text
     that is generated on the web pages constructed by \WebQuizTeX. The
@@ -1192,7 +1204,7 @@
     packages like \ctan{babel} or \ctan{polyglossia}.
 
     The \LatexCode|language| keyword can be in upper or lower case, with
-    the result that either (but not both!) of the following two lines would set the
+    the result that either (but not both!) of the following two lines set the
     quiz language to German:
     \begin{latexcode}
       \documentclass[language=German]{webquiztex}
@@ -1540,11 +1552,11 @@
   \end{itemize}
   For example, on my system the web root for our web server is
   \BashCode|/usr/local/httpd/| and the \WebQuizTeX web files are in
-  the directory \BashCode|/usr/local/httpd/UoS/WebQuiz|.  So, I set:
+  the directory \BashCode|/usr/local/httpd/UoS/WebQuizTeX|.  So, I set:
   \begin{quote}
     \begin{tabular}{lll} \WebQuizTeX web
-          directory &=& \BashCode|/usr/local/httpd/UoS/WebQuiz|\\
-          \WebQuizTeX relative URL  &=& \BashCode|/UoS/WebQuiz|
+          directory &=& \BashCode|/usr/local/httpd/UoS/WebQuizTeX|\\
+          \WebQuizTeX relative URL  &=& \BashCode|/UoS/WebQuizTeX|
       \end{tabular}
   \end{quote}
   Once the initialisation step is complete, \WebQuizTeX is ready to use
@@ -1799,7 +1811,7 @@
                 \WebQuizTeX may have installed on your web server. It does
                 \textit{not} remove \WebQuizTeX from your \LaTeX{} distribution.
 
-           \item[\ddash webquiztex-layout WEBQUIZ-LAYOUT]
+           \item[\ddash webquiztex-layout WEBQUIZTEX-LAYOUT]
            \CrossIndex{command-line option}{layout}
               Name of (local) \python code that controls the layout of quiz web page. This
               option is equivalent to setting the \LatexCode|webquiztex-layout|

@@ -1,0 +1,22 @@
+\documentclass[onepage]{webquiztex}
+\title{A discussion environment example}
+\begin{document}
+\begin{discussion}[First bit]\label{d:one}
+    Some interesting discussion related to question \qref{q:one}.
+  \end{discussion}
+  \begin{discussion}[Two][Second bit]\label{d:two}
+    Some interesting discussion related to question \qref[text]{q:two}.
+  \end{discussion}
+  \begin{discussion}[Two][Second bit]\label{d:three}
+    Some interesting discussion related to question \qref*[text]{q:three}.
+  \end{discussion}
+  \begin{question}\label{q:one}
+     An interesting question relating to discussion \dref{d:one}\answer{1}
+  \end{question}
+  \begin{question}\label{q:two}
+     An interesting question relating to discussion \dref[text]{d:one}\answer{2}
+  \end{question}
+  \begin{question}\label{q:three}
+    An interesting question relating to discussion \dref*[text]{d:three}\answer{3}
+  \end{question}
+\end{document}

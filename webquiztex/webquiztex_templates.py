@@ -136,7 +136,6 @@ discussion_heading = r'''<div class="question-label">{}</div>
 
 #quiz index
 quiz_index_div = r'''     <div class="quiz-index">
-        <h2>{title}</h2>
         <ul>
           {quiz_index}
         </ul>

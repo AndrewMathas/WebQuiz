@@ -387,6 +387,9 @@ function WebQuizInit(questions, discussions, quizfile) {
     qTotal = questions;
     dTotal = discussions;
 
+    // remove question arrows when there are no questions
+    document.getElementsByClassName('arrows')[0].style.display='none'
+
     // display the first question or discussion item
     currentB = 0;
     currentQ = 0;
