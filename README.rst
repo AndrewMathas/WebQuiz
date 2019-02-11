@@ -22,7 +22,7 @@ WebQuiz_ has the following components:
 WebQuiz_ relies on having the following programs installed: LaTeX_, TeX4ht_, (available with most LaTeX_
 distributions such as TeXLive_), and Python3_. To use the development version,
 particularly, for building the manual and uploading to ctan_, you will also need
-mogrify_, sass_, uglifyjs_ and webkit2png_ (and ctanupload_).
+mogrify_, sass_, uglifyjs_ and webkit2png_ (and ctanupload_ and rst2man_).
 
 This README file explains how the different components of the development
 version of WebQuiz_ are organised.
