@@ -342,7 +342,7 @@ class MakeWebQuiz(object):
                     quiz_specs.write('onePage = true;\n')
                 if self.quiz.random_order:
                     quiz_specs.write('shuffleQuestions();\n')
-
+                quiz_specs.write('initSession();\n')
                 if self.number_discussions+self.number_questions>0:
                     quiz_specs.write('gotoQuestion({});'.format(
                         -1 if self.number_discussions>0 else 1)

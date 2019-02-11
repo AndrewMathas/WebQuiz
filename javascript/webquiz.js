@@ -20,6 +20,7 @@ var buttonOrder = [];       // map from button number to question number
 var questionOrder = [];     // map from question number to button number
 var wrongAnswers = [];      // questions answered incorrectly
 
+
 var currentB;               // current button number
 var currentFeedback = null; // feedback currently being displayed
 var currentQ;               // current question number
@@ -57,6 +58,13 @@ var tick = {
     "name": "tick"
 };
 
+function markAnswer() {
+  if (typeof(Storage) !== "undefined") {
+    sessionStorage.correct = JSON.stringify(correct);
+    sessionStorage.wrongAnswers = JSON.stringify(wrongAnswers);
+  }
+}
+ 
 // stop the dropdown menu from being created twice
 var quizindex_menu_not_created = true;
 
@@ -234,10 +242,18 @@ function updateQuestionMarker(bnum, qnum) {
     }
 }
 
+// jumps to a chosen question and pushes the number of this question to the browser history
 function gotoQuestion(bnum) {
     // bnum is a button number so we need to convert to a question number
-
+    
     var qnum = (bnum>0) ? questionOrder[bnum] : bnum;
+    gotoQuestionHelper(qnum);
+    history.pushState(qnum, null, null);
+}
+
+// jumps to the specified question (without pushing it to the browser history) 
+function gotoQuestionHelper(qnum) { 
+    var bnum = (qnum>0) ? buttonOrder[qnum] : qnum;
     updateQuestionMarker(bnum, qnum);
     showQuestion(bnum, qnum);
 }
@@ -320,6 +336,7 @@ function checkAnswer(qnum) {
         wrongAnswers[qnum] += 1;
     }
     updateQuestionMarker(buttonOrder[qnum], qnum);
+    markAnswer(); 
 }
 
 /**
@@ -340,9 +357,33 @@ function shuffleQuestions() {
     }
 }
 
+// Restores the state of the question markers from the session storage 
+function initSession() {
+    if (typeof(Storage) !== "undefined") {
+      if (sessionStorage.correct)
+        correct = JSON.parse(sessionStorage.correct);
+      if (sessionStorage.wrongAnswers)
+        wrongAnswers = JSON.parse(sessionStorage.wrongAnswers);
+    }
+
+    for (i = 0; i < qTotal+1; i++) { 
+      updateQuestionMarker(buttonOrder[i],i); 
+    }
+
+    // make the browser history remember the first question
+    qnum = (dTotal > 0) ? -1 : questionOrder[1];
+    history.replaceState(qnum, null, null);
+}
+
 // initialise the quiz, loading specifications and setting up the first question
 function WebQuizInit(questions, discussions, quizfile) {
     // process init options
+
+    // callback for browser history events 
+    window.addEventListener('popstate', function(e) {
+       gotoQuestionHelper(e.state);
+    });
+    
     qTotal = questions;
     dTotal = discussions;
 
