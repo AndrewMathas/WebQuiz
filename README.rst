@@ -30,7 +30,7 @@ version of WebQuiz_ are organised.
 Installing the development version
 ----------------------------------
 
-First clone or download the `WebQuiz github repository`_.  On a unix-like system,
+First clone or download the `WebQuizTeX github repository`_.  On a unix-like system,
 such as linux or macosx, to set up links for the latex and web files for the
 development version run::
 
@@ -48,7 +48,7 @@ installed on your computer. You will now be able to run WebQuiz_, however, to
 view the web pages you need to generate the `CSS` files using sass_. On
 unix-like systems you can use the `bash` shell-script `doc/makedoc -t`.
 
-The structure of the files in the `WebQuiz github repository`_ is not suitable
+The structure of the files in the `WebQuizTeX github repository`_ is not suitable
 for uploading to ctan_.  WebQuiz_ is not distributed as a Python3_ package
 because it fits more naturally into the LaTeX_ ecosystem, since LaTeX_ is a hard
 dependency for the program (and LaTeX_ cannot be installed with `pip`!).
@@ -57,7 +57,7 @@ Python code
 -----------
 There are six python source files:
 
-webquiz.py
+webquiztex.py
     processes command-line options and settings
 
 webquiz_layout.py
@@ -80,25 +80,25 @@ LaTeX code
 ----------
 The LaTeX is in the latex directory. The main components are:
 
-webquiz.cfg
+webquiztex.cfg
     WebQuiz_ TeX4ht configuration file => generates XML
 
-webquiz.cls
+webquiztex.cls
      WebQuiz_ document class file
 
-webquiz.ini
+webquiztex.ini
      WebQuiz_ initialisation data. This is used by the LaTeX_ and python components of WebQuiz_
 
-webquiz-doc.code.tex
+webquiztex-doc.code.tex
      macros used in the two WebQuiz_ manuals
 
-webquiz-ini.code.tex
+webquiztex-ini.code.tex
      code for reading and accessing the ini fle in latex
 
 pgfsys-dvisvgm4ht.def
      a custom tikz driver for tex4ht from dvisvgm4ht_ supplied by Michal Hoftich
 
-webquiz-\*.lang
+webquiztex-\*.lang
      language support files. These are used by `webquiz_main.py` when writing
      the quiz web pages but we find them by putting them in the LaTeX search
      path
@@ -107,10 +107,10 @@ Cascading style sheets
 -----------------------
 The `CSS` files for WebQuiz_ are written using sass_. The main files are:
 
- - webquiz.scss
- - webquiz-THEME.scss
+ - webquiztex.scss
+ - webquiztex-THEME.scss
 
-The theme files all set the colours and then load the main sass file webquiz.scss.
+The theme files all set the colours and then load the main sass file `webquiztex.scss`.
 Use the `bash` shell script command::
 
     > doc/makedoc -t
@@ -121,7 +121,7 @@ themes.
 
 Javascript
 ----------
-There is one javascript file, `webquiz.js`, in the javascript directory. In
+There is one javascript file, `webquiztex.js`, in the javascript directory. In
 addition, the `quizindex` environment generates the javascript file
 `quizindex.js`, that generates a drop-down menu for the quizzes in the current
 directory. This file is automatically loaded at the end of each quiz HTML file,
@@ -143,10 +143,10 @@ manual. It requires webkit2png_ and mogrify_.
 
 The main files in the documentation directory are:
 
-webquiz.tex
+webquiztex.tex
     LaTeX source for the WebQuiz_ manual
 
-webquiz-online-manual.tex
+webquiztex-online-manual.tex
     LaTeX source for the online Webquiz_ manual
 
 credits.tex
@@ -232,8 +232,8 @@ Public License for more details.
 .. _Python3: https://wwdw.python.org/
 .. _TeX4ht: http://www.tug.org/tex4ht/
 .. _TeXLive: https://www.tug.org/texlive/
-.. _WebQuiz: https://www.ctan.org/pkg/webquiz/
-.. _`WebQuiz github repository`: https://github.com/AndrewAtLarge/WebQuiz
+.. _WebQuizTeX: https://www.ctan.org/pkg/webquiztex/
+.. _`WebQuiz github repository`: https://github.com/AndrewAtLarge/WebQuizTex
 .. _ctan: https://www.ctan.org/
 .. _ctanupload: https://ctan.org/pkg/ctanupload
 .. _kpsewhich: https://linux.die.net/man/1/kpsewhich
