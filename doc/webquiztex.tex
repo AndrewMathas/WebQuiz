@@ -81,22 +81,13 @@
 \renewcommand*\contentsname{\relax}
 
 % hyperref links to ctan
-\NewDocumentCommand\ctan{ O{pkg/#2} m}
-   {\href{https://www.ctan.org/#1}{\texttt{#2}}}
 \newcommand\TeXLive{\ctan[/]{\TeX Live}\xspace}
-\newcommand\TeXfht{\href{https://www.ctan.org/tex4ht}{\hologo{TeX4ht}\xspace}}
 \newcommand\Ctan{\ctan[]{ctan}\xspace}
 \newcommand\ddash{\texttt{\textemdash\textemdash}}
 \NewDocumentCommand\webquizrc{s}{\index{webquizrc}%
 \BashCode|webquizrc| file\IfBooleanF{#1}{ (\autoref{SS:rcfile})}\xspace%
 }
 
-\newcommand{\HTML}{\href{https://www.w3schools.com/html/html_intro.asp}{HTML}\xspace}
-\newcommand\CSS{\href{https://www.w3schools.com/css}{CSS}\xspace}
-\newcommand\XML{\href{https://www.w3schools.com/xml/xml_whatis.asp}{XML}\xspace}
-\newcommand\Javascript{\href{https://www.w3schools.com/Js/}{Javascript}\xspace}
-\newcommand\python[1][python]{\href{https://www.python.org/}{#1}\xspace}
-\newcommand\Ghostscript{\href{https://www.ghostscript.com/}{Ghostscript}\xspace}
 \NewDocumentCommand\OnlineManual{s}{%
   \href{http://www.maths.usyd.edu.au/u/mathas/WebQuizTeX/webquiztex-online-manual.html}{Online manual}%
   \IfBooleanF{#1}{ (\hyperref[S:online]{Appendix B})}\xspace%

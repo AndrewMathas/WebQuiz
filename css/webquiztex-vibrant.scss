@@ -1,0 +1,75 @@
+/*
+ * -----------------------------------------------------------------------
+ *   webquiztex-vibrant.css | colour specifications for dark theme
+ * -----------------------------------------------------------------------
+ *
+ *   Copyright (C) Andrew Mathas, University of Sydney
+ *
+ *   Distributed under the terms of the GNU General Public License (GPL)
+ *               http://www.gnu.org/licenses/
+ *
+ *   This file is part of the WebQuizTeX system.
+ *
+ *   <Andrew.Mathas@sydney.edu.au>
+ * ----------------------------------------------------------------------
+ */
+
+// sass variables for the colours used in the quizzes
+
+  $Text:           #24304E;
+  $BackGround:     #f9f9dd;
+  $LinkColor:      green;
+
+  $Heading:        forestgreen;
+  $Subheading:     #0aa738;
+
+  $QuestionPart:   #06c316;
+
+  $ButtonBG:       palegreen;
+  $ButtonBorder:   forestgreen;
+  $ButtonHover:    greenyellow;
+  $ButtonSelected: #03BD0E;
+
+  $Dazzle:         #007e00;
+
+  $FeedbackBG:     palegreen;
+  $FeedbackBorder: darkgreen;
+  $FeedbackText:   #0E6655;
+
+  $SideMenuText:   #A8D0E6;
+
+  $WarningBG:      #E37222;
+  $WarningBorder:  darken($WarningBG, 60%);
+  $WarningFG:      lighten($WarningBG, 90%);
+
+  $BreadCrumbBG:   darkgreen;
+  $BreadCrumbFG:   darken($BackGround, 30%);
+  @function breadcrumb-step($step) {
+    @return lighten($BreadCrumbBG, ($step*5%));
+  }
+
+  $DropDownFG:     #38a32a;
+
+  $Copyright:      #0B5345;
+  $School:         lighten($Copyright, 10%);
+
+  $ListMarker:    '\027A3';
+
+  $HeadingFont: Verdana, Arial, Helvetica, sans-serif;
+
+  $BlankButtonBG:  #FFF8DC;
+  $BlankButtonFG:  darkgreen;
+
+  $CrossButtonBot: #007e00;
+  $CrossButtonFG:  red;
+  $CrossButtonTop: #ffffbf;
+
+  $StarButtonBot: #00fd00;
+  $StarButtonFG:  yellow;
+  $StarButtonTop: #0e6655;
+
+  $TickButtonBot: #00fd00;
+  $TickButtonFG:  silver;
+  $TickButtonTop: #0e6655;
+
+@import "webquiztex";

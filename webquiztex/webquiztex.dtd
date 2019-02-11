@@ -1,0 +1,106 @@
+<!--
+    This is the WebQuiz DTD
+
+    Author: Don Taylor & Andrew Mathas
+
+    2019       Version 5.0 - substantially revised
+    2004/01/08 Version 3.0 - added discussion and quiz_index elements
+    2003/01/08 Version 2.0
+    2002/11/26 Version 2.0
+    2001/03/21 Version 1.2
+
+-->
+<!ENTITY % xhtml SYSTEM "xhtml-core.dtd">
+
+<!--
+  The definition of body in xhtml-core.dtd is <!ELEMENT body %Flow;>
+  We use cut down versions of <meta> and <link>
+-->
+
+<!ELEMENT webquiz
+   (title, meta*, link*, breadcrumb, breadcrumbs, a,
+    unitname, unitcode, department, institution,
+    (quizindex |(question?, discussion?))
+   )
+>
+<!ATTLIST webquiz
+   debugging    CDATA #REQUIRED
+   language     CDATA #REQUIRED
+   one_page     CDATA #REQUIRED
+   pst2pdf      CDATA #REQUIRED
+   random_order CDATA #REQUIRED
+   showsidemenu CDATA #REQUIRED
+   src          CDATA #REQUIRED
+   theme        CDATA #REQUIRED
+>
+
+<!ELEMENT meta EMPTY>
+<!ATTLIST meta
+  http-equiv  CDATA     #IMPLIED
+  name        CDATA     #IMPLIED
+  content     CDATA     #REQUIRED
+  scheme      CDATA     #IMPLIED
+>
+
+<!ELEMENT link EMPTY>
+<!ATTLIST link
+  href        CDATA     #IMPLIED
+  type        CDATA     #IMPLIED
+  rel         CDATA     #IMPLIED
+  target      CDATA     #IMPLIED
+>
+<!ELEMENT breadcrumb (text)>
+<!ATTLIST breadcrumb
+    breadcrumbs    CDATA     #REQUIRED
+>
+
+<!ELEMENT department (text)>
+<!ATTLIST departmment url CDATA #REQUIRED>
+
+<!ELEMENT institution (text)>
+<!ATTLIST institution url CDATA #REQUIRED>
+
+<!ELEMENT quizindex (indexitem*)>
+<!ELEMENT indexitem (text)>
+<!ATTLIST indexitem 
+    prompt CDATA #REQUIRED
+    url    CDATA  #REQUIRED
+>
+
+<!ELEMENT discussion (heading, short_heading, text)>
+<!ELEMENT heading (#PCDATA)>
+<!ELEMENT short_heading (#PCDATA)>
+
+<!ELEMENT question (text,(choice|answer))>
+
+<!ELEMENT title (text)>
+
+<!ELEMENT unit_name (text)>
+<!ATTLIST unit_name
+    quizzes     CDATA #REQUIRED
+    url         CDATA #REQUIRED
+>
+<!ELEMENT unitcode (text)>
+
+<!ELEMENT choice (item*)>
+<!ATTLIST choice type (single|multiple) #REQUIRED
+                 columns CDATA          #REQUIRED
+>
+<!ELEMENT item (text,response?)>
+<!ATTLIST item
+    correct (true|false) #REQUIRED
+    symbol CDATA         #REQUIRED
+>
+
+<!ELEMENT response (#PCDATA)>
+
+<!ELEMENT answer (when*)>
+<!ATTLIST answer
+    prompt     CDATA #REQUIRED
+    comparison CDATA #REQUIRED
+>
+
+<!ELEMENT when (text)>
+<!ATTLIST when type (right|wrong) #REQUIRED>
+
+<!ELEMENT text (#PCDATA)>

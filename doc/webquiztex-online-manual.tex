@@ -1,0 +1,626 @@
+%-----------------------------------------------------------------------------
+%  Copyright (C) 2004-2019 Andrew Mathas, University of Sydney
+%
+%  Distributed under the terms of the GNU General Public License (GPL)
+%                  http://www.gnu.org/licenses/
+%
+% This file is part of the WebQuizTeX system.
+%
+% <Andrew.Mathas@sydney.edu.au>
+%-----------------------------------------------------------------------------
+
+%% This file is part of the WebQuiz class distribution
+\documentclass[svgnames]{webquiztex}
+
+% load webquiztex-doc code -- the class file loads webquiztex-ini.code.tex is first
+\input{webquiztex-doc.code}
+
+\usepackage{pst-plot}
+\usepackage{hyperref}
+
+\usepackage{ifpdf}
+\ifpdf
+  \PackageError{WebQuizTeX}{This file must be compiled using latex not pdflatex}
+\fi
+\newcommand{\C}{\mathbb C}
+\newcommand*{\vect}[1]{\mathbf{#1}}
+
+\hypersetup{pdftitle={WebQuizTeX online manual}}
+
+\newcommand\qref[1]{%
+  \ifdefined\HCode\relax
+     \HCode{<a href="\#" onclick="gotoQuestion(#1)">Question #1</a>}
+  \else\hyperref[question#1]{Question~\ref*{question#1}}%
+  \fi%
+}
+
+\title{WebQuiz: Web Quizzes using LaTeX}
+\begin{document}
+
+\begin{discussion}[Introduction]
+  \WebQuizTeX is a \LaTeX{} package for creating \textit{interactive}
+  web quizzes.  The idea is that you write the quiz using \LaTeX{} and that
+  \WebQuizTeX creates the web page from this file. Anything that you can
+  write using \LaTeX{} will be converted to \HTML by \WebQuizTeX. This
+  includes, for example, mathematics and graphics written using
+  \ctan{pstricks}.  \WebQuizTeX supports three different types of quiz
+  questions:
+
+  \begin{enumerate}
+  \item Multiple choice questions with a \emph{unique} correct answer.
+ (See \qref{1})
+  \item Multiple choice questions with \emph{several} (or no)
+    correct answers.
+ (See \qref{2})
+  \item Questions that require the student to enter an answer, which
+  can then be compared with the correct answer in several different
+  ways. (See \qref{3})
+  \end{enumerate}
+The use of \WebQuizTeX is described in the next section. Later
+sections describe how each of the \WebQuizTeX environments are used.
+
+The \LatexCode|discussion| environment in \WebQuizTeX can also be used to
+write Web Pages like this one (The pages you are reading here were
+written using \WebQuizTeX.)
+\end{discussion}
+\begin{discussion}[Basic Usage]
+Once you have a \WebQuizTeX file, you can run it through \LaTeX, in
+the usual way, to produce a readable version of your quiz. When you
+are happy with the quiz, use \WebQuizTeX to create the HTML
+version. Note that the printable version of the quiz does \emph{not}
+look like the web page; rather, it contains all of the information in
+an easily readable layout.
+
+  If, for example, your quiz file is called \emph{quiz1.tex} then you
+  can use the following commands:
+\begin{latexcode}
+      > latex quiz1             % latex a quiz file
+      > pdflatex quiz1          % a PDF versio of the quiz
+      > xdvi quiz1              % view the quiz using xdvi
+      > dvips quiz1             % print the quiz
+      > webquiztex quiz1           % converts the quiz to html
+\end{latexcode}
+  Converting the quiz to html can take quite a long time, particularly
+  if a large number of images need to be created.
+
+\end{discussion}
+\begin{discussion}[WebQuizTeX files]
+
+  The basic structure of a \WebQuizTeX file is as follows:
+\begin{latexcode}
+      \documentclass{webquiztex}
+
+      \title{Quiz 1: Complex numbers}
+
+      \UnitCode{MATH1001}
+      \UnitName{Differential Calculus}
+      \UnitURL{/u/UG/JM/MATH1001/}
+      \QuizzesURL{/u/UG/JM/MATH1001/Quizzes/}
+
+      \begin{document}
+
+      \begin{discussion}[short heading][optional heading]
+          . . . % optional discussion
+      \end{discussion}
+
+      \begin{question} % question 1
+          . . .
+      \end{question}
+
+      \begin{question} % question 2
+          . . .
+      \end{question}
+      .
+      .
+      \end{document}
+\end{latexcode}
+  In the preamble of the \LaTeX{} file you can specify the unit code, the
+  name of the unit of study, the location of the homepage for the
+  unit and the index file for the quizzes for this unit; this is
+  done using the commands
+  \LatexCode|\UnitCode|,
+  \LatexCode|\UnitName|,
+  \LatexCode|\UnitURL| and
+  \LatexCode|\QuizzesURL| respectively. If the
+  command \LatexCode|\QuizzesURL| is omitted then the URL for the quiz
+  index file is set to \LatexCode|\UnitURL/|Quizzes.
+
+  The title of the quiz can be set in the preamble using the
+  \LatexCode|\title| command. Note that the \LatexCode|\title|
+  command \emph{must} appear before the \LatexCode|\begin{document}| command.
+  As in any \LaTeX{} document, the preamble can define macros and load
+  other \LaTeX{} packages the usual way .
+
+  By using the \LatexCode|discussion| environment you can summarise the
+  material for the students or add introductory material for the quiz.
+  For example, \LatexCode|discussion| environments can be used to recall
+  that main concepts being covered by the quiz or to give references to
+  the lecture notes for the unit. The syntax for the
+  \LatexCode|discussion| environment is as follows:
+\begin{latexcode}
+      \begin{discussion}[optional short heading][optional heading]
+        . . .
+      \end{discussion}
+\end{latexcode}
+  Anything you like (text, mathematics, \ldots) can go inside
+  discussion environments.  The \emph{optional heading}, which defaults
+  to Discussion'', is used both as
+  the section heading on the web page and as the heading in the
+  side-menu on left hand side of the page. If a \textit{short heading}
+  is  also given then it is used in the side-menu. The quiz can contain
+  zero or more discussion items ( and zero or more quiz questions).
+
+  Questions are set inside a \LatexCode|question| environment. The text is
+  followed by the answers.
+
+  \WebQuizTeX supports three types of questions:
+  \begin{itemize}
+  \item Multiple choice questions with \emph{precisely one} correct
+    answer;
+  \item Multiple choice questions with \emph{zero or more } correct
+  answers;
+  \item Questions that require the students to enter an answer. Five
+  difference comparison methods are available.
+  \end{itemize}
+  With each of these types of questions you can (and should) provide
+  feedback to the students depending on whether their answer is
+  correct or incorrect. Below we describe how to produce these
+  different types of questions.
+\end{discussion}
+\begin{discussion}[Question 1]
+  The syntax for a multiple choice question having \emph{precisely
+    one} correct answer is as follows:
+\begin{latexcode}
+    \begin{question}
+      . . .question text
+      \begin{choice}
+        \(in)correct . . . text for (in)correct option
+        \feedback    . . . feedback on response
+
+        \(in)correct . . . text for (in)correct option
+        \feedback    . . . feedback on response
+        .
+        .
+        .
+      \end{choice}
+    \end{question}
+\end{latexcode}
+  The different choices in a multiple choice question must be inside a
+  \LatexCode|choice| environment. This environment behaves like a
+  standard \LaTeX{} list environment except that instead of using
+  \LatexCode|\item| for list item you use:
+  \begin{itemize}
+      \item \LatexCode|\correct| for a correct choice
+      \item \LatexCode|\incorrect| for an incorrect choice
+      \item \LatexCode|\feedback| to give feedback to the student when
+      they select this choice
+  \end{itemize}
+  At most one \LatexCode|\feedback| response should be given for each
+  \LatexCode|\correct| and each \LatexCode|\incorrect| response.
+  The \LatexCode|\feedback| commands are optional; however, it is
+  recommended that you use them because targeted feedback to the
+  students based on their responses can be beneficial.
+  \par
+  For example, the code below, when run through \WebQuizTeX, produces \qref{1}
+  in the online manual quiz.
+\begin{latexcode}
+   \begin{question}
+     The shaded region in the graph
+     \begin{center}
+       \begin{pspicture}(-3,-1.5)(3,4)
+         \pscircle[linewidth=1pt,linestyle=dashed,%
+                   fillcolor=SkyBlue,fillstyle=solid](1,1){2}
+         \psaxes[linecolor=red,linewidth=1pt,labels=none]%
+         {->}(0,0)(-1.5,-1.5)(3.5,3.5)
+         \rput(3.75,0){$x$}
+         \rput(0,3.85){$iy$}
+         \rput(3,-0.4){3}
+         \rput(-0.4,3){3$i$}
+         \psdots(1,1)
+       \end{pspicture}
+     \end{center}
+     is equal to which of the following sets of complex numbers?
+     \begin{choice}
+       \incorrect $\{z \in \C : (z-1)^{2}+(z-(i+1))^{2}<2\}$
+       \feedback  The equation of a circle in the complex plane with
+       centre $a+ib$ and radius $r$ is
+       \begin{displaymath}
+         \{z\in\C : |z-(a+ib)|<r \}.
+       \end{displaymath}
+
+       \incorrect $\{z \in \C : z+(i+1)<2\}$
+       \feedback  You want the set of points whose \textit{distance}
+       from $1+i$ is less than $2$.
+
+       \correct   $\{z \in \C : |z-(i+1)|<2\}$
+       \feedback  The graph shows the set of complex numbers whose
+       distance from $1+i$ is less than $2$.
+
+       \incorrect $\{z \in \C : |z-2|<|i+1-2|\}$
+       \feedback  As $|i+1-2|=\sqrt 2$, this is the set of complex
+       numbers whose distance from $2$ is less than
+       $\sqrt 2$.
+
+       \incorrect None of the above.
+       \feedback The graph shows the set of complex numbers whose
+       distance from the centre of the circle is less than $2$.
+     \end{choice}
+   \end{question}
+\end{latexcode}
+\end{discussion}
+\begin{discussion}[Question 2]
+ To allow multiple (or no) correct answer we add \LatexCode|multiple| as an
+  optional argument to the \LatexCode|choice| environment:
+\begin{latexcode}
+    \begin{question}
+      . . .question text. . .
+      \begin{choice}[multiple]
+        \(in)correct . . . text for (in)correct option
+        \feedback    . . . feedback on response
+
+        \(in)correct . . . text for (in)correct option
+        \feedback    . . . feedback on response
+        .
+        .
+        .
+      \end{choice}
+    \end{question}
+\end{latexcode}
+  The only difference to the previous case is that zero or more
+  \LatexCode|\correct| commands can appear.
+  \par
+  For example, \qref{2} below was typed into \WebQuizTeX
+  using the following commands:
+\begin{latexcode}
+    \begin{question}
+      Which of the following numbers are prime?
+      \begin{choice}[multiple]
+        \incorrect 1
+        \feedback  By definition, a prime is a number greater than 1
+        whose only factors are 1 and itself.
+
+        \correct   19
+        \feedback  The only factors of 19 are 1 and itself.
+
+        \incorrect 6
+        \feedback  2 is a factor of 6
+
+        \correct   23
+        \feedback  The only factors of 23 are 1 and itself.
+
+        \correct   191
+        \feedback  The only factors of 191 are 1 and itself.
+      \end{choice}
+    \end{question}
+\end{latexcode}
+\end{discussion}
+\begin{discussion}[Question 3]
+
+  By default, the \LatexCode|choice| environments puts the multiple
+  choice options into one column format. Sometimes the options look
+  better when listed in two or more columns, however, this should be
+  used sparingly as multiple columns do not always display well if the
+  quiz is viewed on a mobile device.  By using the \LatexCode|columns|
+  key word in a \LatexCode|choice| environment you can specify the
+  number of columns in the HTML version of the quiz.
+
+\begin{latexcode}
+    \begin{question}
+      . . .question text. . .
+      \begin{choice}[multiple, columns=n]     . . . n columns
+        \(in)correct . . . text for (in)correct option
+        \feedback    . . . feedback on response
+
+        \(in)correct . . . text for (in)correct option
+        \feedback    . . . feedback on response
+        .
+        .
+        .
+      \end{choice}
+    \end{question}
+\end{latexcode}
+  If the optional argument \LatexCode|[multiple]| is not present, then the
+  question admits precisely one correct answer.
+  \par
+  For example, \qref{3} below was typed into \WebQuizTeX
+  using the following commands:
+\begin{latexcode}
+    \begin{question}
+      What are suitable parametric equations for this plane curve?
+      \begin{center}
+        \psset{unit=.6cm}
+        \begin{pspicture}(-2.5,-0.5)(5,5.5)
+          \psaxes[linecolor=red,linewidth=1pt,labels=none]%
+          {->}(0,0)(-2.5,-1.5)(5,5)
+          \psellipse[linecolor=blue,linewidth=2pt](1,2)(3,2)
+        \end{pspicture}
+      \end{center}
+
+      \begin{choice}[columns=1]
+        \incorrect $x=2\cos t + 1$, $y=3\sin t + 2$
+        \feedback This is an ellipse with centre $(1,2)$ and with axes of
+        length $4$ in the $x$-direction and $6$ in the $y$-direction.
+        \begin{center}
+          \psset{unit=.6cm}
+          \begin{pspicture}(-2.5,-0.5)(5,5.5)
+            \psaxes[linecolor=red,linewidth=1pt,labels=none]%
+            {->}(0,0)(-2.5,-1.5)(5,5)
+            \parametricplot[linecolor=blue,linewidth=2pt]{0}{360}%
+            {t cos 2 mul 1 add t sin 3 mul 2 add}
+          \end{pspicture}
+        \end{center}
+
+        \correct $x=3\cos t + 1$, $y=2\sin t + 2$
+        \feedback The curve is an ellipse centre (1,2) with axes length 6
+        in the $x$ direction and 4 in the $y$ direction.
+
+        \incorrect $x=3\cos t - 1$, $y=2\sin t - 2$
+        \feedback This is an ellipse with centre $(-1,-2)$ and with axes
+        of length $6$ in the $x$-direction and $4$ in the $y$-direction.
+        \begin{center}
+          \psset{unit=.6cm}
+          \begin{pspicture}(-5,-4)(1,2)
+            \psaxes[linecolor=red,linewidth=1pt,labels=none]%
+            {<-}(0,0)(-4.5,-5.5)(1,2)
+            \parametricplot[linecolor=blue,linewidth=2pt]{0}{360}%
+            {t cos 3 mul 1 sub t sin 2 mul 2 sub}
+          \end{pspicture}
+        \end{center}
+
+        \incorrect $x=2\cos t - 1$, $y=3\sin t - 2$
+        \feedback This is an ellipse with centre $(-1,-2)$ and with axes
+        of length $4$ in the $x$-direction and $6$ in the $y$-direction.
+        \begin{center}
+          \psset{unit=.6cm}
+          \begin{pspicture}(-4,-5)(1,2)
+            \psaxes[linecolor=red,linewidth=1pt,labels=none]%
+            {<-}(0,0)(-4.5,-5.5)(1,2)
+            \parametricplot[linecolor=blue,linewidth=2pt]{0}{360}%
+            { t cos 2 mul 1 sub t sin 3 mul 2 sub}
+          \end{pspicture}
+        \end{center}
+      \end{choice}
+    \end{question}
+\end{latexcode}
+\end{discussion}
+\begin{discussion}[Question 4]
+  The final type of question that \WebQuizTeX supports is a question that
+  requires an answer, which can be a number or a string.  The answer is
+  typeset using the \LatexCode|\answer| macro. The \LatexCode|\answer|
+  macro takes two arguments: an optional comparison method, which
+  defaults to \LatexCode|string|, and the correct answer for the
+  question:
+  \begin{latexcode}
+    \answer[comparison method]{correct answer}
+  \end{latexcode}
+  Feedback for correct and incorrect answers is given
+  using the macros \LatexCode|\whenRight| and \LatexCode|\whenWrong|,
+  respectively. The structure of questions with \LatexCode|\answer|'s is as follows:
+  \begin{latexcode}
+         \begin{question}
+           . . .question text. . .
+           \answer[*][complex|integer|lowercase|number|string]{actual answer}
+           \whenRight . . . feedback when right (optional)
+           \whenWrong . . . feedback when wrong (optional)
+         \end{question}
+  \end{latexcode}
+  See the \WebQuizTeX manual for details of the different
+  comparison types.  For example, \qref{4} below was typed into
+  \WebQuizTeX using the following commands:
+\begin{latexcode}
+    \begin{question}
+      If the vectors $\vect{a}$ (of magnitude 8 units) and $\vect{b}$
+      (of magnitude 3 units) are perpendicular, what is the value
+      of
+      \begin{displaymath}
+        |\vect{a} -2\vect{b}|~?
+      \end{displaymath}
+      (Hint: Draw a diagram!)
+
+      \answer[number]{10}
+      \whenRight The vectors $\vect{a}$, \(-2\vect{b}\), and
+      $\vect{a} - 2\vect{b}$ form the sides of a right-angled
+      triangle, with sides of length $8$ and $6$ and
+      hypotenuse of length $|\vect{a} -2\vect{b}|$. Therefore
+      by Pythagoras' Theorem,
+      \(|\vect{a} -2\vect{b}|=\sqrt{8^2+6^2}=10\).
+
+      \whenWrong Draw a diagram and then use Pythagoras' theorem.
+    \end{question}
+\end{latexcode}
+\end{discussion}
+\begin{discussion}[Index Files]
+  \WebQuizTeX also provides a mechanism for creating a web page
+  containing an index of all quizzes for a given Unit of Study.
+  This is done with a \WebQuizTeX file that contains a \LatexCode|quizindex|
+  environment. The syntax for this environment is as follows:
+\begin{latexcode}
+    \begin{quizindex}
+      \quiz[url1]{title for quiz 1}
+      \quiz[url2]{title for quiz 2}
+      . . .
+    \end{quizindex}
+\end{latexcode}
+If no \textit{URL} is given as an optional argument to
+\LatexCode|\quiz| then
+  \WebQuizTeX sets the url(s) to \BashCode|quiz1.html|, \BashCode|quiz2.html|
+  and so on.
+\end{discussion}
+
+\begin{discussion}[Credits]
+    \WebQuizTeX was written and developed in the
+    \href{http://www.maths.usyd.edu.au/}{School of Mathematics and
+    Statistics} at the \href{http://www.usyd.edu.au/}{University of
+    Sydney}.  The system is built on \LaTeX{} with the conversion from
+    \LaTeX{} to HTML using Eitan Gurari's
+    \href{http://www.cis.ohio-state.edu/~gurari/TeX4ht/mn.html}{TeX4ht},
+    and Michal Hoftich's
+    \href{https://github.com/michal-h21/make4ht}{make4ht}.
+
+    To write quizzes using \WebQuizTeX it is only necessary to know
+    \LaTeX, however, the \WebQuizTeX system has three components:
+    \begin{itemize}
+      \item A \LaTeX{} document class file, \LatexCode{webquiztex.cls}, and
+      a \TeXfht configuration file, \LatexCode{webquitexz.cfg}, that enable the
+      quiz files to be processed by \LaTeX{} and \TeXfht, respectively.
+      \item A python program, \BashCode{webquiztex}, that translates the \XML
+      file that is produced by \TeXfht into \HTML.
+      \item Some \Javascript and \CSS that controls the quiz web page.
+    \end{itemize}
+
+   The \LaTeX{} component of \WebQuizTeX was written by Andrew Mathas and
+   the python, \CSS and \Javascript code was written by Andrew Mathas (and
+   Don Taylor), based on an initial prototype of Don Taylor's from 2001.
+   Since 2004 the program has been maintained and developed by Andrew
+   Mathas. Although the program has changed substantially since 2004,
+   Don's idea of using \TeXfht, and some of his code, is still in use.
+
+   Thanks are due to Bob Howlett for general help with CSS and, for
+   Version~5, to  Michal Hoftich for technical advice.
+\end{discussion}
+
+\begin{question}
+  \label{question1}
+  The shaded region in the graph
+ \begin{center}
+    \begin{pspicture}(-3,-1.5)(3,4)
+      \pscircle[linewidth=1pt,linestyle=dashed,fillcolor=SkyBlue,fillstyle=solid](1,1){2}
+      \psaxes[linecolor=red,linewidth=1pt,labels=none]%
+      {->}(0,0)(-1.5,-1.5)(3.5,3.5)
+      \rput(3.75,0){$x$}
+      \rput(0,3.85){$iy$}
+      \rput(3,-0.4){3}
+      \rput(-0.4,3){3$i$}
+      \psdots(1,1)
+    \end{pspicture}
+ \end{center}
+  is equal to which of the following sets of complex numbers?
+  \begin{choice}
+    \incorrect $\{z \in \C : (z-1)^{2}+(z-(i+1))^{2}<2\}$
+    \feedback  The equation of a circle in the complex plane with
+    centre $a+ib$ and radius $r$ is
+    \begin{displaymath}
+      \{z\in\C : |z-(a+ib)|<r \}.
+    \end{displaymath}
+
+    \incorrect $\{z \in \C : z+(i+1)<2\}$
+    \feedback  You want the set of points whose \textit{distance}
+    from $1+i$ is less than $2$.
+
+    \correct   $\{z \in \C : |z-(i+1)|<2\}$
+    \feedback  The graph shows the set of complex numbers whose
+    distance from $1+i$ is less than $2$.
+
+    \incorrect $\{z \in \C : |z-2|<|i+1-2|\}$
+    \feedback  As $|i+1-2|=\sqrt 2$, this is the set of complex
+    numbers whose distance from $2$ is less than
+    $\sqrt 2$.
+
+    \incorrect None of the above.
+    \feedback The graph shows the set of complex numbers whose
+    distance from the centre of the circle is less than $2$.
+  \end{choice}
+\end{question}
+
+\begin{question}
+  \label{question2}
+  Which of the following numbers are prime?
+  \begin{choice}[multiple]
+    \incorrect 1
+    \feedback  By definition, a prime is a number greater than 1
+    whose only factors are 1 and itself.
+
+    \correct   19
+    \feedback  The only factors of 19 are 1 and itself.
+
+    \incorrect 6
+    \feedback  2 is a factor of 6
+
+    \correct   23
+    \feedback  The only factors of 23 are 1 and itself.
+
+    \correct   191
+    \feedback  The only factors of 191 are 1 and itself.
+  \end{choice}
+\end{question}
+
+\begin{question}
+  \label{question3}
+  What are suitable parametric equations for this plane curve?
+  \begin{center}
+    \psset{unit=.6cm}
+    \begin{pspicture}(-2.5,-0.5)(5,5.5)
+      \psaxes[linecolor=red,linewidth=1pt,labels=none]%
+      {->}(0,0)(-2.5,-1.5)(5,5)
+      \psellipse[linecolor=blue,linewidth=2pt](1,2)(3,2)
+    \end{pspicture}
+  \end{center}
+
+  \begin{choice}[columns=1]
+    \incorrect $x=2\cos t + 1$, $y=3\sin t + 2$
+    \feedback This is an ellipse with centre $(1,2)$ and with axes of
+    length $4$ in the $x$-direction and $6$ in the $y$-direction.
+    \begin{center}
+      \psset{unit=.6cm}
+      \begin{pspicture}(-2.5,-0.5)(5,5.5)
+        \psaxes[linecolor=red,linewidth=1pt,labels=none]%
+        {->}(0,0)(-2.5,-1.5)(5,5)
+        \parametricplot[linecolor=blue,linewidth=2pt]{0}{360}%
+        {t cos 2 mul 1 add t sin 3 mul 2 add}
+      \end{pspicture}
+    \end{center}
+
+    \correct $x=3\cos t + 1$, $y=2\sin t + 2$
+    \feedback The curve is an ellipse centre (1,2) with axes length 6
+    in the $x$ direction and 4 in the $y$ direction.
+
+    \incorrect $x=3\cos t - 1$, $y=2\sin t - 2$
+    \feedback This is an ellipse with centre $(-1,-2)$ and with axes
+    of length $6$ in the $x$-direction and $4$ in the $y$-direction.
+    \begin{center}
+      \psset{unit=.6cm}
+      \begin{pspicture}(-5,-4)(1,2)
+        \psaxes[linecolor=red,linewidth=1pt,labels=none]%
+        {<-}(0,0)(-4.5,-5.5)(1,2)
+        \parametricplot[linecolor=blue,linewidth=2pt]{0}{360}%
+        {t cos 3 mul 1 sub t sin 2 mul 2 sub}
+      \end{pspicture}
+    \end{center}
+
+    \incorrect $x=2\cos t - 1$, $y=3\sin t - 2$
+    \feedback This is an ellipse with centre $(-1,-2)$ and with axes
+    of length $4$ in the $x$-direction and $6$ in the $y$-direction.
+    \begin{center}
+      \psset{unit=.6cm}
+      \begin{pspicture}(-4,-5)(1,2)
+        \psaxes[linecolor=red,linewidth=1pt,labels=none]%
+        {<-}(0,0)(-4.5,-5.5)(1,2)
+        \parametricplot[linecolor=blue,linewidth=2pt]{0}{360}%
+        { t cos 2 mul 1 sub t sin 3 mul 2 sub}
+      \end{pspicture}
+    \end{center}
+  \end{choice}
+\end{question}
+
+\begin{question}
+  \label{question4}
+  If the vectors $\vect{a}$ (of magnitude 8 units) and $\vect{b}$
+  (of magnitude 3 units) are perpendicular, what is the value
+  of
+  \(|\vect{a} -2\vect{b}|\)~?
+  (Hint: Draw a diagram!)
+
+  \answer[number]{10} units
+  \whenRight The vectors $\vect{a}$, \(-2\vect{b}\), and
+  $\vect{a} - 2\vect{b}$ form the sides of a right-angled
+  triangle, with sides of length $8$ and $6$ and
+  hypotenuse of length $|\vect{a} -2\vect{b}|$. Therefore
+  by Pythagoras' Theorem,
+  \(|\vect{a} -2\vect{b}|=\sqrt{8^2+6^2}=10\).
+
+  \whenWrong Draw a diagram and then use Pythagoras' theorem.
+\end{question}
+\end{document}
+\endinput
+
+%% End of file `webquiztex-manual.tex'.

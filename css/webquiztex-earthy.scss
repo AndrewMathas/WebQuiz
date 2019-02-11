@@ -1,0 +1,75 @@
+/*
+ * -----------------------------------------------------------------------
+ *   webquiztex-earthy.css | colour specifications for dark theme
+ * -----------------------------------------------------------------------
+ *
+ *   Copyright (C) Andrew Mathas, University of Sydney
+ *
+ *   Distributed under the terms of the GNU General Public License (GPL)
+ *               http://www.gnu.org/licenses/
+ *
+ *   This file is part of the WebQuizTeX system.
+ *
+ *   <Andrew.Mathas@sydney.edu.au>
+ * ----------------------------------------------------------------------
+ */
+
+// sass variables for the colours used in the quizzes
+
+  $Text:           #5D001E;
+  $BackGround:     #E3E2DF;
+  $LinkColor:       blue;
+
+  $Heading:        #873600;
+  $Subheading:     #900C3F;
+
+  $QuestionPart:   lighten($Heading, 8%);
+
+  $ButtonBG:       #FAE5D3;
+  $ButtonBorder:   darken($ButtonBG, 40%);
+  $ButtonHover:    #943126;
+  $ButtonSelected: #C0392B;
+
+  $Dazzle:         #BA4A00;
+
+  $FeedbackBG:     $ButtonBG;
+  $FeedbackBorder: darken($FeedbackBG, 40%);
+  $FeedbackText:   #784212;
+
+  $SideMenuText:   lighten($Text, 10%);
+
+  $WarningBG:      #00ff00;
+  $WarningBorder:  darken($WarningBG, 60%);
+  $WarningFG:      lighten($WarningBG, 90%);
+
+  $BreadCrumbBG:   #6E2C00;
+  $BreadCrumbFG:   #FEF5E7;
+  @function breadcrumb-step($step) {
+    @return lighten($BreadCrumbBG, ($step*5%));
+  }
+
+  $DropDownFG:     #873600;
+
+  $Copyright:      $BreadCrumbBG;
+  $School:         lighten($Copyright, 10%);
+
+  $ListMarker:    '\027A3';
+
+  $HeadingFont: Verdana, Arial, Helvetica, sans-serif;
+
+  $BlankButtonBG:  #FEF9E7;
+  $BlankButtonFG:  black;
+
+  $CrossButtonBot: #fae5d3;
+  $CrossButtonFG:  red;
+  $CrossButtonTop: #784212;
+
+  $StarButtonBot: #90002e;
+  $StarButtonFG:  yellow;
+  $StarButtonTop: #e5791c;
+
+  $TickButtonBot: #fef7e7;
+  $TickButtonFG:  #271096;
+  $TickButtonTop: #e5791c;
+
+@import "webquiztex";

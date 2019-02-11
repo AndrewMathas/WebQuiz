@@ -240,7 +240,7 @@ class WebQuizCtan(Command):
                     ('doc/examples/*.tex',            'scripts/www/doc/examples'),
                     ('doc/webquiztex*.tex',              'doc'),
                     ('doc/webquiztex*.pdf',              'doc'),
-                    ('doc/webquiztex.1',              'doc'),
+                    ('doc/webquiztex.1',                 'doc'),
                     ('doc/webquiztex.languages',         'doc'),
                     ('doc/webquiztex.settings',          'doc'),
                     ('doc/webquiztex.themes',            'doc'),

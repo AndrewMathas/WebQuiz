@@ -149,7 +149,7 @@ function make_online_manual() {
 
 #################################################
 function usage() {
-  message "Make --[fast|quiet] --[check-examples|examples|languages|manual|online|themes|]"
+  message "Make --[fast|quiet] --[all|check-examples|examples|languages|man-page|online|themes|usage]"
 }
 
 makeall=false
@@ -177,6 +177,9 @@ else
        -l|--languages)
          make_languages
          shift ;;
+       -m|--man-page):
+         make_man_page
+         shift;;
        -o|--online-manual)
          make_online_manual
          shift ;;
