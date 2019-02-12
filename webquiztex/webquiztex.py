@@ -471,16 +471,14 @@ class WebQuizTeXSettings:
                     elif os.path.isdir(web_doc):
                         shutil.rmtree(web_doc)
 
-                    if os.path.isdir(webquiztex_file('www')):
-                        # if the www directory exists then copy it to web_dir
-                        print('\nCopying web files to {} ...\n'.format(web_dir))
-                        copytree(webquiztex_file('www'), web_dir)
-                    else:
+                    webquiztex_dir = os.path.dirname(kpsewhich('webquiztex.cls'))
+                    if os.path.islink(webquiztex_dir):
+                        # assume this is a development version and add links
+                        # from the web directory to the parent directory
+
                         # get the root directory of the source code
                         webquiztex_src = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
-                        # assume this is a development version and add links
-                        # from the web directory to the parent directory
                         print('\nLinking web files {} -> {} ...\n'.format(web_dir, webquiztex_src))
                         if not os.path.exists(web_dir):
                             os.makedirs(web_dir)
@@ -492,6 +490,14 @@ class WebQuizTeXSettings:
                             except FileNotFoundError:
                                 pass
                             os.symlink(os.path.join(webquiztex_src,src), newlink)
+
+                    elif os.path.isdir(os.path.join(webquiztex_dir,'www')):
+                        # if the www directory exists then copy it to web_dir
+                        print('\nCopying web files to {} ...\n'.format(web_dir))
+                        copytree(os.path.join(webquiztex_dir,'www'), web_dir)
+
+                    else:
+                        webquiztex_error('unable to find web source files')
 
                     self['webquiztex_www'] = web_dir
                     files_copied = True
