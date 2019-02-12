@@ -1,5 +1,5 @@
 % -----------------------------------------------------------------------
-%   webquiztex-ini.sty | read the webquiztex.ini file into pgfkeys
+%   webquiz-ini.sty | read the webquiz.ini file into pgfkeys
 % -----------------------------------------------------------------------
 %
 %   Copyright (C) Andrew Mathas, University of Sydney
@@ -7,21 +7,21 @@
 %   Distributed under the terms of the GNU General Public License (GPL)
 %               http://www.gnu.org/licenses/
 %
-%   This file is part of the webquiztex system.
+%   This file is part of the webquiz system.
 %
 %   <Andrew.Mathas@sydney.edu.au>
 % ----------------------------------------------------------------------
 
-%% Read the webquiztex.ini file into \pgfkeys for later use so that we
+%% Read the webquiz.ini file into \pgfkeys for later use so that we
 %% don't need to hard-code version information. We allow unknown keys so
 %% that we can slurp in all of the information in the file into
-%% \pgfkeys{/webquiztex}
+%% \pgfkeys{/webquiz}
 \RequirePackage{pgfkeys}
-\pgfkeys{/webquiztex/.is family, /webquiztex,
+\pgfkeys{/webquiz/.is family, /webquiz,
   % allow arbitrary unknown keys and set with \pgfkeyssetvalue
   .unknown/.code={\pgfkeyssetvalue{\pgfkeyscurrentpath/\pgfkeyscurrentname}{#1}},
 }
-\newcommand\webquiztex[1]{\pgfkeysvalueof{/webquiztex/#1}}
+\newcommand\webquiz[1]{\pgfkeysvalueof{/webquiz/#1}}
 
 % split input line into key-value pairs -- necessary as commas can appear in the value
 \RequirePackage{xparse}
@@ -29,15 +29,15 @@
 \NewDocumentCommand{\AddIniFileKeyValue}{ >{\SplitList{=}} m }{%
   \AddIniFileValue #1%
 }
-% put a key-value pair into \pgfkeys{/webquiztex}
+% put a key-value pair into \pgfkeys{/webquiz}
 % \AddIniFile{key}{value}  - note that value may contain commas
-\newcommand\AddIniFileValue[2]{\expandafter\pgfkeys\expandafter{/webquiztex,#1={#2}}}
+\newcommand\AddIniFileValue[2]{\expandafter\pgfkeys\expandafter{/webquiz,#1={#2}}}
 
-% read the webquiztex.ini file into \pgfkeys{/webquiztex}
+% read the webquiz.ini file into \pgfkeys{/webquiz}
 \newread\inifile% file handler
 \def\apar{\par}% \ifx\par won't work but \ifx\apar will
-\newcommand\AddEntry[1]{\expandafter\pgfkeys\expandafter{/webquiztex, #1}}
-\openin\inifile=webquiztex.ini% open file for reading
+\newcommand\AddEntry[1]{\expandafter\pgfkeys\expandafter{/webquiz, #1}}
+\openin\inifile=webquiz.ini% open file for reading
 \loop\unless\ifeof\inifile% loop until end of file
   \read\inifile to \iniline% read line from file
   \ifx\iniline\apar% test for, and ignore, \par

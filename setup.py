@@ -2,14 +2,14 @@
 
 r'''
 -----------------------------------------------------------------------------------------
-    setup | webquiztex setuptools configuration
+    setup | webquiz setuptools configuration
 -----------------------------------------------------------------------------------------
     Copyright (C) Andrew Mathas, University of Sydney
 
     Distributed under the terms of the GNU General Public License (GPL)
                   http://www.gnu.org/licenses/
 
-    This file is part of the WebQuizTeX system.
+    This file is part of the WebQuiz system.
 
     <Andrew.Mathas@sydney.edu.au>
 -----------------------------------------------------------------------------------------
@@ -25,7 +25,7 @@ import sys
 import zipfile
 
 from setuptools import setup, find_packages, Command
-from webquiztex.webquiztex_util import kpsewhich, MetaData
+from webquiz.webquiz_util import kpsewhich, MetaData
 
 class MetaData(dict):
     r"""
@@ -38,7 +38,7 @@ class MetaData(dict):
                 if len(key.strip())>0:
                     setattr(self, key.strip().lower(), val.strip())
 
-settings = MetaData('latex/webquiztex.ini')
+settings = MetaData('latex/webquiz.ini')
 
 class WebQuizDevelop(Command):
     r"""
@@ -64,7 +64,7 @@ class WebQuizDevelop(Command):
         Install links for the latex files, executable and web files
         '''
         texmflocal = kpsewhich('-var TEXMFLOCAL')
-        tex_dir = os.path.join(texmflocal,'tex', 'latex', 'local', 'webquiztex')
+        tex_dir = os.path.join(texmflocal,'tex', 'latex', 'local', 'webquiz')
         cwd = os.path.dirname(os.path.realpath(__file__))
 
         try:
@@ -79,20 +79,20 @@ class WebQuizDevelop(Command):
                 # update the tex search paths if not installed in home directory
                 subprocess.call('mktexlsr '+tex_dir, shell=True)
 
-            # add a link from /usr/local/bin/webquiztex to executable
+            # add a link from /usr/local/bin/webquiz to executable
             bindir = self.ask('Directory for executable', '/usr/local/bin')
-            webquiztex = os.path.join(bindir, 'webquiztex')
+            webquiz = os.path.join(bindir, 'webquiz')
 
-            if os.path.exists(webquiztex):
-                print('Not installing executable as {} already exists'.format(webquiztex))
+            if os.path.exists(webquiz):
+                print('Not installing executable as {} already exists'.format(webquiz))
             else:
-                os.symlink(os.path.join(cwd,'webquiztex','webquiztex.py'), webquiztex)
+                os.symlink(os.path.join(cwd,'webquiz','webquiz.py'), webquiz)
 
             # now add links for web files
-            subprocess.call('{} --initialise'.format(webquiztex), shell=True)
+            subprocess.call('{} --initialise'.format(webquiz), shell=True)
 
-            print('To build the WebQuizTeX css files run the bash script doc/makedoc -t')
-            print('To build the WebQuizTeX documentation run the bash script doc/makedoc --all')
+            print('To build the WebQuiz css files run the bash script doc/makedoc -t')
+            print('To build the WebQuiz documentation run the bash script doc/makedoc --all')
 
         except PermissionError as err:
             print('Insufficient permissions. Try running using sudo')
@@ -122,9 +122,9 @@ class WebQuizCtan(Command):
                 'name' : settings.authors,
                'email' : settings.author_email,
              'summary' : settings.description,
-           'directory' : '/macros/latex/contrib/webquiztex',
+           'directory' : '/macros/latex/contrib/webquiz',
             'announce' : settings.description,
-               'notes' : 'See README file in tex/latex/webquiztex',
+               'notes' : 'See README file in tex/latex/webquiz',
              'license' : 'free',
          'freeversion' : 'gpl',
     }
@@ -142,7 +142,7 @@ class WebQuizCtan(Command):
 
     def run(self):
         # write the zip file for uploading to ctan
-        self.zipfile = 'webquiztex-{}.zip'.format(settings.version)
+        self.zipfile = 'webquiz-{}.zip'.format(settings.version)
         self.ctan_data['file'] = self.zipfile
         self.write_zip_file()
 
@@ -164,13 +164,13 @@ class WebQuizCtan(Command):
     def update_copyright(self):
         r'''
         Make sure that the end dates on the copyright notices are correct as
-        given by the copyright line in webquiztex.ini
+        given by the copyright line in webquiz.ini
         '''
         copy = 'Copyright (C) '+settings.copyright[:9]
         for file in [ 'README-ctan.md',
-                      'latex/webquiztex-doc.code.tex',
-                      'doc/webquiztex-online-manual.tex',
-                      'doc/webquiztex.tex',
+                      'latex/webquiz-doc.code.tex',
+                      'doc/webquiz-online-manual.tex',
+                      'doc/webquiz.tex',
                       'README.rst'
                     ]:
             self.shell_command(
@@ -180,11 +180,11 @@ class WebQuizCtan(Command):
     def build_distribution(self):
         r'''
         Rebuilds the documentation files and css for inclusion in the zip file:
-            - doc/webquiztex-manual.tex
-            - doc/webquiztex.tex
-            - css/webquiztex-*.css
+            - doc/webquiz-manual.tex
+            - doc/webquiz.tex
+            - css/webquiz-*.css
         to ensure that they are correct for the ctan upload. We need to make
-        webquiztex-manual.pdf first because it is included in webquiztex.pdf.
+        webquiz-manual.pdf first because it is included in webquiz.pdf.
         '''
         # update the copyright notices in list of known files
         self.update_copyright()
@@ -195,15 +195,15 @@ class WebQuizCtan(Command):
             self.shell_command('doc/makedoc --all --fast')
 
         try:
-            os.remove('javasript/webquiztex-min.js')
+            os.remove('javasript/webquiz-min.js')
         except OSError:
             pass
         # minify the javascript code
-        self.shell_command('cd javascript && uglifyjs --output webquiztex-min.js --compress sequences=true,conditionals=true,booleans=true  webquiztex.js ')
+        self.shell_command('cd javascript && uglifyjs --output webquiz-min.js --compress sequences=true,conditionals=true,booleans=true  webquiz.js ')
 
     def write_zip_file(self):
         r'''
-        Create a zip file for webquiztex that can be uploaded to ctan. To do
+        Create a zip file for webquiz that can be uploaded to ctan. To do
         this we use the zipfile module to write the zopfile with all files in
         their expected places.
         '''
@@ -222,27 +222,27 @@ class WebQuizCtan(Command):
                 # unless it contains a '.', in which case we change the filename
                 for (src, target) in [
                     ('README-ctan.md',                   'README.md'),
-                    ('latex/webquiztex.c*',              'latex'),
-                    ('latex/webquiztex-*.code.tex',      'latex'),
-                    ('latex/webquiztex.ini',             'latex'),
-                    ('latex/webquiztex-*.lang',          'latex'),
+                    ('latex/webquiz.c*',              'latex'),
+                    ('latex/webquiz-*.code.tex',      'latex'),
+                    ('latex/webquiz.ini',             'latex'),
+                    ('latex/webquiz-*.lang',          'latex'),
                     ('latex/pgfsys-dvisvgm4ht.def',      'latex'),
                     ('CHANGES.rst',                      'scripts'),
                     ('LICENCE',                          'scripts'),
-                    ('webquiztex/README-scripts',        'scripts'),
-                    ('webquiztex/webquiztex*.py',        'scripts'),
-                    ('webquiztex/webquiztex.bat',        'scripts'),
-                    ('doc/webquiztex*.tex',              'doc'),
-                    ('doc/webquiztex*.pdf',              'doc'),
-                    ('doc/webquiztex.1',                 'doc'),
-                    ('doc/webquiztex.languages',         'doc'),
-                    ('doc/webquiztex.settings',          'doc'),
-                    ('doc/webquiztex.themes',            'doc'),
-                    ('doc/webquiztex.usage',             'doc'),
+                    ('webquiz/README-scripts',        'scripts'),
+                    ('webquiz/webquiz*.py',        'scripts'),
+                    ('webquiz/webquiz.bat',        'scripts'),
+                    ('doc/webquiz*.tex',              'doc'),
+                    ('doc/webquiz*.pdf',              'doc'),
+                    ('doc/webquiz.1',                 'doc'),
+                    ('doc/webquiz.languages',         'doc'),
+                    ('doc/webquiz.settings',          'doc'),
+                    ('doc/webquiz.themes',            'doc'),
+                    ('doc/webquiz.usage',             'doc'),
                     ('doc/README-doc',                   'doc'),
-                    ('javascript/webquiztex-min.js',     'doc/www/js/webquiztex.js'),
-                    ('css/webquiztex-*.css',             'doc/www/css'),
-                    ('doc/webquiztex-online-manual.tex', 'doc/www/doc'),
+                    ('javascript/webquiz-min.js',     'doc/www/js/webquiz.js'),
+                    ('css/webquiz-*.css',             'doc/www/css'),
+                    ('doc/webquiz-online-manual.tex', 'doc/www/doc'),
                     ('doc/examples/README-examples',     'doc/www/doc/examples'),
                     ('doc/examples/*.tex',               'doc/www/doc/examples'),
                     ('doc/examples/[-a-z]*.png',         'doc/examples'),
@@ -255,15 +255,15 @@ class WebQuizCtan(Command):
                             # copy file to the directory specified by target
                             zip_file.write(file, os.path.join(self.zipfile[:-4], target, file.split('/')[-1]))
 
-                # # add symlinks for webquiztex.py
-                # webquiztex = zipfile.ZipInfo()
-                # webquiztex.filename = 'scripts/webquiztex.py'
-                # webquiztex.create_system = 3
-                # webquiztex.external_attr |= 0120000 << 16L # symlink file type
-                # webquiztex.compress_type = ZIP_STORED
-                # zip_file.writestr(webquiztex, 'webquiztex.py')
-                # webquiztex.filename = 'scripts/webquiztex/webquiztex.py'
-                # tds_file.writestr(webquiztex, 'webquiztex.py')
+                # # add symlinks for webquiz.py
+                # webquiz = zipfile.ZipInfo()
+                # webquiz.filename = 'scripts/webquiz.py'
+                # webquiz.create_system = 3
+                # webquiz.external_attr |= 0120000 << 16L # symlink file type
+                # webquiz.compress_type = ZIP_STORED
+                # zip_file.writestr(webquiz, 'webquiz.py')
+                # webquiz.filename = 'scripts/webquiz/webquiz.py'
+                # tds_file.writestr(webquiz, 'webquiz.py')
 
 
 
@@ -285,8 +285,8 @@ setup(name             = settings.program,
 
       cmdclass         = {'ctan': WebQuizCtan, 'develop': WebQuizDevelop},
 
-      provides         = 'webquiztex',
-      entry_points     = { 'console_scripts': [ 'webquiztex=webquiztex.webquiztex:main' ], },
+      provides         = 'webquiz',
+      entry_points     = { 'console_scripts': [ 'webquiz=webquiz.webquiz:main' ], },
 
       license          = settings.licence,
 

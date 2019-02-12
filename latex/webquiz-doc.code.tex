@@ -4,7 +4,7 @@
 %  Distributed under the terms of the GNU General Public License (GPL)
 %                  http://www.gnu.org/licenses/
 %
-% This file is part of the WebQuizTeX system.
+% This file is part of the WebQuiz system.
 %
 % <Andrew.Mathas@sydney.edu.au>
 %-----------------------------------------------------------------------------
@@ -28,7 +28,7 @@
 \RequirePackage{xcolor}
 
 \usepackage{hologo}
-\newcommand\WebQuizTeX{\texorpdfstring{WebQuizTeX}{\textcolor{brown}{WebQuiz\kern-0.5ex\hologo{TeX}}}\xspace}
+\newcommand\WebQuiz{\texorpdfstring{WebQuiz}{\textcolor{brown}{WebQuiz\kern-0.5ex\hologo{TeX}}}\xspace}
 \newcommand\TeXfht{\href{https://www.ctan.org/tex4ht}{\hologo{TeX4ht}\xspace}}
 
 \NewDocumentCommand\ctan{ O{pkg/#2} m}{\href{https://www.ctan.org/#1}{\texttt{#2}}}
@@ -41,7 +41,7 @@
 \newcommand\Ghostscript{\href{https://www.ghostscript.com/}{Ghostscript}\xspace}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% listings code for python and latex examples in webquiztex documentation
+%% listings code for python and latex examples in webquiz documentation
 \RequirePackage{listings}
 \lstset{%
     % Basic design
@@ -122,7 +122,7 @@
   language=bash,
   upquote=true,
   classoffset=1,
-  morekeywords={webquiztex, kpsewhich, latex, pdflatex, xelatex. lualatex},
+  morekeywords={webquiz, kpsewhich, latex, pdflatex, xelatex. lualatex},
   classoffset=2,
   morekeywords={>}
 }
@@ -180,14 +180,14 @@
       colorlinks=true,
       linkcolor=SaddleBrown,
       urlcolor=Brown,
-      pdfauthor   = {\webquiztex{authors}                       },
-      pdfkeywords = {\webquiztex{keywords}                      },
-      pdfsubject  = {\webquiztex{description}                   },
+      pdfauthor   = {\webquiz{authors}                       },
+      pdfkeywords = {\webquiz{keywords}                      },
+      pdfsubject  = {\webquiz{description}                   },
       pdfinfo     = {%
-          copyright    = {\webquiztex{copyright}},
-          licence      = {\webquiztex{licence}},
-          release date = {\webquiztex{release date}},
-          url          = {\webquiztex{url}},
+          copyright    = {\webquiz{copyright}},
+          licence      = {\webquiz{licence}},
+          release date = {\webquiz{release date}},
+          url          = {\webquiz{url}},
       }
   }
 }

@@ -2,7 +2,7 @@
 
 # Script to generate all of the automatic input for the main web quiz manual.
 # That is, update the lists supported languages and themes and generate all of
-# the images used by trhe webquiztex manual.
+# the images used by the webquiz manual.
 
 # TODO: rewrite in python to make cross-platform and merge with makeimages
 
@@ -25,7 +25,7 @@ function check_examples() {
   echo "Source files" > makedoc-examples
   ls -1 examples/*.tex | sed 's@.tex@@' | sed 's@examples.@@' | sort -u >> makedoc-examples
   echo "Images in manual" > makedoc-manual
-  ag ScreenShot webquiztex.tex|sed 's@.*}{\([^}]*\)}$@\1@'|ag -v Shot|sort -u >> makedoc-manual
+  ag ScreenShot webquiz.tex|sed 's@.*}{\([^}]*\)}$@\1@'|ag -v Shot|sort -u >> makedoc-manual
   echo "Available images" > makedoc-images
   examples/makeimages --list | sort >> makedoc-images
   gvim -d makedoc-manual makedoc-images makedoc-examples 
@@ -34,7 +34,7 @@ function check_examples() {
 #################################################
 function make_all() {
   makeall=true # so that themes are not built twice
-  message "Making pdf for WebQuizTeX manual"
+  message "Making pdf for WebQuiz manual"
   PREFEX=" - "
   make_languages
   make_settings
@@ -44,15 +44,15 @@ function make_all() {
   make_man_page
   if  [[ "$fast" = false ]] ; then
       make_online_manual
-      pdflatex --interaction=batchmode webquiztex
-      pdflatex --interaction=batchmode webquiztex
+      pdflatex --interaction=batchmode webquiz
+      pdflatex --interaction=batchmode webquiz
   fi
-  pdflatex --interaction=batchmode webquiztex
+  pdflatex --interaction=batchmode webquiz
 }
 
 #################################################
 function make_examples() {
-  message "Generating WebQuizTeX example images"
+  message "Generating WebQuiz example images"
   cd $WebQuizExamplesDir
   if [[ "$quiet" == true ]]; then
       q="-q"
@@ -69,13 +69,13 @@ function make_examples() {
 
 #################################################
 function make_languages() {
-  message "Generating list of WebQuizTeX supported languages"
+  message "Generating list of WebQuiz supported languages"
   cd $WebQuizDir/latex
-  LANG=$(ls -1 webquiztex-*.lang | xargs | sed 's@webquiztex-@@g' | gsed -e 's@\([a-z]*\).lang@\u\1,@g' | sed 's@, \([A-Za-z]*\),$@,, \1@')
+  LANG=$(ls -1 webquiz-*.lang | xargs | sed 's@webquiz-@@g' | gsed -e 's@\([a-z]*\).lang@\u\1,@g' | sed 's@, \([A-Za-z]*\),$@,, \1@')
   cd $WebQuizDir/doc
-  LANGS="webquiztex.languages"
+  LANGS="webquiz.languages"
   /bin/rm -f $LANGS
-  echo "% List of languages currently supported by WebQuizTeX" > $LANGS
+  echo "% List of languages currently supported by WebQuiz" > $LANGS
   echo "% Generated using 'makedoc --languages' on $(date '+%Y-%m-%d')" >> $LANGS
   echo "\newcommand\WebQuizLanguages{$LANG}" >> $LANGS
 }
@@ -84,21 +84,21 @@ function make_languages() {
 function make_man_page() {
   # using pando to convert from markdown to man-page format gives horrible
   # results so we go via rst
-  pandoc --from=markdown --to=rst --output=webquiztex.rst ../README-ctan.md
-  rst2man.py webquiztex.rst webquiztex.1
+  pandoc --from=markdown --to=rst --output=webquiz.rst ../README-ctan.md
+  rst2man.py webquiz.rst webquiz.1
 }
 
 #################################################
 function make_settings() {
-  message "Generating WebQuizTeX settings file"
+  message "Generating WebQuiz settings file"
   cd $WebQuizDir/doc
-  /bin/rm -f webquiztex.settings
-  webquiztex --settings >> webquiztex.settings
+  /bin/rm -f webquiz.settings
+  webquiz --settings >> webquiz.settings
 }
 
 #################################################
 function make_themes () {
-  message "Generating list of WebQuizTeX supported css themes"
+  message "Generating list of WebQuiz supported css themes"
 
   if [[ "$fast" == false ]]; then
     message "Rebuilding all themes from scss files"
@@ -107,9 +107,9 @@ function make_themes () {
 
   # next generate code to include screenshots for each theme in the appendix
   cd $WebQuizDir/css
-  for theme in webquiztex-*.scss ; do
+  for theme in webquiz-*.scss ; do
       sass --style compressed $theme ${theme/scss/css}
-      name=${theme/webquiztex-/}
+      name=${theme/webquiz-/}
       name=${name/.scss/}
       if [ ! -e "$WebQuizExamplesDir/theme-$name.tex" ]; then
         # create theme-<theme>.tex if it does not already exist
@@ -123,28 +123,28 @@ function make_themes () {
   fi
 
   message "Generating list of themes for the manual"
-  THEME="$WebQuizDir/doc/webquiztex.themes"
+  THEME="$WebQuizDir/doc/webquiz.themes"
   /bin/rm -f $THEME
-  echo "% List of themes supported by WebQuizTeX -- generated $(date '+%Y-%m-%d')" > $THEME
+  echo "% List of themes supported by WebQuiz -- generated $(date '+%Y-%m-%d')" > $THEME
   # first generate a list of themes for the documentclass options section
   cd $WebQuizDir/css
-  THEMES=$(ls -1 webquiztex-*.scss | xargs | sed 's@webquiztex-@@g' | sed 's@.scss@,@g' | sed 's@, \([a-z]*\),$@,, \1@')
+  THEMES=$(ls -1 webquiz-*.scss | xargs | sed 's@webquiz-@@g' | sed 's@.scss@,@g' | sed 's@, \([a-z]*\),$@,, \1@')
   echo "\newcommand\WebQuizThemes{$THEMES}" >> $THEME
 }
 
 #################################################
 function make_usage() {
-  message "Generating WebQuizTeX usage file"
+  message "Generating WebQuiz usage file"
   cd $WebQuizDir/doc
-  /bin/rm -f webquiztex.usage
-  webquiztex --help >> webquiztex.usage
+  /bin/rm -f webquiz.usage
+  webquiz --help >> webquiz.usage
 }
 
 #################################################
 function make_online_manual() {
   message "Making pdf for online manual"
   cd $WebQuizDir/doc
-  latex webquiztex-online-manual && dvipdf webquiztex-online-manual
+  latex webquiz-online-manual && dvipdf webquiz-online-manual
 }
 
 #################################################

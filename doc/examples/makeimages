@@ -2,7 +2,7 @@
 
 r'''
 -----------------------------------------------------------------------------
-    makeimages | extract images from webquiztex web pages for the manual
+    makeimages | extract images from webquiz web pages for the manual
 -----------------------------------------------------------------------------
 
     Copyright (C) Andrew Mathas, University of Sydney
@@ -10,18 +10,18 @@ r'''
     Distributed under the terms of the GNU General Public License (GPL)
                   http://www.gnu.org/licenses/
 
-    This file is part of the WebQuizTeX system.
+    This file is part of the WebQuiz system.
 
     <Andrew.Mathas@sydney.edu.au>
 -----------------------------------------------------------------------------
 
 Python script to extract png images for the various web pages that are in the
-webquiztex manual. We first use
-    - webquiztex to construct the web page
+webquiz manual. We first use
+    - webquiz to construct the web page
     - webkit2png to extract an image of the web page, sometimes with options
     - mogrify to trim the image down to size
 Alternatively, it is possible to extract a png image of the PDF file created by
-webquiztex.  For the full extraction specifications see the pages array below
+webquiz.  For the full extraction specifications see the pages array below
 '''
 
 import argparse
@@ -33,9 +33,9 @@ import subprocess
 import sys
 import time
 
-# location of the webquiztex example web pages on a development server
-examplesURL = "http://localhost/WebQuizTeX/doc/examples"
-examplesDIR = os.path.join(os.environ['HOME'], 'Code/WebQuizTeX/doc/examples')
+# location of the webquiz example web pages on a development server
+examplesURL = "http://localhost/WebQuiz/doc/examples"
+examplesDIR = os.path.join(os.environ['HOME'], 'Code/WebQuiz/doc/examples')
 os.chdir(examplesDIR)
 
 # lambda function for running shell commands: run( command )
@@ -46,7 +46,7 @@ webkit2png_mode = ''
 
 class Convert:
     r'''
-    Convert a webquiztex example file into a png image for use in the
+    Convert a webquiz example file into a png image for use in the
     manual. The following parameters are accepted:
       - page     =  name of the page to be produced
       - src      = either pdf, html or ps which corresponds to the image
@@ -74,7 +74,7 @@ class Convert:
             Question = None,
             question = None,
             src = 'html',
-            webquiztex = '',
+            webquiz = '',
             width =500,
         )
         self.page = page
@@ -158,11 +158,11 @@ class Convert:
 
     def webkit2png(self):
         r'''
-            Extract and trim and image using webquiztex, webkit2png and mogrify
+            Extract and trim and image using webquiz, webkit2png and mogrify
         '''
-        # run the quiz file through webquiztex
+        # run the quiz file through webquiz
         if not self.options.fast:
-            run('webquiztex {} {} {}'.format(self.webquiztex, webquiz_mode, self.page))
+            run('webquiz {} {} {}'.format(self.webquiz, webquiz_mode, self.page))
 
         # extract a png image for the web page using webkit2png
         cmd = r"webkit2png {debug} --ignore-ssl-check -o {fout} {width} --delay={delay} {js} {URL}/{fin}.html".format(
@@ -245,7 +245,7 @@ pages = [
 ]
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description = 'Python script to extract images for the webquiztex manual',
+    parser = argparse.ArgumentParser(description = 'Python script to extract images for the webquiz manual',
                                      epilog = 'Images for all updated pages are extracted if none are specified'
     )
     parser.add_argument('images', nargs='*',type=str, default=None, help='list of one or images to extract')
@@ -253,7 +253,7 @@ if __name__ == '__main__':
                         help='do not delete all extraneous files on exit')
     parser.add_argument('-d', '--debugging', action='store_true', default=False, help='turn on debugging')
     parser.add_argument('--fast', action='store_true', default=False,
-            help='generate image without first calling webquiztex')
+            help='generate image without first calling webquiz')
     parser.add_argument('-f', '--force', action='store_true', default=False, help='update all files without comparing timestamps')
     parser.add_argument('-l', '--list', action='store_true', default=False, help='print list of generated image files')
     parser.add_argument('-q', '--quiet', action='store_true', default=False, help='quiet output')

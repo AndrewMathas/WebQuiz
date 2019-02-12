@@ -4,28 +4,28 @@
 %  Distributed under the terms of the GNU General Public License (GPL)
 %                  http://www.gnu.org/licenses/
 %
-% This file is part of the WebQuizTeX system.
+% This file is part of the WebQuiz system.
 %
 % <Andrew.Mathas@sydney.edu.au>
 %-----------------------------------------------------------------------------
 
 %% This file is part of the WebQuiz class distribution
-\documentclass[svgnames]{webquiztex}
+\documentclass[svgnames]{webquiz}
 
-% load webquiztex-doc code -- the class file loads webquiztex-ini.code.tex is first
-\input{webquiztex-doc.code}
+% load webquiz-doc code -- the class file loads webquiz-ini.code.tex is first
+\input{webquiz-doc.code}
 
 \usepackage{pst-plot}
 \usepackage{hyperref}
 
 \usepackage{ifpdf}
 \ifpdf
-  \PackageError{WebQuizTeX}{This file must be compiled using latex not pdflatex}
+  \PackageError{WebQuiz}{This file must be compiled using latex not pdflatex}
 \fi
 \newcommand{\C}{\mathbb C}
 \newcommand*{\vect}[1]{\mathbf{#1}}
 
-\hypersetup{pdftitle={WebQuizTeX online manual}}
+\hypersetup{pdftitle={WebQuiz online manual}}
 
 \newcommand\qref[1]{%
   \ifdefined\HCode\relax
@@ -38,12 +38,12 @@
 \begin{document}
 
 \begin{discussion}[Introduction]
-  \WebQuizTeX is a \LaTeX{} package for creating \textit{interactive}
+  \WebQuiz is a \LaTeX{} package for creating \textit{interactive}
   web quizzes.  The idea is that you write the quiz using \LaTeX{} and that
-  \WebQuizTeX creates the web page from this file. Anything that you can
-  write using \LaTeX{} will be converted to \HTML by \WebQuizTeX. This
+  \WebQuiz creates the web page from this file. Anything that you can
+  write using \LaTeX{} will be converted to \HTML by \WebQuiz. This
   includes, for example, mathematics and graphics written using
-  \ctan{pstricks}.  \WebQuizTeX supports three different types of quiz
+  \ctan{pstricks}.  \WebQuiz supports three different types of quiz
   questions:
 
   \begin{enumerate}
@@ -56,17 +56,17 @@
   can then be compared with the correct answer in several different
   ways. (See \qref{3})
   \end{enumerate}
-The use of \WebQuizTeX is described in the next section. Later
-sections describe how each of the \WebQuizTeX environments are used.
+The use of \WebQuiz is described in the next section. Later
+sections describe how each of the \WebQuiz environments are used.
 
-The \LatexCode|discussion| environment in \WebQuizTeX can also be used to
+The \LatexCode|discussion| environment in \WebQuiz can also be used to
 write Web Pages like this one (The pages you are reading here were
-written using \WebQuizTeX.)
+written using \WebQuiz.)
 \end{discussion}
 \begin{discussion}[Basic Usage]
-Once you have a \WebQuizTeX file, you can run it through \LaTeX, in
+Once you have a \WebQuiz file, you can run it through \LaTeX, in
 the usual way, to produce a readable version of your quiz. When you
-are happy with the quiz, use \WebQuizTeX to create the HTML
+are happy with the quiz, use \WebQuiz to create the HTML
 version. Note that the printable version of the quiz does \emph{not}
 look like the web page; rather, it contains all of the information in
 an easily readable layout.
@@ -78,17 +78,17 @@ an easily readable layout.
       > pdflatex quiz1          % a PDF versio of the quiz
       > xdvi quiz1              % view the quiz using xdvi
       > dvips quiz1             % print the quiz
-      > webquiztex quiz1           % converts the quiz to html
+      > webquiz quiz1           % converts the quiz to html
 \end{latexcode}
   Converting the quiz to html can take quite a long time, particularly
   if a large number of images need to be created.
 
 \end{discussion}
-\begin{discussion}[WebQuizTeX files]
+\begin{discussion}[WebQuiz files]
 
-  The basic structure of a \WebQuizTeX file is as follows:
+  The basic structure of a \WebQuiz file is as follows:
 \begin{latexcode}
-      \documentclass{webquiztex}
+      \documentclass{webquiz}
 
       \title{Quiz 1: Complex numbers}
 
@@ -153,7 +153,7 @@ an easily readable layout.
   Questions are set inside a \LatexCode|question| environment. The text is
   followed by the answers.
 
-  \WebQuizTeX supports three types of questions:
+  \WebQuiz supports three types of questions:
   \begin{itemize}
   \item Multiple choice questions with \emph{precisely one} correct
     answer;
@@ -201,7 +201,7 @@ an easily readable layout.
   recommended that you use them because targeted feedback to the
   students based on their responses can be beneficial.
   \par
-  For example, the code below, when run through \WebQuizTeX, produces \qref{1}
+  For example, the code below, when run through \WebQuiz, produces \qref{1}
   in the online manual quiz.
 \begin{latexcode}
    \begin{question}
@@ -269,7 +269,7 @@ an easily readable layout.
   The only difference to the previous case is that zero or more
   \LatexCode|\correct| commands can appear.
   \par
-  For example, \qref{2} below was typed into \WebQuizTeX
+  For example, \qref{2} below was typed into \WebQuiz
   using the following commands:
 \begin{latexcode}
     \begin{question}
@@ -322,7 +322,7 @@ an easily readable layout.
   If the optional argument \LatexCode|[multiple]| is not present, then the
   question admits precisely one correct answer.
   \par
-  For example, \qref{3} below was typed into \WebQuizTeX
+  For example, \qref{3} below was typed into \WebQuiz
   using the following commands:
 \begin{latexcode}
     \begin{question}
@@ -384,7 +384,7 @@ an easily readable layout.
 \end{latexcode}
 \end{discussion}
 \begin{discussion}[Question 4]
-  The final type of question that \WebQuizTeX supports is a question that
+  The final type of question that \WebQuiz supports is a question that
   requires an answer, which can be a number or a string.  The answer is
   typeset using the \LatexCode|\answer| macro. The \LatexCode|\answer|
   macro takes two arguments: an optional comparison method, which
@@ -404,9 +404,9 @@ an easily readable layout.
            \whenWrong . . . feedback when wrong (optional)
          \end{question}
   \end{latexcode}
-  See the \WebQuizTeX manual for details of the different
+  See the \WebQuiz manual for details of the different
   comparison types.  For example, \qref{4} below was typed into
-  \WebQuizTeX using the following commands:
+  \WebQuiz using the following commands:
 \begin{latexcode}
     \begin{question}
       If the vectors $\vect{a}$ (of magnitude 8 units) and $\vect{b}$
@@ -430,9 +430,9 @@ an easily readable layout.
 \end{latexcode}
 \end{discussion}
 \begin{discussion}[Index Files]
-  \WebQuizTeX also provides a mechanism for creating a web page
+  \WebQuiz also provides a mechanism for creating a web page
   containing an index of all quizzes for a given Unit of Study.
-  This is done with a \WebQuizTeX file that contains a \LatexCode|quizindex|
+  This is done with a \WebQuiz file that contains a \LatexCode|quizindex|
   environment. The syntax for this environment is as follows:
 \begin{latexcode}
     \begin{quizindex}
@@ -443,12 +443,12 @@ an easily readable layout.
 \end{latexcode}
 If no \textit{URL} is given as an optional argument to
 \LatexCode|\quiz| then
-  \WebQuizTeX sets the url(s) to \BashCode|quiz1.html|, \BashCode|quiz2.html|
+  \WebQuiz sets the url(s) to \BashCode|quiz1.html|, \BashCode|quiz2.html|
   and so on.
 \end{discussion}
 
 \begin{discussion}[Credits]
-    \WebQuizTeX was written and developed in the
+    \WebQuiz was written and developed in the
     \href{http://www.maths.usyd.edu.au/}{School of Mathematics and
     Statistics} at the \href{http://www.usyd.edu.au/}{University of
     Sydney}.  The system is built on \LaTeX{} with the conversion from
@@ -457,18 +457,18 @@ If no \textit{URL} is given as an optional argument to
     and Michal Hoftich's
     \href{https://github.com/michal-h21/make4ht}{make4ht}.
 
-    To write quizzes using \WebQuizTeX it is only necessary to know
-    \LaTeX, however, the \WebQuizTeX system has three components:
+    To write quizzes using \WebQuiz it is only necessary to know
+    \LaTeX, however, the \WebQuiz system has three components:
     \begin{itemize}
-      \item A \LaTeX{} document class file, \LatexCode{webquiztex.cls}, and
+      \item A \LaTeX{} document class file, \LatexCode{webquiz.cls}, and
       a \TeXfht configuration file, \LatexCode{webquitexz.cfg}, that enable the
       quiz files to be processed by \LaTeX{} and \TeXfht, respectively.
-      \item A python program, \BashCode{webquiztex}, that translates the \XML
+      \item A python program, \BashCode{webquiz}, that translates the \XML
       file that is produced by \TeXfht into \HTML.
       \item Some \Javascript and \CSS that controls the quiz web page.
     \end{itemize}
 
-   The \LaTeX{} component of \WebQuizTeX was written by Andrew Mathas and
+   The \LaTeX{} component of \WebQuiz was written by Andrew Mathas and
    the python, \CSS and \Javascript code was written by Andrew Mathas (and
    Don Taylor), based on an initial prototype of Don Taylor's from 2001.
    Since 2004 the program has been maintained and developed by Andrew
@@ -623,4 +623,4 @@ If no \textit{URL} is given as an optional argument to
 \end{document}
 \endinput
 
-%% End of file `webquiztex-manual.tex'.
+%% End of file `webquiz-manual.tex'.

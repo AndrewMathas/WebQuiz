@@ -1,6 +1,6 @@
 r'''
 -----------------------------------------------------------------------------
-    webquiztex_local | default layout of webquiztex web pages.
+    webquiz_local | default layout of webquiz web pages.
 -----------------------------------------------------------------------------
 
     Copyright (C) Andrew Mathas, University of Sydney
@@ -8,7 +8,7 @@ r'''
     Distributed under the terms of the GNU General Public License (GPL)
                   http://www.gnu.org/licenses/
 
-    This file is part of the WebQuizTeX system.
+    This file is part of the WebQuiz system.
 
     <Andrew.Mathas@sydney.edu.au>
 -----------------------------------------------------------------------------
@@ -16,7 +16,7 @@ r'''
 
 # -*- encoding: utf-8 -*-
 
-from webquiztex_templates import no_script
+from webquiz_templates import no_script
 
 # If you want to create a new version of this file to change the
 # quiz web page layout then the following "dictionary" of code variables
@@ -36,7 +36,7 @@ from webquiztex_templates import no_script
 #   quiz.unit_code = unit code from \UnitCode
 #   quiz.unit_name = unit name from \UnitName
 #   quiz.unit_url = unit url from \UnitURL
-#   quiz.webquiztex_init = javascript for initialising quiz page.
+#   quiz.webquiz_init = javascript for initialising quiz page.
 #          This MUST appear tow<M-C-D-A>rds the end of HTML body
 
 def write_web_page(quiz):
@@ -48,7 +48,7 @@ def write_web_page(quiz):
     quiz_header=quiz.quiz_header,  # quiz title + navigation arrows
     quiz_questions=quiz.quiz_questions,  # html for quiz
     no_script=no_script,  # error when javascript is not enabled
-    webquiztex_init=quiz.webquiztex_init  # parting javascript callsWebQuizInt
+    webquiz_init=quiz.webquiz_init  # parting javascript callsWebQuizInt
   )
 
 
@@ -67,7 +67,7 @@ quiz_page = r'''<!DOCTYPE HTML>
       {quiz_questions}
     </div>
   </div>
-  {webquiztex_init}
+  {webquiz_init}
 </body>
 </html>
 '''

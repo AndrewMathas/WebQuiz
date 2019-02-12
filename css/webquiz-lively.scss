@@ -1,6 +1,6 @@
 /*
  * -----------------------------------------------------------------------
- *   webquiztex-muted.css | colour specifications for dark theme
+ *   webquiz-lively.css | colour specifications for dark theme
  * -----------------------------------------------------------------------
  *
  *   Copyright (C) Andrew Mathas, University of Sydney
@@ -8,7 +8,7 @@
  *   Distributed under the terms of the GNU General Public License (GPL)
  *               http://www.gnu.org/licenses/
  *
- *   This file is part of the WebQuizTeX system.
+ *   This file is part of the WebQuiz system.
  *
  *   <Andrew.Mathas@sydney.edu.au>
  * ----------------------------------------------------------------------
@@ -16,60 +16,60 @@
 
 // sass variables for the colours used in the quizzes
 
-  $Text:           #373737;
-  $BackGround:     #F4F4F4;
-  $LinkColor:       blue;
+  $Text:           #CA3435;
+  $BackGround:     #FBE7B2;
+  $LinkColor:      #299617;
 
-  $Heading:        #C0B283;
-  $Subheading:     #bd960f;
+  $Heading:        #FD0E35;
+  $Subheading:     #FF00CC;
 
   $QuestionPart:   lighten($Heading, 8%);
 
-  $ButtonBG:       #DCD0C0;
-  $ButtonBorder:   darken($ButtonBG, 40%);
-  $ButtonHover:    #ecb007;
-  $ButtonSelected: lighten($ButtonBG, 30%);
+  $ButtonBG:       #FEBAAD;
+  $ButtonBorder:   #DA2647;
+  $ButtonSelected: #AD4379;
+  $ButtonHover:    lighten($ButtonSelected, 20%);
 
-  $Dazzle:         #261868;
+  $Dazzle:         #F76C6C;
 
   $FeedbackBG:     $ButtonBG;
   $FeedbackBorder: darken($FeedbackBG, 40%);
-  $FeedbackText:   lighten($FeedbackBG, 20%);
+  $FeedbackText:   lighten($FeedbackBG, 10%);
 
-  $SideMenuText:   #655d41;
+  $SideMenuText:   #A8D0E6;
 
-  $WarningBG:      #E37222;
+  $WarningBG:      #C289B0;
   $WarningBorder:  darken($WarningBG, 60%);
   $WarningFG:      lighten($WarningBG, 90%);
 
-  $BreadCrumbBG:   darken($Heading, 50%);
-  $BreadCrumbFG:   darken($BackGround, 30%);
+  $BreadCrumbBG:   #FF3855;
+  $BreadCrumbFG:   yellow;
   @function breadcrumb-step($step) {
     @return lighten($BreadCrumbBG, ($step*5%));
   }
 
-  $DropDownFG:     #804000;
+  $DropDownFG:     #FFFF66;
 
-  $Copyright:      $BreadCrumbBG;
+  $Copyright:      #bf0520;
   $School:         lighten($Copyright, 10%);
 
   $ListMarker:    '\027A3';
 
   $HeadingFont: Verdana, Arial, Helvetica, sans-serif;
 
-  $BlankButtonBG:  #FFF8DC;
-  $BlankButtonFG:  black;
+  $BlankButtonBG:  #FDD7E4;
+  $BlankButtonFG:  #FF3855;
 
-  $CrossButtonBot: slateblue;
+  $CrossButtonBot: #febaad;
   $CrossButtonFG:  red;
-  $CrossButtonTop: white;
+  $CrossButtonTop: #da2647;
 
-  $StarButtonBot: green;
+  $StarButtonBot: #ff00cc;
   $StarButtonFG:  yellow;
-  $StarButtonTop: yellow;
+  $StarButtonTop: #cc0000;
 
-  $TickButtonBot: yellow;
-  $TickButtonFG:  green;
-  $TickButtonTop: red;
+  $TickButtonBot: #cc0000;
+  $TickButtonFG:  white;
+  $TickButtonTop: #ffaeac;
 
-@import "webquiztex";
+@import "webquiz";

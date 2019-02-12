@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 r'''
 ------------------------------------------------------------------------------
-    webquiztex_util | utilty functions 
+    webquiz_util | utilty functions 
 ------------------------------------------------------------------------------
     Copyright (C) Andrew Mathas, University of Sydney
 
     Distributed under the terms of the GNU General Public License (GPL)
                   http://www.gnu.org/licenses/
 
-    This file is part of the WebQuizTeX system.
+    This file is part of the WebQuiz system.
 
     <Andrew.Mathas@sydney.edu.au>
 ------------------------------------------------------------------------------
@@ -22,8 +22,8 @@ import sys
 import traceback
 
 # ---------------------------------------------------------------------------------------
-# Return the full path for a file in the webquiztex directory
-webquiztex_file = lambda file: os.path.join(os.path.dirname(os.path.realpath(__file__)), file)
+# Return the full path for a file in the webquiz directory
+webquiz_file = lambda file: os.path.join(os.path.dirname(os.path.realpath(__file__)), file)
 
 def kpsewhich(search):
     r'''short-cut to access kpsewhich output:
@@ -68,12 +68,12 @@ def debugging(print_message, *arg):
 
 
 #################################################################################
-def webquiztex_error(msg, err=None):
+def webquiz_error(msg, err=None):
     r'''
     Consistent handling of errors in magthquiz: print the message `msg` and
     exist with error code `err.errno` if it is available.abs
     '''
-    print('{dash}WebQuizTex error:\n  {msg}\n{dash}'.format(
+    print('{dash}WebQuiz error:\n  {msg}\n{dash}'.format(
            msg=msg, dash='-'*40+'\n')
     )
 

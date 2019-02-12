@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 r'''
 ------------------------------------------------------------------------------
-    webquiztex | Online quizzes generated from LaTeX using python and TeX4ht
+    webquiz | Online quizzes generated from LaTeX using python and TeX4ht
                | This module mainly deals with command-line options and
                | settings and then calls MakeWebQuiz to build the quiz
 ------------------------------------------------------------------------------
@@ -10,7 +10,7 @@ r'''
     Distributed under the terms of the GNU General Public License (GPL)
                   http://www.gnu.org/licenses/
 
-    This file is part of the WebQuizTeX system.
+    This file is part of the WebQuiz system.
 
     <Andrew.Mathas@sydney.edu.au>
 ------------------------------------------------------------------------------
@@ -27,28 +27,28 @@ import signal
 import subprocess
 import sys
 
-# imports of webquizTeX code
-import webquiztex_templates
-from webquiztex_makequiz import MakeWebQuiz
-from webquiztex_util import copytree, debugging, kpsewhich, webquiztex_error, webquiztex_file, MetaData
+# imports of webquiz code
+import webquiz_templates
+from webquiz_makequiz import MakeWebQuiz
+from webquiz_util import copytree, debugging, kpsewhich, webquiz_error, webquiz_file, MetaData
 
 #################################################################################
 # read in basic meta data such as author, version, ... and set debugging=False
 
 try:
-    metadata = MetaData(kpsewhich('webquiztex.ini'), debugging=False)
+    metadata = MetaData(kpsewhich('webquiz.ini'), debugging=False)
 except subprocess.CalledProcessError:
-    print('webquiztex installation error: unable to find webquiztex.ini')
+    print('webquiz installation error: unable to find webquiz.ini')
     sys.exit(1)
 
 # ---------------------------------------------------------------------------------------
 def graceful_exit(sig, frame):
     ''' exit gracefully on SIGINT and SIGTERM'''
     if metadata:
-        webquiztex_error('program terminated (signal {}\n  {})'.format(
+        webquiz_error('program terminated (signal {}\n  {})'.format(
             sig, frame))
     else:
-        webquiztex_error('program terminated (signal {})'.format(sig))
+        webquiz_error('program terminated (signal {})'.format(sig))
 
 signal.signal(signal.SIGINT, graceful_exit)
 signal.signal(signal.SIGTERM, graceful_exit)
@@ -71,12 +71,12 @@ def preprocess_with_pst2pdf(options, quiz_file):
         options.run(cmd)
     except OSError as err:
         if err.errno == errno.ENOENT:
-            webquiztex_error(
+            webquiz_error(
                 'pst2pdf not found. You need to install pst2pdf to use the pst2pdf option',
                 err
             )
         else:
-            webquiztex_error('error running pst2pdf on {}'.format(quiz_file), err)
+            webquiz_error('error running pst2pdf on {}'.format(quiz_file), err)
 
     # match \includegraphics commands
     fix_svg = re.compile(r'(\\includegraphics\[scale=1\])\{('+quiz_file+r'-fig-[0-9]*)\}')
@@ -88,37 +88,37 @@ def preprocess_with_pst2pdf(options, quiz_file):
                 for line in pst_file:
                     pst_fixed.write(fix_svg.sub(r'\1{%s/\2.svg}' % quiz_file, line))
     except OSError as err:
-        webquiztex_error(
+        webquiz_error(
             'there was an problem running pst2pdf for {}'.format(quiz_file),
             err
         )
 
-class WebQuizTeXSettings:
+class WebQuizSettings:
     r'''
-    Class for initialising webquiztex. This covers both reading and writting
+    Class for initialising webquiz. This covers both reading and writting
     the webquizrc file and copying files into the web directories during
     initialisation. The settings themselves are stored in attribute settings,
     which is a dictionary. The class reads and writes the settings to the
     webquizrc file and the values of the settings are available as items:
-        >>> mq = WebQuizTeXSettings()
-        >>> mq['webquiztex_url']
-        ... /WebQuizTeX
-        >>> mq['webquiztex_url'] = '/new_url'
+        >>> mq = WebQuizSettings()
+        >>> mq['webquiz_url']
+        ... /WebQuiz
+        >>> mq['webquiz_url'] = '/new_url'
     '''
 
     # default of settings for the webquizrc file - a dictionary of dictionaries
     # the 'help' field is for printing descriptions of the settings to help the
     # user - they are also printed in the webquizrc file
     settings = dict(
-        webquiztex_url={
+        webquiz_url={
             'default': '',
             'advanced': False,
-            'help': 'Relative URL for the webquiztex web directory',
+            'help': 'Relative URL for the webquiz web directory',
         },
-        webquiztex_www={
+        webquiz_www={
             'default': '',
             'advanced': False,
-            'help': 'Full path to WebQuizTeX web directory',
+            'help': 'Full path to WebQuiz web directory',
         },
         language={
             'default': 'english',
@@ -176,8 +176,8 @@ class WebQuizTeXSettings:
             'advanced': False,
             'help': 'Randomly order the quiz questions',
         },
-        webquiztex_layout={
-            'default': 'webquiztex_layout',
+        webquiz_layout={
+            'default': 'webquiz_layout',
             'advanced': True,
             'help': 'Name of python module that formats the quizzes',
         },
@@ -196,7 +196,7 @@ class WebQuizTeXSettings:
         },
         version={
             'advanced': False,
-            'help': 'WebQuizTeX version number for webquizrc settings',
+            'help': 'WebQuiz version number for webquizrc settings',
         })
 
     # to stop execution from command-line options after initialised() has been called
@@ -207,8 +207,8 @@ class WebQuizTeXSettings:
         First read the system webquizrc file and then read the
         to use some system settings and to override others.
 
-        By default, there is no webquiztex initialisation file. We first
-        look for webquizrc in the webquiztex source directory and then
+        By default, there is no webquiz initialisation file. We first
+        look for webquizrc in the webquiz source directory and then
         for .webquizrc file in the users home directory.
         '''
         self.settings['version']['default'] = metadata.version
@@ -221,8 +221,8 @@ class WebQuizTeXSettings:
 
         self.system_rc_file = os.path.join(kpsewhich('-var TEXMFLOCAL'),
                                            'scripts',
-                                           'webquiztex',
-                                           'webquiztexrc'
+                                           'webquiz',
+                                           'webquizrc'
         )
         self.read_webquizrc(self.system_rc_file)
 
@@ -239,16 +239,16 @@ class WebQuizTeXSettings:
 
         self.read_webquizrc(self.user_rc_file)
 
-        # if webquiztex_url is empty then assume that we need to initialise
+        # if webquiz_url is empty then assume that we need to initialise
         self.initialise_warning = ''
-        if self['webquiztex_url'] == '':
-            self.initialise_warning = webquiztex_templates.web_initialise_warning
-            initialise = input(webquiztex_templates.initialise_invite)
+        if self['webquiz_url'] == '':
+            self.initialise_warning = webquiz_templates.web_initialise_warning
+            initialise = input(webquiz_templates.initialise_invite)
             if initialise == '' or initialise.strip().lower()[0] == 'y':
-                self['webquiztex_url'] = '/WebQuizTeX'
-                self.initialise_webquiztex()
+                self['webquiz_url'] = '/WebQuiz'
+                self.initialise_webquiz()
             else:
-                self['webquiztex_url'] = 'http://www.maths.usyd.edu.au/u/mathas/WebQuizTeX'
+                self['webquiz_url'] = 'http://www.maths.usyd.edu.au/u/mathas/WebQuiz'
 
     def Debugging(self, msg):
         r'''
@@ -265,7 +265,7 @@ class WebQuizTeXSettings:
         if key in self.settings:
             return self.settings[key]['value']
 
-        webquiztex_error('getitem: unknown setting "{}" in webquizrc.'.format(key))
+        webquiz_error('getitem: unknown setting "{}" in webquizrc.'.format(key))
 
     def __setitem__(self, key, value):
         r'''
@@ -276,7 +276,7 @@ class WebQuizTeXSettings:
         if key in self.settings:
             self.settings[key]['value'] = value
         else:
-            webquiztex_error('setitem: unknown setting "{}" in webquizrc'.format(key))
+            webquiz_error('setitem: unknown setting "{}" in webquizrc'.format(key))
 
     def read_webquizrc(self, rc_file, must_exist=False):
         r'''
@@ -298,22 +298,22 @@ class WebQuizTeXSettings:
                                 if value != self[key]:
                                     self[key] = value
                             elif key != '':
-                                webquiztex_error('unknown setting "{}" in {}'.format(
+                                webquiz_error('unknown setting "{}" in {}'.format(
                                     key, rc_file))
 
                 # record the rc_file for later use
                 self.rc_file = rc_file
 
             except OSError as err:
-                webquiztex_error('there was a problem reading the rc-file {}'.format(
+                webquiz_error('there was a problem reading the rc-file {}'.format(
                               rc_file), err)
 
             except Exception as err:
-                webquiztex_error('there was an error reading the webquizrc file,', err)
+                webquiz_error('there was an error reading the webquizrc file,', err)
 
         elif must_exist:
             # this is only an error if we have been asked to read this file
-            webquiztex_error('the rc-file "{}" does not exist'.format(rc_file))
+            webquiz_error('the rc-file "{}" does not exist'.format(rc_file))
 
     def keys(self):
         r'''
@@ -352,7 +352,7 @@ class WebQuizTeXSettings:
                                            self[key])
                             )
 
-                print('\nWebQuizTeX settings saved in {}\n'.format( self.rc_file))
+                print('\nWebQuiz settings saved in {}\n'.format( self.rc_file))
                 input('Press return to continue... ')
                 file_not_written = False
 
@@ -360,15 +360,15 @@ class WebQuizTeXSettings:
                 # if writing to the system_rc_file then try to write to user_rc_file
                 alt_rc_file = self.user_rc_file if self.rc_file != self.user_rc_file else self.system_rc_file
                 response = input(
-                    webquiztex_templates.rc_permission_error.format(
+                    webquiz_templates.rc_permission_error.format(
                         error=err,
                         rc_file=self.rc_file,
                         alt_rc_file=alt_rc_file))
                 if response.startswith('2'):
                     self.rc_file = alt_rc_file
                 elif response.startswith('3'):
-                    rc_file = input('WebQuizTeX rc-file: ')
-                    print('\nTo access this rc-file you will need to use: webquiztex --rcfile {} ...'.format(rc_file))
+                    rc_file = input('WebQuiz rc-file: ')
+                    print('\nTo access this rc-file you will need to use: webquiz --rcfile {} ...'.format(rc_file))
                     self.rc_file = os.path.expanduser(rc_file)
                 elif not response.startswith('1'):
                     print('exiting...')
@@ -376,11 +376,11 @@ class WebQuizTeXSettings:
 
     def list_settings(self, setting='all'):
         r'''
-        Print the non-default settings for webquiztex from the webquizrc
+        Print the non-default settings for webquiz from the webquizrc
         '''
         if not hasattr(self, 'rc_file'):
             print(
-                'Please initialise WebQuizTeX using the command: webquiztex --initialise\n'
+                'Please initialise WebQuiz using the command: webquiz --initialise\n'
             )
 
         if setting not in ['all', 'verbose', 'help']:
@@ -388,11 +388,11 @@ class WebQuizTeXSettings:
             if setting in self.settings:
                 print(self.settings[setting]['value'])
             else:
-                webquiztex_error('{} is an invalid setting'.format(setting))
+                webquiz_error('{} is an invalid setting'.format(setting))
 
         elif setting=='all':
-            dash = '-'*len('WebQuizTeX rc-file: {}'.format(self.rc_file))
-            print('{dash}\nWebQuizTeX rc-file: {rcfile}\n{dash}'.format(rcfile=self.rc_file, dash=dash))
+            dash = '-'*len('WebQuiz rc-file: {}'.format(self.rc_file))
+            print('{dash}\nWebQuiz rc-file: {rcfile}\n{dash}'.format(rcfile=self.rc_file, dash=dash))
             for key in self.keys():
                 print('{:<17} = {}'.format(key.replace('_', '-'), self[key]))
             print('{dash}'.format(dash=dash))
@@ -402,7 +402,7 @@ class WebQuizTeXSettings:
                 print('{:<17} {}'.format(key.replace('_', '-'), self.settings[key]['help'].lower()))
 
         else:
-            print('WebQuizTeX settings from {}'.format(self.rc_file))
+            print('WebQuiz settings from {}'.format(self.rc_file))
             for key in self.keys():
                 print('# {}{}\n{:<17} = {:<17}  {}'.format(
                         self.settings[key]['help'],
@@ -413,54 +413,54 @@ class WebQuizTeXSettings:
                         )
                 )
 
-    def initialise_webquiztex(self):
+    def initialise_webquiz(self):
         r'''
-        Set the root for the WebQuizTeX web directory and copy the www files into
+        Set the root for the WebQuiz web directory and copy the www files into
         this directory. Once this is done save the settings to webquizrc.
-        This method should only be used when WebQuizTeX is being set up.
+        This method should only be used when WebQuiz is being set up.
         '''
-        if self.just_initialised:  # stop initialising twice with webquiztex --initialise
+        if self.just_initialised:  # stop initialising twice with webquiz --initialise
             return
 
         # prompt for directory and copy files - are these reasonable defaults
         # for each OS?
         elif sys.platform == 'darwin':
-            default_root = '/Library/WebServer/Documents/WebQuizTeX'
+            default_root = '/Library/WebServer/Documents/WebQuiz'
             platform = 'Mac OSX'
         elif sys.platform.startswith('win'):
-            default_root = ' c:\inetpub\wwwroot\WebQuizTeX'
+            default_root = ' c:\inetpub\wwwroot\WebQuiz'
             platform = 'Windows'
         else:
-            default_root = '/var/www/html/WebQuizTeX'
+            default_root = '/var/www/html/WebQuiz'
             platform = sys.platform.capitalize()
 
-        if self['webquiztex_www'] != '':
-            webquiztex_root = self['webquiztex_www']
+        if self['webquiz_www'] != '':
+            webquiz_root = self['webquiz_www']
         else:
-            webquiztex_root = default_root
+            webquiz_root = default_root
 
-        print(webquiztex_templates.initialise_introduction)
+        print(webquiz_templates.initialise_introduction)
         input('Press return to continue... ')
 
-        print(webquiztex_templates.webroot_request.format(
+        print(webquiz_templates.webroot_request.format(
                 platform=platform,
-                webquiztex_dir = webquiztex_root)
+                webquiz_dir = webquiz_root)
         )
         input('Press return to continue... ')
 
         files_copied = False
         while not files_copied:
-            web_dir = input('\nWebQuizTeX web directory:\n[{}] '.format(webquiztex_root))
+            web_dir = input('\nWebQuiz web directory:\n[{}] '.format(webquiz_root))
             if web_dir == '':
-                web_dir = webquiztex_root
+                web_dir = webquiz_root
             else:
                 web_dir = os.path.expanduser(web_dir)
 
             print('Web directory set to {}'.format(web_dir))
             if web_dir == 'SMS':
                 # undocumented: allow links to SMS web pages
-                self['webquiztex_www'] = 'SMS'
-                self['webquiztex_url'] = 'http://www.maths.usyd.edu.au/u/mathas/WebQuizTeX'
+                self['webquiz_www'] = 'SMS'
+                self['webquiz_url'] = 'http://www.maths.usyd.edu.au/u/mathas/WebQuiz'
 
             else:
                 try:
@@ -471,15 +471,15 @@ class WebQuizTeXSettings:
                     elif os.path.isdir(web_doc):
                         shutil.rmtree(web_doc)
 
-                    webquiztex_dir = os.path.dirname(kpsewhich('webquiztex.cls'))
-                    if os.path.islink(webquiztex_dir):
+                    webquiz_dir = os.path.dirname(kpsewhich('webquiz.cls'))
+                    if os.path.islink(webquiz_dir):
                         # assume this is a development version and add links
                         # from the web directory to the parent directory
 
                         # get the root directory of the source code
-                        webquiztex_src = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+                        webquiz_src = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
-                        print('\nLinking web files {} -> {} ...\n'.format(web_dir, webquiztex_src))
+                        print('\nLinking web files {} -> {} ...\n'.format(web_dir, webquiz_src))
                         if not os.path.exists(web_dir):
                             os.makedirs(web_dir)
 
@@ -489,57 +489,57 @@ class WebQuizTeXSettings:
                                 os.remove(newlink)
                             except FileNotFoundError:
                                 pass
-                            os.symlink(os.path.join(webquiztex_src,src), newlink)
+                            os.symlink(os.path.join(webquiz_src,src), newlink)
 
-                    elif os.path.isdir(os.path.join(webquiztex_dir,'www')):
+                    elif os.path.isdir(os.path.join(webquiz_dir,'www')):
                         # if the www directory exists then copy it to web_dir
                         print('\nCopying web files to {} ...\n'.format(web_dir))
-                        copytree(os.path.join(webquiztex_dir,'www'), web_dir)
+                        copytree(os.path.join(webquiz_dir,'www'), web_dir)
 
                     else:
-                        webquiztex_error('unable to find web source files')
+                        webquiz_error('unable to find web source files')
 
-                    self['webquiztex_www'] = web_dir
+                    self['webquiz_www'] = web_dir
                     files_copied = True
 
                 except PermissionError:
-                    print(webquiztex_templates.permission_error.format(web_dir))
+                    print(webquiz_templates.permission_error.format(web_dir))
 
                 except OSError as err:
-                    print(webquiztex_templates.oserror_copying.format(web_dir=web_dir, err=err))
+                    print(webquiz_templates.oserror_copying.format(web_dir=web_dir, err=err))
 
-        if self['webquiztex_www'] != 'SMS':
+        if self['webquiz_www'] != 'SMS':
             # now prompt for the relative url
-            mq_url = input(webquiztex_templates.webquiztex_url_message.format(self['webquiztex_url']))
+            mq_url = input(webquiz_templates.webquiz_url_message.format(self['webquiz_url']))
             if mq_url != '':
                 # removing trailing slashes from mq_url
                 while mq_url[-1] == '/':
                     mq_url = mq_url[:len(mq_url) - 1]
 
                 if mq_url[0] != '/':  # force URL to start with /
-                    print("  ** prepending '/' to webquiztex_url **")
+                    print("  ** prepending '/' to webquiz_url **")
                     mq_url = '/' + mq_url
 
                 if not web_dir.endswith(mq_url):
-                    print(webquiztex_templates.webquiztex_url_warning)
+                    print(webquiz_templates.webquiz_url_warning)
                     input('Press return to continue... ')
 
-                self['webquiztex_url'] = mq_url
+                self['webquiz_url'] = mq_url
 
         # save the settings and exit
         self.write_webquizrc()
-        print(webquiztex_templates.initialise_ending.format(web_dir=self['webquiztex_www']))
+        print(webquiz_templates.initialise_ending.format(web_dir=self['webquiz_www']))
         self.just_initialised = True
 
     def edit_settings(self):
         r'''
-        Change current default values for the WebQuizTeX settings
+        Change current default values for the WebQuiz settings
         '''
         advanced_not_started = True
         for key in self.keys():
-            if key not in ['webquiztex_www', 'version']:
+            if key not in ['webquiz_www', 'version']:
                 if advanced_not_started and self.settings[key]['advanced']:
-                    print(webquiztex_templates.advanced_settings)
+                    print(webquiz_templates.advanced_settings)
                     advanced_not_started = False
 
                 skey = '{}'.format(self[key])
@@ -550,14 +550,14 @@ class WebQuizTeXSettings:
                           )
                 ).strip()
                 if setting != '':
-                    if key == 'webquiztex_url' and setting[0] != '/':
-                        print("  ** prepending '/' to webquiztex_url **")
+                    if key == 'webquiz_url' and setting[0] != '/':
+                        print("  ** prepending '/' to webquiz_url **")
                         setting = '/' + setting
 
-                    elif key == 'webquiztex_layout':
+                    elif key == 'webquiz_layout':
                         setting = os.path.expanduser(setting)
                         if setting.endswith('.py'):
-                            print("  ** removing .py extension from webquiztex_layout **")
+                            print("  ** removing .py extension from webquiz_layout **")
                             setting = setting[:-3]
 
                     elif key == 'engine' and setting not in self.settings['engine'].values:
@@ -579,37 +579,37 @@ class WebQuizTeXSettings:
         self.write_webquizrc()
         self.list_settings()
 
-    def uninstall_webquiztex(self):
+    def uninstall_webquiz(self):
         r'''
-        Remove all of the webquiztex files from the webserver
+        Remove all of the webquiz files from the webserver
         '''
 
-        if os.path.isdir(self['webquiztex_www']):
-            remove = input('Do you really want to remove the WebQuizTeX from your web server [N/yes]? ')
+        if os.path.isdir(self['webquiz_www']):
+            remove = input('Do you really want to remove the WebQuiz from your web server [N/yes]? ')
             if remove != 'yes':
-                print('WebQuizTeX unistall aborted!')
+                print('WebQuiz unistall aborted!')
                 return
 
             try:
-                shutil.rmtree(self['webquiztex_www'])
-                print('WebquizTeX files successfully removed from {}'.format(self['webquiztex_www']))
+                shutil.rmtree(self['webquiz_www'])
+                print('WebQuiz files successfully removed from {}'.format(self['webquiz_www']))
 
             except OSError as err:
-                webquiztex_error('There was a problem removing webquiztex files from {}'.format(self['webquiztex_www']), err)
+                webquiz_error('There was a problem removing webquiz files from {}'.format(self['webquiz_www']), err)
 
-            # now reset and save the locations of the webquiztex files and URL
-            self['webquiztex_url'] = ''
-            self['webquiztex_www'] = ''
+            # now reset and save the locations of the webquiz files and URL
+            self['webquiz_url'] = ''
+            self['webquiz_www'] = ''
             self.write_webquizrc()
 
         else:
-            webquiztex_error('uninstall: no webwquiz files are installed on your web server??')
+            webquiz_error('uninstall: no webwquiz files are installed on your web server??')
 
 
 # =====================================================
 if __name__ == '__main__':
     try:
-        settings = WebQuizTeXSettings()
+        settings = WebQuizSettings()
         if settings.just_initialised:
             sys.exit()
 
@@ -671,7 +671,7 @@ if __name__ == '__main__':
             '--rcfile',
             action='store',
             default=None,
-            help='Specify location of the webquiztex rc-file ')
+            help='Specify location of the webquiz rc-file ')
 
         settings_parser = parser.add_mutually_exclusive_group()
         settings_parser.add_argument(
@@ -679,12 +679,12 @@ if __name__ == '__main__':
             '--initialise',
             action='store_true',
             default=False,
-            help='Install web components of webquiztex')
+            help='Install web components of webquiz')
         settings_parser.add_argument(
             '-e', '--edit-settings',
             action='store_true',
             default=False,
-            help='Edit default settings for webquiztex')
+            help='Edit default settings for webquiz')
         settings_parser.add_argument(
             '--settings',
             action='store',
@@ -692,7 +692,7 @@ if __name__ == '__main__':
             default='',
             nargs='?',
             type=str,
-            help='List default settings for webquiztex'
+            help='List default settings for webquiz'
         )
 
         # options suppressed from the help message
@@ -707,11 +707,11 @@ if __name__ == '__main__':
         )
 
         parser.add_argument(
-            '--webquiztex_layout',
+            '--webquiz_layout',
             action='store',
             type=str,
-            dest='webquiztex_layout',
-            default=settings['webquiztex_layout'],
+            dest='webquiz_layout',
+            default=settings['webquiz_layout'],
             help=argparse.SUPPRESS
         )
 
@@ -758,7 +758,7 @@ if __name__ == '__main__':
 
         # initialise and exit
         if options.initialise:
-            settings.initialise_webquiztex()
+            settings.initialise_webquiz()
             sys.exit()
 
         # list settings and exit
@@ -773,7 +773,7 @@ if __name__ == '__main__':
 
         # uninstall and exit
         if options.uninstall:
-            settings.uninstall_webquiztex()
+            settings.uninstall_webquiz()
             sys.exit()
 
         # print short help and exit
@@ -787,7 +787,7 @@ if __name__ == '__main__':
             sys.exit(1)
 
         # import the local page formatter
-        mod_dir, mod_layout = os.path.split(options.webquiztex_layout)
+        mod_dir, mod_layout = os.path.split(options.webquiz_layout)
         if mod_dir != '':
             sys.path.insert(0, mod_dir)
         options.write_web_page = __import__(mod_layout).write_web_page
@@ -814,19 +814,19 @@ if __name__ == '__main__':
                 quiz_file += '.tex'
 
             if not os.path.isfile(quiz_file):
-                print('WebQuizTeX error: cannot read file {}'.format(quiz_file))
+                print('WebQuiz error: cannot read file {}'.format(quiz_file))
 
             else:
 
                 # the quiz name and the quiz_file will be if pst2pdf is used
                 quiz_name = quiz_file
                 if options.quiet < 2:
-                    print('WebQuizTeX generating web page for {}'.format(quiz_file))
+                    print('WebQuiz generating web page for {}'.format(quiz_file))
 
                 # If the pst2podf option is used then we need to preprocess
                 # the latex file BEFORE passing it to MakeWebQuiz. Set
                 # options.pst2pdf = True if pst2pdf is given as an option to
-                # the webquiztex documentclass
+                # the webquiz documentclass
                 with codecs.open(quiz_file, 'r', encoding='utf8') as q_file:
                     doc = q_file.read()
 
@@ -839,7 +839,7 @@ if __name__ == '__main__':
                     ]:
                         preprocess_with_pst2pdf(options, quiz_file[:-4])
                         options.pst2pdf = True
-                        # now run webquiztex on the modified tex file
+                        # now run webquiz on the modified tex file
                         quiz_file = quiz_file[:-4] + '-pdf-fixed.tex'  
                 except ValueError:
                     pass
@@ -879,9 +879,9 @@ if __name__ == '__main__':
                             shutil.rmtree(os.path.join(quiz_name, quiz_name))
 
         if settings.initialise_warning != '':
-            print(webquiztex_templates.text_initialise_warning)
+            print(webquiz_templates.text_initialise_warning)
 
     except Exception as err:
-        webquiztex_error(
+        webquiz_error(
             'unknown problem.\n\nIf you think this is a bug please report it by creating an issue at\n    {}\n'
             .format(metadata.repository), err)

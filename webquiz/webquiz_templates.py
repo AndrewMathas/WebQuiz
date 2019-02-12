@@ -1,6 +1,6 @@
 r'''
 -----------------------------------------------------------------------
-    webquiztex_templates | html template file
+    webquiz_templates | html template file
 -----------------------------------------------------------------------
 
     Copyright (C) Andrew Mathas, University of Sydney
@@ -8,7 +8,7 @@ r'''
     Distributed under the terms of the GNU General Public License (GPL)
               http://www.gnu.org/licenses/
 
-    This file is part of the WebQuizTeX system.
+    This file is part of the WebQuiz system.
 
     <Andrew.Mathas@sydney.edu.au>
 ----------------------------------------------------------------------
@@ -21,29 +21,29 @@ r'''
 # html meta statements
 html_meta = r'''<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <meta name="generator" content="WebQuiz {version} (http://www.maths.usyd.edu.au/u/mathas/WebQuiz/webquiztex-online-manual.html)">
+  <meta name="generator" content="WebQuiz {version} (http://www.maths.usyd.edu.au/u/mathas/WebQuiz/webquiz-online-manual.html)">
   <meta name="description" content="{description}">
   <meta name="authors" content="WebQuiz: {authors}">
   <meta name="organization" content="{department}, {institution}">
   <meta name="Copyright" content="WebQuiz: {copyright}">
-  <meta name="keywords" content="WebQuizTeX, TeX4ht, make4ht, latex, python, quiz, mathematics">
-  <link href="{webquiztex_url}/css/webquiztex-{theme}.css" type="text/css" rel="stylesheet">
+  <meta name="keywords" content="WebQuiz, TeX4ht, make4ht, latex, python, quiz, mathematics">
+  <link href="{webquiz_url}/css/webquiz-{theme}.css" type="text/css" rel="stylesheet">
   <link href="{quiz_file}/{quiz_file}.css" type="text/css" rel="stylesheet">
 '''
 
 # javascript for setting up the questions
-questions_javascript = r'''  <script src="{webquiztex_url}/js/webquiztex.js"></script>
+questions_javascript = r'''  <script src="{webquiz_url}/js/webquiz.js"></script>
   <script defer src="{mathjax}?config=MML_CHTML"></script>'''
 
 mathjs=r'  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/5.4.0/math.min.js"></script>'
 
-webquiztex_init = r'''<div style="display: none;">
+webquiz_init = r'''<div style="display: none;">
     <script src="quizindex.js"></script>
     <script type="text/javascript">WebQuizInit({number_questions}, {number_discussions}, '{quiz_file}');</script>
   </div>'''
 
 # Bread crumbs including a drop down menu for all of the quizzes for the unit.
-# The drop-down-menu is added by create_quizindex_menu() in webquiztex.js
+# The drop-down-menu is added by create_quizindex_menu() in webquiz.js
 breadcrumb_line_text = '            <li>{text}</li>\n'
 breadcrumb_line_url  = '            <li><a href="{url}">{text}</a></li>\n'
 breadcrumb_quizindex  = r'''              <li><a href="{quizzes_url}">{quizzes}</a>
@@ -211,7 +211,7 @@ no_script = r'''<noscript>
   </noscript>'''
 
 ######################################################################
-# the remaining templates prompt the user when initialising webquiztex
+# the remaining templates prompt the user when initialising webquiz
 ######################################################################
 
 initialise_introduction = r'''
@@ -222,12 +222,12 @@ quizzes to work. We will guide you through the process below.
 
 If you want to install these files into a "system" directory then you should
 quit this program (use control-C on unix-like systems) and then run
-    webquiztex --initialise
+    webquiz --initialise
 from an administrators account or, on unix-like systems, use:
-    sudo webquiztex --initialise
+    sudo webquiz --initialise
 See Section 3.2 of the WebQuiz manual for more information about WebQuiz
-initialisation. On many systems, you can open the webquiztex manual using
-the command: texdoc webquiztex
+initialisation. On many systems, you can open the webquiz manual using
+the command: texdoc webquiz
 '''
 
 webroot_request = r'''----
@@ -247,7 +247,7 @@ We recommended that you create a separate directory for WebQuiz on your
 web server. The location of the files on your web server will depend on
 your operating system and system configuration. A common location for
 the WebQuiz web directory on a {platform} system is
-     {webquiztex_dir}
+     {webquiz_dir}
 '''
 
 oserror_copying = r'''There was a problem copying files to {web_dir}
@@ -256,7 +256,7 @@ Error: {err}
 Please give a different directory
 '''
 
-webquiztex_url_message = r'''Please give the relative URL for the WebQuiz web directory. For example,
+webquiz_url_message = r'''Please give the relative URL for the WebQuiz web directory. For example,
 if the base of your web server's directory is /var/www/html/ and the
 WebQuiz web directory is /var/www/html/courses/WebQuiz then the
 relative URL for the WebQuiz directory would be /courses/WebQuiz.
@@ -264,8 +264,8 @@ relative URL for the WebQuiz directory would be /courses/WebQuiz.
 WebQuiz relative URL [{}]: '''
 
 initialise_ending = r'''
-You should now be able to build web pages using webquiztex! As an initial
-test you can try to build the example files from the webquiztex manual
+You should now be able to build web pages using webquiz! As an initial
+test you can try to build the example files from the webquiz manual
 by going to the directory
     {web_dir}/doc/examples
 If pstricks and dvisgvm are properly configured (see Section 3.3 of
@@ -273,23 +273,23 @@ the manual), then you can also try building the online manual, by
 going to the directory
     {web_dir}/doc/examples
 and typing:
-    webquiztex webquiztex-online-manual
+    webquiz webquiz-online-manual
 
-Finally, You may want to change the default webquiztex settings, which you
+Finally, You may want to change the default webquiz settings, which you
 can do by typing:
-    webquiztex --edit-settings
+    webquiz --edit-settings
 '''
 
-webquiztex_url_warning = r'''
+webquiz_url_warning = r'''
 WebQuiz has not been initialised. To remove the warning message from
 the web page please use
-    webquiztex --initialise
+    webquiz --initialise
 to install the WebQuiz javascript and css files.
 '''
 
 text_initialise_warning = r'''
 WebQuiz has not yet been initialised. To remove this warning please use
-      webquiztex --initialise
+      webquiz --initialise
 to install the WebQuiz web files onto your system.
 '''
 
@@ -297,7 +297,7 @@ web_initialise_warning = r'''
       <div id="initialisewarning" class="warning">
         WebQuiz has not yet been initialised. To remove this warning box please use
         <blockquote>
-          webquiztex --initialise
+          webquiz --initialise
         </blockquote>
         to install the WebQuiz web files on your system.
         <button style="float: right" onclick="document.getElementById('initialisewarning').style.display='none'">OK</button>
@@ -310,7 +310,7 @@ resulted in the error:
   {error}
 
 To write the WebQuiz rc-file into this directory you may need to quit
-and run webquiztex again, either using an administrator account, or using
+and run webquiz again, either using an administrator account, or using
 sudo on linux/macosx.
 
 Press the key 1-3, followed by return, to:
@@ -324,18 +324,18 @@ permission_error = r'''
 You do not have permission to write to {}.
 
 To install WebQuiz files into this directory you may need to quit and
-run webquiztex using either an administrator account, or using sudo on
+run webquiz using either an administrator account, or using sudo on
 linux/macosx.
 
 Alternatively, please give a different directory.
 '''
 
-webquiztex_url_warning = r'''
+webquiz_url_warning = r'''
 WARNING: most of the time, but not always, the relative URL will be a
 suffix of the web directory name, which is not the case with your
 settings. Your URL may well be correct, however, if you have made a
 mistake then you can change this at any time using the command:
-    webquiztex --initialise
+    webquiz --initialise
 '''
 
 edit_settings = r'''----
@@ -351,8 +351,8 @@ In the webquizrc file you can set global defaults for the following:
 Leave these blank if you do not want default values. There are three
 additional "advanced: options:
     mathjax
-    webquiztex_layout
-    webquiztex_mk4
+    webquiz_layout
+    webquiz_mk4
 Please only change these settings if you know what you are doing
 because incorrect values for these settings will break WebQuiz.
 
@@ -360,7 +360,7 @@ With each setting the default value is printed inside square brackets.
 For example, as [default]. Press return to accept the default value.
 Except for the location of the WebQuiz web directory all of these
 settings are easy to change at any time using the command:
-    webquiztex --edit-settings
+    webquiz --edit-settings
 '''
 
 advanced_settings = r'''
@@ -370,7 +370,7 @@ advanced_settings = r'''
 ** know what you are doing.                                       **
 '''
 
-# and now for the webquiztex help message
-webquiztex_help_message = r'''
+# and now for the webquiz help message
+webquiz_help_message = r'''
 WebQuiz allows you to write interactive online quizzes using latex
 '''
