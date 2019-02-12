@@ -54,9 +54,8 @@ class WebQuizDevelop(Command):
         Prompt the user for input using the message `message` and with default
         `default` and return the result.
         '''
-        value = input('\n{}{}[{}] '.format(message,
-                                         '\n' if len(message)>50 else ' ',
-                                         default)
+        value = input('\n{}{}[{}] '.format(message, '\n' if len(message+default)>50 else ' ',
+                                           default)
         ).strip()
         return default if value=='' else value
 
@@ -65,27 +64,27 @@ class WebQuizDevelop(Command):
         Install links for the latex files, executable and web files
         '''
         texmflocal = kpsewhich('-var TEXMFLOCAL')
+        tex_dir = os.path.join(texmflocal,'tex', 'latex', 'local', 'webquiztex')
         cwd = os.path.dirname(os.path.realpath(__file__))
 
         try:
 
             # add a link to the latex files
-            texdir = self.ask('Install links to latex files in directory', texmflocal)
-            webquiz_tex = os.path.join(texdir,'tex', 'webquiztex')
-            if os.path.exists(webquiz_tex):
-                print('Not installing tex files as {} already exists'.format(webquiz_tex))
+            tex_dir = self.ask('Install links to latex files in directory', tex_dir)
+            if os.path.exists(tex_dir):
+                print('Tex files not installe as directory already exists'.format(tex_dir))
             else:
-                os.symlink(os.path.join(cwd,'latex'), webquiz_tex)
+                os.symlink(os.path.join(cwd,'latex'), tex_dir)
 
                 # update the tex search paths if not installed in home directory
-                subprocess.call('mktexlsr '+webquiz_tex, shell=True)
+                subprocess.call('mktexlsr '+tex_dir, shell=True)
 
             # add a link from /usr/local/bin/webquiztex to executable
             bindir = self.ask('Directory for executable', '/usr/local/bin')
             webquiztex = os.path.join(bindir, 'webquiztex')
 
             if os.path.exists(webquiztex):
-                print('Not installing executable as {} already exists'.format(webquiz_tex))
+                print('Not installing executable as {} already exists'.format(webquiztex))
             else:
                 os.symlink(os.path.join(cwd,'webquiztex','webquiztex.py'), webquiztex)
 

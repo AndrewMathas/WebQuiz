@@ -242,7 +242,7 @@
 \NewDocumentCommand\WQ@ref{ O{} s o m }{%
 \fbox{\IfBooleanTF{#2}{link}{button} to \IfNoValueTF{#3}{to \ref{#4}}{ to ``#3'' (\ref{#4})}}%
 }
-\newcommand\dref{\WQ@ref[-1]}
+\newcommand\dref{\WQ@ref[-]}
 \newcommand\qref{\WQ@ref}
 
 % -----------------------------------------------------------------------
