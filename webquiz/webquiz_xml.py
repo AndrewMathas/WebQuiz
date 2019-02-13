@@ -20,7 +20,7 @@ r'''
 import xml.sax
 
 # imports of webquiz code
-from webquiz_util import debugging, webquiz_error
+import webquiz_util
 
 # ---------------------------------------------------------------------------------------
 def ReadWebQuizXmlFile(quizfile, defaults):
@@ -51,12 +51,6 @@ class Data(object):
         self._items = args.items()
         for key, val in args.items():
             setattr(self, key, val)
-
-    def __str__(self):
-        r'''
-        A string method, purely for debugging purposes...
-        '''
-        return '\n - '.join('{} = {}'.format(k, getattr(self, k)) for k in self._items)
 
 
 class QuizHandler(xml.sax.ContentHandler):
@@ -107,12 +101,17 @@ class QuizHandler(xml.sax.ContentHandler):
         # keep track of current tags for debugging...
         self.current_tags=[]
 
-
-    def Debugging(self, msg):
+    def webquiz_debug(self, msg):
         r'''
             Customised debugging message for the xml module
         '''
-        debugging(self.defaults.debugging, 'xml: ',msg)
+        webquiz_util.webquiz_debug(self.defaults.debugging, 'xml: ',msg)
+
+    def webquiz_error(self, msg):
+        r'''
+            Customised error message for the xml module
+        '''
+        webquiz_util.webquiz_error(self.defaults.debugging, 'xml: ',msg)
 
     def set_default_attribute(self, key, value):
         ''' Set the attribute `key` of self, using the default value if
@@ -122,7 +121,7 @@ class QuizHandler(xml.sax.ContentHandler):
             setattr(self, key, self.defaults[key])
         else:
             setattr(self, key, value)
-        self.Debugging('Just set "{}" equal to "{}" from "{}"'.format(key, getattr(self, key), value))
+        self.webquiz_debug('Just set "{}" equal to "{}" from "{}"'.format(key, getattr(self, key), value))
 
     #---- start of start elements --------------------------------------------
     def startElement(self, tag, attributes):
@@ -130,7 +129,7 @@ class QuizHandler(xml.sax.ContentHandler):
             At the start of each webquiz xml tag we need to pull out the
             attributes and place
         '''
-        self.Debugging('Starting tag for '+tag)
+        self.webquiz_debug('Starting tag for '+tag)
         self.current_tags.append(tag)
 
         if hasattr(self, 'start_'+tag):
@@ -156,8 +155,7 @@ class QuizHandler(xml.sax.ContentHandler):
         setattr(self, 'theme', self.theme.lower())
 
         # set debugging mode from the latex file...from this point on
-        self.defaults.debugging = self.defaults.debugging or self.Debugging
-
+        self.defaults.debugging = self.defaults.debugging or self.debugging
 
     def start_link(self, attributes):
         r'''
@@ -212,7 +210,7 @@ class QuizHandler(xml.sax.ContentHandler):
         Process the different question types, items choice and feedback
         '''
         if self.question_list[-1].type != None:
-            webquiz_error('question {} has too many question types: {} and input'.format(
+            self.webquiz_error('question {} has too many question types: {} and input'.format(
                     len(self.question_list)+1, self.question_list[-1].type)
             )
         self.question_list[-1].type = 'input'
@@ -232,7 +230,7 @@ class QuizHandler(xml.sax.ContentHandler):
         Start element for tag="choice"
         '''
         if self.question_list[-1].type != None:
-            webquiz_error('question {} has too many question types: {} and choice'.format(
+            self.webquiz_error('question {} has too many question types: {} and choice'.format(
                     len(self.question_list)+1, self.question_list[-1].type)
             )
         self.question_list[-1].type = attributes.get('type')
@@ -273,14 +271,14 @@ class QuizHandler(xml.sax.ContentHandler):
         '''
         if self.text.strip() != '':
             self.question_list[-1].after_text += ' '+self.text.strip()
-            self.Debugging('After_text is now {}'.format(self.question_list[-1].after_text))
+            self.webquiz_debug('After_text is now {}'.format(self.question_list[-1].after_text))
             self.text = ''
         self.current_tags[-1] = 'feedback_'+attributes.get('type')
 
     #---- end of start elements ---------------------------------------------
 
     def endElement(self, tag):
-        self.Debugging('ending tag for {} (should be {})'.format(tag, self.current_tags[-1])) 
+        self.webquiz_debug('ending tag for {} (should be {})'.format(tag, self.current_tags[-1])) 
 
         reset_text = True
         if hasattr(self, 'end_'+tag):
@@ -339,22 +337,22 @@ class QuizHandler(xml.sax.ContentHandler):
         '''
         # first some error checking
         if self.question_list[-1].type == None:
-                webquiz_error('Question {} does not have an \\answer or choice environment'.format(
+                self.webquiz_error('Question {} does not have an \\answer or choice environment'.format(
                               len(self.question_list)+1))
 
         elif hasattr(self.question_list[-1], 'items'):
             if len(self.question_list[-1].items)==0:
-                webquiz_error('question {} has no multiple choice items'.format(
+                self.webquiz_error('question {} has no multiple choice items'.format(
                               len(self.question_list)+1))
 
             if self.question_list[-1].type=='single' and self.question_list[-1].correct!=1:
-                webquiz_error('question {} is single-choice but has {} correct answers'.format(
+                self.webquiz_error('question {} is single-choice but has {} correct answers'.format(
                                 len(self.question_list)+1,
                                 self.question_list[-1].correct
                              )
                 )
         elif not hasattr(self.question_list[-1], 'answer') or self.question_list[-1].answer=='':
-            webquiz_error('question {} does have not an \answer or multiple choice'.format(
+            self.webquiz_error('question {} does have not an \answer or multiple choice'.format(
                           len(self.question_list)+1))
 
         if self.text.strip() != '':
@@ -370,7 +368,7 @@ class QuizHandler(xml.sax.ContentHandler):
         r'''
         Process end tag when tag="index_item"
         '''
-        self.Debugging('WHEN: Adding text to '+self.current_tags[-1])
+        self.webquiz_debug('WHEN: Adding text to '+self.current_tags[-1])
         setattr(self.question_list[-1], self.current_tags[-1], self.text.strip())
 
     #---- end of end elements -----------------------------------------------
@@ -382,7 +380,7 @@ class QuizHandler(xml.sax.ContentHandler):
         self.text += text
 
     def error(self, e):
-        raise e
+        self.webquiz_error('unknown error', e)
 
     def fatalError(self, e):
-        raise e
+        self.webquiz_error('unknown fatal error', e)

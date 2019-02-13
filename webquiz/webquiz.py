@@ -28,15 +28,15 @@ import subprocess
 import sys
 
 # imports of webquiz code
+import webquiz_makequiz
 import webquiz_templates
-from webquiz_makequiz import MakeWebQuiz
-from webquiz_util import copytree, debugging, kpsewhich, webquiz_error, webquiz_file, MetaData
+import webquiz_util
 
 #################################################################################
 # read in basic meta data such as author, version, ... and set debugging=False
 
 try:
-    metadata = MetaData(kpsewhich('webquiz.ini'), debugging=False)
+    metadata = webquiz_util.MetaData(webquiz_util.kpsewhich('webquiz.ini'), debugging=False)
 except subprocess.CalledProcessError:
     print('webquiz installation error: unable to find webquiz.ini')
     sys.exit(1)
@@ -45,10 +45,9 @@ except subprocess.CalledProcessError:
 def graceful_exit(sig, frame):
     ''' exit gracefully on SIGINT and SIGTERM'''
     if metadata:
-        webquiz_error('program terminated (signal {}\n  {})'.format(
-            sig, frame))
+        webquiz_util.webquiz_error(False, 'program terminated (signal {}\n  {})'.format(sig, frame))
     else:
-        webquiz_error('program terminated (signal {})'.format(sig))
+        webquiz_util.webquiz_error(False, 'program terminated (signal {})'.format(sig))
 
 signal.signal(signal.SIGINT, graceful_exit)
 signal.signal(signal.SIGTERM, graceful_exit)
@@ -71,12 +70,9 @@ def preprocess_with_pst2pdf(options, quiz_file):
         options.run(cmd)
     except OSError as err:
         if err.errno == errno.ENOENT:
-            webquiz_error(
-                'pst2pdf not found. You need to install pst2pdf to use the pst2pdf option',
-                err
-            )
+            webquiz_util.webquiz_error(options.debugging, 'pst2pdf not found. You need to install pst2pdf to use the pst2pdf option', err)
         else:
-            webquiz_error('error running pst2pdf on {}'.format(quiz_file), err)
+            webquiz_util.webquiz_error(options.debugging, 'error running pst2pdf on {}'.format(quiz_file), err)
 
     # match \includegraphics commands
     fix_svg = re.compile(r'(\\includegraphics\[scale=1\])\{('+quiz_file+r'-fig-[0-9]*)\}')
@@ -88,7 +84,7 @@ def preprocess_with_pst2pdf(options, quiz_file):
                 for line in pst_file:
                     pst_fixed.write(fix_svg.sub(r'\1{%s/\2.svg}' % quiz_file, line))
     except OSError as err:
-        webquiz_error(
+        webquiz_util.webquiz_error(options.debugging,
             'there was an problem running pst2pdf for {}'.format(quiz_file),
             err
         )
@@ -219,7 +215,7 @@ class WebQuizSettings:
 
         # define user and system rc file and load the ones that exist
 
-        self.system_rc_file = os.path.join(kpsewhich('-var TEXMFLOCAL'),
+        self.system_rc_file = os.path.join(webquiz_util.kpsewhich('-var TEXMFLOCAL'),
                                            'scripts',
                                            'webquiz',
                                            'webquizrc'
@@ -250,11 +246,17 @@ class WebQuizSettings:
             else:
                 self['webquiz_url'] = 'http://www.maths.usyd.edu.au/u/mathas/WebQuiz'
 
-    def Debugging(self, msg):
+    def webquiz_debug(self, msg):
         r'''
             Customised debugging message for the MakeSettings module
         '''
-        debugging(self.settings.debugging, 'Make settings error: ', msg)
+        webquiz_util.webquiz_debug(self.settings.debugging, 'main: ', msg)
+
+    def webquiz_error(self, msg):
+        r'''
+            Customised error messages for the Module
+        '''
+        webquiz_util.webquiz_error(self.settings.debugging, 'settings: ', msg)
 
     def __getitem__(self, key):
         r'''
@@ -265,7 +267,7 @@ class WebQuizSettings:
         if key in self.settings:
             return self.settings[key]['value']
 
-        webquiz_error('getitem: unknown setting "{}" in webquizrc.'.format(key))
+        self.webquiz_error('getitem: unknown setting "{}" in webquizrc.'.format(key))
 
     def __setitem__(self, key, value):
         r'''
@@ -276,7 +278,7 @@ class WebQuizSettings:
         if key in self.settings:
             self.settings[key]['value'] = value
         else:
-            webquiz_error('setitem: unknown setting "{}" in webquizrc'.format(key))
+            self.webquiz_error('setitem: unknown setting "{}" in webquizrc'.format(key))
 
     def read_webquizrc(self, rc_file, must_exist=False):
         r'''
@@ -298,22 +300,20 @@ class WebQuizSettings:
                                 if value != self[key]:
                                     self[key] = value
                             elif key != '':
-                                webquiz_error('unknown setting "{}" in {}'.format(
-                                    key, rc_file))
+                                self.webquiz_error('unknown setting "{}" in {}'.format(key, rc_file))
 
                 # record the rc_file for later use
                 self.rc_file = rc_file
 
             except OSError as err:
-                webquiz_error('there was a problem reading the rc-file {}'.format(
-                              rc_file), err)
+                self.webquiz_error('there was a problem reading the rc-file {}'.format(rc_file), err)
 
             except Exception as err:
-                webquiz_error('there was an error reading the webquizrc file,', err)
+                self.webquiz_error('there was an error reading the webquizrc file,', err)
 
         elif must_exist:
             # this is only an error if we have been asked to read this file
-            webquiz_error('the rc-file "{}" does not exist'.format(rc_file))
+            self.webquiz_error('the rc-file "{}" does not exist'.format(rc_file))
 
     def keys(self):
         r'''
@@ -331,7 +331,7 @@ class WebQuizSettings:
             # when initialising an rc_file will not exist yet
             self.rc_file = self.system_rc_file
 
-        debugging('Writing to rcfile {}'.format(self.rc_file))
+        self.webquiz_debug('Writing to rcfile {}'.format(self.rc_file))
         file_not_written = True
         while file_not_written:
             try:
@@ -345,7 +345,7 @@ class WebQuizSettings:
                         # rcfile rather than from the default (of course, the
                         # defaults serve as the "initial rcfile")
                         if key == 'version' or self.settings[key]['default']!=self[key]:
-                            debugging('Writing {}={} to rcfile={}'.format(key, self[key], self.rc_file))
+                            self.webquiz_debug('Writing {}={} to rcfile={}'.format(key, self[key], self.rc_file))
                             rcfile.write('# {}\n{:<17} = {}\n'.format(
                                            self.settings[key]['help'],
                                            key.replace('_','-'),
@@ -388,7 +388,7 @@ class WebQuizSettings:
             if setting in self.settings:
                 print(self.settings[setting]['value'])
             else:
-                webquiz_error('{} is an invalid setting'.format(setting))
+                self.webquiz_error('{} is an invalid setting'.format(setting))
 
         elif setting=='all':
             dash = '-'*len('WebQuiz rc-file: {}'.format(self.rc_file))
@@ -471,7 +471,7 @@ class WebQuizSettings:
                     elif os.path.isdir(web_doc):
                         shutil.rmtree(web_doc)
 
-                    webquiz_dir = os.path.dirname(kpsewhich('webquiz.cls'))
+                    webquiz_dir = os.path.dirname(webquiz_util.kpsewhich('webquiz.cls'))
                     if os.path.islink(webquiz_dir):
                         # assume this is a development version and add links
                         # from the web directory to the parent directory
@@ -494,10 +494,10 @@ class WebQuizSettings:
                     elif os.path.isdir(os.path.join(webquiz_dir,'www')):
                         # if the www directory exists then copy it to web_dir
                         print('\nCopying web files to {} ...\n'.format(web_dir))
-                        copytree(os.path.join(webquiz_dir,'www'), web_dir)
+                        webquiz_util.copytree(os.path.join(webquiz_dir,'www'), web_dir)
 
                     else:
-                        webquiz_error('unable to find web source files')
+                        self.webquiz_error('unable to find web source files')
 
                     self['webquiz_www'] = web_dir
                     files_copied = True
@@ -595,7 +595,7 @@ class WebQuizSettings:
                 print('WebQuiz files successfully removed from {}'.format(self['webquiz_www']))
 
             except OSError as err:
-                webquiz_error('There was a problem removing webquiz files from {}'.format(self['webquiz_www']), err)
+                self.webquiz_error('There was a problem removing webquiz files from {}'.format(self['webquiz_www']), err)
 
             # now reset and save the locations of the webquiz files and URL
             self['webquiz_url'] = ''
@@ -603,7 +603,7 @@ class WebQuizSettings:
             self.write_webquizrc()
 
         else:
-            webquiz_error('uninstall: no webwquiz files are installed on your web server??')
+            self.webquiz_error('uninstall: no webwquiz files are installed on your web server??')
 
 
 # =====================================================
@@ -845,7 +845,7 @@ if __name__ == '__main__':
                     pass
 
                 # the file exists and is readable so make the quiz
-                MakeWebQuiz(quiz_name, quiz_file, options, settings, metadata)
+                webquiz_makequiz.MakeWebQuiz(quiz_name, quiz_file, options, settings, metadata)
 
                 quiz_name = quiz_name[:quiz_name.index('.')]  # remove the extension
 
@@ -882,6 +882,6 @@ if __name__ == '__main__':
             print(webquiz_templates.text_initialise_warning)
 
     except Exception as err:
-        webquiz_error(
+        webquiz_util.webquiz_error(settings.debugging,
             'unknown problem.\n\nIf you think this is a bug please report it by creating an issue at\n    {}\n'
             .format(metadata.repository), err)

@@ -77,7 +77,7 @@ class WebQuizDevelop(Command):
                 os.symlink(os.path.join(cwd,'latex'), tex_dir)
 
                 # update the tex search paths if not installed in home directory
-                subprocess.call('mktexlsr '+tex_dir, shell=True)
+                subprocess.call('mktexlsr {}/'.format(tex_dir), shell=True)
 
             # add a link from /usr/local/bin/webquiz to executable
             bindir = self.ask('Directory for executable', '/usr/local/bin')

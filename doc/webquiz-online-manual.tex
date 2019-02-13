@@ -27,13 +27,6 @@
 
 \hypersetup{pdftitle={WebQuiz online manual}}
 
-\newcommand\qref[1]{%
-  \ifdefined\HCode\relax
-     \HCode{<a href="\#" onclick="gotoQuestion(#1)">Question #1</a>}
-  \else\hyperref[question#1]{Question~\ref*{question#1}}%
-  \fi%
-}
-
 \title{WebQuiz: Web Quizzes using LaTeX}
 \begin{document}
 
@@ -48,13 +41,13 @@
 
   \begin{enumerate}
   \item Multiple choice questions with a \emph{unique} correct answer.
- (See \qref{1})
+ (See \qref{question1})
   \item Multiple choice questions with \emph{several} (or no)
     correct answers.
- (See \qref{2})
+ (See \qref{question2})
   \item Questions that require the student to enter an answer, which
   can then be compared with the correct answer in several different
-  ways. (See \qref{3})
+  ways. (See \qref{question3})
   \end{enumerate}
 The use of \WebQuiz is described in the next section. Later
 sections describe how each of the \WebQuiz environments are used.
@@ -201,7 +194,7 @@ an easily readable layout.
   recommended that you use them because targeted feedback to the
   students based on their responses can be beneficial.
   \par
-  For example, the code below, when run through \WebQuiz, produces \qref{1}
+  For example, the code below, when run through \WebQuiz, produces \qref{question1}
   in the online manual quiz.
 \begin{latexcode}
    \begin{question}
@@ -269,7 +262,7 @@ an easily readable layout.
   The only difference to the previous case is that zero or more
   \LatexCode|\correct| commands can appear.
   \par
-  For example, \qref{2} below was typed into \WebQuiz
+  For example, \qref{question2} below was typed into \WebQuiz
   using the following commands:
 \begin{latexcode}
     \begin{question}
@@ -322,7 +315,7 @@ an easily readable layout.
   If the optional argument \LatexCode|[multiple]| is not present, then the
   question admits precisely one correct answer.
   \par
-  For example, \qref{3} below was typed into \WebQuiz
+  For example, \qref{question3} below was typed into \WebQuiz
   using the following commands:
 \begin{latexcode}
     \begin{question}
@@ -332,7 +325,7 @@ an easily readable layout.
         \begin{pspicture}(-2.5,-0.5)(5,5.5)
           \psaxes[linecolor=red,linewidth=1pt,labels=none]%
           {->}(0,0)(-2.5,-1.5)(5,5)
-          \psellipse[linecolor=blue,linewidth=2pt](1,2)(3,2)
+          \psellipse[linecolor=SkyBlue,linewidth=2pt](1,2)(3,2)
         \end{pspicture}
       \end{center}
 
@@ -345,7 +338,7 @@ an easily readable layout.
           \begin{pspicture}(-2.5,-0.5)(5,5.5)
             \psaxes[linecolor=red,linewidth=1pt,labels=none]%
             {->}(0,0)(-2.5,-1.5)(5,5)
-            \parametricplot[linecolor=blue,linewidth=2pt]{0}{360}%
+            \parametricplot[linecolor=SkyBlue,linewidth=2pt]{0}{360}%
             {t cos 2 mul 1 add t sin 3 mul 2 add}
           \end{pspicture}
         \end{center}
@@ -362,7 +355,7 @@ an easily readable layout.
           \begin{pspicture}(-5,-4)(1,2)
             \psaxes[linecolor=red,linewidth=1pt,labels=none]%
             {<-}(0,0)(-4.5,-5.5)(1,2)
-            \parametricplot[linecolor=blue,linewidth=2pt]{0}{360}%
+            \parametricplot[linecolor=SkyBlue,linewidth=2pt]{0}{360}%
             {t cos 3 mul 1 sub t sin 2 mul 2 sub}
           \end{pspicture}
         \end{center}
@@ -375,7 +368,7 @@ an easily readable layout.
           \begin{pspicture}(-4,-5)(1,2)
             \psaxes[linecolor=red,linewidth=1pt,labels=none]%
             {<-}(0,0)(-4.5,-5.5)(1,2)
-            \parametricplot[linecolor=blue,linewidth=2pt]{0}{360}%
+            \parametricplot[linecolor=SkyBlue,linewidth=2pt]{0}{360}%
             { t cos 2 mul 1 sub t sin 3 mul 2 sub}
           \end{pspicture}
         \end{center}
@@ -405,7 +398,7 @@ an easily readable layout.
          \end{question}
   \end{latexcode}
   See the \WebQuiz manual for details of the different
-  comparison types.  For example, \qref{4} below was typed into
+  comparison types.  For example, \qref{question4} below was typed into
   \WebQuiz using the following commands:
 \begin{latexcode}
     \begin{question}
@@ -552,7 +545,7 @@ If no \textit{URL} is given as an optional argument to
     \begin{pspicture}(-2.5,-0.5)(5,5.5)
       \psaxes[linecolor=red,linewidth=1pt,labels=none]%
       {->}(0,0)(-2.5,-1.5)(5,5)
-      \psellipse[linecolor=blue,linewidth=2pt](1,2)(3,2)
+      \psellipse[linecolor=SkyBlue,linewidth=2pt](1,2)(3,2)
     \end{pspicture}
   \end{center}
 
@@ -565,7 +558,7 @@ If no \textit{URL} is given as an optional argument to
       \begin{pspicture}(-2.5,-0.5)(5,5.5)
         \psaxes[linecolor=red,linewidth=1pt,labels=none]%
         {->}(0,0)(-2.5,-1.5)(5,5)
-        \parametricplot[linecolor=blue,linewidth=2pt]{0}{360}%
+        \parametricplot[linecolor=SkyBlue,linewidth=2pt]{0}{360}%
         {t cos 2 mul 1 add t sin 3 mul 2 add}
       \end{pspicture}
     \end{center}
@@ -582,7 +575,7 @@ If no \textit{URL} is given as an optional argument to
       \begin{pspicture}(-5,-4)(1,2)
         \psaxes[linecolor=red,linewidth=1pt,labels=none]%
         {<-}(0,0)(-4.5,-5.5)(1,2)
-        \parametricplot[linecolor=blue,linewidth=2pt]{0}{360}%
+        \parametricplot[linecolor=SkyBlue,linewidth=2pt]{0}{360}%
         {t cos 3 mul 1 sub t sin 2 mul 2 sub}
       \end{pspicture}
     \end{center}
@@ -595,7 +588,7 @@ If no \textit{URL} is given as an optional argument to
       \begin{pspicture}(-4,-5)(1,2)
         \psaxes[linecolor=red,linewidth=1pt,labels=none]%
         {<-}(0,0)(-4.5,-5.5)(1,2)
-        \parametricplot[linecolor=blue,linewidth=2pt]{0}{360}%
+        \parametricplot[linecolor=SkyBlue,linewidth=2pt]{0}{360}%
         { t cos 2 mul 1 sub t sin 3 mul 2 sub}
       \end{pspicture}
     \end{center}

@@ -39,6 +39,39 @@ div.quiz-page {
   top: 36px;
   left: 5%;
   min-width: 60%;
+  width:88%;
+}
+
+div.button, span.button {
+    background-color: $ButtonBG;
+    border-radius: 5px;
+    color: $SideMenuText;
+    border: solid $ButtonBorder 2px;
+    font-size: 12px;
+    font-weight: normal;
+    text-align: center;
+}
+
+span.button {
+    padding: 1px 4px 1px 4px;
+}
+span.button-selected {
+    color: $ButtonSelected;
+}
+span:hover.button-selected {
+    color: $ButtonHover;
+}
+
+div.button:hover, span.button:hover {
+    border: solid $ButtonHover 2px !important;
+    color: $ButtonHover;
+    text-decoration: underline;
+}
+
+div.blank, span.blank {
+    content: "";
+    color: $BlankButtonFG;
+    background: $BlankButtonBG;
 }
 
 /* side menu with question buttons and copyright message */
@@ -72,6 +105,15 @@ div.side-menu {
             word-wrap: break-word;
         }
 
+        li.button-selected {
+            color: $ButtonSelected;
+        }
+
+        li:hover.button-selected {
+            color: $ButtonHover;
+        }
+
+
      /*
       * li:before {
       *     color: $Heading;
@@ -93,21 +135,13 @@ div.side-menu {
         display: table;
 
         div.button {
-            background-color: $ButtonBG;
-            border-radius: 5px;
-            color: $SideMenuText;
-            border: solid $ButtonBorder 2px;
             display: table-cell;
             float: left;
-            font-size: 12px;
-            font-weight: normal;
-            height:     30px;
             /* needed so that float does not break vertical alignment */
             line-height: 30px;
             margin-left: 5px;
             margin-top: 5px;
             position: relative;
-            text-align: center;
             width:      30px;
         }
 
@@ -122,11 +156,6 @@ div.side-menu {
             text-decoration: none;
         }
 
-        div.button:hover {
-            border: solid $ButtonHover 2px !important;
-            color: $ButtonHover;
-            text-decoration: underline;
-        }
         div.button:after {
             bottom: -35%;
             content: attr(content);
@@ -140,12 +169,6 @@ div.side-menu {
         div.button-selected {
             border: solid $ButtonSelected 2px;
             color: $ButtonSelected;
-        }
-
-        div.blank {
-            content: "";
-            color: $BlankButtonFG;
-            background: $BlankButtonBG;
         }
 
         div.cross {
@@ -232,9 +255,6 @@ div.side-menu {
 }
 
 
-li:hover.nolink, div:hover.nolink  { text-decoration: none !important; }
-li.nolink, div:hover.nolink  { color:  $ButtonHover !important;}
-
 
 div.question-label, span.question-label {
     color: $Subheading;
@@ -254,6 +274,7 @@ div.quiz-questions {
 
     div.quiz-header {
         padding-right: 1%;
+        width: 80%;
 
         div.quiz-title {
             color: $Heading;

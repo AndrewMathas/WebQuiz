@@ -21,10 +21,9 @@ import shutil
 import os
 import re
 
-from webquiz_util import debugging, kpsewhich, MetaData, webquiz_error
-from webquiz_xml import ReadWebQuizXmlFile
-
 import webquiz_templates
+import webquiz_util
+import webquiz_xml
 
 #################################################################################
 class MakeWebQuiz(object):
@@ -62,25 +61,24 @@ class MakeWebQuiz(object):
 
         self.read_xml_file()
 
-        # determine language settings
-        language = self.quiz.language
-
+        # use kpsewhich to fine the webquiz language file
         try:
-            language_file = kpsewhich('webquiz-{}.lang'.format(language))
+            language_file = webquiz_util.kpsewhich('webquiz-{}.lang'.format(self.quiz.language))
         except subprocess.CalledProcessError:
             try:
-                language_file = kpsewhich(language)
+                language_file = webquiz_util.kpsewhich(language)
             except subprocess.CalledProcessError:
-                webquiz_error(
-                    'kpsewhich is unable to find language file for "{}"'.format(language)
+                self.webquiz_error(
+                    'kpsewhich is unable to find language file for "{}"'.format(self.quiz.language)
                 )
-
-        self.language = MetaData(language_file)
+        # read the language file and store as a dictonary
+        self.language = webquiz_util.MetaData(language_file)
 
         # initialise number of quiz and discussion items
         self.number_discussions = len(self.quiz.discussion_list)
         self.number_questions = len(self.quiz.question_list)
 
+        # build the different components of the quiz web page
         self.add_meta_data()
         self.add_question_javascript()
         self.add_side_menu()
@@ -96,12 +94,17 @@ class MakeWebQuiz(object):
             # write the quiz in the specified format
             file.write(self.options.write_web_page(self))
 
-    def Debugging(self, msg):
+    def webquiz_debug(self, msg):
         r'''
             Customised debugging message for the makequiz module
         '''
-        debugging(self.settings.debugging, 'makequiz: ',msg)
+        webquiz_util.webquiz_debug(self.settings.debugging, 'makequiz: '+msg)
 
+    def webquiz_error(self, msg, err=None):
+        r'''
+            Customised eror message for the makequiz module
+        '''
+        webquiz_util.webquiz_error(self.settings.debugging, 'makequiz: '+msg, err)
 
     def add_breadcrumbs(self):
         r'''
@@ -229,13 +232,12 @@ class MakeWebQuiz(object):
                                 shutil.move(image, os.path.join(self.quiz_name, image))
 
             except OSError as err:
-                webquiz_error(
+                self.webquiz_error(
                     'there was a problem moving the image files for {}'.format(
                         self.quiz_name), err)
 
         except Exception as err:
-            webquiz_error( 'something went wrong when running htlatex on {}'.format(
-                    self.quiz_file), err)
+            self.webquiz_error( 'something went wrong when running htlatex on {}'.format(self.quiz_file), err)
 
     def read_xml_file(self):
         r'''
@@ -245,10 +247,10 @@ class MakeWebQuiz(object):
         try:
             # read in the xml version of the quiz
             if not os.path.isfile(self.quiz_name + '.xml'):
-                webquiz_error('{}.xml does not exist!?'.format(self.quiz_name))
-            self.quiz = ReadWebQuizXmlFile(self.quiz_name + '.xml', self.settings)
+                self.webquiz_error('{}.xml does not exist!?'.format(self.quiz_name))
+            self.quiz = webquiz_xml.ReadWebQuizXmlFile(self.quiz_name + '.xml', self.settings)
         except Exception as err:
-            webquiz_error('error reading the xml generated for {}. Please check your latex source.'
+            self.webquiz_error('error reading the xml generated for {}. Please check your latex source.'
                 .format(self.quiz_name), err)
 
     def add_meta_data(self):
@@ -357,7 +359,7 @@ class MakeWebQuiz(object):
                     )
 
         except Exception as err:
-            webquiz_error('error writing quiz specifications', err)
+            self.webquiz_error('error writing quiz specifications', err)
 
         self.javascript = webquiz_templates.questions_javascript.format(
             webquiz_url=self.webquiz_url,
@@ -449,7 +451,7 @@ class MakeWebQuiz(object):
             - qnum is the number of the question
         '''
         if question.type == 'input':
-            self.Debugging('Q{}: after_text={}.'.format(qnum, question.after_text))
+            self.webquiz_debug('Q{}: after_text={}.'.format(qnum, question.after_text))
             question_options = webquiz_templates.input_answer.format(
                                  size=5+len('{}'.format(question.answer)),
                                  after_text=question.after_text,
@@ -463,7 +465,7 @@ class MakeWebQuiz(object):
                         for choice in range(len(question.items)))
             )
         else:
-            webquiz_error('Unknown question type "{}" in question {}'.format(question.type, qnum))
+            self.webquiz_error('Unknown question type "{}" in question {}'.format(question.type, qnum))
         return webquiz_templates.question_text.format(
             qnum=qnum,
             question_text=question.text,
@@ -493,7 +495,7 @@ class MakeWebQuiz(object):
             )
         else:
             item += '<!-- internal error: %s -->\n' % question.type
-            webquiz_error('Unknown question type "{}" in question {}'.format(question.type, qnum))
+            self.webquiz_error('Unknown question type "{}" in question {}'.format(question.type, qnum))
 
         if question.columns == 1 or (part+1) % question.columns == 0 or part == len(question.items) - 1:
             item += '   </tr><!-- part={}, cols={}, # answers = {} -->\n'.format(
@@ -546,6 +548,6 @@ class MakeWebQuiz(object):
                                         reason=s.feedback) for s in question.items),
                                     **self.language)
         else:
-            webquiz_error('Unknown question type "{}" in question {}'.format(question.type, qnum))
+            self.webquiz_error('Unknown question type "{}" in question {}'.format(question.type, qnum))
 
         return '<div class="answer">' + feedback + '</div>'

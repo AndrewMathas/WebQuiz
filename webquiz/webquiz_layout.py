@@ -1,6 +1,6 @@
 r'''
 -----------------------------------------------------------------------------
-    webquiz_local | default layout of webquiz web pages.
+    webquiz_local | default layout of webquiz quiz pages.
 -----------------------------------------------------------------------------
 
     Copyright (C) Andrew Mathas, University of Sydney

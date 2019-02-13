@@ -62,13 +62,13 @@ class MetaData(dict):
 
 
 #################################################################################
-def debugging(print_message, *arg):
-    if print_message:
+def webquiz_debug(debugging, *arg):
+    if debugging:
         sys.stderr.write(' '.join('{}'.format(a) for a in arg)+'\n')
 
 
 #################################################################################
-def webquiz_error(msg, err=None):
+def webquiz_error(debugging, msg, err=None):
     r'''
     Consistent handling of errors in magthquiz: print the message `msg` and
     exist with error code `err.errno` if it is available.abs
@@ -77,7 +77,7 @@ def webquiz_error(msg, err=None):
            msg=msg, dash='-'*40+'\n')
     )
 
-    if metadata.debugging and err is not None:
+    if debugging and err is not None:
         raise
 
     if err is not None:

@@ -224,13 +224,20 @@
 % discussion environment
 % -----------------------------------------------------------------------
 
+% The discussion counter keeps track of the discussion environmennts
+% It is not printed in the PDF version of the quiz
+\newcounter{discussion}
+
 % \begin{dicussion}[short title][title -default-> Discussion]
-\def\WQ@DiscussionStart{%
+\def\WQ@DiscussionStart#1{%
   \WQ@Debugging{Starting discussion...}%
   \ifWQ@InDiscussion\WQ@Error{discussion environments cannot be nested}\fi%
   \ifWQ@InQuestion\WQ@Error{discussion environments cannot be inside a question environment}\fi%
   \ifWQ@InQuizIndex\WQ@Error{discussion environments cannot be inside a quizindex environment}\fi%
   \global\WQ@InDiscussiontrue%
+  \refstepcounter{discussion}%
+  \def\@currentlabel{#1}\label{discussion-title-\arabic{discussion}}% label shirt title
+  \def\@currentlabel{\thediscussion}% reset label to discussion number
 }
 \def\WQ@DiscussionEnd{\global\WQ@InDiscussionfalse\WQ@Debugging{Ending discussion...}}
 \NewDocumentEnvironment{discussion}{O{Discussion}O{#1}}
@@ -239,11 +246,13 @@
 % ---------------------------------------------------------------------------
 % Cross referencing question and discussion environments
 % ---------------------------------------------------------------------------
-\NewDocumentCommand\WQ@ref{ O{} s o m }{%
-\fbox{\IfBooleanTF{#2}{link}{button} to \IfNoValueTF{#3}{to \ref{#4}}{ to ``#3'' (\ref{#4})}}%
+
+% \WQ@Ref{+ or -}[optional *][optional text]{mandatory label}
+\NewDocumentCommand\WQ@ref{ m s o m }{%
+\fbox{\IfBooleanTF{#2}{link}{button} to \IfNoValueTF{#3}{to #1 \ref{#4}}{ to ``#3'' (#1 \ref{#4})}}%
 }
-\newcommand\dref{\WQ@ref[-]}
-\newcommand\qref{\WQ@ref}
+\newcommand\dref{\WQ@ref{discussion}}
+\newcommand\qref{\WQ@ref{question}}
 
 % -----------------------------------------------------------------------
 % question environment
