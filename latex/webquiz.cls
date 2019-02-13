@@ -224,10 +224,6 @@
 % discussion environment
 % -----------------------------------------------------------------------
 
-% The discussion counter keeps track of the discussion environmennts
-% It is not printed in the PDF version of the quiz
-\newcounter{discussion}
-
 % \begin{dicussion}[short title][title -default-> Discussion]
 \def\WQ@DiscussionStart#1{%
   \WQ@Debugging{Starting discussion...}%
@@ -235,9 +231,6 @@
   \ifWQ@InQuestion\WQ@Error{discussion environments cannot be inside a question environment}\fi%
   \ifWQ@InQuizIndex\WQ@Error{discussion environments cannot be inside a quizindex environment}\fi%
   \global\WQ@InDiscussiontrue%
-  \refstepcounter{discussion}%
-  \def\@currentlabel{#1}\label{discussion-title-\arabic{discussion}}% label shirt title
-  \def\@currentlabel{\thediscussion}% reset label to discussion number
 }
 \def\WQ@DiscussionEnd{\global\WQ@InDiscussionfalse\WQ@Debugging{Ending discussion...}}
 \NewDocumentEnvironment{discussion}{O{Discussion}O{#1}}
