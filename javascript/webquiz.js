@@ -145,7 +145,6 @@ function showQuestion(newB, newQ) { // newQ is an integer which is always in the
             hideFeedback();
             document.getElementById("question" + currentQ).style.display = "none";
             // "de-select" the current button
-            currentB.classList.remove("nolink");
             currentB.classList.remove("button-selected");
       }
       // display the new question
@@ -162,7 +161,6 @@ function showQuestion(newB, newQ) { // newQ is an integer which is always in the
       // set currentB = the current button and "select" the current button
       currentB = document.getElementById("button" + newB);
       currentB.classList.add("button-selected");
-      currentB.classList.add("nolink");
     }
 
     // finally set currentQ = current question
@@ -388,7 +386,9 @@ function WebQuizInit(questions, discussions, quizfile) {
     dTotal = discussions;
 
     // remove question arrows when there are no questions
-    document.getElementsByClassName('arrows')[0].style.display='none'
+    if (qTotal==0) {
+        document.getElementsByClassName('arrows')[0].style.display='none'
+    }
 
     // display the first question or discussion item
     currentB = 0;
