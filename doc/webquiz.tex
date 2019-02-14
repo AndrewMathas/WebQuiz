@@ -40,7 +40,7 @@
 
 \usepackage{imakeidx}
 \indexsetup{level=\section*,toclevel=section,noclearpage}
-\makeindex[intoc,noautomatic,columns=3]
+\makeindex[intoc,columns=3]
 
 \newenvironment{heading}[1][]
 {\noindent\trivlist\item[\hskip\labelsep\textbf{#1}]}
@@ -370,9 +370,13 @@
       \index{$>$ command-line prompt}\index{command-line prompt!$>$}
       (Throughout this manual, \BashCode|>| is used for the command-line
       prompt.)
-      It should be possible to run \WebQuiz from inside programs like \TeX
-      Shop by setting the compiler equal to \BashCode|webquiz|, although
-      this is untested.
+
+      It is possible to use \WebQuiz from inside GUI programs like \TeX
+      Shop, but exactly how this is done will depend on the program the
+      GUI that you use. In the case of \TeX Shop you need to define a
+      new \textit{engine} following, for example the instructions at
+      \href{https://tex.stackexchange.com/questions/376649}
+           {tex.stackexchange.com/questions/376649}.\index{\TeX Shop}
 
   \subsection{Credits}
       \WebQuiz{} was written and developed in the
@@ -532,7 +536,8 @@
   of their use.
 
   \subsubsection{Question environments and the \textcolor{blue}{\textbackslash answer} macro}
-  \CrossIndex{environment}{question}
+  \index{environment!question}
+  \index{question environment}
 
   Each quiz question must be placed inside a \LatexCode|question|
   environment. Typically, a quiz has several questions, each wrapped in
@@ -638,8 +643,8 @@
     \end{heading}
 
     \subsubsection{Multiple choice questions}\label{SS:choice}
-    \CrossIndex{environment}{choice}
-    \CrossIndex{question environment}{choice environment}
+    \index{environment!choice}
+    \index{question environment!choice}
     \SeeIndex{multiple choice}{choice environment}
 
   The multiple choice options for a quiz question need to be placed inside
@@ -683,8 +688,8 @@
   \LatexCode|\whenRight| and \LatexCode|\whenWrong| this feedback is
   displayed only when the student checks their answer.
   \index{feedback}
-  \CrossIndex{feedback}{whenRight}
-  \CrossIndex{feedback}{whenWrong}
+  \CrossIndex{feedback}*{whenRight}
+  \CrossIndex{feedback}*{whenWrong}
 
   Here is an example of a \LatexCode|single|-choice question with a unique
   answer:
@@ -734,7 +739,7 @@
   \CrossIndex{choice environment}*{thechoice}\macroIndex{thechoice}
 
   \subsubsection{Discussion environments}\label{SS:discussion}
-    \CrossIndex{environment}{discussion}
+    \index{environment!discussion}
 
   In addition to asking questions, it is possible to display revision,
   or discussion, material on the quiz web page using the
@@ -815,15 +820,6 @@
   that will open Question~1 on any quiz, using
   \LatexCode|\Qref[Start quiz]{1}|.
 
-  \begin{dangerous}
-    When using the \LatexCode|randomorder| document class option
-    (\autoref{SS:classOptions}), ``optional text'' should always be
-    given when using \LatexCode|\qref|. This is because the question
-    number that is displayed by default will always be the question
-    number \textit{in the \LaTeX{} file} rather than the question number
-    in the online quiz.
-  \end{dangerous}
-
   Here is an example that shows how \LatexCode|\Qref| works:
   \InputLatexCode{discussion-Qref}\macroIndex{Qref}
   which produces the online quiz:
@@ -834,10 +830,18 @@
   This code produces the online quiz:
   \ScreenShot{Crossing-referencing using labels}{discussion-ref}
 
-  \subsubsection{Index pages for quizzes}\label{SS:index}
+  \begin{dangerous}
+    When using the \LatexCode|randomorder| document class option
+    (\autoref{SS:classOptions}), ``optional text'' should always be
+    given when using \LatexCode|\qref|. This is because the question
+    number that is displayed by default will always be the question
+    number \textit{in the \LaTeX{} file} rather than the question number
+    in the online quiz.
+  \end{dangerous}
 
+  \subsubsection{Index pages for quizzes}\label{SS:index}
     \index{quizindex environment}
-    \CrossIndex{environment}{quizindex}
+    \index{environment!quizindex}
 
     Most quizzes occur in sets that cover related material, such as for
     a particular unit of study. The \LatexCode|quizindex| environment
@@ -857,7 +861,6 @@
     As the example above shows, the entries in the \LatexCode|quizindex| are
     given using the \LatexCode|\quiz| or the \LatexCode|\quiz*| command.
     \CrossIndex{quizindex environment}*{quiz}
-    \CrossIndex{quizindex environment}*{quiz*}
     The syntax for these commands is
     \begin{latexcode}
         \quiz[URL for quiz]{Title for quiz}
@@ -1196,6 +1199,7 @@
     for a quiz will always override the default settings in the \webquizrc*.
 
   \begin{description}
+
     \item[fixedorder, randomorder]
     \CrossIndex{document class options}{fixedorder}
     \CrossIndex{document class options}{randomorder}
@@ -1222,7 +1226,7 @@
       are \textit{not} randomly permuted. That is, the choices always
       appear in the order that they are written in the \LaTeX{} file.
 
-    \item[sidemenu, hidesidemenu]
+    \item[hidesidemenu, sidemenu]
     \CrossIndex{document class options}{hidesidemenu}
     \CrossIndex{document class options}{showsidemenu}
       If the \LatexCode|hidesidemenu| option is set then the side menu
@@ -1237,18 +1241,6 @@
       {\textcolor{red}{\large\ding{118}}} symbols. The side-menu
       automatically disappears for devices with narrow screens, such as
       mobile phones.
-
-    \item[onepage, separatepages]
-    \CrossIndex{document class options}{onepage}
-    \CrossIndex{document class options}{separatepages}
-    By default, only one question, or one discussion environment, is displayed
-    by the quiz at any time. As \LatexCode|separatepages| is the default, every
-    example so far is of this form. With the document-class option
-    \LatexCode|onepage| all questions, and discussion environments, are
-    displayed at the same time on a single web page. So, for example, the code:
-    \InputLatexCode{onepage}
-    produces the quiz page:
-    \ScreenShot{A one page quiz}{onepage}
 
     \item[language=<lang>] \CrossIndex{document class options}{language}
     Set the language used by the \textit{web pages} constructed by \WebQuiz.
@@ -1324,6 +1316,18 @@
     language files, as a \textit{new issue} at:
       \href{https://\webquiz{repository}}{\webquiz{repository}}.
 
+    \item[onepage, separatepages]
+    \CrossIndex{document class options}{onepage}
+    \CrossIndex{document class options}{separatepages}
+    By default, only one question, or one discussion environment, is displayed
+    by the quiz at any time. As \LatexCode|separatepages| is the default, every
+    example so far is of this form. With the document-class option
+    \LatexCode|onepage| all questions, and discussion environments, are
+    displayed at the same time on a single web page. So, for example, the code:
+    \InputLatexCode{onepage}
+    produces the quiz page:
+    \ScreenShot{A one page quiz}{onepage}
+
     \item[theme]\CrossIndex{document class options}{theme}
 
        \WebQuiz\ has a small number of different themes for setting the
@@ -1332,7 +1336,7 @@
        so far have used the \LatexCode|default| theme.
        \WebQuiz currently supports the following themes:
         \ListWebQuizThemes
-       Example screenshots of all of the \WebQuiz themes can be found in
+       Example screenshots of all \WebQuiz themes can be found in
        \hyperref[SS:themes]{Appendix A}.
 
   \end{description}
@@ -1399,11 +1403,10 @@
       \InputLatexCode{pst2pdf}
       to produce the quiz:
       \ScreenShot{Example requiring the pst2pdf document class option}{pst2pdf}
-      The placement of the image is still not perfect --- although the
-      position of the image adjusts with the screen size and it does, in
-      fact, display well on a mobile device.  More importantly, if you
-      use the \LatexCode|pst2pdf| document-class option then \WebQuiz is
-      able to display this image.
+      The position of the image adjusts with the screen size and it
+      does, in fact, display well on a mobile device.  \WebQuiz is not
+      able to display this image without the \LatexCode|pst2pdf|
+      document-class option.
 
       \begin{dangerous}
         Unfortunately, \ctan{pst2pdf} can fail silently without giving any
@@ -1475,14 +1478,16 @@
     defines a macro \LatexCode{\ce} for writing chemical symbols but,
     unfortunately, the \LatexCode{\ce} macro has not (yet) been
     configured to work with \TeXfht, which means that this command does
-    not work very well when used in \WebQuiz quizzes. As the following
-    screenshot shows, if you add the line
+    not work very well when used in \WebQuiz quizzes.
+
+    For example, the following code:
+    \InputLatexCode{display-as-image}
+    shows that if you add the line
     \LatexCode|\DisplayAsImage{ce}| to your quiz after
     \LatexCode|\begin{document}| then it is
     possible to use \LatexCode|\ce| in your quizzes:
     \ScreenShot{Using DisplayAsImage}{display-as-image}
-    This web quiz was constructed using the code:
-    \InputLatexCode{display-as-image}
+
     As the example code shows, \LatexCode|\DisplayAsImage| accepts an optional
     argument that can be used to fine-tune the placement of the image on
     the quiz web page using \CSS. For those interested in the technical details, the
@@ -1818,7 +1823,7 @@
             on a unix-like system,} use \BashCode|sudo webquiz --edit-settings|.
 
             \item[\ddash settings {[SETTING]}] \CrossIndex{command-line option}{settings}
-            \SeeIndex{rc file}{webquizrc}
+            \SeeIndex{rcfile}{webquizrc}
             \SeeIndex{default settings}{webquizrc}
             List system settings for webquiz stored in \webquizrc, the
             (\textit{run-time configuration file}). Optionally, a single
@@ -2184,8 +2189,6 @@
     or with \WebQuiz. If you can, please also test to see if your code
     compiles using \TeXfht directly.
 
-\filbreak
-
 \appendix
 \section*{Appendices}
   \addcontentsline{toc}{section}{Appendices}
@@ -2248,9 +2251,10 @@
 
 \subsection{Licence}
 
-Copyright (C) 2013-2017
+Version 3, Copyright (C) 2007,
 
-\href{https://www.gnu.org/licenses/gpl-3.0.en.html}{GNU General Public License, Version 3, 29 June 2007}
+\href{https://www.gnu.org/licenses/gpl-3.0.en.html}
+     {GNU General Public License, Version 3, 29 June 2007}
 
 This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License (GPL) as published by the Free

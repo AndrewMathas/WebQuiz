@@ -82,10 +82,13 @@ function make_languages() {
 
 #################################################
 function make_man_page() {
-  # using pando to convert from markdown to man-page format gives horrible
-  # results so we go via rst
-  pandoc --from=markdown --to=rst --output=webquiz.rst ../README-ctan.md
-  rst2man.py webquiz.rst webquiz.1
+  # using pandoc to convert from markdown to man-page format gives horrible
+  # results so we go via rst2man
+  cd $WebQuizDir/doc
+  message "Making markdown file"
+  pandoc --verbose -s -o README-ctan.md README-ctan.rst
+  message "Making manual file"
+  rst2man.py README-ctan.rst webquiz.1
 }
 
 #################################################

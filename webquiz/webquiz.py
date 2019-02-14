@@ -250,13 +250,13 @@ class WebQuizSettings:
         r'''
             Customised debugging message for the MakeSettings module
         '''
-        webquiz_util.webquiz_debug(self.settings.debugging, 'main: ', msg)
+        webquiz_util.webquiz_debug(self.debugging, 'main: ', msg)
 
     def webquiz_error(self, msg):
         r'''
             Customised error messages for the Module
         '''
-        webquiz_util.webquiz_error(self.settings.debugging, 'settings: ', msg)
+        webquiz_util.webquiz_error(self.debugging, 'settings: ', msg)
 
     def __getitem__(self, key):
         r'''

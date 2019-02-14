@@ -169,6 +169,7 @@ class WebQuizCtan(Command):
         copy = 'Copyright (C) '+settings.copyright[:9]
         for file in [ 'README-ctan.md',
                       'latex/webquiz-doc.code.tex',
+                      'doc/credits.tex',
                       'doc/webquiz-online-manual.tex',
                       'doc/webquiz.tex',
                       'README.rst'
@@ -221,17 +222,17 @@ class WebQuizCtan(Command):
                 # now add the files: the target is assume to be a directory
                 # unless it contains a '.', in which case we change the filename
                 for (src, target) in [
-                    ('README-ctan.md',                   'README.md'),
+                    ('doc/README-ctan.md',            'README.md'),
                     ('latex/webquiz.c*',              'latex'),
                     ('latex/webquiz-*.code.tex',      'latex'),
                     ('latex/webquiz.ini',             'latex'),
                     ('latex/webquiz-*.lang',          'latex'),
-                    ('latex/pgfsys-dvisvgm4ht.def',      'latex'),
-                    ('CHANGES.rst',                      'scripts'),
-                    ('LICENCE',                          'scripts'),
+                    ('latex/pgfsys-dvisvgm4ht.def',   'latex'),
+                    ('CHANGES.rst',                   'scripts'),
+                    ('LICENCE',                       'scripts'),
                     ('webquiz/README-scripts',        'scripts'),
-                    ('webquiz/webquiz*.py',        'scripts'),
-                    ('webquiz/webquiz.bat',        'scripts'),
+                    ('webquiz/webquiz*.py',           'scripts'),
+                    ('webquiz/webquiz.bat',           'scripts'),
                     ('doc/webquiz*.tex',              'doc'),
                     ('doc/webquiz*.pdf',              'doc'),
                     ('doc/webquiz.1',                 'doc'),
@@ -239,13 +240,13 @@ class WebQuizCtan(Command):
                     ('doc/webquiz.settings',          'doc'),
                     ('doc/webquiz.themes',            'doc'),
                     ('doc/webquiz.usage',             'doc'),
-                    ('doc/README-doc',                   'doc'),
+                    ('doc/README-doc',                'doc'),
                     ('javascript/webquiz-min.js',     'doc/www/js/webquiz.js'),
                     ('css/webquiz-*.css',             'doc/www/css'),
                     ('doc/webquiz-online-manual.tex', 'doc/www/doc'),
-                    ('doc/examples/README-examples',     'doc/www/doc/examples'),
-                    ('doc/examples/*.tex',               'doc/www/doc/examples'),
-                    ('doc/examples/[-a-z]*.png',         'doc/examples'),
+                    ('doc/examples/README-examples',  'doc/www/doc/examples'),
+                    ('doc/examples/*.tex',            'doc/www/doc/examples'),
+                    ('doc/examples/[-a-z]*.png',      'doc/examples'),
                 ]:
                     for file in glob.glob(src):
                         if '.' in target:
