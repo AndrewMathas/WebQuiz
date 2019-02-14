@@ -1,22 +1,12 @@
-\documentclass{webquiz}
-\title{A discussion environment example}
+\documentclass[hidesidemenu, onepage]{webquiz}
+\title{A dref and qref example}
 \begin{document}
 \begin{discussion}[First bit]\label{d:one}
-    Some interesting discussion related to question \qref{q:one}.
-  \end{discussion}
-  \begin{discussion}[Two][Second bit]\label{d:two}
-    Some interesting discussion related to question \qref[text]{q:two}.
-  \end{discussion}
-  \begin{discussion}[Two][Second bit]\label{d:three}
-    Some interesting discussion related to question \qref*[text]{q:three}.
+    Some cross-references to question 1: \qref{q:one},
+    \qref[some text]{q:one}, \qref*{q:one} and \qref*[some text]{q:one}.
   \end{discussion}
   \begin{question}\label{q:one}
-     An interesting question relating to discussion \dref{d:one}\answer{1}
-  \end{question}
-  \begin{question}\label{q:two}
-     An interesting question relating to discussion \dref[text]{d:two}\answer{2}
-  \end{question}
-  \begin{question}\label{q:three}
-    An interesting question relating to discussion \dref*[text]{d:three}\answer{3}
+    Some cross-references to the discussion: \answer{1} \dref{d:one},
+    \dref[some text]{d:one}, \dref*{d:one} and \dref*[some text]{d:one}.
   \end{question}
 \end{document}

@@ -224,13 +224,16 @@
 % discussion environment
 % -----------------------------------------------------------------------
 
+\newcounter{discussion}
+
 % \begin{dicussion}[short title][title -default-> Discussion]
-\def\WQ@DiscussionStart#1{%
+\def\WQ@DiscussionStart{%
   \WQ@Debugging{Starting discussion...}%
   \ifWQ@InDiscussion\WQ@Error{discussion environments cannot be nested}\fi%
   \ifWQ@InQuestion\WQ@Error{discussion environments cannot be inside a question environment}\fi%
   \ifWQ@InQuizIndex\WQ@Error{discussion environments cannot be inside a quizindex environment}\fi%
   \global\WQ@InDiscussiontrue%
+  \refstepcounter{discussion}%
 }
 \def\WQ@DiscussionEnd{\global\WQ@InDiscussionfalse\WQ@Debugging{Ending discussion...}}
 \NewDocumentEnvironment{discussion}{O{Discussion}O{#1}}
@@ -246,6 +249,7 @@
 }
 \newcommand\dref{\WQ@ref{discussion}}
 \newcommand\qref{\WQ@ref{question}}
+\newcommand\Qref{\WQ@ref{question number}}
 
 % -----------------------------------------------------------------------
 % question environment

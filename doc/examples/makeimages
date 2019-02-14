@@ -226,6 +226,7 @@ pages = [
     Convert("choice-single"),
     Convert("discussion"),
     Convert("discussion-ref"),
+    Convert("discussion-Qref"),
     Convert("display-as-image", question='1:2'),
     Convert("french", question='1:1'),
     Convert("index-en"),

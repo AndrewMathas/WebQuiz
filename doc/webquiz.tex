@@ -114,7 +114,7 @@
     \ifx\theme\empty\relax%
     \else%
        \ScreenShot[0.68]{Example of the \textbf{\theme} theme}{theme-\theme}%
-       \CrossIndex{theme}{\theme}%
+       \index{theme!\theme}%
     \fi
   }
 }
@@ -405,6 +405,9 @@
      Don's idea of using \TeXfht, and some of his code, is still
      in use. Prior to releasing \WebQuiz on \Ctan, the program was known
      as \texttt{MathQuiz}.
+
+     Hendrik Suess contributed code to improve session history
+     and suggested the \LatexCode|\qref| command.
 
      Thanks are due to Bob Howlett for general help with \CSS and to
      Michal Hoftich for invaluable technical advice on \TeXfht. Thanks
@@ -766,17 +769,64 @@
   questions, and quizzes that contain only \LatexCode|question|
   environments, with no discussion.
 
-  If you have a mixture of \LatexCode|discussion| and \LatexCode|question| environments then
-  it is useful to be able to add thinks between them.
-  \LaTeX{} provides the \LatexCode|\label| and \LatexCode|\ref| commands
-  for cross-referencing, so \WebQuiz  builds on this idea to
-  \LaTexCode|\dref| and \LaTexCode|\qref| to reference
-  \LatexCode|discussion| and \LatexCode|question| environments,
-  respectively. Here is an example that shows how they are used:
-  \InputLatexCode{discussion-ref}\macroIndex{ref}\macroIndex{dref}\macroIndex{dref}\macroIndex{label}
-  which produces the online quiz:
-  \ScreenSchot{Crossing-referencing question and discussion environments}{discussion-ref}
+  If you have a mixture of \LatexCode|discussion| and
+  \LatexCode|question| environments then it is useful to be able to add
+  thinks between them.  \LaTeX{} provides the \LatexCode|\label| and
+  \LatexCode|\ref| commands for cross-referencing, so \WebQuiz  builds
+  on this idea and provides the three commands \LatexCode|\dref|,
+  \LatexCode|\qref| and \LatexCode|\Qref| to reference
+  \LatexCode|discussion| and \LatexCode|question| environments. The
+  syntax for these commands is as follows:
+  \begin{latexcode}
+    \dref[optional text]{LaTeX label}      % inserts discussion button
+    \dref*[optional text]{LaTeX label}     % inserts discussion link
+    \qref[optional text]{LaTeX label}      % inserts question button by label
+    \qref*[optional text]{LaTeX label}     % inserts question link by label
+    \Qref[optional text]{question number}  % inserts question button by number
+    \Qref*[optional text]{question number} % inserts question link by number
+  \end{latexcode}
+  \CrossIndex{cross-reference}*{dref}
+  \CrossIndex{cross-reference}*{qref}
+  \CrossIndex{cross-reference}*{Qref}
+  \CrossIndex{cross-reference}*{label}
+  In each case the text in the link or button defaults to either the
+  short-title, for discussion environments, or the question number for
+  questions.  The ``optional text'' is used instead whenever it is
+  supplied.
 
+  The macros \LatexCode|\dref| and \LatexCode|\qref| use a standard
+  \LaTeX{} \textit{label}, defined using the \LatexCode|\latex| command,
+  to insert a button or a link whereas \LatexCode|\Qref| uses the actual
+  \textit{question number}, so it is not necessary to define a
+  \LatexCode|\label| for a question when using \LatexCode|\Qref|.
+
+  Even though the macros \LatexCode|\qref| and \LatexCode|\Qref| are
+  quite similar they serve quite different functions when the
+  \LatexCode|randomorder| document class option is used; see
+  \autoref{S:documentclass}.  In this case we do not know ahead of time
+  the question numbers that will be used in the quiz. So if
+  \LatexCode|q:one| is the label for the first question in the \LaTeX{}
+  file then \LatexCode|\qref{q:one}| will insert a button to this
+  question \textit{but} this will almost certainly not be question one.
+  On the other hand, we can create a ``Start quiz'' button, for example,
+  that will open question~1 on any quiz using \LatexCode|\Qref[Start quiz]{1}|.
+
+  \begin{dangerous}
+    When using the \LatexCode|randomorder| document class option,
+    ``optional text'' should always be given when using the
+    \LatexCode|\qref| command because otherwise the displayed question
+    number will often be wrong.
+  \end{dangerous}
+
+  Here is an example showing how \LatexCode|\dref| and \LatexCode|qref|
+  \InputLatexCode{discussion-Qref}\macroIndex*{Qref}
+  which produces the online quiz:
+  \ScreenShot{Crossing-referencing using question numbers}{discussion-Qref}
+  Similarly, here is an example showing how \LatexCode|\dref| and \LatexCode|qref|
+  are used:
+  \InputLatexCode{discussion-ref}\macroIndex*{dref}\macroIndex*{qref}
+  This code produces the online quiz:
+  \ScreenShot{Crossing-referencing using labels}{discussion-ref}
 
   \subsubsection{Index pages for quizzes}\label{SS:index}
 

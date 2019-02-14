@@ -39,7 +39,7 @@ mathjs=r'  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/5.4.
 
 webquiz_init = r'''<div style="display: none;">
     <script src="quizindex.js"></script>
-    <script type="text/javascript">WebQuizInit({number_questions}, {number_discussions}, '{quiz_file}');</script>
+    <script>WebQuizInit({number_questions}, {number_discussions}, '{quiz_file}');</script>
   </div>'''
 
 # Bread crumbs including a drop down menu for all of the quizzes for the unit.
