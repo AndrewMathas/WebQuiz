@@ -1,11 +1,16 @@
-\documentclass[hidesidemenu]{webquiz}
+\documentclass[onepage]{webquiz}
 \title{An answer$*$ (and comparison=string)}
 \begin{document}
   \begin{question}     % a quiz question
      What is the capital of Australia?
      \answer*{Canberra} (Correct answer ``Canberra'')
-     \whenRight  Yes, Sydney is the capital of NSW and Melbourne is the
-     capital of Victoria
+     \whenRight  Yes, Sydney is the capital of NSW.
+     \whenWrong Remember to correctly capitalise your answer!
+  \end{question}
+  \begin{question}     % a quiz question
+     What is the capital of Australia?
+     \answer{Canberra} (Correct answer ``Canberra'')
+     \whenRight  Yes, Sydney is the capital of NSW.
      \whenWrong Remember to correctly capitalise your answer!
   \end{question}
 \end{document}

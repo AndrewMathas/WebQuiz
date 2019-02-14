@@ -214,12 +214,12 @@ class Convert:
 
 # Specify the pages to construct using the Convert class:
 pages = [
-        Convert("answer-complex", Question="1:i+7"),
+        Convert("answer-complex", Question="1:7+i|2:i+7"),
     Convert("answer-integer", Question="1:18"),
-    Convert("answer-lowercase", Question="1:long"),
-    Convert("answer-number", Question="1:0.75"),
+    Convert("answer-lowercase", Question="1:long|2:LONG"),
+    Convert("answer-number", Question="1:0.75|2:3/4"),
     Convert("answer-string", Question="1:canberra"),
-    Convert("answer-star", Question="1:canberra"),
+    Convert("answer-star", Question="1:Canberra|2:canberra"),
     Convert("breadcrumbs", js="toggle_quizindex_menu();"),
     Convert("breadcrumbs", page_out="quizindex-dropdown", js='toggle_quizindex_menu();'),
     Convert("choice-multiple"),

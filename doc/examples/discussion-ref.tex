@@ -1,12 +1,12 @@
-\documentclass[hidesidemenu, onepage]{webquiz}
+\documentclass[onepage]{webquiz}
 \title{A dref and qref example}
 \begin{document}
-\begin{discussion}[First bit]\label{d:one}
-    Some cross-references to question 1: \qref{q:one},
-    \qref[some text]{q:one}, \qref*{q:one} and \qref*[some text]{q:one}.
+  \begin{discussion}[First bit][First discussion item]\label{d:one}
+    Some cross-references to question 1: \qref{q:one}, \qref*{q:one},
+    \qref[some text]{q:one}, and \qref*[some text]{q:one}.
   \end{discussion}
   \begin{question}\label{q:one}
-    Some cross-references to the discussion: \answer{1} \dref{d:one},
-    \dref[some text]{d:one}, \dref*{d:one} and \dref*[some text]{d:one}.
+    Cross-references to discussion: \answer{1} \dref{d:one}, \dref*{d:one},
+    \dref[some text]{d:one} and \dref*[some text]{d:one}.
   \end{question}
 \end{document}

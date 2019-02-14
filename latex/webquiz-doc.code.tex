@@ -28,10 +28,10 @@
 \RequirePackage{xcolor}
 
 \usepackage{hologo}
-\newcommand\WebQuiz{\texorpdfstring{WebQuiz}{\textcolor{brown}{WebQuiz\kern-0.5ex\hologo{TeX}}}\xspace}
-\newcommand\TeXfht{\href{https://www.ctan.org/tex4ht}{\hologo{TeX4ht}\xspace}}
+\newcommand\WebQuiz{\textcolor{Sienna}{WebQuiz}\xspace}
+\newcommand\TeXfht{\href{https://www.ctan.org/tex4ht}{\hologo{TeX4ht}}\xspace}
 
-\NewDocumentCommand\ctan{ O{pkg/#2} m}{\href{https://www.ctan.org/#1}{\texttt{#2}}}
+\NewDocumentCommand\ctan{ O{pkg/#2} m}{\href{https://www.ctan.org/#1}{\texttt{#2}}\xspace}
 
 \newcommand\HTML{\href{https://www.w3schools.com/html/html_intro.asp}{HTML}\xspace}
 \newcommand\CSS{\href{https://www.w3schools.com/css}{CSS}\xspace}
@@ -106,11 +106,12 @@
                 Institution,InstitutionURL,feedback,correct,incorrect,whenRight,whenWrong,answer,
                 dref, qref, Qref},
   classoffset=2,
-  morekeywords={quizindex, discussion, question, multiple, single, columns, choice, pspicture},
+  morekeywords={quizindex, discussion, question, multiple, single, columns, choice},
   classoffset=3,
   alsoletter=2,
-  morekeywords={theme, language, hide side menu, pst2pdf, tikz, fixed order, random order, show side menu, one page,
-                separate pages, english, french, integer, number, string, lowercase, eval},
+  morekeywords={theme, language, hide side menu, pst2pdf, tikz, fixed order, random order,
+                show side menu, one page, separate pages, english, french, integer, complex,
+                number, string, lowercase, pspicture},
   classoffset=4,
   morekeywords={tikzset, foreach, draw, filldraw, Configure, NewConfigure, csdef, csletcs, csuse,
                 Picture, EndPicture, psplotThreeD, pstThreeDCoor, RequirePackage, DeclareGraphicsExtensions},
@@ -155,7 +156,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \RequirePackage{tcolorbox}
 \tcbuselibrary{skins}
-\NewDocumentCommand\ScreenShot{ O{0.8} m O{examples/} m }{%
+\NewDocumentCommand\ScreenShot{ O{0.7} m O{examples/} m }{%
   \begin{center}
     \begin{tcolorbox}[width=#1\textwidth, title=#2, arc=3mm,
       colframe=Peru,

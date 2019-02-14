@@ -1,10 +1,15 @@
-\documentclass[hidesidemenu]{webquiz}
+\documentclass[onepage]{webquiz}
 \title{An answer with comparison=lowercase}
 \begin{document}
   \begin{question}     % a quiz question
      How long is a piece of string?
-
      \answer[lowercase]{Long} (Correct answer ``Long'')
+     \whenRight Correct! Obviously your ruler is working!
+     \whenWrong Incorrect! Is your ruler working?
+  \end{question}
+  \begin{question}     % a quiz question
+     How long is a piece of string?
+     \answer[lowercase]{lonG} (Correct answer ``Long'')
      \whenRight Correct! Obviously your ruler is working!
      \whenWrong Incorrect! Is your ruler working?
   \end{question}

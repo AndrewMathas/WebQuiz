@@ -113,7 +113,7 @@
   \foreach \theme in \WebQuizThemes {
     \ifx\theme\empty\relax%
     \else%
-       \ScreenShot[0.68]{Example of the \textbf{\theme} theme}{theme-\theme}%
+       \ScreenShot[0.75]{Example of the \textbf{\theme} theme}{theme-\theme}%
        \index{theme!\theme}%
     \fi
   }
@@ -199,7 +199,7 @@
         \Javascript. Online quizzes written using \WebQuiz can contain any
         material that can be written using \LaTeX, including text,
         mathematics, graphics and diagrams.
-        \ScreenShot[0.65]{An example \WebQuiz web page}{quiz-page}
+        \ScreenShot[0.68]{An example \WebQuiz web page}{quiz-page}
         \begin{center}
           \hfil
           \begin{minipage}{0.75\textwidth}
@@ -665,9 +665,9 @@
   \end{itemize}
   The key difference between these two types of \LatexCode|choice|
   questions is that a \LatexCode|single|-choice environment uses radio
-  boxes, so it is only possible to select \textit{one correct answer}, whereas in a
-  \LatexCode|multiple|-choice environment checkboxes are used, so that is
-  possible to select \textit{zero or more correct answers}.
+  boxes, so it is only possible to select \textit{one correct answer}.
+  In a \LatexCode|multiple|-choice environment checkboxes are used, so
+  that is possible to select \textit{zero or more correct answers}.
 
   A \LatexCode|choice| environment modelled on the standard
   \LaTeX{} list environments (\textit{enumerate}, \textit{itemize},
@@ -792,39 +792,45 @@
   In each case the text in the link or button defaults to either the
   short-title, for discussion environments, or the question number for
   questions.  The ``optional text'' is used instead whenever it is
-  supplied.
+  supplied. These commands can be used anywhere in a quiz, including
+  \LatexCode|discussion|, \LatexCode|question| and \LatexCode|choice|
+  environments and inside feedback text for the students written using
+  \LatexCode|\feedback|, \LatexCode|\whenRight| and \LatexCode|\whenWrong|.
 
   The macros \LatexCode|\dref| and \LatexCode|\qref| use a standard
-  \LaTeX{} \textit{label}, defined using the \LatexCode|\latex| command,
-  to insert a button or a link whereas \LatexCode|\Qref| uses the actual
+  \LaTeX{} \textit{label}, defined using the \LatexCode|\label| command,
+  to insert a button or a link.  In contrast, \LatexCode|\Qref| uses the actual
   \textit{question number}, so it is not necessary to define a
   \LatexCode|\label| for a question when using \LatexCode|\Qref|.
 
   Even though the macros \LatexCode|\qref| and \LatexCode|\Qref| are
-  quite similar they serve quite different functions when the
-  \LatexCode|randomorder| document class option is used; see
-  \autoref{S:documentclass}.  In this case we do not know ahead of time
+  quite similar they serve different functions when the
+  \LatexCode|randomorder| document class option is used (see
+  \autoref{SS:classOptions}). In this case we do not know ahead of time
   the question numbers that will be used in the quiz. So if
   \LatexCode|q:one| is the label for the first question in the \LaTeX{}
   file then \LatexCode|\qref{q:one}| will insert a button to this
-  question \textit{but} this will almost certainly not be question one.
+  question \textit{but} this will almost certainly not be Question~$1$.
   On the other hand, we can create a ``Start quiz'' button, for example,
-  that will open question~1 on any quiz using \LatexCode|\Qref[Start quiz]{1}|.
+  that will open Question~1 on any quiz, using
+  \LatexCode|\Qref[Start quiz]{1}|.
 
   \begin{dangerous}
-    When using the \LatexCode|randomorder| document class option,
-    ``optional text'' should always be given when using the
-    \LatexCode|\qref| command because otherwise the displayed question
-    number will often be wrong.
+    When using the \LatexCode|randomorder| document class option
+    (\autoref{SS:classOptions}), ``optional text'' should always be
+    given when using \LatexCode|\qref|. This is because the question
+    number that is displayed by default will always be the question
+    number \textit{in the \LaTeX{} file} rather than the question number
+    in the online quiz.
   \end{dangerous}
 
-  Here is an example showing how \LatexCode|\dref| and \LatexCode|qref|
-  \InputLatexCode{discussion-Qref}\macroIndex*{Qref}
+  Here is an example that shows how \LatexCode|\Qref| works:
+  \InputLatexCode{discussion-Qref}\macroIndex{Qref}
   which produces the online quiz:
   \ScreenShot{Crossing-referencing using question numbers}{discussion-Qref}
   Similarly, here is an example showing how \LatexCode|\dref| and \LatexCode|qref|
   are used:
-  \InputLatexCode{discussion-ref}\macroIndex*{dref}\macroIndex*{qref}
+  \InputLatexCode{discussion-ref}\macroIndex{dref}\macroIndex{qref}
   This code produces the online quiz:
   \ScreenShot{Crossing-referencing using labels}{discussion-ref}
 
@@ -945,13 +951,14 @@
     \end{latexcode}
     In principle, there can be arbitrarily many crumbs in your
     breadcrumbs but, in practice, five is more than enough.
-    The crumbs inside a \LatexCode|\BreadCrumbs| command are interpreted as follows:
+    The crumbs inside a \LatexCode|\BreadCrumbs| command have the
+    following meanings:
 
     \begin{description}
       \item[breadcrumb] The breadcrumb for the current quiz, which is
       set using the \LatexCode|\BreadCrumb| macro.  This breadcrumb is
-      purely descriptive, with no hyperlink being added and only the text given by
-      \LatexCode|\BreadCrumb| appearing.
+      purely descriptive, with no hyperlink being added: only the text given by
+      \LatexCode|\BreadCrumb| appears.
       \CrossIndex*{BreadCrumbs}{breadcrumb}\macroIndex{BreadCrumb}
 
       \item[department] This expands to a link to your department, where
@@ -1289,20 +1296,21 @@
     In these files, the material to the left of the equals signs are
     effectively variables, and so they should never be changed, or
     deleted, whereas anything to the right of the equals signs is the
-    text that is will appear on the \WebQuiz web pages. Note that the
-    expressions \LatexCode|{}| in the language files should be not be
+    text that will appear on the \WebQuiz web pages. Note that the
+    pairs of braces, \LatexCode|{}|, in the language files should be not be
     removed because they expand to expressions like \LatexCode|(a)|,
     \LatexCode|(b)| etc. when used in the online quizzes.
 
     To add \WebQuiz support for a new language, say language
     \LatexCode|xxx|, copy any \WebQuiz language file to a new file
-    \BashCode|webquiz-xxx.lang| and then translate all of the words
-    to the right of the equals signs.\footnote{\WebQuiz assumes that all language
-    names are in lower case so \texttt{xxx}, and not \texttt{XXX},
-    should be used.} \WebQuiz will be able to find the new language file
-    as long as it appears in the \LaTeX{} search path\footnote{If you
-    are using \TeXLive then you may need to run \texttt{mktexlsr} from
-    an administrators account}. Once the new language file
+    \BashCode|webquiz-xxx.lang| and then translate all of the words to
+    the right of the equals signs.\footnote{\WebQuiz assumes that all
+    language names are in lower case so \texttt{xxx}, and not
+    \texttt{XXX}, should be used.} \WebQuiz will be able to find the new
+    language file as long as it appears in the \LaTeX{} search
+    path\footnote{To help \LaTeX/\WebQuiz fined your language file you
+    may need to run a program like \texttt{mktexlsr} using an
+    administrators account}. Once the new language file
     \BashCode|webquiz-xxx.lang| is in the \LaTeX{} search path it can be
     used by \WebQuiz using \LatexCode|language=xxx| as a document-class
     option:
