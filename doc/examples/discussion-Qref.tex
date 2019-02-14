@@ -1,0 +1,11 @@
+\documentclass[hidesidemenu]{webquiz}
+\title{A Qref example}
+\begin{document}
+  \begin{discussion}[First bit]\label{d:one}
+    Some interesting discussion related to question \Qref{1} or \Qref*{1}
+    or \Qref[Start Quiz]{1} or \Qref*[Start Quiz]{1}
+  \end{discussion}
+  \begin{question}\label{q:one}
+     An interesting question relating to discussion \dref{d:one}\answer{1}
+  \end{question}
+\end{document}
