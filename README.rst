@@ -4,7 +4,7 @@ WebQuiz_
 
 *This is the development version of* WebQuiz_. *Most users should use* WebQuiz_
 *as a standard* LaTeX_ *package by downloading and installing the* WebQuiz_
-*package from (the soon-to-be-released version on)* ctan_.
+*package from* ctan_.
 
 WebQuiz_ makes it possible to use LaTeX_ to write interactive web based
 quizzes. The quizzes are first written in LaTeX_ and then converted into
@@ -14,7 +14,7 @@ from LaTeX_ to HTML is done behind the scenes using TeX4ht_.
 WebQuiz_ has the following components:
  - LaTeX_ code that uses TeX4ht_ to generate an XML file
  - Python3_ code that reads the XML file and outputs an HTML file
- - `CSS` for styling the web pages
+ - `(S)CSS` for styling the web pages (using sass_)
  - `javascript` for controlling the web pages
  - documentation
  - rudimentary tests
@@ -182,7 +182,7 @@ the doc/examples directory. The files here are:
     expected log output from source files
 
 tester
-    hell script for comparing the expected and actual output for all of the
+    Shell script for comparing the expected and actual output for all of the
     test files. This checks only for syntax errors
 
 The main sets of tests for WebQuiz_ check that all of the WebQuiz_ quizzes in

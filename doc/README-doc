@@ -1,21 +1,24 @@
 The WebQuiz doc directory contains the follow files:
     - webquiz.tex                 The LaTeX source for the WebQuiz manual
-    - webquiz-online-manual.tex   The LaTeX source for online WebQuiz manual
-                                  This file can be compiled with webquiz. It
-                                  uses pstricks and so must be compiled latex,
-                                  not pdflatex, to produce a PDF version
     - webquiz.pdf                 A PDF version of the WebQuiz manual
     - webquiz-online-manual.pdf   A PDF version of the online manual
     - webquiz.1                   A unix manual page (converted from the ctan README file)
-    - www                         The web files that are installed when webquiz is initialised
 
 The following files are included by the WebQuiz manual:
     - webquiz.languages           List of languages of the themes supported by WebQuiz.
     - webquiz.settings            List of settings supported by WebQuiz.
     - webquiz.themes              List of themes supported by WebQuiz.
     - webquiz.usage               The command-line options supported by WebQuiz.
-    - examples/                   A directory containing images that are
+    - examples/                   This directory contains the images that are
                                   included by the WebQuiz manual. Once WebQuiz
                                   has been initialised, the source files for
                                   these images can be found in the WebQuiz web
                                   directory
+
+The www subdirectory contains the files that are copied onto the local web
+server when WebQuiz is initialised, In particular, www itself contains a doc 
+subdirectory that contains the source for the online manual:
+    - webquiz-online-manual.tex   The LaTeX source for online WebQuiz manual
+                                  This file can be compiled with webquiz. It
+                                  uses pstricks and so must be compiled latex,
+                                  not pdflatex, to produce a PDF version

@@ -27,8 +27,8 @@ function check_examples() {
   echo "Images in manual" > makedoc-manual
   ag ScreenShot webquiz.tex|sed 's@.*}{\([^}]*\)}$@\1@'|ag -v Shot|sort -u >> makedoc-manual
   echo "Available images" > makedoc-images
-  examples/makeimages --list | sort >> makedoc-images
-  gvim -d makedoc-manual makedoc-images makedoc-examples 
+  (cd examples > /dev/null && ls -1 *.png) | sed 's@.png$@@' | sort >> makedoc-images
+  gvim -d makedoc-manual makedoc-images makedoc-examples
 }
 
 #################################################
