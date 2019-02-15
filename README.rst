@@ -217,29 +217,29 @@ License
 -------
 GNU General Public License, Version 3, 29 June 2007
 
-This program is free software: you can redistribute it and/or modify it
-under the terms of the GNU\_General Public License
-([GPL](https://www.gnu.org/licenses/gpl-3.0.en.html)) as published by
-the Free Software Foundation, either version 3 of the License, or (at
-your option) any later version.
+This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU\_General Public License (GPL_) as published by the Free
+Software Foundation, either version 3 of the License, or (at your option) any
+later version.
 
 This program is distributed in the hope that it will be useful, but
 WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
 Public License for more details.
 
-.. _LaTeX: https://www.latex-project.org/
-.. _Python3: https://wwdw.python.org/
-.. _TeX4ht: http://www.tug.org/tex4ht/
-.. _TeXLive: https://www.tug.org/texlive/
-.. _WebQuiz: https://www.ctan.org/pkg/webquiz/
+.. _GPL:        https://www.gnu.org/licenses/gpl-3.0.en.html
+.. _LaTeX:      https://www.latex-project.org/
+.. _Python3:    https://wwdw.python.org/
+.. _TeX4ht:     http://www.tug.org/tex4ht/
+.. _TeXLive:    https://www.tug.org/texlive/
+.. _WebQuiz:    https://www.ctan.org/pkg/webquiz/
 .. _`WebQuiz github repository`: https://github.com/AndrewAtLarge/WebQuiz
-.. _ctan: https://www.ctan.org/
+.. _ctan:       https://www.ctan.org/
 .. _ctanupload: https://ctan.org/pkg/ctanupload
-.. _kpsewhich: https://linux.die.net/man/1/kpsewhich
-.. _mogrify: https://imagemagick.org/script/mogrify.php
-.. _rst2man: http://docutils.sourceforge.net/sandbox/manpage-writer/rst2man.txt
-.. _sass: https://sass-lang.com/
-.. _uglifyjs: https://www.npmjs.com/package/uglify-js
-.. _webkit2png: http://www.paulhammond.org/webkit2png/
 .. _dvisvgm4ht: https://github.com/michal-h21/dvisvgm4ht
+.. _kpsewhich:  https://linux.die.net/man/1/kpsewhich
+.. _mogrify:    https://imagemagick.org/script/mogrify.php
+.. _rst2man:    http://docutils.sourceforge.net/sandbox/manpage-writer/rst2man.txt
+.. _sass:       https://sass-lang.com/
+.. _uglifyjs:   https://www.npmjs.com/package/uglify-js
+.. _webkit2png: http://www.paulhammond.org/webkit2png/
