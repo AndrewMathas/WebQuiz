@@ -60,7 +60,7 @@ function make_examples() {
   else
       q=""
   fi
-  /bin/rm -f *-thumb.png *-clipped.png
+  /bin/rm -f *.png
   if [[ "$fast" == false ]]; then
     ./makeimages -f $q
   else
