@@ -3,7 +3,7 @@ WebQuiz: a LaTeX_ package for writing online quizzes
 ====================================================
 
 WebQuiz_ makes it possible to use LaTeX_ to write interactive online quizzes.
-The quizzes are first written in LaTeX and then converted into HTML using
+The quizzes are first written in LaTeX_ and then converted into HTML using
 WebQuiz_, which is written in python. The conversion from LaTeX_ to HTML is
 done behind the scenes using TeX4ht_. The idea is that you should be able to
 produce nice online quizzes using WebQuiz_ and basic knowledge of LaTeX_.

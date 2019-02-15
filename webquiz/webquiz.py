@@ -855,7 +855,7 @@ if __name__ == '__main__':
                         preprocess_with_pst2pdf(options, quiz_file[:-4])
                         options.pst2pdf = True
                         # now run webquiz on the modified tex file
-                        quiz_file = quiz_file[:-4] + '-pdf-fixed.tex'  
+                        quiz_file = quiz_file[:-4] + '-pdf-fixed.tex'
                 except ValueError:
                     pass
 

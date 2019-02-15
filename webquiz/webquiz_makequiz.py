@@ -65,12 +65,9 @@ class MakeWebQuiz(object):
         try:
             language_file = webquiz_util.kpsewhich('webquiz-{}.lang'.format(self.quiz.language))
         except subprocess.CalledProcessError:
-            try:
-                language_file = webquiz_util.kpsewhich(language)
-            except subprocess.CalledProcessError:
-                self.webquiz_error(
-                    'kpsewhich is unable to find language file for "{}"'.format(self.quiz.language)
-                )
+            self.webquiz_error(
+                'kpsewhich is unable to find language file for "{}"'.format(self.quiz.language)
+            )
         # read the language file and store as a dictonary
         self.language = webquiz_util.MetaData(language_file)
 
@@ -217,7 +214,7 @@ class MakeWebQuiz(object):
             # time - in the cfg file, \Preamable{ext=xml} should lead to an xml
             # file being created but this doesn't seem to work ??
             try:
-                fix_img = re.compile(r'\b(data|src)="([-0-9a-zA-Z]*\.(?:png|svg))" (.*)$')
+                fix_img = re.compile(r'^(|.* )\b(data|src)="([-0-9a-zA-Z]*\.(?:png|svg))" (.*)$')
                 with codecs.open(self.quiz_file + '.html', 'r', encoding='utf8') as make4ht_file:
                     with codecs.open(self.quiz_name + '.xml', 'w', encoding='utf8') as xml_file:
                         for line in make4ht_file:
@@ -226,9 +223,9 @@ class MakeWebQuiz(object):
                                 xml_file.write(line)
                             else:
                                 # update html link and move file
-                                src, image, rest_of_line = match.groups()
-                                xml_file.write(r'{}="{}/{}" {}'.format(
-                                    src, self.quiz_name, image, rest_of_line))
+                                start, src, image, rest_of_line = match.groups()
+                                xml_file.write(r'{}{}="{}/{}" {}'.format(
+                                    start, src, self.quiz_name, image, rest_of_line))
                                 shutil.move(image, os.path.join(self.quiz_name, image))
 
             except OSError as err:
