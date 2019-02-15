@@ -96,10 +96,10 @@ class WebQuizSettings:
     initialisation. The settings themselves are stored in the attribute
     settings, which is a dictionary. The class reads and writes the settings to
     the webquizrc file and the values of the settings are available as items:
-        >>> mq = WebQuizSettings()
-        >>> mq['webquiz_url']
+        >>> wq = WebQuizSettings()
+        >>> wq['webquiz_url']
         ... /WebQuiz
-        >>> mq['webquiz_url'] = '/new_url'
+        >>> wq['webquiz_url'] = '/new_url'
     '''
 
     # default of settings for the webquizrc file - a dictionary of dictionaries
@@ -195,8 +195,12 @@ class WebQuizSettings:
             'help': 'WebQuiz version number for webquizrc settings',
         })
 
-    # to stop execution from command-line options after initialised() has been called
-    just_initialised = False
+    # by default we assume we don't need to print a initialisation warning
+    initialise_warning = ''
+
+    # turn debugging on by default because any error message that we hit before
+    # we process te command line options really should not happen
+    debugging = True
 
     def __init__(self):
         '''
@@ -235,35 +239,17 @@ class WebQuizSettings:
 
         self.read_webquizrc(self.user_rc_file)
 
-        # if webquiz_url is empty then assume that we need to initialise
-        self.initialise_warning = ''
-        if self['webquiz_url'] == '':
-            self.initialise_warning = webquiz_templates.web_initialise_warning
-            initialise = input(webquiz_templates.initialise_invite)
-            if initialise == '' or initialise.strip().lower()[0] == 'y':
-                self['webquiz_url'] = '/WebQuiz'
-                self.initialise_webquiz()
-            else:
-                self['webquiz_url'] = 'http://www.maths.usyd.edu.au/u/mathas/WebQuiz'
-
     def webquiz_debug(self, msg):
         r'''
             Customised debugging message for the MakeSettings module
         '''
-        try:
-            webquiz_util.webquiz_debug(self.debugging, 'main: '+msg)
-
-        except AttributeError:
-            webquiz_util.webquiz_debug(True, 'main: '+msg)
+        webquiz_util.webquiz_debug(self.debugging, 'main: '+msg)
 
     def webquiz_error(self, msg):
         r'''
             Customised error messages for the Module
         '''
-        try:
-            webquiz_util.webquiz_error(self.debugging, 'settings: '+msg)
-        except AttributeError:
-            webquiz_util.webquiz_error(True, 'settings: '+msg)
+        webquiz_util.webquiz_error(self.debugging, 'settings: '+msg)
 
     def __getitem__(self, key):
         r'''
@@ -418,18 +404,27 @@ class WebQuizSettings:
                         )
                 )
 
-    def initialise_webquiz(self):
+    def initialise_webquiz(self, need_to_initialise=False):
         r'''
         Set the root for the WebQuiz web directory and copy the www files into
         this directory. Once this is done save the settings to webquizrc.
         This method should only be used when WebQuiz is being set up.
+
+        If `need_to_initialise` is `True` then this is a forced initialisation.
         '''
-        if self.just_initialised:  # stop initialising twice with webquiz --initialise
-            return
+
+        if need_to_initialise:
+            self.initialise_warning = webquiz_templates.web_initialise_warning
+            initialise = input(webquiz_templates.initialise_invite)
+            if initialise == '' or initialise.strip().lower()[0] == 'y':
+                self['webquiz_url'] = '/WebQuiz'
+            else:
+                self['webquiz_url'] = 'http://www.maths.usyd.edu.au/u/mathas/WebQuiz'
+                return
 
         # prompt for directory and copy files - are these reasonable defaults
         # for each OS?
-        elif sys.platform == 'darwin':
+        if sys.platform == 'darwin':
             default_root = '/Library/WebServer/Documents/WebQuiz'
             platform = 'Mac OSX'
         elif sys.platform.startswith('win'):
@@ -513,7 +508,6 @@ class WebQuizSettings:
                             os.symlink(os.path.join(webquiz_src,src), newlink)
 
                     else:
-                        print('webquiz_www = {}\nsource={}'.format(webquiz_www, webquiz_util.webquiz_file('doc')))
                         self.webquiz_error('unable to find webquiz source files')
 
                     self['webquiz_www'] = web_dir
@@ -546,7 +540,6 @@ class WebQuizSettings:
         # save the settings and exit
         self.write_webquizrc()
         print(webquiz_templates.initialise_ending.format(web_dir=self['webquiz_www']))
-        self.just_initialised = True
 
     def edit_settings(self):
         r'''
@@ -627,8 +620,6 @@ class WebQuizSettings:
 if __name__ == '__main__':
     try:
         settings = WebQuizSettings()
-        if settings.just_initialised:
-            sys.exit()
 
         # parse the command line options
         parser = argparse.ArgumentParser(description=metadata.description)
@@ -778,6 +769,12 @@ if __name__ == '__main__':
             settings.initialise_webquiz()
             sys.exit()
 
+        # force initialisation if the url is not set
+        elif settings['webquiz_url'] == '':
+            settings.initialise_webquiz(True)
+            if options.quiz_file==[]:
+                sys.exit()
+
         # list settings and exit
         if options.settings != '':
             settings.list_settings(options.settings)
@@ -900,13 +897,8 @@ if __name__ == '__main__':
 
     except Exception as err:
 
-        raise
-        debugging = False
-        if 'settings' in globals() and hasattr(settings, 'debugging'):
-            debugging = settings.debugging
-
         # there is a small chance that there is an error before we the
         # settings.debugging flag has been set
-        webquiz_util.webquiz_error(debugging,
+        webquiz_util.webquiz_error(settings.debugging if 'settings' in globals() else True,
             'unknown problem.\n\nIf you think this is a bug please report it by creating an issue at\n    {}\n'
             .format(metadata.repository), err)
