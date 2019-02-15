@@ -23,6 +23,10 @@
 \input{webquiz-ini.code}
 \input{webquiz-doc.code}
 
+% Can't use same definition in webquiz-online-manual because of conflict
+% with code in webquiz.cfg to make color work with listings
+\newcommand\WebQuiz{\textcolor{Sienna}{WebQuiz}\xspace}
+
 \usepackage{textcomp}
 \usepackage{pdfpages}
 \usepackage{manfnt}

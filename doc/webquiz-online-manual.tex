@@ -16,6 +16,10 @@
 % load webquiz-doc code -- the class file loads webquiz-ini.code.tex is first
 \input{webquiz-doc.code}
 
+% using \textcolor or \color in \WebQuiz conflicts with the code to make
+% listings respect color in webquiz.cfg
+\newcommand\WebQuiz{WebQuiz\xspace}
+
 \usepackage{pst-plot}
 \usepackage{hyperref}
 
