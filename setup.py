@@ -172,6 +172,7 @@ class WebQuizCtan(Command):
                       'doc/credits.tex',
                       'doc/webquiz-online-manual.tex',
                       'doc/webquiz.tex',
+                      'doc/README-bottom',
                       'README.rst'
                     ]:
             self.shell_command(
@@ -222,7 +223,7 @@ class WebQuizCtan(Command):
                 # now add the files: the target is assume to be a directory
                 # unless it contains a '.', in which case we change the filename
                 for (src, target) in [
-                    ('doc/README-ctan.md',            'README.md'),
+                    ('doc/README.rst',                'README.rst'),
                     ('latex/webquiz.c*',              'latex'),
                     ('latex/webquiz-*.code.tex',      'latex'),
                     ('latex/webquiz.ini',             'latex'),

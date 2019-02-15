@@ -1,0 +1,76 @@
+
+Installation
+------------
+To use WebQuiz_ you need to have a standard LaTeX_ distribution installed, such as TeXLive_, that includes TeX4ht_. In addition, you need to have Python3_ installed. As WebQuiz_ uses scalable vector graphics (SVG) you should check that all of the dependencies of dvisvgm_ are installed on your system, especially if you plan on using graphics or images.
+
+Once the WebQuiz_ package has been installed from ctan_ then you can install the web components of WebQuiz_ using the following command, which needs to be run  from the command line:
+
+> webquiz --initialise
+
+If you want to install the web components of WebQuiz_ into a system directory then you need to run this command from an administrators account, so using `sudo` on a unix-like system. For more details about the installation and configuration of WebQuiz_ please see Section 3.2 of the WebQuiz_ manual.
+
+Please see the manual for more details about initialising and using WebQuiz_.
+
+System requirements
+-------------------
+
+In order to work WebQuiz needs the following programs to be installed on your
+system:
+
+* An up-to-date LaTeX_ distribution, such as that provided by TeXLive_. In 
+  particular, you need to have TeX4ht_ and make4ht_ installed.
+  Unfortunately, since TeXLive 2018 was released there have been a significat
+  bunber of updates to a number of packahges that WebQuiz_ uses, including
+  updates to TeX4ht_, make4ht_, tikz_ and pstricks_. For this reason, *it is
+  strongly recommended that you all packages from ctan_ before using WebQuiz_*.
+
+* python3_ As of writing python 3.7.2 is available.
+
+* Javascript_
+
+* If you plan to use pstricks_ with WebQuiz_, or if you want to
+  compile the online manual for WebQuiz, then you need to ensure that
+  ghostscript_ and dvisvgm_ are installed and properly configured on your
+  system. See the WebQuiz_ manual and the dvisvgm_ documentation for more
+  details
+
+* A web server. To view online quizzes you of course need a web server. As
+  described in the **Installation** section you will also need to copy of the
+  WebQuiz_ components onto your web server using the command:
+
+  > webquiz --initialise
+
+Authors
+-------
+The LaTeX component of WebQuiz_ was written by Andrew Mathas and the python, css and javascript code was written by Andrew Mathas (and Don Taylor), based on an initial protype of Don Taylor's from 2001. Since 2004 the program has been maintained and developed by Andrew Mathas. Although the program has changed substantially since 2004 Don's idea of using TeX 4ht, and some of his code, are still very much in use.
+
+Copyright (C) 2004-2019
+
+License
+-------
+GNU General Public License, Version 3, 29 June 2007
+
+This program is free software: you can redistribute it and/or modify it
+under the terms of the GNU\_General Public License
+(GPL_) as published by
+the Free Software Foundation, either version 3 of the License, or (at
+your option) any later version.
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+Public License for more details.
+
+.. _GPL:         https://www.gnu.org/licenses/gpl-3.0.en.html
+.. _LaTeX:       https://www.latex-project.org/
+.. _Python3:     https://www.python.org
+.. _TeX4ht:      http://www.tug.org/tex4ht/
+.. _TeXLive:     https://www.tug.org/texlive/
+.. _WebQuiz:     https://github.com/AndrewAtLarge/WebQuiz/
+.. _ctan:        https://ctan.org/
+.. _dvisvgm:     https://ctan.org/pkg/dvisvgm
+.. _ghostscript: https://www.ghostscript.com
+.. _javascript:  https://www.javascript.com
+.. _make4ht:     https://ctan.org/pkg/make4ht
+.. _pstricks:    https://ctan.org/pkg/pstricks
+.. _tikz:        https://ctan.org/pkg/tikz

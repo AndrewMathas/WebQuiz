@@ -1,6 +1,6 @@
-The main webquiz executable is webquiz.py. On unix-like systems
-it is enough to create a soft link to this file using:
-    ln -s $(pwd)/webquiz /usr/local/bin/webquiz
+The WebQuiz executable is webquiz.py. On unix-like systems it is enough to
+create a soft link to this file using something like:
+    ln -s $(pwd)/webquiz.py /usr/local/bin/webquiz
 
 The batch file webquiz.bat comes from
     https://tex.stackexchange.com/questions/40937/how-to-publish-a-package-that-includes-scripts-and-or-executables/40971
@@ -14,4 +14,3 @@ The files in this directory are:
     - webquiz_xml.py       = read and interpret the webquiz XML file
     - CHANGES.rst          = list of changes to program
     - LICENCE              = copy of the GPL licence
-    - www                  = web files that are installed when the program is first run

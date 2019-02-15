@@ -11,4 +11,4 @@ Contributors
 
 * Hendrik Seuss
 
-  - Implemented better session history and a simplified version of `\\qref`
+  - Implemented session history and a simplified version of `\\qref`

@@ -1141,6 +1141,7 @@
 
   \end{description}
 
+  \noindent
   It makes sense to set defaults for \LatexCode|\BreadCrumbs|
   \LatexCode|\Department|, \LatexCode|\DepartmentURL|,
   \LatexCode|\Institution| and \LatexCode|\InstitutionURL| in the
@@ -1182,7 +1183,10 @@
     \endinput
   \end{latexcode}
   Then you can replace the opening lines of the quiz file with
-  \LatexCode|\usepackage[stuff101]{ourunits}|.
+  \LatexCode|\usepackage[stuff101]{ourunits}|. Of course, you could also
+  set the default \LatexCode|\Department|, \LatexCode|\DepartmentURL|,
+  \LatexCode|\Institution| and \LatexCode|\InstitutionURL| in such a
+  style file as well.
 
   \subsection{\WebQuiz document class options}\label{SS:classOptions}
 
@@ -1487,7 +1491,6 @@
     \LatexCode|\begin{document}| then it is
     possible to use \LatexCode|\ce| in your quizzes:
     \ScreenShot{Using DisplayAsImage}{display-as-image}
-
     As the example code shows, \LatexCode|\DisplayAsImage| accepts an optional
     argument that can be used to fine-tune the placement of the image on
     the quiz web page using \CSS. For those interested in the technical details, the

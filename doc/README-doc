@@ -7,6 +7,7 @@ The WebQuiz doc directory contains the follow files:
     - webquiz.pdf                 A PDF version of the WebQuiz manual
     - webquiz-online-manual.pdf   A PDF version of the online manual
     - webquiz.1                   A unix manual page (converted from the ctan README file)
+    - www                         The web files that are installed when webquiz is initialised
 
 The following files are included by the WebQuiz manual:
     - webquiz.languages           List of languages of the themes supported by WebQuiz.

@@ -42,6 +42,7 @@ function make_all() {
   make_usage
   make_examples
   make_man_page
+  cd $WebQuizDir/doc
   if  [[ "$fast" = false ]] ; then
       make_online_manual
       pdflatex --interaction=batchmode webquiz
@@ -82,13 +83,15 @@ function make_languages() {
 
 #################################################
 function make_man_page() {
-  # using pandoc to convert from markdown to man-page format gives horrible
-  # results so we go via rst2man
   cd $WebQuizDir/doc
-  message "Making markdown file"
-  pandoc --verbose -s -o README-ctan.md README-ctan.rst
+  /bin/rm README.rst webquiz.1
+  message "Making ctan README file"
+  cat README-top > README.rst
+  # need to hack the rst formating as it doesn't quite comply
+  sed 's@\[SETTINGS\]$@<SETTINGS>@' webquiz.usage >> README.rst
+  cat README-bottom >> README.rst
   message "Making manual file"
-  rst2man.py README-ctan.rst webquiz.1
+  rst2man.py README.rst webquiz.1
 }
 
 #################################################

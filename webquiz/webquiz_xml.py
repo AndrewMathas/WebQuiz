@@ -105,13 +105,13 @@ class QuizHandler(xml.sax.ContentHandler):
         r'''
             Customised debugging message for the xml module
         '''
-        webquiz_util.webquiz_debug(self.defaults.debugging, 'xml: ',msg)
+        webquiz_util.webquiz_debug(self.defaults.debugging, 'xml: '+msg)
 
-    def webquiz_error(self, msg):
+    def webquiz_error(self, msg, err=None):
         r'''
             Customised error message for the xml module
         '''
-        webquiz_util.webquiz_error(self.defaults.debugging, 'xml: ',msg)
+        webquiz_util.webquiz_error(self.defaults.debugging, 'xml: '+msg, err)
 
     def set_default_attribute(self, key, value):
         ''' Set the attribute `key` of self, using the default value if

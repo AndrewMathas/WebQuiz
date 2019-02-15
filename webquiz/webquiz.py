@@ -245,11 +245,11 @@ class WebQuizSettings:
         '''
         webquiz_util.webquiz_debug(self.debugging, 'main: '+msg)
 
-    def webquiz_error(self, msg):
+    def webquiz_error(self, msg, err=None):
         r'''
             Customised error messages for the Module
         '''
-        webquiz_util.webquiz_error(self.debugging, 'settings: '+msg)
+        webquiz_util.webquiz_error(self.debugging, 'settings: '+msg, err)
 
     def __getitem__(self, key):
         r'''
@@ -416,11 +416,12 @@ class WebQuizSettings:
         if need_to_initialise:
             self.initialise_warning = webquiz_templates.web_initialise_warning
             initialise = input(webquiz_templates.initialise_invite)
-            if initialise == '' or initialise.strip().lower()[0] == 'y':
-                self['webquiz_url'] = '/WebQuiz'
-            else:
+            if initialise!='' and initialise.strip().lower()[0]!='y':
                 self['webquiz_url'] = 'http://www.maths.usyd.edu.au/u/mathas/WebQuiz'
                 return
+
+        if self['webquiz_url']=='':
+            self['webquiz_url'] = '/WebQuiz'
 
         # prompt for directory and copy files - are these reasonable defaults
         # for each OS?
