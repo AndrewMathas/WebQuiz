@@ -91,11 +91,11 @@ def preprocess_with_pst2pdf(options, quiz_file):
 
 class WebQuizSettings:
     r'''
-    Class for initialising webquiz. This covers both reading and writting
-    the webquizrc file and copying files into the web directories during
-    initialisation. The settings themselves are stored in attribute settings,
-    which is a dictionary. The class reads and writes the settings to the
-    webquizrc file and the values of the settings are available as items:
+    Class for initialising webquiz. This covers both reading and writing the
+    webquizrc file and copying files into the web directories during
+    initialisation. The settings themselves are stored in the attribute
+    settings, which is a dictionary. The class reads and writes the settings to
+    the webquizrc file and the values of the settings are available as items:
         >>> mq = WebQuizSettings()
         >>> mq['webquiz_url']
         ... /WebQuiz
@@ -250,13 +250,20 @@ class WebQuizSettings:
         r'''
             Customised debugging message for the MakeSettings module
         '''
-        webquiz_util.webquiz_debug(self.debugging, 'main: ', msg)
+        try:
+            webquiz_util.webquiz_debug(self.debugging, 'main: '+msg)
+
+        except AttributeError:
+            webquiz_util.webquiz_debug(True, 'main: '+msg)
 
     def webquiz_error(self, msg):
         r'''
             Customised error messages for the Module
         '''
-        webquiz_util.webquiz_error(self.debugging, 'settings: ', msg)
+        try:
+            webquiz_util.webquiz_error(self.debugging, 'settings: '+msg)
+        except AttributeError:
+            webquiz_util.webquiz_error(True, 'settings: '+msg)
 
     def __getitem__(self, key):
         r'''
@@ -331,7 +338,6 @@ class WebQuizSettings:
             # when initialising an rc_file will not exist yet
             self.rc_file = self.system_rc_file
 
-        self.webquiz_debug('Writing to rcfile {}'.format(self.rc_file))
         file_not_written = True
         while file_not_written:
             try:
@@ -345,7 +351,6 @@ class WebQuizSettings:
                         # rcfile rather than from the default (of course, the
                         # defaults serve as the "initial rcfile")
                         if key == 'version' or self.settings[key]['default']!=self[key]:
-                            self.webquiz_debug('Writing {}={} to rcfile={}'.format(key, self[key], self.rc_file))
                             rcfile.write('# {}\n{:<17} = {}\n'.format(
                                            self.settings[key]['help'],
                                            key.replace('_','-'),
@@ -471,15 +476,31 @@ class WebQuizSettings:
                     elif os.path.isdir(web_doc):
                         shutil.rmtree(web_doc)
 
-                    webquiz_dir = os.path.dirname(webquiz_util.kpsewhich('webquiz.cls'))
-                    if os.path.islink(webquiz_dir):
+                    # the www directory is a subdirectory of the webquiz doc
+                    # directory so we need to locate this
+                    webquiz_doc = os.path.join(webquiz_util.kpsewhich('-var TEXMFMAIN'), 'doc','latex', 'webquiz')
+                    if not os.path.isdir(webquiz_doc):
+                        parent = os.path.dirname
+                        texdist_dir = parent(parent(parent(parent(parent(webquiz_util.kpsewhich('webquiz.cls'))))))
+                        webquiz_doc = os.path.join(texdist_dir, 'doc', 'latex', 'webquiz')
+
+                    webquiz_www = os.path.join(webquiz_doc, 'www')
+
+                    # get the root directory of the source code in case
+                    # webquiz_www does not exist
+                    webquiz_src = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+
+                    if os.path.isdir(webquiz_www):
+                        # if the www directory exists then copy it to web_dir
+                        print('\nCopying web files to {} ...\n'.format(web_dir))
+                        webquiz_util.copytree(webquiz_www, web_dir)
+
+                    elif os.path.isdir(os.path.join(webquiz_src, 'doc')):
                         # assume this is a development version and add links
                         # from the web directory to the parent directory
 
-                        # get the root directory of the source code
-                        webquiz_src = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
-
-                        print('\nLinking web files {} -> {} ...\n'.format(web_dir, webquiz_src))
+                        print('\nAssuming that this is the development version')
+                        print('Linking web files {} -> {} ...\n'.format(web_dir, webquiz_src))
                         if not os.path.exists(web_dir):
                             os.makedirs(web_dir)
 
@@ -491,13 +512,9 @@ class WebQuizSettings:
                                 pass
                             os.symlink(os.path.join(webquiz_src,src), newlink)
 
-                    elif os.path.isdir(os.path.join(webquiz_dir,'www')):
-                        # if the www directory exists then copy it to web_dir
-                        print('\nCopying web files to {} ...\n'.format(web_dir))
-                        webquiz_util.copytree(os.path.join(webquiz_dir,'www'), web_dir)
-
                     else:
-                        self.webquiz_error('unable to find web source files')
+                        print('webquiz_www = {}\nsource={}'.format(webquiz_www, webquiz_util.webquiz_file('doc')))
+                        self.webquiz_error('unable to find webquiz source files')
 
                     self['webquiz_www'] = web_dir
                     files_copied = True
@@ -882,6 +899,14 @@ if __name__ == '__main__':
             print(webquiz_templates.text_initialise_warning)
 
     except Exception as err:
-        webquiz_util.webquiz_error(settings.debugging,
+
+        raise
+        debugging = False
+        if 'settings' in globals() and hasattr(settings, 'debugging'):
+            debugging = settings.debugging
+
+        # there is a small chance that there is an error before we the
+        # settings.debugging flag has been set
+        webquiz_util.webquiz_error(debugging,
             'unknown problem.\n\nIf you think this is a bug please report it by creating an issue at\n    {}\n'
             .format(metadata.repository), err)
