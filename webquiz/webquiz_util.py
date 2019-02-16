@@ -77,14 +77,14 @@ def webquiz_error(debugging, msg, err=None):
            msg=msg, dash='-'*40+'\n')
     )
 
-    if debugging and err is not None:
-        raise
-
     if err is not None:
         trace = traceback.extract_tb(sys.exc_info()[2])
         filename, lineno, fn, text = trace[-1]
         print('File: {}, line number: {}\nError {} in {}: {}'.format(
             filename, lineno, err, fn, text))
+
+    if debugging and err is not None:
+        raise
 
     if hasattr(err, 'errno'):
         sys.exit(err.errno)

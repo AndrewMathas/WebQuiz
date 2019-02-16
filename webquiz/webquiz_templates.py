@@ -195,9 +195,9 @@ multiple_feedback_correct = r'''
         </div>'''
 multiple_feedback_answer = '              <li><em>{correct_answer}</em> {reason}</li>'
 
-initialise_invite = r'''WebQuiz is a tool for creating online quizzes. For efficiency reasons,
-WebQuiz needs to be initialised and, in particular, it needs to copy some
-files into a directory that is accessible from your webserver.
+initialise_invite = r'''For efficiency reasons, WebQuiz needs to be initialised and, in particular,
+it needs to copy some files into a directory that is accessible from your
+webserver.
 
 Do you want to initialise WebQuiz now [Y/n]? '''
 
@@ -217,11 +217,12 @@ no_script = r'''<noscript>
 initialise_introduction = r'''
 WebQuiz Initialisation
 ======================
-WebQuiz needs to copy some files onto your web server in order for the online
-quizzes to work. We will guide you through the process below.
+WebQuiz needs to copy some files onto your web server in order for the
+online quizzes to work. We will guide you through the process below.
 
-If you want to install these files into a "system" directory then you should
-quit this program (use control-C on unix-like systems) and then run
+If you want to install these files into a "system" directory then you
+should quit this program (use control-C on unix-like systems) and then
+run
     webquiz --initialise
 from an administrators account or, on unix-like systems, use:
     sudo webquiz --initialise
@@ -245,9 +246,10 @@ To make files accessible from your web server WebQuiz needs:
 
 We recommended that you create a separate directory for WebQuiz on your
 web server. The location of the files on your web server will depend on
-your operating system and system configuration. A common location for
-the WebQuiz web directory on a {platform} system is
+your operating system and system configuration. A common sysem location
+for the WebQuiz web directory on a {platform} system is
      {webquiz_dir}
+You can also install these files in your personal web drectories.
 '''
 
 oserror_copying = r'''There was a problem copying files to {web_dir}
@@ -256,7 +258,8 @@ Error: {err}
 Please give a different directory
 '''
 
-webquiz_url_message = r'''Please give the relative URL for the WebQuiz web directory. For example,
+webquiz_url_message = r'''
+Please give the relative URL for the WebQuiz web directory. For example,
 if the base of your web server's directory is /var/www/html/ and the
 WebQuiz web directory is /var/www/html/courses/WebQuiz then the
 relative URL for the WebQuiz directory would be /courses/WebQuiz.
@@ -305,18 +308,18 @@ web_initialise_warning = r'''
 '''
 
 rc_permission_error = r'''
-Attempting to write the rc-file to {rc_file}
+Attempting to write the rcfile to {rc_file}
 resulted in the error:
   {error}
 
-To write the WebQuiz rc-file into this directory you may need to quit
+To write the WebQuiz rcfile into this directory you may need to quit
 and run webquiz again, either using an administrator account, or using
 sudo on linux/macosx.
 
 Press the key 1-3, followed by return, to:
     1. Try to save to {rc_file} again
-    2. Save to {alt_rc_file}
-    3. Give a different location for the rc-file
+    2. Save to the user rcfile {alt_rc_file}
+    3. Give a different location for the rcfile
 Press any other key to exit without saving.
 '''
 

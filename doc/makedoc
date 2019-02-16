@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -f
 
 # Script to generate all of the automatic input for the main web quiz manual.
 # That is, update the lists supported languages and themes and generate all of
@@ -7,7 +7,7 @@
 # TODO: rewrite in python to make cross-platform and merge with makeimages
 
 #################################################
-WebQuizDir="$(dirname $0)/.."
+WebQuizDir="$(realpath $(dirname $0)/..)"
 WebQuizExamplesDir="$WebQuizDir/doc/examples"
 PREFIX=""
 
@@ -129,13 +129,13 @@ function make_themes () {
   fi
 
   message "Generating list of themes for the manual"
-  THEME="$WebQuizDir/doc/webquiz.themes"
-  /bin/rm -f $THEME
-  echo "% List of themes supported by WebQuiz -- generated $(date '+%Y-%m-%d')" > $THEME
+  THEMELIST="$WebQuizDir/doc/webquiz.themes"
+  /bin/rm -f $THEMELIST
+  echo "% List of themes supported by WebQuiz -- generated $(date '+%Y-%m-%d')" > $THEMELIST
   # first generate a list of themes for the documentclass options section
   cd $WebQuizDir/css
-  THEMES=$(ls -1 webquiz-*.scss | xargs | sed 's@webquiz-@@g' | sed 's@.scss@,@g' | sed 's@, \([a-z]*\),$@,, \1@')
-  echo "\newcommand\WebQuizThemes{$THEMES}" >> $THEME
+  THEMELISTS=$(ls -1 webquiz-*.scss | xargs | sed 's@webquiz-@@g' | sed 's@.scss@,@g' | sed 's@, \([a-z]*\),$@,, \1@')
+  echo "\newcommand\WebQuizThemes{$THEMELISTS}" >> $THEMELIST
 }
 
 #################################################
