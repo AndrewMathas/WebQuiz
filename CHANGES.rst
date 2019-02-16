@@ -2,6 +2,14 @@
 WebQuiz Changes
 ===============
 
+Version 5.1:
+------------
+    - code reorganised n zip file for TeXLive inclusion
+    - \dref, \qref and \Qref commands
+    - error and debugging code reorganised
+    - javascript session history following Hendrik Suess
+    - unix man page
+
 Version 5.0:
 ------------
     - added button for hiding/showing question buttons

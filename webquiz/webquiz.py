@@ -219,25 +219,25 @@ class WebQuizSettings:
 
         # define user and system rc file and load the ones that exist
 
-        self.system_rc_file = os.path.join(webquiz_util.kpsewhich('-var TEXMFLOCAL'),
+        self.system_rcfile = os.path.join(webquiz_util.kpsewhich('-var TEXMFLOCAL'),
                                            'scripts',
                                            'webquiz',
                                            'webquizrc'
         )
-        self.read_webquizrc(self.system_rc_file)
+        self.read_webquizrc(self.system_rcfile)
 
         # the user rc file defaults to:
         #   ~/.dotfiles/config/webquizrc if .dotfiles/config exists
         #   ~/.config/webquizrc if .config exists
         # and otherwise to ~/.webquizrc
         if os.path.isdir(os.path.join(os.path.expanduser('~'), '.dotfiles', 'config')):
-            self.user_rc_file = os.path.join(os.path.expanduser('~'), '.dotfiles', 'config', 'webquizrc')
+            self.user_rcfile = os.path.join(os.path.expanduser('~'), '.dotfiles', 'config', 'webquizrc')
         elif os.path.isdir(os.path.join(os.path.expanduser('~'), '.config')):
-            self.user_rc_file = os.path.join(os.path.expanduser('~'), '.config', 'webquizrc')
+            self.user_rcfile = os.path.join(os.path.expanduser('~'), '.config', 'webquizrc')
         else:
-            self.user_rc_file = os.path.join(os.path.expanduser('~'), '.webquizrc')
+            self.user_rcfile = os.path.join(os.path.expanduser('~'), '.webquizrc')
 
-        self.read_webquizrc(self.user_rc_file)
+        self.read_webquizrc(self.user_rcfile)
 
     def webquiz_debug(self, msg):
         r'''
@@ -322,7 +322,7 @@ class WebQuizSettings:
         '''
         if not hasattr(self, 'rc_file'):
             # when initialising an rc_file will not exist yet
-            self.rc_file = self.system_rc_file
+            self.rc_file = self.system_rcfile
 
         file_not_written = True
         while file_not_written:
@@ -348,15 +348,15 @@ class WebQuizSettings:
                 file_not_written = False
 
             except (OSError, PermissionError) as err:
-                # if writing to the system_rc_file then try to write to user_rc_file
-                alt_rc_file = self.user_rc_file if self.rc_file != self.user_rc_file else self.system_rc_file
+                # if writing to the system_rcfile then try to write to user_rcfile
+                alt_rcfile = self.user_rcfile if self.rc_file != self.user_rcfile else self.system_rcfile
                 response = input(
                     webquiz_templates.rc_permission_error.format(
                         error=err,
                         rc_file=self.rc_file,
-                        alt_rc_file=alt_rc_file))
+                        alt_rcfile=alt_rcfile))
                 if response.startswith('2'):
-                    self.rc_file = alt_rc_file
+                    self.rc_file = alt_rcfile
                 elif response.startswith('3'):
                     rc_file = input('WebQuiz rc-file: ')
                     print('\nTo access this rc-file you will need to use: webquiz --rcfile {} ...'.format(rc_file))
@@ -404,7 +404,7 @@ class WebQuizSettings:
                         )
                 )
 
-    def initialise_webquiz(self, need_to_initialise=False):
+    def initialise_webquiz(self, need_to_initialise=False, developer=False):
         r'''
         Set the root for the WebQuiz web directory and copy the www files into
         this directory. Once this is done save the settings to webquizrc.
@@ -458,7 +458,7 @@ class WebQuizSettings:
                 web_dir = os.path.expanduser(web_dir)
 
             print('Web directory set to {}'.format(web_dir))
-            if web_dir == 'SMS':
+            if web_dir=='SMS':
                 # undocumented: allow links to SMS web pages
                 self['webquiz_www'] = 'SMS'
                 self['webquiz_url'] = 'http://www.maths.usyd.edu.au/u/mathas/WebQuiz'
@@ -480,22 +480,18 @@ class WebQuizSettings:
                         texdist_dir = parent(parent(parent(parent(parent(webquiz_util.kpsewhich('webquiz.cls'))))))
                         webquiz_doc = os.path.join(texdist_dir, 'doc', 'latex', 'webquiz')
 
-                    webquiz_www = os.path.join(webquiz_doc, 'www')
-
                     # get the root directory of the source code in case
                     # webquiz_www does not exist
                     webquiz_src = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
-                    if os.path.isdir(webquiz_www):
-                        # if the www directory exists then copy it to web_dir
-                        print('\nCopying web files to {} ...\n'.format(web_dir))
-                        webquiz_util.copytree(webquiz_www, web_dir)
+                    webquiz_www = os.path.join(webquiz_doc, 'www')
+                    if not os.path.isdir(webquiz_www):
+                        webquiz_www = os.path.join(webquiz_src, 'doc', 'www')
 
-                    elif os.path.isdir(os.path.join(webquiz_src, 'doc')):
-                        # assume this is a development version and add links
-                        # from the web directory to the parent directory
-
-                        print('\nAssuming that this is the development version')
+                    if developer and os.path.isdir(os.path.join(webquiz_src, 'doc')):
+                        # this is a development version so add links from the
+                        # web directory to the parent directory
+                        print('\nInstalling files for development version')
                         print('Linking web files {} -> {} ...\n'.format(web_dir, webquiz_src))
                         if not os.path.exists(web_dir):
                             os.makedirs(web_dir)
@@ -507,9 +503,24 @@ class WebQuizSettings:
                             except FileNotFoundError:
                                 pass
                             os.symlink(os.path.join(webquiz_src,src), newlink)
-
                     else:
-                        self.webquiz_error('unable to find webquiz source files')
+                        # loop until we find some files to install or exit
+                        while not os.path.isdir(webquiz_www) or webquiz_www=='':
+                            print('\nUnable to find the WebQuiz web files')
+                            webquiz_www = input('Please enter the location of the WebQuiz www directory\nor press RETURN to exit: ')
+                            webquiz_www = os.path.expanduser(webquiz_www)
+                            if webquiz_www=='':
+                                sys.exit()
+                            if not (webquiz_www.endswith('www/') or webquiz_www.endswith('www')):
+                                print('\nThe webquiz web directory is called www, so\n  {}\ncannot be the right directory.'.format(
+                                      webquiz_www)
+                                )
+                                webquiz_www = False
+
+
+                        # the www directory exists so we copy it to web_dir
+                        print('\nCopying web files to {} ...'.format(web_dir))
+                        webquiz_util.copytree(webquiz_www, web_dir)
 
                     self['webquiz_www'] = web_dir
                     files_copied = True
@@ -520,23 +531,22 @@ class WebQuizSettings:
                 except OSError as err:
                     print(webquiz_templates.oserror_copying.format(web_dir=web_dir, err=err))
 
-        if self['webquiz_www'] != 'SMS':
+        if self['webquiz_www']!='SMS':
             # now prompt for the relative url
-            mq_url = input(webquiz_templates.webquiz_url_message.format(self['webquiz_url']))
-            if mq_url != '':
-                # removing trailing slashes from mq_url
-                while mq_url[-1] == '/':
-                    mq_url = mq_url[:len(mq_url) - 1]
+            webquiz_url = input(webquiz_templates.webquiz_url_message.format(self['webquiz_url']))
+            if webquiz_url != '':
+                # removing trailing slashes from webquiz_url
+                while webquiz_url[-1] == '/':
+                    webquiz_url = webquiz_url[:len(webquiz_url) - 1]
 
-                if mq_url[0] != '/':  # force URL to start with /
-                    print("  ** prepending '/' to webquiz_url **")
-                    mq_url = '/' + mq_url
+                if webquiz_url[0] != '/':  # force URL to start with /
+                    webquiz_url = '/' + webquiz_url
 
-                if not web_dir.endswith(mq_url):
+                if not web_dir.endswith(webquiz_url):
                     print(webquiz_templates.webquiz_url_warning)
                     input('Press return to continue... ')
 
-                self['webquiz_url'] = mq_url
+                self['webquiz_url'] = webquiz_url
 
         # save the settings and exit
         self.write_webquizrc()
@@ -615,6 +625,16 @@ class WebQuizSettings:
 
         else:
             self.webquiz_error('uninstall: no webwquiz files are installed on your web server??')
+
+        for rfile in ['system', 'user']:
+            rcfile = getattr(self, rfile+'_rcfile')
+            if os.path.isfile(rcfile):
+                rm = input('Remove {} rcfile {}\n[Y/no] '.format(rfile, rcfile))
+                if rm!='no':
+                    try:
+                        os.remove(self.system_rcfile)
+                    except (OSError, PermissionError) as err:
+                        self.webquiz_error('There was a problem deleting {}'.format(rcfile), err)
 
 
 # =====================================================
@@ -703,6 +723,12 @@ if __name__ == '__main__':
             type=str,
             help='List default settings for webquiz'
         )
+        settings_parser.add_argument(
+            '--developer',
+            action='store_true',
+            default=False,
+            help=argparse.SUPPRESS
+        )
 
         # options suppressed from the help message
         parser.add_argument(
@@ -747,7 +773,8 @@ if __name__ == '__main__':
             '--shorthelp',
             action='store_true',
             default=False,
-            help=argparse.SUPPRESS)
+            help=argparse.SUPPRESS
+        )
 
         # parse the options
         options = parser.parse_args()
@@ -759,22 +786,20 @@ if __name__ == '__main__':
         # read the rcfile and throw an error if we are not adjusting the settings
         if options.rcfile is not None:
             rcfile = os.path.expanduser(options.rcfile)
-            if options.initialise or options.edit_settings:
-                settings.read_webquizrc(rcfile, must_exist=False)
-                settings.rc_file = rcfile
-            else:
-                settings.read_webquizrc(rcfile, must_exist=True)
+            settings.read_webquizrc(rcfile)
+
+        # keep track of whether we have initialised
+        have_initialised = False
 
         # initialise and exit
-        if options.initialise:
-            settings.initialise_webquiz()
-            sys.exit()
+        if options.initialise or options.developer:
+            settings.initialise_webquiz(developer=options.developer)
+            have_initialised = True
 
         # force initialisation if the url is not set
         elif settings['webquiz_url'] == '':
-            settings.initialise_webquiz(True)
-            if options.quiz_file==[]:
-                sys.exit()
+            settings.initialise_webquiz(need_to_initialise=True)
+            have_initialised = True
 
         # list settings and exit
         if options.settings != '':
@@ -797,9 +822,12 @@ if __name__ == '__main__':
             sys.exit()
 
         # if no filename then exit
-        if options.quiz_file == []:
-            parser.print_help()
-            sys.exit(1)
+        if options.quiz_file==[]:
+            if have_initialised:
+                sys.exit()
+            else:
+                parser.print_help()
+                sys.exit(1)
 
         # import the local page formatter
         mod_dir, mod_layout = os.path.split(options.webquiz_layout)

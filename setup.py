@@ -21,7 +21,9 @@ r'''
 import glob
 import os
 import subprocess
+import shutil
 import sys
+import time
 import zipfile
 
 from setuptools import setup, find_packages, Command
@@ -72,7 +74,7 @@ class WebQuizDevelop(Command):
             # add a link to the latex files
             tex_dir = self.ask('Install links to latex files in directory', tex_dir)
             if os.path.exists(tex_dir):
-                print('Tex files not installe as directory already exists'.format(tex_dir))
+                print('Tex files not installed as directory already exists'.format(tex_dir))
             else:
                 os.symlink(os.path.join(cwd,'latex'), tex_dir)
 
@@ -89,7 +91,7 @@ class WebQuizDevelop(Command):
                 os.symlink(os.path.join(cwd,'webquiz','webquiz.py'), webquiz)
 
             # now add links for web files
-            subprocess.call('{} --initialise'.format(webquiz), shell=True)
+            subprocess.call('{} --developer'.format(webquiz), shell=True)
 
             print('To build the WebQuiz css files run the bash script doc/makedoc -t')
             print('To build the WebQuiz documentation run the bash script doc/makedoc --all')
@@ -108,6 +110,14 @@ class WebQuizDevelop(Command):
     def finalize_options(self):
         pass
 
+# "Magic" bitmasks for adding symlinks to zip files
+SYMLINK_TYPE  = 0xA
+SYMLINK_PERM  = 0o755
+SYMLINK_ISDIR = 0x10
+SYMLINK_MAGIC = (SYMLINK_TYPE << 28) | (SYMLINK_PERM << 16)
+
+assert SYMLINK_MAGIC == 0xA1ED0000, 'Bit math is askew'
+
 class WebQuizCtan(Command):
     r"""
     Create zip file for submission to ctan/texlive.
@@ -124,7 +134,7 @@ class WebQuizCtan(Command):
              'summary' : settings.description,
            'directory' : '/macros/latex/contrib/webquiz',
             'announce' : settings.description,
-               'notes' : 'See README file in tex/latex/webquiz',
+               'notes' : 'See README file in webquiz',
              'license' : 'free',
          'freeversion' : 'gpl',
     }
@@ -192,16 +202,19 @@ class WebQuizCtan(Command):
         self.update_copyright()
 
         # auto generate all of the data used in the manual and build the manuals
-        makedoc = input('Run makedoc [Y/n]? ')
-        if makedoc.lower() != 'n':
+        makedoc = input('Run makedoc [N/yes]? ')
+        if makedoc.lower() == 'yes':
             self.shell_command('doc/makedoc --all --fast')
 
         try:
             os.remove('javasript/webquiz-min.js')
-        except OSError:
+
+        except OSError as err:
+            print('Something went wrong: {}'.format(err))
             pass
+
         # minify the javascript code
-        self.shell_command('cd javascript && uglifyjs --output webquiz-min.js --compress sequences=true,conditionals=true,booleans=true  webquiz.js ')
+        self.shell_command('uglifyjs --output javascript/webquiz-min.js --compress sequences=true,conditionals=true,booleans=true  javascript/webquiz.js ')
 
     def write_zip_file(self):
         r'''
@@ -209,9 +222,12 @@ class WebQuizCtan(Command):
         this we use the zipfile module to write the zopfile with all files in
         their expected places.
         '''
-        # if the ctan directory already exists then delete it
+        # if the zip file for ctan already exists then delete it
         try:
             os.remove(self.zipfile)
+            os.remove('doc/README')
+            shutil.rmtree('doc/www', ignore_errors=True)
+
         except OSError:
             pass
 
@@ -220,54 +236,115 @@ class WebQuizCtan(Command):
         # save the files as a TDS (Tex directory standard) zip file
         with zipfile.ZipFile(self.zipfile, 'w', zipfile.ZIP_DEFLATED) as zip_file:
 
-                # now add the files: the target is assume to be a directory
-                # unless it contains a '.', in which case we change the filename
-                for (src, target) in [
-                    ('doc/README.rst',                'README.rst'),
-                    ('latex/webquiz.c*',              'latex'),
-                    ('latex/webquiz-*.code.tex',      'latex'),
-                    ('latex/webquiz.ini',             'latex'),
-                    ('latex/webquiz-*.lang',          'latex'),
-                    ('latex/pgfsys-dvisvgm4ht.def',   'latex'),
-                    ('CHANGES.rst',                   'scripts'),
-                    ('LICENCE',                       'scripts'),
-                    ('webquiz/README-scripts',        'scripts'),
-                    ('webquiz/webquiz*.py',           'scripts'),
-                    ('webquiz/webquiz.bat',           'scripts'),
-                    ('doc/README-doc',                'doc'),
-                    ('doc/webquiz.tex',               'doc'),
-                    ('doc/webquiz.pdf',               'doc'),
-                    ('doc/webquiz.1',                 'doc'),
-                    ('doc/webquiz-online-manual.pdf', 'doc'),
-                    ('doc/webquiz.languages',         'doc'),
-                    ('doc/webquiz.settings',          'doc'),
-                    ('doc/webquiz.themes',            'doc'),
-                    ('doc/webquiz.usage',             'doc'),
-                    ('javascript/webquiz-min.js',     'doc/www/js/webquiz.js'),
-                    ('css/webquiz-*.css',             'doc/www/css'),
-                    ('doc/webquiz-online-manual.tex', 'doc/www/doc'),
-                    ('doc/examples/README-examples',  'doc/www/doc/examples'),
-                    ('doc/examples/*.tex',            'doc/www/doc/examples'),
-                    ('doc/examples/ctanLion.jpg',     'doc/www/doc/examples'),
-                    ('doc/examples/*.png',            'doc/examples'),
-                ]:
-                    for file in glob.glob(src):
-                        if '.' in target:
-                            # take filename from target
-                            zip_file.write(file, os.path.join(self.zipfile[:-4], target))
-                        else:
-                            # copy file to the directory specified by target
-                            zip_file.write(file, os.path.join(self.zipfile[:-4], target, file.split('/')[-1]))
+            # now add the files: the target is assume to be a directory
+            # unless it contains a '.', in which case we change the filename
+            for (src, target) in [
+                ('doc/README.rst',                './README.rst'),
+                ('latex/webquiz.c*',              'latex'),
+                ('latex/webquiz-*.code.tex',      'latex'),
+                ('latex/webquiz.ini',             'latex'),
+                ('latex/webquiz-*.lang',          'latex'),
+                ('latex/pgfsys-dvisvgm4ht.def',   'latex'),
+                ('CHANGES.rst',                   'scripts'),
+                ('LICENCE',                       'scripts'),
+                ('webquiz/README-scripts',        'scripts'),
+                ('webquiz/webquiz*.py',           'scripts'),
+                ('webquiz/webquiz.bat',           'scripts'),
+                ('doc/README-doc',                'doc'),
+                ('doc/webquiz.tex',               'doc'),
+                ('doc/webquiz.pdf',               'doc'),
+                ('doc/webquiz.1',                 'doc'),
+                ('doc/webquiz-online-manual.pdf', 'doc'),
+                ('doc/webquiz-online-manual.tex', 'doc'),
+                ('doc/webquiz.languages',         'doc'),
+                ('doc/webquiz.settings',          'doc'),
+                ('doc/webquiz.themes',            'doc'),
+                ('doc/webquiz.usage',             'doc'),
+                ('javascript/webquiz-min.js',     'doc/www/js/webquiz.js'),
+                ('css/webquiz-*.css',             'doc/www/css'),
+                ('doc/examples/README-examples',  'doc/www/doc/examples'),
+                ('doc/examples/*.tex',            'doc/www/doc/examples'),
+                ('doc/examples/ctanLion.jpg',     'doc/www/doc/examples'),
+                ('doc/examples/*.png',            'doc/examples'),
+            ]:
+                for file in glob.glob(src):
+                    if '.' in target:
+                        # take filename from target
+                        zip_file.write(file, os.path.join('webquiz', target))
+                    else:
+                        # copy file to the directory specified by target
+                        zip_file.write(file, os.path.join('webquiz', target, file.split('/')[-1]))
 
-                # # add symlinks for webquiz.py
-                # webquiz = zipfile.ZipInfo()
-                # webquiz.filename = 'scripts/webquiz.py'
-                # webquiz.create_system = 3
-                # webquiz.external_attr |= 0120000 << 16L # symlink file type
-                # webquiz.compress_type = ZIP_STORED
-                # zip_file.writestr(webquiz, 'webquiz.py')
-                # webquiz.filename = 'scripts/webquiz/webquiz.py'
-                # tds_file.writestr(webquiz, 'webquiz.py')
+            # this very much a hack...is there a more elegant way to construct
+            # these links in the zip file?
+            if os.path.isdir('symlinks'):
+                shutil.rmtree('symlinks')
+            os.mkdir('symlinks')
+            os.chdir('symlinks')
+
+            for (src, target, link) in [
+                    ('doc/README.rst', 'README', 'README.rst'),
+                    ('webquiz/webquiz.py', 'scripts/webquiz', 'webquiz.py'),
+                    ('doc/webquiz-online-manual.tex', 'doc/www/doc/webquiz-online-manual.tex', '../../webquiz-online-manual.tex')
+                ]:
+                if '/' in target:
+                    os.makedirs(os.path.dirname(target), exist_ok=True)
+                target_file = os.path.abspath(os.path.join(
+                                os.path.dirname(target),
+                                os.path.dirname(link),
+                                os.path.basename(link)
+                            )
+                )
+                if '/' in target_file:
+                    os.makedirs(os.path.dirname(target_file), exist_ok=True)
+                shutil.copyfile(os.path.join('..',src), target_file)
+                print('link={}, target={}'.format(link,target))
+                os.symlink(link, target)
+                self.add_sym_link_to_zipfile(target, os.path.join('webquiz',target), zip_file)
+
+            os.chdir('..')
+            shutil.rmtree('symlinks')
+
+    def add_sym_link_to_zipfile(self, link, zippath, zip_file):
+        r'''
+            Code from
+                https://learning-python.com/cgi/showcode.py?name=ziptools/ziptools/ziptools/zipsymlinks.py
+            to add a sym-link `link` to the file `file` in the zip file `zipfile`.
+
+            'filepath' is the (possibly-prefixed and absolute) path to the link file.
+            'zippath'  is the (relative or absolute) path to record in the zip itself.
+            'zipfile'  is the ZipFile object used to format the created zip file.
+        '''
+        assert os.path.islink(link)
+        linkpath = os.readlink(link)                # str of link itself
+
+        # 0 is windows, 3 is unix (e.g., mac, linux) [and 1 is Amiga!]
+        createsystem = 0 if sys.platform.startswith('win') else 3
+
+        # else time defaults in zip_file to Jan 1, 1980
+        linkstat = os.lstat(link)                   # stat of link itself
+        origtime = linkstat.st_mtime                # mtime of link itself
+        ziptime  = time.localtime(origtime)[0:6]    # first 6 tuple items
+
+        # zip mandates '/' separators in the zip_file
+        if not zippath:                             # pass None to equate
+            zippath = link
+        zippath = os.path.splitdrive(zippath)[1]    # drop Windows drive, unc
+        zippath = os.path.normpath(zippath)         # drop '.', double slash...
+        zippath = zippath.lstrip(os.sep)            # drop leading slash(es)
+        zippath = zippath.replace(os.sep, '/')      # no-op if unix or simple
+
+        newinfo = zipfile.ZipInfo()                 # new zip entry's info
+        newinfo.filename      = zippath
+        newinfo.date_time     = ziptime
+        newinfo.create_system = createsystem        # woefully undocumented
+        newinfo.compress_type = zip_file.compression# use the file's default
+        newinfo.external_attr = SYMLINK_MAGIC       # type plus permissions
+
+        if os.path.isdir(link):                     # symlink to dir?
+            newinfo.external_attr |= SYMLINK_ISDIR  # DOS directory-link flag
+
+        zip_file.writestr(newinfo, linkpath)         # add to the new zip_file
 
 
 

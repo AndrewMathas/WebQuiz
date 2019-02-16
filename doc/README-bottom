@@ -11,13 +11,31 @@ If you want to install the web components of WebQuiz_ into a system directory th
 
 Please see the manual for more details about initialising and using WebQuiz_.
 
+Installation from ctan
+----------------------
+If you are installing WebQuiz using the zip file from ctan, as opposed to
+installing the package from TeX distribution like TeXLive, then the following
+steps are recommended:
+
+- Create a symbolic link, or equivalent, to the main WebQuiz executable, which
+  is the file webquiz.py in the scripts directory
+- Copy the latex directory to somewhere in TeX search path, or set your
+  TEXINPUTS environment variable appropriately, and then run `mktexlsr` or
+  equivalent so that LaTeX and WebQuiz can find these files.
+- Ideally the doc subdirectory should be copied into the doc/layetx subdirecory
+  of the main TeX distribution.
+
+Once the files are in place initialise WebQuiz by following the installation
+instructions above.
+
+
 System requirements
 -------------------
 
 In order to work WebQuiz needs the following programs to be installed on your
 system:
 
-* An up-to-date LaTeX_ distribution, such as that provided by TeXLive_. In 
+* An up-to-date LaTeX_ distribution, such as that provided by TeXLive_. In
   particular, you need to have TeX4ht_ and make4ht_ installed.
   Unfortunately, since TeXLive 2018 was released there have been a significat
   bunber of updates to a number of packahges that WebQuiz_ uses, including

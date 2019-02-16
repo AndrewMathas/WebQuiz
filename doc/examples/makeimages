@@ -70,22 +70,19 @@ class Convert:
             delay = 3,
             js = '',
             js_end = '',
-            page_out = None,
+            page = page,
+            page_out = page,
             Question = None,
             question = None,
             src = 'html',
             webquiz = '',
             width =500,
         )
-        self.page = page
         for key in defaults:
             if key in args:
                 setattr(self, key, args[key])
             else:
                 setattr(self, key, defaults[key])
-
-        if self.page_out is None:
-            self.page_out = self.page
 
         if not self.Question is None:
             for qval in self.Question.split('|'):
@@ -113,13 +110,11 @@ class Convert:
             generate the images and clean up
         '''
         self.options = options
-        if '*' in self.page:
-            pages = self.page
-            for page in glob.glob(pages+'.tex'):
-                self.page = page[:-4]
+        pages = self.page
+        for page in glob.glob(pages+'.tex'):
+            self.page = page[:-4]
+            if self.page_out==pages:
                 self.page_out = page[:-4]
-                self.write_image() # the actual conversion
-        else:
             self.write_image() # the actual conversion
 
     # dictionary of conversion methods used in self.wrie_image()
@@ -214,7 +209,7 @@ class Convert:
 
 # Specify the pages to construct using the Convert class:
 pages = [
-        Convert("answer-complex", Question="1:7+i|2:i+7"),
+    Convert("answer-complex", Question="1:7+i|2:i+7"),
     Convert("answer-integer", Question="1:18"),
     Convert("answer-lowercase", Question="1:long|2:LONG"),
     Convert("answer-number", Question="1:0.75|2:3/4"),
