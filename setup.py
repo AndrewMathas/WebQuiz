@@ -42,10 +42,9 @@ class MetaData(dict):
 
 settings = MetaData('latex/webquiz.ini')
 
-class WebQuizDevelop(Command):
+class WebQuizRelease(Command):
     r"""
-    Custom develop command to install links for latex code
-    and for the web files.
+    Custom release command to bump and commit new release.
     """
 
     description = 'Setup links for latex files and web files for code development'
@@ -65,8 +64,59 @@ class WebQuizDevelop(Command):
         r'''
         Install links for the latex files, executable and web files
         '''
-        texmflocal = kpsewhich('-var TEXMFLOCAL')
-        tex_dir = os.path.join(texmflocal,'tex', 'latex', 'local', 'webquiz')
+        major, minor = settings['version'].split()
+        release = self.ask('Major or minor release (m|M)? ')
+        if release=='M':
+            version = '{}.0'.format(int(major+1))
+        else:
+            version = '{}.{}'.format(major, int(minor+1))
+
+        self.run('git checkout -b release-{} develop'.format(version))
+
+        # write new version number to webquiz.ini
+        m = max(len(k) for k in settings)
+        with open('latex/webquiz.ini', 'w') as ini_file:
+            ini_file.write('\n'.join('{k:<{max}} = {val}'.format(
+                        k=k,
+                        max=m,
+                        val=settings[k]
+                    ) for k in settinsgs
+                )
+            )
+        self.run('git commit -m "Version {}"'.format(version))
+
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+class WebQuizDevelop(Command):
+    r"""
+    Custom develop command to install development version of WebQuiz.
+    """
+
+    description = 'Setup links for latex files and web files for code development'
+    user_options = []
+
+    def ask(self, message, default):
+        r'''
+        Prompt the user for input using the message `message` and with default
+        `default` and return the result.
+        '''
+        value = input('\n{}{}[{}] '.format(message, '\n' if len(message+default)>50 else ' ',
+                                           default)
+        ).strip()
+        return default if value=='' else value
+
+    def run(self):
+        r'''
+        Install links for the latex files, executable and web files
+        '''
+        texmflocal = kpsewhich('-var TEXMFDIST')
+        tex_dir = os.path.join(texmflocal,'tex', 'latex', 'webquiz')
+        doc_dir = os.path.join(texmflocal,'doc', 'latex', 'webquiz')
         cwd = os.path.dirname(os.path.realpath(__file__))
 
         try:
@@ -80,6 +130,13 @@ class WebQuizDevelop(Command):
 
                 # update the tex search paths if not installed in home directory
                 subprocess.call('mktexlsr {}/'.format(tex_dir), shell=True)
+
+            # add a link to the doc files
+            doc_dir = self.ask('Install links to doc files in directory', doc_dir)
+            if os.path.exists(doc_dir):
+                print('doc files not installed as directory already exists'.format(doc_dir))
+            else:
+                os.symlink(os.path.join(cwd,'doc'), doc_dir)
 
             # add a link from /usr/local/bin/webquiz to executable
             bindir = self.ask('Directory for executable', '/usr/local/bin')

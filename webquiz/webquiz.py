@@ -472,16 +472,32 @@ class WebQuizSettings:
                     elif os.path.isdir(web_doc):
                         shutil.rmtree(web_doc)
 
-                    # the www directory is a subdirectory of the webquiz doc
-                    # directory so we need to locate this
-                    webquiz_doc = os.path.join(webquiz_util.kpsewhich('-var TEXMFMAIN'), 'doc','latex', 'webquiz')
+                    # Need to locate the www directory, which should be a subdirectory
+                    # of the webquiz doc directory. First try using texdoc
+                    webquiz_doc = ''
+                    try:
+                        webquiz_pdf = subprocess.call('texdoc --list --machine webquiz.pdf').split()[-1].decode()
+                        if webquiz_pdf.endswith('webquiz.pdf'):
+                            webquiz_doc = os.path.dirname(webquiz_pdf)
+                    except subprocess.CalledProcessError:
+                        pass
+
+                    # if texdoc failed then try using TEXMFMAIN
+                    if webquiz_doc=='':
+                        try:
+                            webquiz_doc = os.path.join(webquiz_util.kpsewhich('-var TEXMFMAIN'), 'doc','latex', 'webquiz')
+                        except subprocess.CalledProcessError:
+                            pass
+
+                    # if we still don't have webquiz_doc then try working backwards from webquiz.cls
+                    # unlikely to work if TEXMFMAIN doesn't
                     if not os.path.isdir(webquiz_doc):
                         parent = os.path.dirname
                         texdist_dir = parent(parent(parent(parent(parent(webquiz_util.kpsewhich('webquiz.cls'))))))
                         webquiz_doc = os.path.join(texdist_dir, 'doc', 'latex', 'webquiz')
 
-                    # get the root directory of the source code in case
-                    # webquiz_www does not exist
+                    # get the root directory of the source code for developer
+                    # mode and just in case webquiz_www still does not exist
                     webquiz_src = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
                     webquiz_www = os.path.join(webquiz_doc, 'www')
@@ -490,7 +506,7 @@ class WebQuizSettings:
 
                     if developer and os.path.isdir(os.path.join(webquiz_src, 'doc')):
                         # this is a development version so add links from the
-                        # web directory to the parent directory
+                        # web directory to the css,doc and js directories
                         print('\nInstalling files for development version')
                         print('Linking web files {} -> {} ...\n'.format(web_dir, webquiz_src))
                         if not os.path.exists(web_dir):
@@ -502,7 +518,11 @@ class WebQuizSettings:
                                 os.remove(newlink)
                             except FileNotFoundError:
                                 pass
-                            os.symlink(os.path.join(webquiz_src,src), newlink)
+                            try:
+                                os.symlink(os.path.join(webquiz_src,src), newlink)
+                            except OSError as err:
+                                print('There was a problem linking {}: {}'.format(newlink, err))
+
                     else:
                         # loop until we find some files to install or exit
                         while not os.path.isdir(webquiz_www) or webquiz_www=='':
