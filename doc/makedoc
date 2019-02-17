@@ -11,6 +11,7 @@ WebQuizDir="$(realpath $(dirname $0)/..)"
 WebQuizExamplesDir="$WebQuizDir/doc/examples"
 PREFIX=""
 
+#################################################
 function message() {
   if [ "$quiet" = false ]; then
      echo -e "${PREFIX}$@"
