@@ -234,8 +234,8 @@ class WebQuizCtan(Command):
         given by the copyright line in webquiz.ini
         '''
         copy = 'Copyright (C) '+settings.copyright[:9]
-        for file in [ 'README-ctan.md',
-                      'latex/webquiz-doc.code.tex',
+        for file in [ 'latex/webquiz-doc.code.tex',
+                      'latex/webquiz.ini',
                       'doc/credits.tex',
                       'doc/webquiz-online-manual.tex',
                       'doc/webquiz.tex',
@@ -265,6 +265,9 @@ class WebQuizCtan(Command):
 
         try:
             os.remove('javasript/webquiz-min.js')
+
+        except FileNotFoundError:
+            pass
 
         except OSError as err:
             print('Something went wrong: {}'.format(err))
@@ -355,7 +358,6 @@ class WebQuizCtan(Command):
                     if '/' in target_file:
                         os.makedirs(os.path.dirname(target_file), exist_ok=True)
                     shutil.copyfile(os.path.join('..',src), target_file)
-                    print('link={}, target={}'.format(link,target))
                     os.symlink(link, target)
                     self.add_sym_link_to_zipfile(target, os.path.join('webquiz',target), zip_file)
             except:

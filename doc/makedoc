@@ -8,7 +8,7 @@
 
 #################################################
 WebQuizDir="$(realpath $(dirname $0)/..)"
-WebQuizExamplesDir="$WebQuizDir/doc/examples"
+WebQuizExamplesDir="$WebQuizDir/doc/images"
 PREFIX=""
 
 #################################################
@@ -24,11 +24,11 @@ function check_examples() {
   cd $WebQuizDir/doc
   /bin/rm -f makedoc-{examples,images,manual}
   echo "Source files" > makedoc-examples
-  ls -1 examples/*.tex | sed 's@.tex@@' | sed 's@examples.@@' | sort -u >> makedoc-examples
+  ls -1 images/*.tex | sed 's@.tex@@' | sed 's@images.@@' | sort -u >> makedoc-examples
   echo "Images in manual" > makedoc-manual
   ag ScreenShot webquiz.tex|sed 's@.*}{\([^}]*\)}$@\1@'|ag -v Shot|sort -u >> makedoc-manual
   echo "Available images" > makedoc-images
-  (cd examples > /dev/null && ls -1 *.png) | sed 's@.png$@@' | sort >> makedoc-images
+  (cd images > /dev/null && ls -1 *.png) | sed 's@.png$@@' | sort >> makedoc-images
   gvim -d makedoc-manual makedoc-images makedoc-examples
 }
 
