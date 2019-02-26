@@ -322,9 +322,9 @@ class WebQuizCtan(Command):
                 ('doc/webquiz.usage',             'doc'),
                 ('javascript/webquiz-min.js',     'doc/www/js/webquiz.js'),
                 ('css/webquiz-*.css',             'doc/www/css'),
-                ('doc/examples/README-examples',  'doc/www/doc/examples'),
-                ('doc/examples/*.tex',            'doc/www/doc/examples'),
-                ('doc/examples/ctanLion.jpg',     'doc/www/doc/examples'),
+                ('doc/examples/README-examples',  'doc/examples'),
+                ('doc/examples/*.tex',            'doc/examples'),
+                ('doc/examples/ctanLion.jpg',     'doc/examples'),
                 ('doc/examples/*.png',            'doc/examples'),
             ]:
                 for file in glob.glob(src):
@@ -345,6 +345,7 @@ class WebQuizCtan(Command):
                 for (src, target, link) in [
                         ('doc/README.rst', 'README', 'README.rst'),
                         ('webquiz/webquiz.py', 'scripts/webquiz', 'webquiz.py'),
+                        ('doc/examples', 'doc/www/doc/examples', '../../examples'),
                         ('doc/webquiz-online-manual.tex', 'doc/www/doc/webquiz-online-manual.tex', '../../webquiz-online-manual.tex')
                     ]:
                     if '/' in target:
@@ -355,6 +356,7 @@ class WebQuizCtan(Command):
                                     os.path.basename(link)
                                 )
                     )
+                    print('src={}, target={}, link={}, target_file={}'.format(src, target, link,target_file))
                     if '/' in target_file:
                         os.makedirs(os.path.dirname(target_file), exist_ok=True)
                     shutil.copyfile(os.path.join('..',src), target_file)
@@ -375,6 +377,7 @@ class WebQuizCtan(Command):
             'zippath'  is the (relative or absolute) path to record in the zip itself.
             'zipfile'  is the ZipFile object used to format the created zip file.
         '''
+        print('linking: {} -> {}'.format(link,zippath))
         assert os.path.islink(link)
         linkpath = os.readlink(link)                # str of link itself
 
