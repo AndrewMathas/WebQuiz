@@ -308,7 +308,7 @@ web_initialise_warning = r'''
 '''
 
 rc_permission_error = r'''
-Attempting to write the rcfile to {rc_file}
+Attempting to write the rcfile to {rcfile}
 resulted in the error:
   {error}
 
@@ -317,8 +317,8 @@ and run webquiz again, either using an administrator account, or using
 sudo on linux/macosx.
 
 Press the key 1-3, followed by return, to:
-    1. Try to save to {rc_file} again
-    2. Save to the user rcfile {alt_rc_file}
+    1. Try to save to {rcfile} again
+    2. Save to the user rcfile {alt_rcfile}
     3. Give a different location for the rcfile
 Press any other key to exit without saving.
 '''

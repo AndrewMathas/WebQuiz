@@ -34,12 +34,16 @@ import webquiz_util
 
 #################################################################################
 # read in basic meta data such as author, version, ... and set debugging=False
-
 try:
     metadata = webquiz_util.MetaData(webquiz_util.kpsewhich('webquiz.ini'), debugging=False)
 except subprocess.CalledProcessError:
-    print('webquiz installation error: unable to find webquiz.ini')
-    sys.exit(1)
+    # check to see if we are running from the zip file
+    ini_file = os.path.join(webquiz_util.webquiz_file(''), '..', 'latex', 'webquiz.ini')
+    try:
+        metadata = webquiz_util.MetaData(ini_file, debugging=False)
+    except (FileNotFoundError, subprocess.CalledProcessError):
+        print('webquiz installation error: unable to find webquiz.ini -> {}'.format(ini_file))
+        sys.exit(1)
 
 # ---------------------------------------------------------------------------------------
 def graceful_exit(sig, frame):
@@ -202,6 +206,9 @@ class WebQuizSettings:
     # we process te command line options really should not happen
     debugging = True
 
+    # keep track of whether we have initialised
+    have_initialised = False
+
     def __init__(self):
         '''
         First read the system webquizrc file and then read the
@@ -273,15 +280,15 @@ class WebQuizSettings:
         else:
             self.webquiz_error('setitem: unknown setting "{}" in webquizrc'.format(key))
 
-    def read_webquizrc(self, rc_file, must_exist=False):
+    def read_webquizrc(self, rcfile, must_exist=False):
         r'''
         Read the settings from the specified webquizrc file - if it exists, in
-        which case set self.rc_file equal to this directory. If the file does
+        which case set self.rcfile equal to this directory. If the file does
         not exist then return without changing the current settings.
         '''
-        if os.path.isfile(rc_file):
+        if os.path.isfile(rcfile):
             try:
-                with codecs.open(rc_file, 'r', encoding='utf8') as webquizrc:
+                with codecs.open(rcfile, 'r', encoding='utf8') as webquizrc:
                     for line in webquizrc:
                         if '#' in line:  # remove comments
                             line = line[:line.index('#')]
@@ -293,20 +300,20 @@ class WebQuizSettings:
                                 if value != self[key]:
                                     self[key] = value
                             elif key != '':
-                                self.webquiz_error('unknown setting "{}" in {}'.format(key, rc_file))
+                                self.webquiz_error('unknown setting "{}" in {}'.format(key, rcfile))
 
-                # record the rc_file for later use
-                self.rc_file = rc_file
+                # record the rcfile for later use
+                self.rcfile = rcfile
 
             except OSError as err:
-                self.webquiz_error('there was a problem reading the rc-file {}'.format(rc_file), err)
+                self.webquiz_error('there was a problem reading the rc-file {}'.format(rcfile), err)
 
             except Exception as err:
                 self.webquiz_error('there was an error reading the webquizrc file,', err)
 
         elif must_exist:
             # this is only an error if we have been asked to read this file
-            self.webquiz_error('the rc-file "{}" does not exist'.format(rc_file))
+            self.webquiz_error('the rc-file "{}" does not exist'.format(rcfile))
 
     def keys(self):
         r'''
@@ -318,19 +325,19 @@ class WebQuizSettings:
     def write_webquizrc(self):
         r'''
         Write the settings to the webquizrc file, defaulting to the user
-        rc_file if unable to write to the system rc_file
+        rcfile if unable to write to the system rcfile
         '''
-        if not hasattr(self, 'rc_file'):
-            # when initialising an rc_file will not exist yet
-            self.rc_file = self.system_rcfile
+        if not hasattr(self, 'rcfile'):
+            # when initialising an rcfile will not exist yet
+            self.rcfile = self.system_rcfile
 
         file_not_written = True
         while file_not_written:
             try:
-                dire = os.path.dirname(self.rc_file)
+                dire = os.path.dirname(self.rcfile)
                 if dire != '' and not os.path.isdir(dire):
                     os.makedirs(dire, exist_ok=True)
-                with codecs.open(self.rc_file, 'w', encoding='utf8') as rcfile:
+                with codecs.open(self.rcfile, 'w', encoding='utf8') as rcfile:
                     for key in self.keys():
                         # Only save settings in the rcfile if they have changed
                         # Note that changed means changed from the last read
@@ -343,24 +350,24 @@ class WebQuizSettings:
                                            self[key])
                             )
 
-                print('\nWebQuiz settings saved in {}\n'.format( self.rc_file))
+                print('\nWebQuiz settings saved in {}\n'.format( self.rcfile))
                 input('Press return to continue... ')
                 file_not_written = False
 
             except (OSError, PermissionError) as err:
                 # if writing to the system_rcfile then try to write to user_rcfile
-                alt_rcfile = self.user_rcfile if self.rc_file != self.user_rcfile else self.system_rcfile
+                alt_rcfile = self.user_rcfile if self.rcfile != self.user_rcfile else self.system_rcfile
                 response = input(
                     webquiz_templates.rc_permission_error.format(
                         error=err,
-                        rc_file=self.rc_file,
+                        rcfile=self.rcfile,
                         alt_rcfile=alt_rcfile))
                 if response.startswith('2'):
-                    self.rc_file = alt_rcfile
+                    self.rcfile = alt_rcfile
                 elif response.startswith('3'):
-                    rc_file = input('WebQuiz rc-file: ')
-                    print('\nTo access this rc-file you will need to use: webquiz --rcfile {} ...'.format(rc_file))
-                    self.rc_file = os.path.expanduser(rc_file)
+                    rcfile = input('WebQuiz rc-file: ')
+                    print('\nTo access this rc-file you will need to use: webquiz --rcfile {} ...'.format(rcfile))
+                    self.rcfile = os.path.expanduser(rcfile)
                 elif not response.startswith('1'):
                     print('exiting...')
                     sys.exit(1)
@@ -369,7 +376,7 @@ class WebQuizSettings:
         r'''
         Print the non-default settings for webquiz from the webquizrc
         '''
-        if not hasattr(self, 'rc_file'):
+        if not hasattr(self, 'rcfile'):
             print(
                 'Please initialise WebQuiz using the command: webquiz --initialise\n'
             )
@@ -382,8 +389,8 @@ class WebQuizSettings:
                 self.webquiz_error('{} is an invalid setting'.format(setting))
 
         elif setting=='all':
-            dash = '-'*len('WebQuiz rc-file: {}'.format(self.rc_file))
-            print('{dash}\nWebQuiz rc-file: {rcfile}\n{dash}'.format(rcfile=self.rc_file, dash=dash))
+            dash = '-'*len('WebQuiz rc-file: {}'.format(self.rcfile))
+            print('{dash}\nWebQuiz rc-file: {rcfile}\n{dash}'.format(rcfile=self.rcfile, dash=dash))
             for key in self.keys():
                 print('{:<17} = {}'.format(key.replace('_', '-'), self[key]))
             print('{dash}'.format(dash=dash))
@@ -393,7 +400,7 @@ class WebQuizSettings:
                 print('{:<17} {}'.format(key.replace('_', '-'), self.settings[key]['help'].lower()))
 
         else:
-            print('WebQuiz settings from {}'.format(self.rc_file))
+            print('WebQuiz settings from {}'.format(self.rcfile))
             for key in self.keys():
                 print('# {}{}\n{:<17} = {:<17}  {}'.format(
                         self.settings[key]['help'],
@@ -412,6 +419,9 @@ class WebQuizSettings:
 
         If `need_to_initialise` is `True` then this is a forced initialisation.
         '''
+
+        # keep track of whether we have initialised
+        self.have_initialised = True
 
         if need_to_initialise:
             self.initialise_warning = webquiz_templates.web_initialise_warning
@@ -476,7 +486,7 @@ class WebQuizSettings:
                     # of the webquiz doc directory. First try using texdoc
                     webquiz_doc = ''
                     try:
-                        webquiz_pdf = subprocess.call('texdoc --list --machine webquiz.pdf').split()[-1].decode()
+                        webquiz_pdf = webquiz_util.shell_command('texdoc --list --machine webquiz.pdf').split()[-1]
                         if webquiz_pdf.endswith('webquiz.pdf'):
                             webquiz_doc = os.path.dirname(webquiz_pdf)
                     except subprocess.CalledProcessError:
@@ -620,6 +630,100 @@ class WebQuizSettings:
         self.write_webquizrc()
         self.list_settings()
 
+    def tex_install(self):
+        r'''
+        Install the tex files into the standard locations in TEXMFMAIN:
+            scripts -> TEXMFMAIN/scripts/webquiz
+            doc     -> TEXMFMAIN/doc/latex/webquiz
+            latex   -> TEXMFMAIN/tex/latex/webquiz
+        It is assumed that this is run from the zipfile installation. There
+        is little in the way of error checking or debugging.
+
+        Undocumented feature - useful for debugging initialisation routine
+        '''
+        webquiz_top = os.path.abspath(webquiz_util.webquiz_file('..'))
+        texmf = webquiz_util.kpsewhich('-var TEXMFMAIN')
+        for (src, target) in [('scripts', 'scripts'),
+                         ('latex', 'tex/latex'),
+                         ('doc', 'doc/latex')]:
+            try:
+                webquiz_util.copytree(os.path.join(webquiz_top,src), os.path.join(texmf, target, 'webquiz'))
+
+            except (FileExistsError,FileNotFoundError):
+                continue
+
+            except PermissionError as err:
+                print('Insufficient permissions: {}'.format(err))
+                sys.exit(1)
+
+        try:
+
+            # add a link to webquiz.py
+            texbin = os.path.dirname(webquiz_util.shell_command('which pdflatex').split()[-1])
+            os.symlink(os.path.join(texmf,'scripts','webquiz','webquiz.py'), os.path.join(texbin, 'webquiz'))
+            subprocess.call('mktexlsr', shell=True)
+
+        except (FileExistsError,FileNotFoundError):
+            pass
+
+        except PermissionError as err:
+            print('Insufficient permissions: {}'.format(err))
+            sys.exit(1)
+
+        except subprocess.CalledProcessError as err:
+            print('There was a problem running mktexlsr')
+            sys.exit(1)
+
+    def tex_uninstall(self):
+        r'''
+        UnInstall the tex files into TEXMFMAIN. It is assumed that the files
+        are installed in the natural locations in the TEXMFMAIN tree, namely:
+            scripts -> TEXMFMAIN/scripts/webquiz
+            doc     -> TEXMFMAIN/doc/latex/webquiz
+            latex   -> TEXMFMAIN/tex/latex/webquiz
+        There is little in the way of error checking or debugging.
+
+        Undocumented feature - useful for debugging initialisation routine
+        '''
+        webquiz_top = os.path.abspath(webquiz_util.webquiz_file('..'))
+        texmf = webquiz_util.kpsewhich('-var TEXMFMAIN')
+        for target in ['scripts', 'tex/latex', 'doc/latex']:
+            try:
+                shutil.rmtree(os.path.join(texmf, target, 'webquiz'))
+
+            except (FileExistsError,FileNotFoundError):
+                pass
+
+            except PermissionError as err:
+                print('Insufficient permissions\n{}'.format(err))
+                sys.exit(1)
+
+        try:
+            # remove link from texbin to webquiz.py
+            texbin = os.path.dirname(webquiz_util.shell_command('which pdflatex').split()[-1])
+            os.remove(os.path.join(texbin, 'webquiz'))
+
+        except (FileExistsError,FileNotFoundError):
+            pass
+
+        except PermissionError as err:
+            print('Insufficient permissions\n{}'.format(err))
+            sys.exit(1)
+
+        # remove link to webquiz.py
+        texbin = os.path.dirname(webquiz_util.shell_command('which pdflatex').split()[-1])
+        webquiz = os.path.join(texbin,'webquiz')
+        try:
+            target = os.readlink(webquiz)
+            if target==os.path.join(texmf,'scripts','webquiz','webquiz.py'):
+                os.remove(webquiz)
+
+        except (FileExistsError,FileNotFoundError):
+            pass
+
+        except OSError as err:
+            print('There was a problem removing the link to webquiz: {}'.format(err))
+
     def uninstall_webquiz(self):
         r'''
         Remove all of the webquiz files from the webserver
@@ -634,6 +738,10 @@ class WebQuizSettings:
             try:
                 shutil.rmtree(self['webquiz_www'])
                 print('WebQuiz files successfully removed from {}'.format(self['webquiz_www']))
+
+            except PermissionError as err:
+                print('Insufficient permissions\n{}'.format(err))
+                sys.exit(1)
 
             except OSError as err:
                 self.webquiz_error('There was a problem removing webquiz files from {}'.format(self['webquiz_www']), err)
@@ -770,7 +878,20 @@ if __name__ == '__main__':
             help=argparse.SUPPRESS
         )
 
-        parser.add_argument(
+        install_parser = parser.add_mutually_exclusive_group()
+        install_parser.add_argument(
+            '--tex-install',
+            action='store_true',
+            default=False,
+            help=argparse.SUPPRESS
+        )
+        install_parser.add_argument(
+            '--tex-uninstall',
+            action='store_true',
+            default=False,
+            help=argparse.SUPPRESS
+        )
+        install_parser.add_argument(
             '--uninstall',
             action='store_true',
             default=False,
@@ -808,18 +929,26 @@ if __name__ == '__main__':
             rcfile = os.path.expanduser(options.rcfile)
             settings.read_webquizrc(rcfile)
 
-        # keep track of whether we have initialised
-        have_initialised = False
+        if options.uninstall:
+            # uninstall web files and exit
+            settings.uninstall_webquiz()
+            sys.exit()
+        elif options.tex_install:
+            # install files from zip file into tex distribution and then exit
+            settings.tex_install()
+            sys.exit()
+        elif options.tex_uninstall:
+            # install files from zip file into tex distribution and then exit
+            settings.tex_uninstall()
+            sys.exit()
 
         # initialise and exit
         if options.initialise or options.developer:
             settings.initialise_webquiz(developer=options.developer)
-            have_initialised = True
 
         # force initialisation if the url is not set
         elif settings['webquiz_url'] == '':
             settings.initialise_webquiz(need_to_initialise=True)
-            have_initialised = True
 
         # list settings and exit
         if options.settings != '':
@@ -831,11 +960,6 @@ if __name__ == '__main__':
             settings.edit_settings()
             sys.exit()
 
-        # uninstall and exit
-        if options.uninstall:
-            settings.uninstall_webquiz()
-            sys.exit()
-
         # print short help and exit
         if options.shorthelp:
             parser.print_usage()
@@ -843,7 +967,7 @@ if __name__ == '__main__':
 
         # if no filename then exit
         if options.quiz_file==[]:
-            if have_initialised:
+            if settings.have_initialised:
                 sys.exit()
             else:
                 parser.print_help()

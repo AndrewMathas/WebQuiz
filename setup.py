@@ -114,13 +114,12 @@ class WebQuizDevelop(Command):
         r'''
         Install links for the latex files, executable and web files
         '''
-        texmflocal = kpsewhich('-var TEXMFDIST')
-        tex_dir = os.path.join(texmflocal,'tex', 'latex', 'webquiz')
-        doc_dir = os.path.join(texmflocal,'doc', 'latex', 'webquiz')
+        texmfdist = kpsewhich('-var TEXMFDIST')
+        tex_dir = os.path.join(texmfdist,'tex', 'latex', 'webquiz')
+        doc_dir = os.path.join(texmfdist,'doc', 'latex', 'webquiz')
         cwd = os.path.dirname(os.path.realpath(__file__))
 
         try:
-
             # add a link to the latex files
             tex_dir = self.ask('Install links to latex files in directory', tex_dir)
             if os.path.exists(tex_dir):
@@ -356,10 +355,12 @@ class WebQuizCtan(Command):
                                     os.path.basename(link)
                                 )
                     )
-                    print('src={}, target={}, link={}, target_file={}'.format(src, target, link,target_file))
                     if '/' in target_file:
                         os.makedirs(os.path.dirname(target_file), exist_ok=True)
-                    shutil.copyfile(os.path.join('..',src), target_file)
+                    if os.path.isdir(os.path.join('..',src)):
+                        os.makedirs(os.path.join('..',src), exist_ok=True)
+                    else:
+                        shutil.copyfile(os.path.join('..',src), target_file)
                     os.symlink(link, target)
                     self.add_sym_link_to_zipfile(target, os.path.join('webquiz',target), zip_file)
             except:

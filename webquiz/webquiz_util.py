@@ -25,12 +25,17 @@ import traceback
 # Return the full path for a file in the webquiz directory
 webquiz_file = lambda file: os.path.join(os.path.dirname(os.path.realpath(__file__)), file)
 
-def kpsewhich(search):
-    r'''short-cut to access kpsewhich output:
-    usage: kpsewhich('-var-value=TEXMFLOCAL')
+def shell_command(cmd):
+    r'''
+    Short-cut for shell commands
     '''
-    return subprocess.check_output('kpsewhich ' + search, stderr=subprocess.STDOUT,
-                                   shell=True).decode('ascii').strip()
+    return subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True).decode('ascii').strip()
+
+def kpsewhich(search):
+    r'''
+    Short-cut to access kpsewhich output. usage: kpsewhich('-var-value=TEXMFLOCAL')
+    '''
+    return subprocess.check_output('kpsewhich ' + search, stderr=subprocess.STDOUT, shell=True).decode('ascii').strip()
 
 # ---------------------------------------------------------------------------------------
 class MetaData(dict):
@@ -93,7 +98,7 @@ def webquiz_error(debugging, msg, err=None):
 
 
 ###############################################################################
-def copytree(src, dst, symlinks=False, ignore=None):
+def copytree(src, dst, symlinks=True, ignore=None):
     r''' Recursively copy directory tree, fixing shutil.copytree
          from https://stackoverflow.com/questions/1868714
     '''

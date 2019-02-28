@@ -117,7 +117,7 @@
 }
 \lstnewenvironment{latexcode}{\lstset{style=latexcode}}{}
 \NewDocumentCommand\LatexCode{v}{\lstinline[style=latexcode]|#1|}
-\NewDocumentCommand\InputLatexCode{ O{images/} m}{\lstinputlisting[style=latexcode]{#1#2}}
+\NewDocumentCommand\InputLatexCode{ O{examples/} m}{\lstinputlisting[style=latexcode]{#1#2}}
 
 \lstdefinestyle{bashcode}{
   language=bash,
@@ -155,7 +155,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \RequirePackage{tcolorbox}
 \tcbuselibrary{skins}
-\NewDocumentCommand\ScreenShot{ O{0.7} m O{images/} m }{%
+\NewDocumentCommand\ScreenShot{ O{0.7} m O{examples/} m }{%
   \begin{center}
     \begin{tcolorbox}[width=#1\textwidth, title=#2, arc=3mm,
       colframe=Peru,

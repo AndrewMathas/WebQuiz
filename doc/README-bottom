@@ -25,9 +25,34 @@ steps are recommended:
 - Ideally the doc subdirectory should be copied into the doc/layetx subdirecory
   of the main TeX distribution.
 
-Once the files are in place initialise WebQuiz by following the installation
-instructions above.
+If you are using a unix system, or macosx, then the undocumented
+command-line option `-tex-install' installs the three different
+components of WebQuiz_ into ther standard locations in the TeXLive
+tree:
 
+- $TEXMFMAIN/tex/latex/webquiz  all LaTeX files
+- $TEXMFMAIN/scripts/webquiz    the python programs
+- $TEXMFMAIN/doc/latex/webquiz  the documentation and web components
+- A symbolic link is made from the TeX bin directory to the main
+  WebQuiz executable $TEXMFMAIN/scripts/webquiz/webquiz.py
+
+To install these files in TEXMFMAIN you will almost certainly need
+adminsistrator or root privledges, so on a unix-like system you will
+need to use:
+
+> sudo webquiz/scripts/webquiz --tex-install
+
+In principle, this command may also work on a windows computer,
+provided that the command `kpsewhich` is available, but this is
+untested.
+
+Once the files abpove are in place initialise WebQuiz by following the
+installation instructions above.
+
+Mainly for development purposes, there is another undocumented
+command-line option for removing these files from TEXMFMAIN:
+
+> sudo webquiz/scripts/webquiz --tex-uninstall
 
 System requirements
 -------------------

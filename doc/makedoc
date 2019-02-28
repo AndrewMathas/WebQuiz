@@ -8,7 +8,7 @@
 
 #################################################
 WebQuizDir="$(realpath $(dirname $0)/..)"
-WebQuizExamplesDir="$WebQuizDir/doc/images"
+WebQuizExamplesDir="$WebQuizDir/doc/examples"
 PREFIX=""
 
 #################################################
@@ -24,11 +24,11 @@ function check_examples() {
   cd $WebQuizDir/doc
   /bin/rm -f makedoc-{examples,images,manual}
   echo "Source files" > makedoc-examples
-  ls -1 images/*.tex | sed 's@.tex@@' | sed 's@images.@@' | sort -u >> makedoc-examples
+  ls -1 examples/*.tex | sed 's@.tex@@' | sed 's@examples/@@' | sort -u >> makedoc-examples
   echo "Images in manual" > makedoc-manual
   ag ScreenShot webquiz.tex|sed 's@.*}{\([^}]*\)}$@\1@'|ag -v Shot|sort -u >> makedoc-manual
-  echo "Available images" > makedoc-images
-  (cd images > /dev/null && ls -1 *.png) | sed 's@.png$@@' | sort >> makedoc-images
+  echo "Available examples" > makedoc-images
+  (cd examples > /dev/null && ls -1 *.png) | sed 's@.png$@@' | sort >> makedoc-images
   gvim -d makedoc-manual makedoc-images makedoc-examples
 }
 
@@ -110,6 +110,7 @@ function make_themes () {
   if [[ "$fast" == false ]]; then
     message "Rebuilding all themes from scss files"
     /bin/rm -f $WebQuizExamplesDir/theme-*.* $WebQuizDir/css/*.css
+    git checkout $WebQuizExamplesDir/theme-default.tex
   fi
 
   # next generate code to include screenshots for each theme in the appendix
@@ -120,7 +121,7 @@ function make_themes () {
       name=${name/.scss/}
       if [ ! -e "$WebQuizExamplesDir/theme-$name.tex" ]; then
         # create theme-<theme>.tex if it does not already exist
-        sed "s@default@$name@g" $WebQuizExamplesDir/theme.tex > "$WebQuizExamplesDir/theme-$name.tex"
+        sed "s@default@$name@g" $WebQuizExamplesDir/theme-default.tex > "$WebQuizExamplesDir/theme-$name.tex"
       fi
   done
 
