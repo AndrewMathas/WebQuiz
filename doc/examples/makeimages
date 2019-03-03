@@ -113,7 +113,7 @@ class Convert:
         pages = self.page
         for page in glob.glob(pages+'.tex'):
             self.page = page[:-4]
-            if self.page_out==pages:
+            if '*' in pages:
                 self.page_out = page[:-4]
             self.write_image() # the actual conversion
 

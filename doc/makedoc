@@ -117,8 +117,7 @@ function make_themes () {
   cd $WebQuizDir/css
   for theme in webquiz-*.scss ; do
       sass --style compressed $theme ${theme/scss/css}
-      name=${theme/webquiz-/}
-      name=${name/.scss/}
+      name=$(echo $theme | sed 's/webquiz-\([a-z]*\).scss/\1/')
       if [ ! -e "$WebQuizExamplesDir/theme-$name.tex" ]; then
         # create theme-<theme>.tex if it does not already exist
         sed "s@default@$name@g" $WebQuizExamplesDir/theme-default.tex > "$WebQuizExamplesDir/theme-$name.tex"

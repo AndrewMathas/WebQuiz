@@ -137,8 +137,10 @@ class WebQuizDevelop(Command):
             else:
                 os.symlink(os.path.join(cwd,'doc'), doc_dir)
 
-            # add a link from /usr/local/bin/webquiz to executable
-            bindir = self.ask('Directory for executable', '/usr/local/bin')
+
+            # add a link to webquiz.py
+            texbin = os.path.dirname(subprocess.check_output('which pdflatex', shell=True).decode().split()[-1])
+            bindir = self.ask('Directory for executable', texbin)
             webquiz = os.path.join(bindir, 'webquiz')
 
             if os.path.exists(webquiz):
@@ -378,7 +380,6 @@ class WebQuizCtan(Command):
             'zippath'  is the (relative or absolute) path to record in the zip itself.
             'zipfile'  is the ZipFile object used to format the created zip file.
         '''
-        print('linking: {} -> {}'.format(link,zippath))
         assert os.path.islink(link)
         linkpath = os.readlink(link)                # str of link itself
 
