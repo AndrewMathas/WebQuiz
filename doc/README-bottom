@@ -3,7 +3,7 @@ Installation
 ------------
 To use WebQuiz_ you need to have a standard LaTeX_ distribution installed, such as TeXLive_, that includes TeX4ht_. In addition, you need to have Python3_ installed. As WebQuiz_ uses scalable vector graphics (SVG) you should check that all of the dependencies of dvisvgm_ are installed on your system, especially if you plan on using graphics or images.
 
-Once the WebQuiz_ package has been installed from ctan_ then you can install the web components of WebQuiz_ using the following command, which needs to be run  from the command line:
+Once the TeX components of WebQuiz_ package have been installed you can install the web components of WebQuiz_ using the following command, which needs to be run  from the command line:
 
 > webquiz --initialise
 
@@ -25,9 +25,9 @@ steps are recommended:
 - Ideally the doc subdirectory should be copied into the doc/layetx subdirecory
   of the main TeX distribution.
 
-If you are using a unix system, or macosx, then the undocumented
-command-line option `-tex-install' installs the three different
-components of WebQuiz_ into ther standard locations in the TeXLive
+If you are using a unix system, or macosx, there is an (undocumented)
+command-line option `--tex-install` that installs the three different
+components of WebQuiz_ into the standard locations in the TeXLive
 tree:
 
 - $TEXMFMAIN/tex/latex/webquiz  all LaTeX files
@@ -46,7 +46,7 @@ In principle, this command may also work on a windows computer,
 provided that the command `kpsewhich` is available, but this is
 untested.
 
-Once the files abpove are in place initialise WebQuiz by following the
+Once the files above are in place initialise WebQuiz by following the
 installation instructions above.
 
 Mainly for development purposes, there is another undocumented

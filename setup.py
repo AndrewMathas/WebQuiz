@@ -29,6 +29,10 @@ import zipfile
 from setuptools import setup, find_packages, Command
 from webquiz.webquiz_util import kpsewhich, MetaData
 
+if sys.version_info.major<3:
+    print('Aborting! Setup requires python3')
+    sys.exit(1)
+
 class MetaData(dict):
     r"""
     A dummy class for reading and storing key-value pairs that are read from a file
@@ -42,56 +46,6 @@ class MetaData(dict):
 
 settings = MetaData('latex/webquiz.ini')
 
-class WebQuizRelease(Command):
-    r"""
-    Custom release command to bump and commit new release.
-    """
-
-    description = 'Setup links for latex files and web files for code development'
-    user_options = []
-
-    def ask(self, message, default):
-        r'''
-        Prompt the user for input using the message `message` and with default
-        `default` and return the result.
-        '''
-        value = input('\n{}{}[{}] '.format(message, '\n' if len(message+default)>50 else ' ',
-                                           default)
-        ).strip()
-        return default if value=='' else value
-
-    def run(self):
-        r'''
-        Install links for the latex files, executable and web files
-        '''
-        major, minor = settings['version'].split()
-        release = self.ask('Major or minor release (m|M)? ')
-        if release=='M':
-            version = '{}.0'.format(int(major+1))
-        else:
-            version = '{}.{}'.format(major, int(minor+1))
-
-        self.run('git checkout -b release-{} develop'.format(version))
-
-        # write new version number to webquiz.ini
-        m = max(len(k) for k in settings)
-        with open('latex/webquiz.ini', 'w') as ini_file:
-            ini_file.write('\n'.join('{k:<{max}} = {val}'.format(
-                        k=k,
-                        max=m,
-                        val=settings[k]
-                    ) for k in settinsgs
-                )
-            )
-        self.run('git commit -m "Version {}"'.format(version))
-
-
-    def initialize_options(self):
-        pass
-
-    def finalize_options(self):
-        pass
-
 class WebQuizDevelop(Command):
     r"""
     Custom develop command to install development version of WebQuiz.
@@ -99,16 +53,6 @@ class WebQuizDevelop(Command):
 
     description = 'Setup links for latex files and web files for code development'
     user_options = []
-
-    def ask(self, message, default):
-        r'''
-        Prompt the user for input using the message `message` and with default
-        `default` and return the result.
-        '''
-        value = input('\n{}{}[{}] '.format(message, '\n' if len(message+default)>50 else ' ',
-                                           default)
-        ).strip()
-        return default if value=='' else value
 
     def run(self):
         r'''
@@ -208,6 +152,16 @@ class WebQuizCtan(Command):
     def finalize_options(self):
         pass
 
+    def ask(self, message, default):
+        r'''
+        Prompt the user for input using the message `message` and with default
+        `default` and return the result.
+        '''
+        value = input('\n{}{}[{}] '.format(message, '\n' if len(message+default)>50 else ' ',
+                                           default)
+        ).strip()
+        return default if value=='' else value
+
     def run(self):
         # write the zip file for uploading to ctan
         self.zipfile = 'webquiz-{}.zip'.format(settings.version)
@@ -221,12 +175,13 @@ class WebQuizCtan(Command):
             shell=True
         )
 
-    def shell_command(self, cmd):
+    def shell_command(self, cmd, quiet=False):
         r'''
         Run the system command `cmd` and print any output to stdout indented
         by two spaces.
         '''
-        print('Executing {}'.format(cmd))
+        if not quiet:
+            print('Executing {}'.format(cmd))
         subprocess.call(cmd, shell=True)
 
     def update_copyright(self):
@@ -235,6 +190,7 @@ class WebQuizCtan(Command):
         given by the copyright line in webquiz.ini
         '''
         copy = 'Copyright (C) '+settings.copyright[:9]
+        print('Updating the copyright dates')
         for file in [ 'latex/webquiz-doc.code.tex',
                       'latex/webquiz.ini',
                       'doc/credits.tex',
@@ -244,7 +200,8 @@ class WebQuizCtan(Command):
                       'README.rst'
                     ]:
             self.shell_command(
-                "sed -i.bak 's@Copyright (C) 2004-20[0-9][0-9]@{}@' {}".format(copy, file)
+                "sed -i.bak 's@Copyright (C) 2004-20[0-9][0-9]@{}@' {}".format(copy, file),
+                quiet=True,
             )
 
     def build_distribution(self):
@@ -275,7 +232,8 @@ class WebQuizCtan(Command):
             pass
 
         # minify the javascript code
-        self.shell_command('uglifyjs --output javascript/webquiz-min.js --compress sequences=true,conditionals=true,booleans=true  javascript/webquiz.js ')
+        print('Minifying webquiz.js')
+        self.shell_command('uglifyjs --output javascript/webquiz-min.js --compress sequences=true,conditionals=true,booleans=true  javascript/webquiz.js ', quiet=True)
 
     def write_zip_file(self):
         r'''

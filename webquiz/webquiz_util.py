@@ -98,7 +98,7 @@ def webquiz_error(debugging, msg, err=None):
 
 
 ###############################################################################
-def copytree(src, dst, symlinks=True, ignore=None):
+def copytree(src, dst, symlinks=False, ignore=None):
     r''' Recursively copy directory tree, fixing shutil.copytree
          from https://stackoverflow.com/questions/1868714
     '''

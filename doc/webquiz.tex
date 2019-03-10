@@ -1892,9 +1892,25 @@
       \end{description}
 
       \subsubsection*{Other options}
+
+      The following command-line options are mainly useful mainly for
+      code developers.
+
       \begin{description}
         \item[\ddash version] Prints the \WebQuiz version number and
         exit (currently \webquiz{version})
+
+        \item[\ddash tex-install] Use this command-line option if
+        are are installing the \LaTeX{} components of
+        \WebQuiz from the \Ctan zip-file. It will install the different
+        \LaTeX{} components of \WebQuiz into \BashCode|TEXMFMAIN|. If
+        you installed \WebQuiz as part of a \TeX{} distribution, such as
+        \TeXLive, then you do not need to use this option.
+
+        \item[\ddash tex-uninstall] Use this command-line option to
+        remove the \LaTeX{} components of \WebQuiz from your system.
+        Only use this option if you installed \WebQuiz using the \Ctan
+        zip-file.
 
         \item[\ddash debugging] Displays extra debugging information
         when compiling and prevents \WebQuiz from deleting the many
@@ -1949,11 +1965,11 @@
 
     The first line of output from \BashCode|webquiz --settings| gives
     the location of the rc-file being used.  The system rc-file,
-    \webquizrc*, is saved in the \BashCode|scripts/webquiz| subdirectory
+    \webquizrc*, is saved in the \BashCode|tex/latex/webquiz| subdirectory
     of the \BashCode|TEXMFLOCAL| directory. A typically location for
     this file is
     \begin{bashcode}
-        /usr/local/texlive/texmf-local/scripts/webquiz/webquizrc
+        /usr/local/texlive/texmf-local/tex/latex/webquiz/webquizrc
     \end{bashcode}
     By default, the \WebQuiz settings are saved here so that you do not
     need to reinitialise \WebQuiz whenever you update your \TeX{}
@@ -1967,17 +1983,16 @@
              if the directory \BashCode|~/.config| exists,
         \item \BashCode|~/.webquizrc|  otherwise.
     \end{itemize}
-    Each time \WebQuiz is run it first reads the system rc-file followed
-    by the \textit{users rc-file}, if they exist. When using
-    \BashCode|webquiz --edit-settings| you will be promoted for a
-    different installation location if you do not have permission to
-    write to the specified rc-file.  To use a particular \webquizrc*
-    use the \BashCode|--rcfile| command-line option:
+    Each time \WebQuiz is run it reads the system and user rc-files, if
+    they exist. When using \BashCode|webquiz --edit-settings| you will
+    be promoted for a different installation location if you do not have
+    permission to write to the specified rc-file.  To use a particular
+    \webquizrc* use the \BashCode|--rcfile| command-line option:
     \begin{bashcode}
         > webquiz --rcfile <full path to rc-file> ...
     \end{bashcode}
     If you save the settings to a non-standard location then you will
-    need to use the command-line \BashCode|webquiz --rcfile| to access
+    need to use the command-line option \BashCode|webquiz --rcfile RCFILE| to access
     these settings.
 
   \noindent To describe the \WebQuiz defaults settings we consider them by category.

@@ -203,7 +203,7 @@ class WebQuizSettings:
     initialise_warning = ''
 
     # turn debugging on by default because any error message that we hit before
-    # we process te command line options really should not happen
+    # we process the command line options really should not happen
     debugging = True
 
     # keep track of whether we have initialised
@@ -227,7 +227,8 @@ class WebQuizSettings:
         # define user and system rc file and load the ones that exist
 
         self.system_rcfile = os.path.join(webquiz_util.kpsewhich('-var TEXMFLOCAL'),
-                                           'scripts',
+                                           'tex',
+                                           'latex',
                                            'webquiz',
                                            'webquizrc'
         )
@@ -351,7 +352,7 @@ class WebQuizSettings:
                             )
 
                 print('\nWebQuiz settings saved in {}\n'.format( self.rcfile))
-                input('Press return to continue... ')
+                input('Press RETURN to continue... ')
                 file_not_written = False
 
             except (OSError, PermissionError) as err:
@@ -451,13 +452,13 @@ class WebQuizSettings:
             webquiz_root = default_root
 
         print(webquiz_templates.initialise_introduction)
-        input('Press return to continue... ')
+        input('Press RETURN to continue... ')
 
         print(webquiz_templates.webroot_request.format(
                 platform=platform,
                 webquiz_dir = webquiz_root)
         )
-        input('Press return to continue... ')
+        input('Press RETURN to continue... ')
 
         files_copied = False
         while not files_copied:
@@ -503,7 +504,12 @@ class WebQuizSettings:
                     # unlikely to work if TEXMFMAIN doesn't
                     if not os.path.isdir(webquiz_doc):
                         parent = os.path.dirname
-                        texdist_dir = parent(parent(parent(parent(parent(webquiz_util.kpsewhich('webquiz.cls'))))))
+                        try:
+                            texdist_dir = parent(parent(parent(parent(parent(webquiz_util.kpsewhich('webquiz.cls'))))))
+                        except subprocess.CalledProcessError:
+                            print(webquiz_templates.not_installed.format(metadata.repository))
+                            sys.exit(1)
+
                         webquiz_doc = os.path.join(texdist_dir, 'doc', 'latex', 'webquiz')
 
                     # get the root directory of the source code for developer
@@ -574,7 +580,7 @@ class WebQuizSettings:
 
                 if not web_dir.endswith(webquiz_url):
                     print(webquiz_templates.webquiz_url_warning)
-                    input('Press return to continue... ')
+                    input('Press RETURN to continue... ')
 
                 self['webquiz_url'] = webquiz_url
 
@@ -653,7 +659,7 @@ class WebQuizSettings:
                 continue
 
             except PermissionError as err:
-                print('Insufficient permissions: {}'.format(err))
+                print(webquiz_templates.insufficient_permissions.format(err))
                 sys.exit(1)
 
         try:
@@ -667,7 +673,7 @@ class WebQuizSettings:
             pass
 
         except PermissionError as err:
-            print('Insufficient permissions: {}'.format(err))
+            print(webquiz_templates.insufficient_permissions.format(err))
             sys.exit(1)
 
         except subprocess.CalledProcessError as err:
@@ -695,7 +701,7 @@ class WebQuizSettings:
                 pass
 
             except PermissionError as err:
-                print('Insufficient permissions\n{}'.format(err))
+                print(webquiz_templates.insufficient_permissions.format(err))
                 sys.exit(1)
 
         try:
@@ -707,7 +713,19 @@ class WebQuizSettings:
             pass
 
         except PermissionError as err:
-            print('Insufficient permissions\n{}'.format(err))
+            print(webquiz_templates.insufficient_permissions.format(err))
+            sys.exit(1)
+
+        # remove any rcfiles that exist in obvious places
+        try:
+            if os.path.isfile(self.system_rcfile):
+                os.remove(self.system_rcfile)
+            if os.path.isfile(self.user_rcfile):
+                os.remove(self.user_rcfile)
+            if os.path.isfile(self.rcfile):
+                os.remove(self.rcfile)
+        except PermissionError:
+            print(webquiz_templates.insufficient_permissions.format(err))
             sys.exit(1)
 
         # remove link to webquiz.py
@@ -740,7 +758,7 @@ class WebQuizSettings:
                 print('WebQuiz files successfully removed from {}'.format(self['webquiz_www']))
 
             except PermissionError as err:
-                print('Insufficient permissions\n{}'.format(err))
+                print(webquiz_templates.insufficient_permissions.format(err))
                 sys.exit(1)
 
             except OSError as err:
@@ -758,9 +776,9 @@ class WebQuizSettings:
             rcfile = getattr(self, rfile+'_rcfile')
             if os.path.isfile(rcfile):
                 rm = input('Remove {} rcfile {}\n[Y/no] '.format(rfile, rcfile))
-                if rm!='no':
+                if rm != 'no':
                     try:
-                        os.remove(self.system_rcfile)
+                        os.remove(rcfile)
                     except (OSError, PermissionError) as err:
                         self.webquiz_error('There was a problem deleting {}'.format(rcfile), err)
 
@@ -901,7 +919,7 @@ if __name__ == '__main__':
         parser.add_argument(
             '--version',
             action='version',
-            version='%(prog)s {}'.format(metadata.version),
+            version='%(prog)s version {}'.format(metadata.version),
             help=argparse.SUPPRESS)
 
         parser.add_argument(

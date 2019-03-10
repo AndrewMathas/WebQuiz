@@ -195,9 +195,9 @@ multiple_feedback_correct = r'''
         </div>'''
 multiple_feedback_answer = '              <li><em>{correct_answer}</em> {reason}</li>'
 
-initialise_invite = r'''For efficiency reasons, WebQuiz needs to be initialised and, in particular,
-it needs to copy some files into a directory that is accessible from your
-webserver.
+initialise_invite = r'''WebQuiz needs to be initialised. In order to display quiz web pages
+WebQuiz needs to copy some css and javascript files into a directory
+that is accessible from your webserver.
 
 Do you want to initialise WebQuiz now [Y/n]? '''
 
@@ -217,18 +217,17 @@ no_script = r'''<noscript>
 initialise_introduction = r'''
 WebQuiz Initialisation
 ======================
-WebQuiz needs to copy some files onto your web server in order for the
-online quizzes to work. We will guide you through the process below.
-
-If you want to install these files into a "system" directory then you
-should quit this program (use control-C on unix-like systems) and then
-run
+If you want to install the web components of WebQuiz files into a "system"
+directory then you should quit this program (use control-C on unix-like
+systems) and then run
     webquiz --initialise
 from an administrators account or, on unix-like systems, use:
     sudo webquiz --initialise
-See Section 3.2 of the WebQuiz manual for more information about WebQuiz
-initialisation. On many systems, you can open the webquiz manual using
-the command: texdoc webquiz
+
+If you want to continue then WebQuiz will guide you through the
+initialisation process.  For more information about the steps involved
+see Section 3.2 of the WebQuiz manual On many systems, you can open
+the webquiz manual using the command: texdoc webquiz
 '''
 
 webroot_request = r'''----
@@ -241,15 +240,24 @@ To make files accessible from your web server WebQuiz needs:
     access the files. For example, if the URL for your department is
         http://www.maths.usyd.edu.au/
     and the WebQuiz files can be accessed as
-        http://www.maths.usyd.edu.au/u/MOW/WebQuiz
-    then the relative URL for the WebQuiz files is /u/MOW/WebQuiz
+        http://www.maths.usyd.edu.au/teaching/WebQuiz
+    then the relative URL for the WebQuiz files is /teaching/WebQuiz
 
-We recommended that you create a separate directory for WebQuiz on your
+It is recommended that you create a separate directory for WebQuiz on your
 web server. The location of the files on your web server will depend on
 your operating system and system configuration. A common sysem location
 for the WebQuiz web directory on a {platform} system is
      {webquiz_dir}
-You can also install these files in your personal web drectories.
+'''
+
+not_installed = r'''
+According to kpsewhich, the TeX components of WebQuiz are not installed
+on your system. If you have downloaded the WebQuiz zip file from ctan
+then try using:
+    > webquiz --tex-install
+If the TeX components are already installed then something has gone
+horribly wrong. If you think this is a bug please report it by creating
+an issue at {}
 '''
 
 oserror_copying = r'''There was a problem copying files to {web_dir}
@@ -278,8 +286,7 @@ going to the directory
 and typing:
     webquiz webquiz-online-manual
 
-Finally, You may want to change the default webquiz settings, which you
-can do by typing:
+If you want to change the default webquiz settings please use:
     webquiz --edit-settings
 '''
 
@@ -316,7 +323,7 @@ To write the WebQuiz rcfile into this directory you may need to quit
 and run webquiz again, either using an administrator account, or using
 sudo on linux/macosx.
 
-Press the key 1-3, followed by return, to:
+Press the key 1-3, followed by RETURN, to:
     1. Try to save to {rcfile} again
     2. Save to the user rcfile {alt_rcfile}
     3. Give a different location for the rcfile
@@ -331,6 +338,11 @@ run webquiz using either an administrator account, or using sudo on
 linux/macosx.
 
 Alternatively, please give a different directory.
+'''
+
+insufficient_permissions = r'''
+Insufficient permissions. Try using sudo or using an admisitrator account.
+{}
 '''
 
 webquiz_url_warning = r'''
@@ -360,7 +372,7 @@ Please only change these settings if you know what you are doing
 because incorrect values for these settings will break WebQuiz.
 
 With each setting the default value is printed inside square brackets.
-For example, as [default]. Press return to accept the default value.
+For example, as [default]. Press RETURN to accept the default value.
 Except for the location of the WebQuiz web directory all of these
 settings are easy to change at any time using the command:
     webquiz --edit-settings
