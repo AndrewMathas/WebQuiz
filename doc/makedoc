@@ -1,8 +1,12 @@
 #!/bin/bash
 
-# Script to generate all of the automatic input for the main web quiz manual.
-# That is, update the lists supported languages and themes and generate all of
-# the images used by the webquiz manual.
+# Script to compile the WebQuiz manual furst generating all of the PNG files
+# needed by the manual together with the various lists of languages, themes and
+# usage messages. As a bonus this script can also be used to automatically
+# generate all of the css files from the scss files in the css directory and it
+# can check for missing, or unused images in gthe examples directory.
+
+# usage: makedoc --[fast|quiet] --[all|check-examples|examples|languages|man-page|online|themes|usage]
 
 # TODO: rewrite in python to make cross-platform and merge with makeimages
 
@@ -156,7 +160,7 @@ function make_online_manual() {
 
 #################################################
 function usage() {
-  message "Make --[fast|quiet] --[all|check-examples|examples|languages|man-page|online|themes|usage]"
+  message "$(basename $0) --[fast|quiet] --[all|check-examples|examples|languages|man-page|online|themes|usage]"
 }
 
 makeall=false
