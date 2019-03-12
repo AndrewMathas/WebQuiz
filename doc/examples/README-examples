@@ -1,0 +1,2 @@
+The tex and png files in this directory are used to build the WebQuiz manual.
+Each tex file can be compiled using (pdf)latex and webquiz.
