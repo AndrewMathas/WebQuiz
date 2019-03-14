@@ -36,8 +36,8 @@ from webquiz_templates import no_script
 #   quiz.unit_code = unit code from \UnitCode
 #   quiz.unit_name = unit name from \UnitName
 #   quiz.unit_url = unit url from \UnitURL
-#   quiz.webquiz_init = javascript for initialising quiz page.
-#          This MUST appear tow<M-C-D-A>rds the end of HTML body
+#   quiz.webquiz_init = javascript for initialising quiz page
+#                       MUST appear towards the end of HTML body
 
 def write_web_page(quiz):
   return quiz_page.format(

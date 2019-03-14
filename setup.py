@@ -54,6 +54,16 @@ class WebQuizDevelop(Command):
     description = 'Setup links for latex files and web files for code development'
     user_options = []
 
+    def ask(self, message, default):
+        r'''
+        Prompt the user for input using the message `message` and with default
+        `default` and return the result.
+        '''
+        value = input('\n{}{}[{}] '.format(message, '\n' if len(message+default)>50 else ' ',
+                                           default)
+        ).strip()
+        return default if value=='' else value
+
     def run(self):
         r'''
         Install links for the latex files, executable and web files
