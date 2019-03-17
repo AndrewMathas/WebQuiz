@@ -33,9 +33,11 @@ def shell_command(cmd):
 
 def kpsewhich(search):
     r'''
-    Short-cut to access kpsewhich output. usage: kpsewhich('-var-value=TEXMFLOCAL')
+    Short-cut to access kpsewhich output.
+
+    usage: kpsewhich('-var-value=TEXMFLOCAL')
     '''
-    return subprocess.check_output('kpsewhich ' + search, stderr=subprocess.STDOUT, shell=True).decode('ascii').strip()
+    return subprocess.check_output('kpsewhich ' + search, shell=True).decode('ascii').strip()
 
 # ---------------------------------------------------------------------------------------
 class MetaData(dict):
