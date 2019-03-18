@@ -382,9 +382,8 @@ class WebQuizSettings:
         Print the non-default settings for webquiz from the webquizrc
         '''
         if not hasattr(self, 'rcfile'):
-            print(
-                'Please initialise WebQuiz using the command: webquiz --initialise\n'
-            )
+            print(webquiz_templates.initialise_settings)
+            sys.exit(1)
 
         if setting not in ['all', 'verbose', 'help']:
             setting = setting.replace('-', '_')

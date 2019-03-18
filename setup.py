@@ -268,33 +268,34 @@ class WebQuizCtan(Command):
             # now add the files: the target is assume to be a directory
             # unless it contains a '.', in which case we change the filename
             for (src, target) in [
-                ('doc/README.rst',                './README.rst'),
-                ('latex/webquiz.c*',              'latex'),
-                ('latex/webquiz-*.code.tex',      'latex'),
-                ('latex/webquiz.ini',             'latex'),
-                ('latex/webquiz-*.lang',          'latex'),
-                ('latex/pgfsys-dvisvgm4ht.def',   'latex'),
-                ('CHANGES.rst',                   'scripts'),
-                ('LICENCE',                       'scripts'),
-                ('webquiz/README-scripts',        'scripts'),
-                ('webquiz/webquiz*.py',           'scripts'),
-                ('webquiz/webquiz.bat',           'scripts'),
-                ('doc/README-doc',                'doc'),
-                ('doc/webquiz.tex',               'doc'),
-                ('doc/webquiz.pdf',               'doc'),
-                ('doc/webquiz.1',                 'doc'),
-                ('doc/webquiz-online-manual.pdf', 'doc'),
-                ('doc/webquiz-online-manual.tex', 'doc'),
-                ('doc/webquiz.languages',         'doc'),
-                ('doc/webquiz.settings',          'doc'),
-                ('doc/webquiz.themes',            'doc'),
-                ('doc/webquiz.usage',             'doc'),
-                ('javascript/webquiz-min.js',     'doc/www/js/webquiz.js'),
-                ('css/webquiz-*.css',             'doc/www/css'),
-                ('doc/examples/README-examples',  'doc/examples'),
-                ('doc/examples/*.tex',            'doc/examples'),
-                ('doc/examples/ctanLion.jpg',     'doc/examples'),
-                ('doc/examples/*.png',            'doc/examples'),
+                ('doc/README.rst',                   './README.rst'),
+                ('latex/webquiz.c*',                 'latex'),
+                ('latex/webquiz-*.code.tex',         'latex'),
+                ('latex/webquiz.ini',                'latex'),
+                ('latex/webquiz-*.lang',             'latex'),
+                ('latex/pgfsys-dvisvgm4ht.def',      'latex'),
+                ('CHANGES.rst',                      'scripts'),
+                ('LICENCE',                          'scripts'),
+                ('webquiz/README-scripts',           'scripts'),
+                ('webquiz/webquiz*.py',              'scripts'),
+                ('webquiz/webquiz.bat',              'scripts'),
+                ('doc/README-doc',                   'doc'),
+                ('doc/webquiz.tex',                  'doc'),
+                ('doc/webquiz.pdf',                  'doc'),
+                ('doc/webquiz.1',                    'doc'),
+                ('doc/webquiz-online-manual.pdf',    'doc'),
+                ('doc/webquiz.languages',            'doc'),
+                ('doc/webquiz.settings',             'doc'),
+                ('doc/webquiz.themes',               'doc'),
+                ('doc/webquiz.usage',                'doc'),
+                ('doc/examples/*.png',               'doc/examples'),
+                ('javascript/webquiz-min.js',        'doc/www/js/webquiz.js'),
+                ('css/webquiz-*.css',                'doc/www/css'),
+                ('doc/webquiz-online-manual.tex',    'doc/www/doc'),
+                ('doc/examples/README-examples',     'doc/examples'),
+                ('doc/examples/README-www-examples', 'doc/www/doc/README.examples'),
+                ('doc/examples/*.tex',               'doc/examples'),
+                ('doc/examples/ctanLion.jpg',        'doc/examples'),
             ]:
                 for file in glob.glob(src):
                     if '.' in target:
@@ -314,8 +315,7 @@ class WebQuizCtan(Command):
                 for (src, target, link) in [
                         ('doc/README.rst', 'README', 'README.rst'),
                         ('webquiz/webquiz.py', 'scripts/webquiz', 'webquiz.py'),
-                        ('doc/examples', 'doc/www/doc/examples', '../../examples'),
-                        ('doc/webquiz-online-manual.tex', 'doc/www/doc/webquiz-online-manual.tex', '../../webquiz-online-manual.tex')
+                        ('doc/webquiz-online-manual.tex', 'doc/webquiz-online-manual.tex', 'www/doc/webquiz-online-manual.tex')
                     ]:
                     if '/' in target:
                         os.makedirs(os.path.dirname(target), exist_ok=True)

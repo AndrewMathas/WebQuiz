@@ -41,6 +41,5 @@ else
        *        ) help
                   exit ;;
       esac
-      echo "1 is $1 and # is $#..."
   done
 fi

@@ -195,11 +195,19 @@ multiple_feedback_correct = r'''
         </div>'''
 multiple_feedback_answer = '              <li><em>{correct_answer}</em> {reason}</li>'
 
-initialise_invite = r'''WebQuiz needs to be initialised. In order to display quiz web pages
-WebQuiz needs to copy some css and javascript files into a directory
-that is accessible from your webserver.
+initialise_invite = r'''WebQuiz needs to be initialised.
+
+Before WebQuiz can display quiz web pages on your system it first needs to
+copy some css and javascript files into a directory that is accessible from
+your webserver.
 
 Do you want to initialise WebQuiz now [Y/n]? '''
+
+initialise_before_settings = r'''
+Before you can view the webquiz settings you need to initialise WebQuiz
+using the command:
+    webquiz --initialise
+'''
 
 # no script error when javascript is not enabled
 no_script = r'''<noscript>
