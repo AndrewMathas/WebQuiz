@@ -2,6 +2,10 @@
 WebQuiz Changes
 ===============
 
+Version 5.2:
+------------
+    - compatibility with both MikTeX and TeXLive under windows
+
 Version 5.1:
 ------------
     - code reorganised n zip file for TeXLive inclusion

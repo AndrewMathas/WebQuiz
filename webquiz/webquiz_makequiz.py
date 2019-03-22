@@ -49,14 +49,14 @@ class MakeWebQuiz(object):
         self.options = options
         self.settings = settings
         self.metadata = metadata
-        self.quiz_name = quiz_name.split('.')[0]
-        self.quiz_file, extension = quiz_file.split('.')
+        self.quiz_file, extension = os.path.splitext(quiz_file)
+        self.quiz_name = os.path.basename(self.quiz_file)
         self.webquiz_url = settings['webquiz_url']
-        if  self.webquiz_url[-1] == '/':
+        if self.webquiz_url[-1] == '/':
             self.webquiz_url =  self.webquiz_url[:len(self.webquiz_url)-1]
 
         # run htlatex only if quiz_file has a .tex extension
-        if extension == 'tex':
+        if extension == '.tex':
             self.htlatex_quiz_file()
 
         self.read_xml_file()

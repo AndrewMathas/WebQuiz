@@ -11,40 +11,33 @@ If you want to install the web components of WebQuiz_ into a system directory th
 
 Please see the manual for more details about initialising and using WebQuiz_.
 
-Installation from ctan
-----------------------
-If you are installing WebQuiz using the zip file from ctan, as opposed to
-installing the package from TeX distribution like TeXLive, then the following
-steps are recommended:
+Installation from the ctan zipfile
+----------------------------------
+On both unix-like systems (including macosx), and windows systems (using
+either TeXLive or MiKTeX), you can install WebQuiz by downloading the
+WebQuiz zip file from:
 
-- Create a symbolic link, or equivalent, to the main WebQuiz executable, which
-  is the file webquiz.py in the scripts directory
-- Copy the latex directory to somewhere in TeX search path, or set your
-  TEXINPUTS environment variable appropriately, and then run `mktexlsr` or
-  equivalent so that LaTeX and WebQuiz can find these files.
-- Ideally the doc subdirectory should be copied into the doc/layetx subdirecory
-  of the main TeX distribution.
+    http://mirrors.ctan.org/macros/latex/contrib/webquiz.zip
 
-If you are using a unix system, or macosx, there is an (undocumented)
-command-line option `--tex-install` that installs the three different
-components of WebQuiz_ into the standard locations in the TeXLive
-tree:
+To install the package, unzip this file and change directory to the
+webquiz/scripts subdirectory run:
 
-- $TEXMFMAIN/tex/latex/webquiz  all LaTeX files
-- $TEXMFMAIN/scripts/webquiz    the python programs
-- $TEXMFMAIN/doc/latex/webquiz  the documentation and web components
-- A symbolic link is made from the TeX bin directory to the main
-  WebQuiz executable $TEXMFMAIN/scripts/webquiz/webquiz.py
+> webquiz --tex-install
 
-To install these files in TEXMFMAIN you will almost certainly need
-adminsistrator or root privledges, so on a unix-like system you will
-need to use:
+(or webquiz.bat --text-install on windows). This commands unpacks the webquiz
+files into their standard locations in the TeX install tree to it should be
+run from an administrators account, or using sudo on a unix-like system.
+Roughly what this command does is the following:
 
-> sudo webquiz/scripts/webquiz --tex-install
+- It creates a symbolic link, or equivalent, to the main WebQuiz executable,
+  which is the file webquiz.py in the scripts directory
+- Copies the latex directory to somewhere in the TeX search path and then
+  runs `mktexlsr` so that LaTeX and WebQuiz can find these files.
+- Copies the python code into the TeX scripts subdirectory
+- Copies the WebQuiz doc subdirectory into the TeX doc/latex subdirectory.
 
-In principle, this command may also work on a windows computer,
-provided that the command `kpsewhich` is available, but this is
-untested.
+If you are using MiKTeX you may need to open the MiKTeX console and then
+rebuild the TeX filename database using the link in the Tasks menu.
 
 Once the files above are in place initialise WebQuiz by following the
 installation instructions above.

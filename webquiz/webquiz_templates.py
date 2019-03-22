@@ -195,6 +195,35 @@ multiple_feedback_correct = r'''
         </div>'''
 multiple_feedback_answer = '              <li><em>{correct_answer}</em> {reason}</li>'
 
+# no script error when javascript is not enabled
+no_script = r'''<noscript>
+    <div class="warning">
+      If you are reading this message either your browser does not support
+      JavaScript or because JavaScript is not enabled. You will need to enable
+      JavaScript and then reload this page in order to use this quiz.
+     </div>
+  </noscript>'''
+
+######################################################################
+# missing webquiz.ini file
+######################################################################
+
+missing_webquiz_ini = r'''
+webquiz installation error: unable to find webquiz.ini -> {}
+
+If you believe that WebQuiz has been installed correctly then please try
+rebuilding the TeX filename database. On TeXLive systems this can be done
+using the command mktexlsl, or using the TeXLive gui. On MiKTEX you can
+rebuild the database from the Tasks menu on the MiKTeX console. You may
+need to run this command using an administrator account or sudo, on unix
+systems.
+
+'''
+
+######################################################################
+# the remaining templates prompt the user when initialising webquiz
+######################################################################
+
 initialise_invite = r'''WebQuiz needs to be initialised.
 
 Before WebQuiz can display quiz web pages on your system it first needs to
@@ -208,19 +237,6 @@ Before you can view the webquiz settings you need to initialise WebQuiz
 using the command:
     webquiz --initialise
 '''
-
-# no script error when javascript is not enabled
-no_script = r'''<noscript>
-    <div class="warning">
-      If you are reading this message either your browser does not support
-      JavaScript or because JavaScript is not enabled. You will need to enable
-      JavaScript and then reload this page in order to use this quiz.
-     </div>
-  </noscript>'''
-
-######################################################################
-# the remaining templates prompt the user when initialising webquiz
-######################################################################
 
 initialise_introduction = r'''
 WebQuiz Initialisation
@@ -296,13 +312,6 @@ and typing:
 
 If you want to change the default webquiz settings please use:
     webquiz --edit-settings
-'''
-
-webquiz_url_warning = r'''
-WebQuiz has not been initialised. To remove the warning message from
-the web page please use
-    webquiz --initialise
-to install the WebQuiz javascript and css files.
 '''
 
 text_initialise_warning = r'''

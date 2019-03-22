@@ -42,7 +42,7 @@ except subprocess.CalledProcessError:
     try:
         metadata = webquiz_util.MetaData(ini_file, debugging=False)
     except (FileNotFoundError, subprocess.CalledProcessError):
-        print('webquiz installation error: unable to find webquiz.ini -> {}'.format(ini_file))
+        print(webquiz_templates.missing_webquiz_ini.format(ini_file))
         sys.exit(1)
 
 # ---------------------------------------------------------------------------------------
@@ -443,7 +443,7 @@ class WebQuizSettings:
             default_root = '/Library/WebServer/Documents/WebQuiz'
             platform = 'Mac OSX'
         elif sys.platform.startswith('win'):
-            default_root = ' c:\inetpub\wwwroot\WebQuiz'
+            default_root = 'c:\inetpub\wwwroot\WebQuiz'
             platform = 'Windows'
         else:
             default_root = '/var/www/html/WebQuiz'
@@ -668,8 +668,17 @@ class WebQuizSettings:
         try:
 
             # add a link to webquiz.py
-            texbin = os.path.dirname(webquiz_util.shell_command('which pdflatex').split()[-1])
-            os.symlink(os.path.join(texmf,'scripts','webquiz','webquiz.py'), os.path.join(texbin, 'webquiz'))
+            texbin = os.path.dirname(shutil.which('pdflatex'))
+            if sys.platform.startswith('win'):
+                shutil.copyfile(
+                    os.path.join(texmf,'scripts','webquiz','webquiz.bat'), 
+                    os.path.join(texbin, 'webquiz.bat')
+                )
+            else:
+                os.symlink(
+                    os.path.join(texmf,'scripts','webquiz','webquiz.py'), 
+                    os.path.join(texbin, 'webquiz')
+                )
             subprocess.call('mktexlsr', shell=True)
 
         except (FileExistsError,FileNotFoundError):
@@ -680,8 +689,7 @@ class WebQuizSettings:
             sys.exit(1)
 
         except subprocess.CalledProcessError as err:
-            print('There was a problem running mktexlsr')
-            sys.exit(1)
+            self.webquiz_error('There was a problem running mktexlsr', err)
 
     def tex_uninstall(self):
         r'''
@@ -709,8 +717,11 @@ class WebQuizSettings:
 
         try:
             # remove link from texbin to webquiz.py
-            texbin = os.path.dirname(webquiz_util.shell_command('which pdflatex').split()[-1])
-            os.remove(os.path.join(texbin, 'webquiz'))
+            texbin = os.path.dirname(shutil.which('pdflatex'))
+            if sys.platform.startswith('win'):
+                os.remove(os.path.join(texbin, 'webquiz.bat'))
+            else:
+                os.remove(os.path.join(texbin, 'webquiz'))
 
         except (FileExistsError,FileNotFoundError):
             pass
@@ -732,12 +743,16 @@ class WebQuizSettings:
             sys.exit(1)
 
         # remove link to webquiz.py
-        texbin = os.path.dirname(webquiz_util.shell_command('which pdflatex').split()[-1])
-        webquiz = os.path.join(texbin,'webquiz')
+        texbin = os.path.dirname(shutil.which('pdflatex'))
         try:
-            target = os.readlink(webquiz)
-            if target==os.path.join(texmf,'scripts','webquiz','webquiz.py'):
+            if sys.platform.startswith('win'):
+                webquiz = os.path.join(texbin, 'webquiz.bat')
                 os.remove(webquiz)
+            else:
+                webquiz = os.path.join(texbin,'webquiz')
+                target = os.readlink(webquiz)
+                if target==os.path.join(texmf,'scripts','webquiz','webquiz.py'):
+                    os.remove(webquiz)
 
         except (FileExistsError,FileNotFoundError):
             pass
@@ -1017,45 +1032,56 @@ if __name__ == '__main__':
         for quiz_file in options.quiz_file:
             if len(options.quiz_file) > 1 and options.quiet < 3:
                 print('Making web page for {}'.format(quiz_file))
+
+            quiz_name, ext = os.path.splitext(quiz_file)  # extract filename and extension
             # quiz_file is assumed to be a tex file if no extension is given
-            if not '.' in quiz_file:
-                quiz_file += '.tex'
+            if ext=='':
+                ext = '.tex'
+                quiz_file += ext
+ 
+            # windows likes adding a prefix of '.\\'to filename and this causes havoc with latex
+            if os.path.dirname(quiz_file)=='.':
+                quiz_file = os.path.basename(quiz_file)
+
+            if ext not in ['.tex', '.xml']:
+                    webquiz_util.webquiz_error(True,'unrecognised file extension {}'.format(ext))
 
             if not os.path.isfile(quiz_file):
                 print('WebQuiz error: cannot read file {}'.format(quiz_file))
 
             else:
 
-                # the quiz name and the quiz_file will be if pst2pdf is used
+                # the quiz name and the quiz_file will be different if pst2pdf is used
                 quiz_name = quiz_file
                 if options.quiet < 2:
                     print('WebQuiz generating web page for {}'.format(quiz_file))
 
-                # If the pst2podf option is used then we need to preprocess
-                # the latex file BEFORE passing it to MakeWebQuiz. Set
-                # options.pst2pdf = True if pst2pdf is given as an option to
-                # the webquiz documentclass
-                with codecs.open(quiz_file, 'r', encoding='utf8') as q_file:
-                    doc = q_file.read()
-
                 options.pst2pdf = False
-                try:
-                    brac = doc.index(r'\documentclass[') + 15  # start of class options
-                    if 'pst2pdf' in [
-                            opt.strip()
-                            for opt in doc[brac:brac+doc[brac:].index(']')].split(',')
-                    ]:
-                        preprocess_with_pst2pdf(options, quiz_file[:-4])
-                        options.pst2pdf = True
-                        # now run webquiz on the modified tex file
-                        quiz_file = quiz_file[:-4] + '-pdf-fixed.tex'
-                except ValueError:
-                    pass
+                if ext==".tex":
+                    # If the pst2pdf option is used then we need to preprocess
+                    # the latex file BEFORE passing it to MakeWebQuiz. Set
+                    # options.pst2pdf = True if pst2pdf is given as an option to
+                    # the webquiz documentclass
+                    with codecs.open(quiz_file, 'r', encoding='utf8') as q_file:
+                        doc = q_file.read()
+
+                    try:
+                        brac = doc.index(r'\documentclass[') + 15  # start of class options
+                        if 'pst2pdf' in [
+                                opt.strip()
+                                for opt in doc[brac:brac+doc[brac:].index(']')].split(',')
+                        ]:
+                            preprocess_with_pst2pdf(options, quiz_file[:-4])
+                            options.pst2pdf = True
+                            # now run webquiz on the modified tex file
+                            quiz_file = quiz_file[:-4] + '-pdf-fixed.tex'
+                    except ValueError:
+                        pass
 
                 # the file exists and is readable so make the quiz
                 webquiz_makequiz.MakeWebQuiz(quiz_name, quiz_file, options, settings, metadata)
 
-                quiz_name = quiz_name[:quiz_name.index('.')]  # remove the extension
+                quiz_name, ext = os.path.splitext(quiz_name)  # extract filename and extension
 
                 # move the css file into the directory for the quiz
                 css_file = os.path.join(quiz_name, quiz_name + '.css')
@@ -1091,7 +1117,7 @@ if __name__ == '__main__':
 
     except Exception as err:
 
-        # there is a small chance that there is an error before we the
+        # there is a small chance that there is an error before the
         # settings.debugging flag has been set
         webquiz_util.webquiz_error(settings.debugging if 'settings' in globals() else True,
             'unknown problem.\n\nIf you think this is a bug please report it by creating an issue at\n    {}\n'
