@@ -85,16 +85,16 @@
 \renewcommand*\contentsname{\relax}
 
 % hyperref links to ctan
-\newcommand\TeXLive{\ctan[/]{\TeX Live}\xspace}
+\newcommand\TeXLive{\href{https://www.tug.org/texlive/}{\TeX Live}\xspace}
 \newcommand\Ctan{\ctan[]{ctan}\xspace}
 \newcommand\ddash{\texttt{\textemdash\textemdash}}
 \NewDocumentCommand\webquizrc{s}{\index{webquizrc}%
 \BashCode|webquizrc| file\IfBooleanF{#1}{ (\autoref{SS:rcfile})}\xspace%
 }
-
+\newcommand\MiKTeX{\href{https://miktex.org/}{MiK\TeX}\xspace}
 \NewDocumentCommand\OnlineManual{s}{%
   \href{http://www.maths.usyd.edu.au/u/mathas/WebQuiz/webquiz-online-manual.html}{Online manual}%
-  \IfBooleanF{#1}{ (\hyperref[S:online]{Appendix B})}\xspace%
+  \IfBooleanF{#1}{ (\hyperref[S:online]{Appendix~B})}\xspace%
 }
 
 \indexprologue{%
@@ -423,7 +423,7 @@
      are due to
         Thomas Cailleteau
         Michael Palmer and
-        Hendrik Suess,
+        Hendrik Suess
      for helpful feedback on the package.
 
    \section{The \WebQuiz document class --- \hologo{LaTeX}{} commands}
@@ -1548,7 +1548,7 @@
 
   In order to work \WebQuiz needs the following programs to be
   installed on your system:
-  \begin{itemize}
+  \begin{itemize}[nosep]
      \item An up-to-date \LaTeX{} distribution, such as that provided
      by \TeXLive. In particular, you need to have \TeXfht{} and
      \ctan{make4ht} installed.
@@ -1568,6 +1568,39 @@
       \item A web server. As detailed in \autoref{SS:Initialise}, you
       will need to install the web components of \WebQuiz.
   \end{itemize}
+
+  \subsection{Installing
+  \WebQuiz}\label{SS:Install}\index{install}\index{miktex@Mik\TeX}\index{texlive@\TeXLive}
+  \WebQuiz will be included as a package in \TeXLive 2019 and, once a
+  packaging issue is sorted out, it will be included in \MiKTeX. If
+  \WebQuiz is available as a package from either of these distributions
+  then it can be installed in the usual way.
+
+  Alternatively, it is possible to download the
+  \href{http://mirrors.ctan.org/macros/latex/contrib/webquiz.zip}{WebQuiz zipfile} from \Ctan.
+  To install \WebQuiz from the zipfile you should:
+  \begin{enumerate}[nosep]
+    \item Download the
+          \href{http://mirrors.ctan.org/macros/latex/contrib/webquiz.zip}{WebQuiz zipfile} from \Ctan.
+    \item Unzip the file
+    \item Change directory of the \BashCode|webquiz/scripts| subdirectory from the zipfile
+    \item From an administrators account, or using \BashCode|sudo| on a
+    unix-like system, run he command:
+    \begin{bashcode}
+      > webquiz --tex-install
+    \end{bashcode}
+    On windows, use:
+    \begin{bashcode}
+      > webquiz.bat --tex-install
+    \end{bashcode}
+  \end{enumerate}
+  This will install the different components of \WebQuiz to their
+  ``standard'' locations in he \TeX\ search tree.  If you are using
+  \MiKTeX you may need to open the \MiKTeX console, go to the Tasks menu
+  and then rebuild the TeX filename database.
+
+  Once the \WebQuiz package is installed you should initialise thew
+  package, following the steps given in \autoref{SS:Initialise}.
 
   \subsection{Initialising \WebQuiz}\label{SS:Initialise}
   \CrossIndex{command-line option}{initialise}
@@ -1681,7 +1714,7 @@
   \href{https://en.wikipedia.org/wiki/Scalable_Vector_Graphics}{Scalable
   Vector Graphics} (SVG). This is done using his is done
   using \ctan{dvisvgm}. At first sight this is OK because \ctan{dvisvgm} is
-  included in \TeXLive and Mik\TeX, however, \ctan{dvisvgm} uses
+  included in \TeXLive and \MiKTeX, however, \ctan{dvisvgm} uses
   \Ghostscript and this needs to be correctly configured and, as
   outlined in \href{http://dvisvgm.bplaced.net/FAQ}{FAQ}, \ctan{dvisvgm}
   needs to know where to find the \Ghostscript libraries. For example,
@@ -1901,8 +1934,8 @@
         exit (currently \webquiz{version})
 
         \item[\ddash tex-install] Use this command-line option if
-        are are installing the \LaTeX{} components of
-        \WebQuiz from the \Ctan zip-file. It will install the different
+        you are installing the \LaTeX{} components of
+        \WebQuiz from the \Ctan zip-filei (see \autoref{SS:Install}). It will install the different
         \LaTeX{} components of \WebQuiz into \BashCode|TEXMFMAIN|. If
         you installed \WebQuiz as part of a \TeX{} distribution, such as
         \TeXLive, then you do not need to use this option.

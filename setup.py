@@ -68,7 +68,7 @@ class WebQuizDevelop(Command):
         r'''
         Install links for the latex files, executable and web files
         '''
-        texmfdist = kpsewhich('-var TEXMFDIST')
+        texmfdist = kpsewhich('-var-value TEXMFDIST')
         tex_dir = os.path.join(texmfdist,'tex', 'latex', 'webquiz')
         doc_dir = os.path.join(texmfdist,'doc', 'latex', 'webquiz')
         cwd = os.path.dirname(os.path.realpath(__file__))
