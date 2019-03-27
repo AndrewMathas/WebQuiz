@@ -870,6 +870,7 @@ if __name__ == '__main__':
         settings_parser.add_argument(
             '-i',
             '--initialise',
+            '--initialize',
             action='store_true',
             default=False,
             help='Install web components of webquiz')
