@@ -1045,75 +1045,73 @@ if __name__ == '__main__':
                 quiz_file = os.path.basename(quiz_file)
 
             if ext not in ['.tex', '.xml']:
-                    webquiz_util.webquiz_error(True,'unrecognised file extension {}'.format(ext))
+                    webquiz_util.webquiz_error(True, 'unrecognised file extension {}'.format(ext))
 
             if not os.path.isfile(quiz_file):
-                print('WebQuiz error: cannot read file {}'.format(quiz_file))
+                webquiz_util.webquiz+error(True, 'WebQuiz error: cannot read file {}'.format(quiz_file))
 
-            else:
+            # the quiz name and the quiz_file will be different if pst2pdf is used
+            quiz_name = quiz_file
+            if options.quiet < 2:
+                print('WebQuiz generating web page for {}'.format(quiz_file))
 
-                # the quiz name and the quiz_file will be different if pst2pdf is used
-                quiz_name = quiz_file
-                if options.quiet < 2:
-                    print('WebQuiz generating web page for {}'.format(quiz_file))
+            options.pst2pdf = False
+            if ext==".tex":
+                # If the pst2pdf option is used then we need to preprocess
+                # the latex file BEFORE passing it to MakeWebQuiz. Set
+                # options.pst2pdf = True if pst2pdf is given as an option to
+                # the webquiz documentclass
+                with codecs.open(quiz_file, 'r', encoding='utf8') as q_file:
+                    doc = q_file.read()
 
-                options.pst2pdf = False
-                if ext==".tex":
-                    # If the pst2pdf option is used then we need to preprocess
-                    # the latex file BEFORE passing it to MakeWebQuiz. Set
-                    # options.pst2pdf = True if pst2pdf is given as an option to
-                    # the webquiz documentclass
-                    with codecs.open(quiz_file, 'r', encoding='utf8') as q_file:
-                        doc = q_file.read()
-
-                    try:
-                        brac = doc.index(r'\documentclass[') + 15  # start of class options
-                        if 'pst2pdf' in [
-                                opt.strip()
-                                for opt in doc[brac:brac+doc[brac:].index(']')].split(',')
-                        ]:
-                            preprocess_with_pst2pdf(options, quiz_file[:-4])
-                            options.pst2pdf = True
-                            # now run webquiz on the modified tex file
-                            quiz_file = quiz_file[:-4] + '-pdf-fixed.tex'
-                    except ValueError:
-                        pass
-
-                # the file exists and is readable so make the quiz
-                webquiz_makequiz.MakeWebQuiz(quiz_name, quiz_file, options, settings, metadata)
-
-                quiz_name, ext = os.path.splitext(quiz_name)  # extract filename and extension
-
-                # move the css file into the directory for the quiz
-                css_file = os.path.join(quiz_name, quiz_name + '.css')
-                if os.path.isfile(quiz_name + '.css'):
-                    if os.path.isfile(css_file):
-                        os.remove(css_file)
-                    shutil.move(quiz_name + '.css', css_file)
-
-                # now clean up unless debugging
-                if not options.debugging:
-                    for ext in ['4ct', '4tc', 'dvi', 'idv', 'lg', 'log',
-                        'ps', 'pdf', 'tmp', 'xml', 'xref'
+                try:
+                    brac = doc.index(r'\documentclass[') + 15  # start of class options
+                    if 'pst2pdf' in [
+                            opt.strip()
+                            for opt in doc[brac:brac+doc[brac:].index(']')].split(',')
                     ]:
-                        if os.path.isfile(quiz_name + '.' + ext):
-                            os.remove(quiz_name + '.' + ext)
+                        preprocess_with_pst2pdf(options, quiz_file[:-4])
+                        options.pst2pdf = True
+                        # now run webquiz on the modified tex file
+                        quiz_file = quiz_file[:-4] + '-pdf-fixed.tex'
+                except ValueError:
+                    pass
 
-                    # files created when using pst2pdf
-                    if options.pst2pdf:
-                        for file in glob.glob(quiz_name + '-pdf.*'):
-                            os.remove(file)
-                        for file in glob.glob(quiz_name + '-pdf-fixed.*'):
-                            os.remove(file)
-                        for extention in ['.preamble', '.plog', '-tmp.tex',
-                                '-pst.tex', '-fig.tex'
-                        ]:
-                            if os.path.isfile(quiz_name + extention):
-                                os.remove(quiz_name + extention)
-                        if os.path.isdir(os.path.join(quiz_name, quiz_name)):
-                            shutil.rmtree(os.path.join(quiz_name, quiz_name))
+            # the file exists and is readable so make the quiz
+            webquiz_makequiz.MakeWebQuiz(quiz_name, quiz_file, options, settings, metadata)
 
-        if settings.initialise_warning != '':
+            quiz_name, ext = os.path.splitext(quiz_name)  # extract filename and extension
+
+            # move the css file into the directory for the quiz
+            css_file = os.path.join(quiz_name, quiz_name + '.css')
+            if os.path.isfile(quiz_name + '.css'):
+                if os.path.isfile(css_file):
+                    os.remove(css_file)
+                shutil.move(quiz_name + '.css', css_file)
+
+            # now clean up unless debugging
+            if not options.debugging:
+                for ext in ['4ct', '4tc', 'dvi', 'idv', 'lg', 'log',
+                    'ps', 'pdf', 'tmp', 'xml', 'xref'
+                ]:
+                    if os.path.isfile(quiz_name + '.' + ext):
+                        os.remove(quiz_name + '.' + ext)
+
+                # files created when using pst2pdf
+                if options.pst2pdf:
+                    for file in glob.glob(quiz_name + '-pdf.*'):
+                        os.remove(file)
+                    for file in glob.glob(quiz_name + '-pdf-fixed.*'):
+                        os.remove(file)
+                    for extention in ['.preamble', '.plog', '-tmp.tex',
+                            '-pst.tex', '-fig.tex'
+                    ]:
+                        if os.path.isfile(quiz_name + extention):
+                            os.remove(quiz_name + extention)
+                    if os.path.isdir(os.path.join(quiz_name, quiz_name)):
+                        shutil.rmtree(os.path.join(quiz_name, quiz_name))
+
+        if settings.initialise_warning != '' and not settings.have_initialised:
             print(webquiz_templates.text_initialise_warning)
 
     except Exception as err:
