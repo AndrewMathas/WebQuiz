@@ -1019,14 +1019,15 @@ if __name__ == '__main__':
         # run() is a shorthand for executing system commands depending on the quietness
         #       - we need to use shell=True because otherwise pst2pdf gives an error
         # options.talk() is a shorthand for letting the user know what is happening
+        environ = os.environ.copy()
         if options.quiet == 0:
-            options.run = lambda cmd: subprocess.call(cmd, shell=True)
+            options.run = lambda cmd: subprocess.call(cmd.split(), env=environ)
             options.talk = lambda msg: print(msg)
         elif options.quiet == 1:
-            options.run  = lambda cmd: subprocess.call(cmd, shell=True, stdout=open(os.devnull, 'wb'))
+            options.run  = lambda cmd: subprocess.call(cmd.split(), env=environ, stdout=open(os.devnull, 'wb'))
             options.talk = lambda msg: print(msg)
         else:
-            options.run  = lambda cmd: subprocess.call(cmd, shell=True, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
+            options.run  = lambda cmd: subprocess.call(cmd.split(), env=environ, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
             options.talk = lambda msg: None
 
         # run through the list of quizzes and make them
