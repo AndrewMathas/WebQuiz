@@ -128,3 +128,34 @@ def copytree(src, dst, symlinks=False, ignore=None):
             copytree(s, d, symlinks, ignore)
         else:
             shutil.copy2(s, d)
+
+###############################################################################
+## shortcuts for running commands
+environ = os.environ.copy()
+
+def run(cmd, shell=False):
+    r'''
+    Run commands with output to stdout and errors to stderr
+    '''
+    if shell:
+        subprocess.call(cmd, env=environ, shell=True)
+    else:
+        subprocess.call(cmd.split(), env=environ)
+
+def quiet_run(cmd, shell=False):
+    r'''
+    Run commands with ignoring and sending errors to stderr
+    '''
+    if shell:
+        subprocess.call(cmd, env=environ, stdout=open(os.devnull, 'wb'), shell=True)
+    else:
+        subprocess.call(cmd.split(), env=environ, stdout=open(os.devnull, 'wb'))
+
+def silent_run(cmd, shell=False)
+    r'''
+    Run commands ignoring all output and errors
+    '''
+    if shell:
+        subprocess.call(cmd, env=environ, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'), shell=True)
+    else:
+        subprocess.call(cmd.split(), env=environ, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))

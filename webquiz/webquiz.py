@@ -71,7 +71,7 @@ def preprocess_with_pst2pdf(options, quiz_file):
         # pst2pdf converts pspicture environments to svg images and makes a
         # new latex file quiz_file+'-pdf' that includes these
         cmd = 'pst2pdf --svg --imgdir={q_file} {q_file}.tex'.format(q_file=quiz_file)
-        options.run(cmd)
+        options.run(cmd, shell=True)
     except OSError as err:
         if err.errno == errno.ENOENT:
             webquiz_util.webquiz_error(options.debugging, 'pst2pdf not found. You need to install pst2pdf to use the pst2pdf option', err)
@@ -1019,15 +1019,14 @@ if __name__ == '__main__':
         # run() is a shorthand for executing system commands depending on the quietness
         #       - we need to use shell=True because otherwise pst2pdf gives an error
         # options.talk() is a shorthand for letting the user know what is happening
-        environ = os.environ.copy()
         if options.quiet == 0:
-            options.run = lambda cmd: subprocess.call(cmd.split(), env=environ)
+            options.run = webquiz_util.run
             options.talk = lambda msg: print(msg)
         elif options.quiet == 1:
-            options.run  = lambda cmd: subprocess.call(cmd.split(), env=environ, stdout=open(os.devnull, 'wb'))
+            options.run  = webquiz_util.quiet_run
             options.talk = lambda msg: print(msg)
         else:
-            options.run  = lambda cmd: subprocess.call(cmd.split(), env=environ, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
+            options.run  = webquiz_util.silent_run
             options.talk = lambda msg: None
 
         # run through the list of quizzes and make them
