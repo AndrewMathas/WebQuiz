@@ -151,7 +151,7 @@ def quiet_run(cmd, shell=False):
     else:
         subprocess.call(cmd.split(), env=environ, stdout=open(os.devnull, 'wb'))
 
-def silent_run(cmd, shell=False)
+def silent_run(cmd, shell=False):
     r'''
     Run commands ignoring all output and errors
     '''

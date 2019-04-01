@@ -71,6 +71,7 @@ def preprocess_with_pst2pdf(options, quiz_file):
         # pst2pdf converts pspicture environments to svg images and makes a
         # new latex file quiz_file+'-pdf' that includes these
         cmd = 'pst2pdf --svg --imgdir={q_file} {q_file}.tex'.format(q_file=quiz_file)
+        # pst2pdf is missing a #!-header so we need shell=True
         options.run(cmd, shell=True)
     except OSError as err:
         if err.errno == errno.ENOENT:
