@@ -192,7 +192,7 @@ the manual, for example using::
     > doc/examples/makeimages -f
 
 Unfortunately, this test is not completely automatic because it is not
-sufficient to check that all of these files compile. In addition, it is
+sufficient to only check that these files compile. In addition, it is
 necessary to eyeball all of the images in the manual and make sure that
 every one of them is correct. In addition::
 
