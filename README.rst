@@ -19,10 +19,12 @@ WebQuiz_ has the following components:
  - documentation
  - rudimentary tests
 
-WebQuiz_ relies on having the following programs installed: LaTeX_, TeX4ht_, (available with most LaTeX_
-distributions such as TeXLive_), and Python3_. To use the development version,
-particularly, for building the manual and uploading to ctan_, you will also need
-mogrify_, sass_, uglifyjs_ and webkit2png_ (and ctanupload_ and rst2man_).
+WebQuiz_ relies on having the following programs installed:  Python3_ and
+LaTeX_ (including TeX4ht_, make4ht_ and kpsewhich_, which are are all available
+with most LaTeX_ distributions such as TeXLive_). To use the development
+version, particularly, for building the manual and uploading to ctan_, you will
+also need mogrify_, sass_, uglifyjs_ and webkit2png_ (and ctanupload_ and
+rst2man_).
 
 This README file explains how the different components of the development
 version of WebQuiz_ are organised.
@@ -129,7 +131,7 @@ if it exits.  For each quiz, WebQuiz_ writes another javascript file,
 `wq-file.js`, that specified the questions in the quiz. This file is
 automatically loaded by the quiz page.
 
-It would be goods to add some javascript unit tests....
+It would be good to add some javascript unit tests....
 
 Documentation
 -------------
@@ -238,6 +240,7 @@ Public License for more details.
 .. _ctanupload: https://ctan.org/pkg/ctanupload
 .. _dvisvgm4ht: https://github.com/michal-h21/dvisvgm4ht
 .. _kpsewhich:  https://linux.die.net/man/1/kpsewhich
+.. _make4ht:    https://ctan.org/pkg/make4ht
 .. _mogrify:    https://imagemagick.org/script/mogrify.php
 .. _rst2man:    http://docutils.sourceforge.net/sandbox/manpage-writer/rst2man.txt
 .. _sass:       https://sass-lang.com/
