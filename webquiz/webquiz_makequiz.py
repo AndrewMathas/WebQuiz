@@ -349,11 +349,15 @@ class MakeWebQuiz(object):
                     quiz_specs.write('onePage = true;\n')
                 if self.quiz.random_order:
                     quiz_specs.write('shuffleQuestions();\n')
+
                 quiz_specs.write('initSession();\n')
                 if self.number_discussions+self.number_questions>0:
-                    quiz_specs.write('gotoQuestion({});'.format(
+                    quiz_specs.write('gotoQuestion({});\n'.format(
                         -1 if self.number_discussions>0 else 1)
                     )
+
+                if self.quiz.time_limit>0:
+                    quiz_specs.write('startQuizTimer({});\n'.format(self.quiz.time_limit))
 
         except Exception as err:
             self.webquiz_error('error writing quiz specifications', err)

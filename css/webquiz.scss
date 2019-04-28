@@ -189,6 +189,11 @@ div.side-menu {
             background: linear-gradient(to bottom right, $TickButtonTop, $TickButtonBot);
         }
 
+        div.answered {
+            color: $AnsweredButtonFG;
+            background: $AnsweredButtonBG;
+        }
+
     }
 
     table.marking-key {

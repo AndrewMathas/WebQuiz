@@ -20,6 +20,8 @@ var buttonOrder = [];       // map from button number to question number
 var questionOrder = [];     // map from question number to button number
 var wrongAnswers = [];      // questions answered incorrectly
 
+var finishingTime = null;   // finishing time for the quiz
+var quizTimer = null;       // span element for the quiz timer on quiz page
 
 var currentB;               // current button number
 var currentFeedback = null; // feedback currently being displayed
@@ -41,6 +43,10 @@ var onePage = false;
 var QuizTitles = [];        // Quiz titles from a quizindex environment
 
 // Specification for the question buttons for use in updateQuestionMarker
+var answered = {
+    "content": "",
+    "name": "answered"
+};
 var blank = {
     "content": "",
     "name": "blank"
@@ -90,7 +96,7 @@ function create_quizindex_menu() {
 // create an event listener so that we can close the drop-down menu
 // whenever some one clicks outside of it
 function MenuEventListener(evnt) {
-    var menu_icon = document.getElementById('quzzes-menu-icon');
+    var menu_icon = document.getElementById('quizzes-menu-icon');
     if (quizindex_menu.contains(evnt.target)) {
       return; // inside the menu so just return
     } else {   // outside the menu so check the number of menu_clicks
@@ -175,14 +181,17 @@ function hideFeedback() {
     }
 }
 
+// show the feedback for the question unless the quiz is timed
 function showFeedback(tag) {
     // alert('Showing feedback for '+tag+'.');
-    hideFeedback(); // hide current feedback
-    currentFeedback = document.getElementById(tag);
-    currentFeedback.style.display = "block";
+    if (!finishingTime) {
+        hideFeedback(); // hide current feedback
+        currentFeedback = document.getElementById(tag);
+        currentFeedback.style.display = "block";
+    }
 }
 
-// if increment==1 we find the next questions which has not
+// if increment==1 we find the next questions that has not
 // been answered incorrectly and if increment==-1 we find the last
 // such question
 function nextQuestion(increment) {
@@ -211,25 +220,26 @@ function nextQuestion(increment) {
     }
 }
 
-
-var buttons = ['blank', 'cross', 'star', 'tick'];
+var buttons = ['answered', 'blank', 'cross', 'star', 'tick'];
 function updateQuestionMarker(bnum, qnum) {
     // alert('updating bnum='+bnum+', qnum='+qnum+', currentQ='+currentQ+'.');
     // here qnum is assumed to be the question number in the web form
     if (qnum > 0) {
-        var marker;
+        var marker = blank;
         var button = document.getElementById('button'+bnum);
-        if (correct[qnum]) {
-            if (wrongAnswers[qnum] === 0) {
-                marker = star;
-            } else {
-                marker = tick;
+        if (finishingTime) { // don't update correct and incorrect markers if timing quiz
+            if (correct[qnum] || wrongAnswers[qnum]>0) {
+              marker = answered;
             }
         } else {
-            if (wrongAnswers[qnum] > 0) {
+            if (correct[qnum]) {
+                if (wrongAnswers[qnum] === 0) {
+                    marker = star;
+                } else {
+                    marker = tick;
+                }
+            } else if (wrongAnswers[qnum] > 0) {
                 marker = cross;
-            } else {
-                marker = blank;
             }
         }
         for (var b = 0; b < buttons.length; b++) {
@@ -358,10 +368,16 @@ function shuffleQuestions() {
 // Restores the state of the question markers from the session storage
 function initSession() {
     if (typeof(Storage) !== "undefined") {
-      if (sessionStorage.correct)
+      if (sessionStorage.correct) {
         correct = JSON.parse(sessionStorage.correct);
-      if (sessionStorage.wrongAnswers)
+      }
+      if (sessionStorage.wrongAnswers) {
         wrongAnswers = JSON.parse(sessionStorage.wrongAnswers);
+      }
+      if (sessionStorage.finishingTime) {
+        finishingTime =  Date.parse(JSON.parse(sessionStorage.finishingTime));
+        updateQuizTimer();
+      }
     }
 
     for (i = 0; i < qTotal+1; i++) {
@@ -416,7 +432,6 @@ function WebQuizInit(questions, discussions, quizfile) {
     side_open = document.getElementById('sidelabelopen');
     side_closed = document.getElementById('sidelabelclosed');
     quizindex_menu = document.getElementById("quizindex-menu");
-    //theme_menu = document.getElementById('theme-menu');
 
     // make the drop down menu if QuizTitles has some entries
     if (QuizTitles.length > 0 && quizindex_menu) {
@@ -424,4 +439,47 @@ function WebQuizInit(questions, discussions, quizfile) {
     }
 }
 
+// stop the quiz and, if configured, submit the results
+function stopQuiz() {
+    // placeholder until we work out what to do here
+  alert('Time to stop!');
+}
 
+// update the quiz timer
+function updateQuizTimer() {
+    var now = new Date();
+    var remaining = finishingTime - now;
+    var seconds = ('0'+Math.floor((remaining/1000)%60)).slice(-2);
+    var minutes = ('0'+Math.floor((remaining/1000/60)%60)).slice(-2);
+    var hours   = Math.floor((remaining/(1000*60*60))%24);
+    if ( remaining.total > 0 ) {
+        if (!quizTimer) {
+            quizTimer = document.getElementById('quiz-timer');
+        }
+        if (hours>0) {
+          quizTimer.innerHTML = 'Time remaining: '+hours+':'+minutes+':'+seconds;
+        } else {
+          quizTimer.innerHTML = 'Time remaining: '+minutes+':'+seconds;
+        }
+        // update the quiz timer every second
+        setInterval(updateQuizTimer, 1000);
+    } else {
+        stopQuiz();
+    }
+}
+
+// start the quiz timer
+function startQuizTimer(timeLimit) {
+    if ( !sessionStorage.finishingTime ) {
+        // set finishingTime to current date
+        finishingTime = new Date();
+        // add timeLimit in minutes to current time work out finishing time
+        finishingTime.setMinutes(finishingTime.getMinutes() + timeLimit);
+        // save in session storage
+        sessionStorage.finishingTime = JSON.stringify(finishingTime);
+        // start the quiz timer
+        updateQuizTimer();
+    }
+    // hide the marking key
+    document.getElementByClassName('marking-key')[0].style.visibility = 'hidden';
+}
