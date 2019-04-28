@@ -115,7 +115,11 @@ question_buttons = r'''
 
 # quiz title and navigation arrows
 quiz_header = r'''<div class="quiz-header">
-       <div class="quiz-title">{title}</div><div></div>{arrows}
+       <div class="quiz-title">
+         {title}
+         <span id="quiz-timer"></span>
+       </div>
+       <div></div>{arrows}
       </div>'''
 navigation_arrows = r'''
        <span id="question-label" class="question-label">{question}</span>

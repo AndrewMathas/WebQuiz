@@ -152,6 +152,7 @@ class QuizHandler(xml.sax.ContentHandler):
             setattr(self, key, getattr(self, key)=='true')
 
         setattr(self, 'language', self.language.lower())
+        setattr(self, 'time_limit', int(self.time_limit))
         setattr(self, 'theme', self.theme.lower())
 
         # set debugging mode from the latex file...from this point on

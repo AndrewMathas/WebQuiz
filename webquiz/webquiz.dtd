@@ -31,6 +31,7 @@
    random_order CDATA #REQUIRED
    showsidemenu CDATA #REQUIRED
    src          CDATA #REQUIRED
+   time_limit   CDATA #REQUIRED
    theme        CDATA #REQUIRED
 >
 
