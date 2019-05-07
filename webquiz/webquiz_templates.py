@@ -97,7 +97,7 @@ side_menu = r'''<div id="menu-icon">
       </div>
       <div class="copyright">
         <a href="http://www.maths.usyd.edu.au/u/mathas/WebQuiz/credits.html">
-           <span class="webquizlogo">WebQuiz</span><span class="TEX">T<span class="E">E</span>X</span>
+           <span class="webquizlogo">WebQuiz</span>
         </a>
         <br>&copy; Copyright<br><span style="overflow: visible;">{copyright_years}</span>
       </div>
