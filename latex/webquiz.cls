@@ -50,13 +50,11 @@
     % random order of quiz questions
     randomorder/.style        = {randomorder value=true},
     fixedorder/.style         = {randomorder value=false},
-    randomorder value/.initial= DeFaUlT,
-    % timer (0 is infinite time)
-    timelimit/.initial        = 0,
+    randomorder value/.initial = DeFaUlT,
     % theme
-    theme/.initial            = DeFaUlT,
+    theme/.initial             = DeFaUlT,
     % tikz
-    tikz/.code                = {\global\WQ@Tikztrue},
+    tikz/.code                 = {\global\WQ@Tikztrue},
     % unknown options => passed to article class
     .unknown/.code={\edef\unknown@options{\unknown@options,\pgfkeyscurrentname}}
 }
