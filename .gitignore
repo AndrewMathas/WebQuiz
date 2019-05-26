@@ -27,6 +27,7 @@ doc/webquiz.themes
 doc/webquiz.usage
 install/*
 javascript/webquiz-min.js
+latex/ls-R
 tests/*.output
 tests/*/
 webquiz-*.zip
