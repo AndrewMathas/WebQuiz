@@ -34,9 +34,10 @@
     % turn debugging on
     debugging/.code           = {\WQ@Debuggingtrue},
     % pst2pdf
-    pst2pdf/.style            = {pst2pdf value=true},
+    pst2pdf/.style            = {pst2pdf value=true, pst2pdfcomment={\textsc{WebQuiz} will process this quiz using \textbf{pst2pdf}}},
     pst2pdf value/.initial    = false,
-    % languaage
+    pst2pdfcomment/.initial   =,
+    % language
     language/.initial         = DeFaUlT,
     % one page
     onepage/.style            = {onepage value=true},
@@ -166,9 +167,7 @@
   \maketitle%
   \def\title{\WQ@Error{\noexpand\title can only be used in the preamble}\@ehc}
   \thispagestyle{firstpage}%
-  \ifdefined\HCode\else
-     \textsc{WebQuiz} will process this quiz using \textbf{pst2pdf}.
-  \fi
+  \ifdefined\HCode\else\WQ@ClassOption{pst2pdfcomment}\fi%
   \RequirePackage{tikz}
 }
 
