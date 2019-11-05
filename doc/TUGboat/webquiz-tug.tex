@@ -1,0 +1,45 @@
+\documentclass{ltugboat}
+%\input{webquiz-doc.code}
+\author{Andrew Mathas}
+\title{Webquiz: writing online quizzes with \LaTeX}
+\address{School of Mathematics and Statistics, University of Sydney, Australia}
+
+% packages
+\usepackage{xparse}
+\usepackage[svgnames]{xcolor}
+\RequirePackage{graphicx}
+\usepackage[colorlinks=true]{hyperref}
+
+%% macros
+\NewDocumentCommand\WebQuiz{s}{\textcolor{Sienna}{WebQuiz}\IfBooleanF{#1}{\space}}
+\NewDocumentCommand\ctan{sO{pkg/#3}m}{\href{https://www.ctan.org/#2}{\texttt{#3}}\IfBooleanF{#1}{\space}}
+
+\begin{document}
+\maketitle
+\includegraphics[natwidth=600mm]{../examples/ctanLion}
+
+Donald Knuth released \TeX\ in 1978, motivated at least in part by his
+unhappiness with the way that the second volume of \textit{The Art
+of Computer Programming} was typeset by his publishers. It is quite
+amazing that forty years later \TeX, and its derivatives such as \LaTeX, is
+still the de facto standard for writing books and papers in technical
+fields such as computer science, mathematics, engineering and physics.
+
+\TeX\ was designed for publishing high quality printed research articles
+and books.  Over the last twenty years the field of publishing has
+changed dramatically with many sources now being published and read
+online.  Using packages like \ctan{TeX4ht} and \ctan{lwarp}, the capabilities of
+\TeX\ have expanded so that it is now possible to use \TeX\ and \LaTeX\
+to write web pages and online material.
+
+One of the reasons why \TeX\ has been so successful is that it gives a
+relatively easy to write high quality papers and books. One of the big
+changes in publishing online is that it is now possible to write dynamic
+web pages that ``respond'' and ``interact'' with the user. Such pages
+usually require sophisticated javascript, which puts them beyond the
+capabilities of many authors.
+
+The \WebQuiz
+
+\end{document}
+
