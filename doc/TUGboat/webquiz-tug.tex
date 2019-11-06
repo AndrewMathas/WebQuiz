@@ -1,5 +1,4 @@
 \documentclass{ltugboat}
-%\input{webquiz-doc.code}
 \author{Andrew Mathas}
 \title{Webquiz: writing online quizzes with \LaTeX}
 \address{School of Mathematics and Statistics, University of Sydney, Australia}
@@ -16,14 +15,26 @@
 
 \begin{document}
 \maketitle
-\includegraphics[natwidth=600mm]{../examples/ctanLion}
+\includegraphics[width=0.48\textwidth]{ctanlion}
 
+\begin{abstract}
+ \WebQuiz is a 2019 \LaTeX\ package for writing formative online
+ assessment quizzes. To write web quizzes using \WbeQuiz\ only basic
+ knowledge of \LaTeX\ is required. Single answer and multiple choice
+ questions are supported and it is possble to give feedback to the
+ student based on their response.  The quizzes are written in \LaTeX\
+ and converted to HTML using a python program \textsf{webquiz} (and
+ \ctan*{tex4ht}). Behind the scenes the quizzes are controlled by
+ CSS and javascript.
+\end{abstract}
+
+\section{A brief history of \TeX}
 Donald Knuth released \TeX\ in 1978, motivated at least in part by his
-unhappiness with the way that the second volume of \textit{The Art
-of Computer Programming} was typeset by his publishers. It is quite
-amazing that forty years later \TeX, and its derivatives such as \LaTeX, is
-still the de facto standard for writing books and papers in technical
-fields such as computer science, mathematics, engineering and physics.
+unhappiness with the typesetting of the second volume of his \textit{The
+Art of Computer Programming}. It is quite amazing that forty years later
+\TeX, and its offspring such as \LaTeX, is still the de facto standard
+for writing books and papers in technical fields such as computer
+science, mathematics, engineering and physics.
 
 \TeX\ was designed for publishing high quality printed research articles
 and books.  Over the last twenty years the field of publishing has
@@ -33,12 +44,15 @@ online.  Using packages like \ctan{TeX4ht} and \ctan{lwarp}, the capabilities of
 to write web pages and online material.
 
 One of the reasons why \TeX\ has been so successful is that it gives a
-relatively easy to write high quality papers and books. One of the big
-changes in publishing online is that it is now possible to write dynamic
-web pages that ``respond'' and ``interact'' with the user. Such pages
-usually require sophisticated javascript, which puts them beyond the
-capabilities of many authors.
+relatively easy to write high quality papers and books. The advent of
+web is changing how we publish because it is now possible to write
+dynamic content that ``responds'' and ``interacts'' with the reader.
+Such pages usually require sophisticated javascript, which puts them
+beyond the capabilities of many authors. There is a growing need for
+some one to create easy to use tools for writing dynamic online content.
+\TeX\ could easily fill this void.
 
+\section{\WebQuiz}
 The \WebQuiz
 
 \end{document}
