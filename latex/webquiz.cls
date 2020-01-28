@@ -20,7 +20,7 @@
 % ----------------------------------------------------------------------
 \ProvidesClass{webquiz}[\webquiz{release date} Version \webquiz{version}]
 
-% initialise and then process document class options usng pgfopts
+% initialise and then process document class options using pgfopts
 \RequirePackage{etoolbox}
 \RequirePackage{pgfopts}
 \def\unknown@options{}%          unknown options are passed to article.cls
