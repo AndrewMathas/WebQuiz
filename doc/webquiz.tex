@@ -224,17 +224,14 @@
       writing an online quiz -- and there are additional complications if
       the quiz involves mathematics or diagrams.
 
-      \WebQuiz makes it possible to write online quizzes using \LaTeX,
-      which is the typesetting language used by mathematicians who use
-      \LaTeX\ to write their research papers, books and teaching
-      materials. In principle, a \WebQuiz quiz can contain anything that
-      can be typeset using \LaTeX.  In practise, the \LaTeX\ is converted
-      to \HTML using \TeXfht (and
-      \ctan{make4ht}), so the
-      quizzes can contain any \LaTeX commands that are understood by \TeX
-      4ht, which is almost everything. In particular, it is possible to
-      use graphics constructed using \ctan{pstricks} and
-      \ctan{tikz}; see \autoref{SS:graphics}.
+      \WebQuiz makes it possible to write online quizzes using \LaTeX.
+      In principle, a \WebQuiz quiz can contain anything that can be
+      typeset using \LaTeX.  In practise, the \LaTeX\ is converted to
+      \HTML using \TeXfht (and \ctan{make4ht}), so the quizzes can
+      contain any \LaTeX commands that are understood by \TeX 4ht, which
+      is almost everything. In particular, it is possible to use
+      graphics constructed using \ctan{pstricks} and \ctan{tikz}; see
+      \autoref{SS:graphics}.
 
       \WebQuiz supports the following three types of questions:
       \begin{itemize}
@@ -263,7 +260,7 @@
 
       The easiest way to explain how \WebQuiz works is by example. The
       following \LaTeX\ file defines a quiz with a single multiple choice
-      question that has four possible answers, each of which has a
+      question that has four possible answers, each of which has
       customised feedback. Giving feedback to the students in each
       question is optional but the capability of being able to give
       students feedback on their answer is one of the main pedagogical
