@@ -1049,7 +1049,7 @@ if __name__ == '__main__':
                     webquiz_util.webquiz_error(True, 'unrecognised file extension {}'.format(ext))
 
             if not os.path.isfile(quiz_file):
-                webquiz_util.webquiz+error(True, 'WebQuiz error: cannot read file {}'.format(quiz_file))
+                webquiz_util.webquiz_error(True, 'WebQuiz error: cannot read file {}'.format(quiz_file))
 
             # the quiz name and the quiz_file will be different if pst2pdf is used
             quiz_name = quiz_file
