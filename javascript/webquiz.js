@@ -442,20 +442,17 @@ function WebQuizInit(questions, discussions, quizfile) {
 // stop the quiz and, if configured, submit the results
 function stopQuiz() {
     // placeholder until we work out what to do here
-  alert('Time to stop!');
+  alert('Time to stop! ');
 }
 
 // update the quiz timer
 function updateQuizTimer() {
     var now = new Date();
     var remaining = finishingTime - now;
-    var seconds = ('0'+Math.floor((remaining/1000)%60)).slice(-2);
-    var minutes = ('0'+Math.floor((remaining/1000/60)%60)).slice(-2);
-    var hours   = Math.floor((remaining/(1000*60*60))%24);
     if ( remaining.total > 0 ) {
-        if (!quizTimer) {
-            quizTimer = document.getElementById('quiz-timer');
-        }
+        var seconds = ('0'+Math.floor((remaining/1000)%60)).slice(-2);
+        var minutes = ('0'+Math.floor((remaining/1000/60)%60)).slice(-2);
+        var hours   = Math.floor((remaining/(1000*60*60))%24);
         if (hours>0) {
           quizTimer.innerHTML = 'Time remaining: '+hours+':'+minutes+':'+seconds;
         } else {
@@ -470,16 +467,23 @@ function updateQuizTimer() {
 
 // start the quiz timer
 function startQuizTimer(timeLimit) {
+   console.log('time limit = '+timeLimit)
     if ( !sessionStorage.finishingTime ) {
         // set finishingTime to current date
         finishingTime = new Date();
+   console.log('start time = '+finishingTime)
         // add timeLimit in minutes to current time work out finishing time
         finishingTime.setMinutes(finishingTime.getMinutes() + timeLimit);
         // save in session storage
         sessionStorage.finishingTime = JSON.stringify(finishingTime);
+   console.log('finishing time = '+sessionStorage.finishingTime)
+        // get and set the name of the document quiz-timer
+        if (!quizTimer) {
+            quizTimer = document.getElementById('quiz-timer');
+        }
         // start the quiz timer
         updateQuizTimer();
     }
     // hide the marking key
-    document.getElementByClassName('marking-key')[0].style.visibility = 'hidden';
+    document.getElementsByClassName('marking-key')[0].style.visibility = 'hidden';
 }

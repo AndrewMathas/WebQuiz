@@ -27,12 +27,12 @@ html_meta = r'''<meta http-equiv="Content-Type" content="text/html; charset=utf-
   <meta name="organization" content="{department}, {institution}">
   <meta name="Copyright" content="WebQuiz: {copyright}">
   <meta name="keywords" content="WebQuiz, TeX4ht, make4ht, latex, python, quiz, mathematics">
-  <link href="{webquiz_url}/css/webquiz-{theme}.css" type="text/css" rel="stylesheet">
+  <link href="{webquiz_url}/webquiz-{theme}.css" type="text/css" rel="stylesheet">
   <link href="{quiz_file}/{quiz_file}.css" type="text/css" rel="stylesheet">
 '''
 
 # javascript for setting up the questions
-questions_javascript = r'''  <script src="{webquiz_url}/js/webquiz.js"></script>
+questions_javascript = r'''  <script src="{webquiz_url}/webquiz.js"></script>
   <script defer src="{mathjax}?config=MML_CHTML"></script>'''
 
 mathjs=r'  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/5.4.0/math.min.js"></script>'

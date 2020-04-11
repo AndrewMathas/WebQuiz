@@ -34,7 +34,7 @@ import sys
 import time
 
 # location of the webquiz example web pages on a development server
-examplesURL = "http://localhost/WebQuiz/doc/examples"
+examplesURL = "https://localhost/WebQuiz/doc/examples"
 examplesDIR = os.path.join(os.environ['HOME'], 'Code/WebQuiz/doc/examples')
 os.chdir(examplesDIR)
 
@@ -238,6 +238,7 @@ pages = [
     Convert("simple", src='pdf',  page_out='simple-pdf'),
     Convert("theme-*", width=500, question="1:1,7|3:1|3:1,7|6:4", js_end='toggle_quizindex_menu();'),
     Convert("tikz-ex"),
+    Convert("timed"),
 ]
 
 if __name__ == '__main__':
