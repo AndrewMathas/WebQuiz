@@ -488,7 +488,7 @@ class WebQuizSettings:
                         shutil.rmtree(web_doc)
 
                     # Need to locate the www directory, which should be a subdirectory
-                    # of the webquiz doc directory. First try using texdoc
+                    # of the webquiz scripts directory. First try using texdoc
                     webquiz_doc = ''
                     try:
                         webquiz_pdf = webquiz_util.shell_command('texdoc --list --machine webquiz.pdf').split()[-1]
@@ -520,7 +520,7 @@ class WebQuizSettings:
                     # mode and just in case webquiz_www still does not exist
                     webquiz_src = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
-                    webquiz_www = os.path.join(webquiz_doc, 'www')
+                    webquiz_www = os.path.join(webquiz_src, 'www')
                     if not os.path.isdir(webquiz_www):
                         webquiz_www = os.path.join(webquiz_src, 'doc', 'www')
 

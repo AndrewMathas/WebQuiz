@@ -32,31 +32,33 @@
 \pgfkeys{/WQ@ClassOptions/.is family,
   /WQ@ClassOptions,
     % turn debugging on
-    debugging/.code           = {\WQ@Debuggingtrue},
+    debugging/.code            = {\WQ@Debuggingtrue},
     % pst2pdf
-    pst2pdf/.style            = {pst2pdf value=true, pst2pdfcomment={\textsc{WebQuiz} will process this quiz using \textbf{pst2pdf}}},
-    pst2pdf value/.initial    = false,
-    pst2pdfcomment/.initial   =,
+    pst2pdf/.style             = {pst2pdf value=true, pst2pdfcomment={\textsc{WebQuiz} will process this quiz using \textbf{pst2pdf}}},
+    pst2pdf value/.initial     = false,
+    pst2pdfcomment/.initial    =,
     % language
-    language/.initial         = DeFaUlT,
+    language/.initial          = DeFaUlT,
     % one page
-    onepage/.style            = {onepage value=true},
-    separatepages/.style      = {onepage value=false},
-    onepage value/.initial    = DeFaUlT,
+    onepage/.style             = {onepage value=true},
+    separatepages/.style       = {onepage value=false},
+    onepage value/.initial     = DeFaUlT,
     % side menu
-    showsidemenu/.style       = {hidesidemenu value=false},
-    hidesidemenu/.style       = {hidesidemenu value=true},
+    showsidemenu/.style        = {hidesidemenu value=false},
+    hidesidemenu/.style        = {hidesidemenu value=true},
     hidesidemenu value/.initial= DeFaUlT,
     % random order of quiz questions
-    randomorder/.style        = {randomorder value=true},
-    fixedorder/.style         = {randomorder value=false},
+    randomorder/.style         = {randomorder value=true},
+    fixedorder/.style          = {randomorder value=false},
     randomorder value/.initial = DeFaUlT,
     % theme
     theme/.initial             = DeFaUlT,
     % tikz
     tikz/.code                 = {\global\WQ@Tikztrue},
-    % unknown options => passed to article class
-    .unknown/.code={\edef\unknown@options{\unknown@options,\pgfkeyscurrentname}}
+    % time limit for timed quizzes: the default of 0 means the quiz is not timed
+    timelimit/.initial         = 0,
+    % unknown options are passed to the underlying article class
+    .unknown/.code             = {\edef\unknown@options{\unknown@options,\pgfkeyscurrentname}}
 }
 \newcommand\WQ@ClassOption[1]{\pgfkeysvalueof{/WQ@ClassOptions/#1}}
 
