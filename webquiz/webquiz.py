@@ -84,7 +84,7 @@ def preprocess_with_pst2pdf(options, quiz_file):
     # the svg images are in the quiz_file subdirectory but latex can't
     # find them so we update the tex file to look in the right place
     try:
-        with codecs.open(quiz_file + '-pdf.tex', 'r', encoding='utf8') as pst_file:
+        with codecs.open(quiz_file + '-pdf.tex', 'r', encoding='utf8', errors='replace') as pst_file:
             with codecs.open(quiz_file + '-pdf-fixed.tex', 'w', encoding='utf8') as pst_fixed:
                 for line in pst_file:
                     pst_fixed.write(fix_svg.sub(r'\1{%s/\2.svg}' % quiz_file, line))
@@ -294,7 +294,7 @@ class WebQuizSettings:
         '''
         if os.path.isfile(rcfile):
             try:
-                with codecs.open(rcfile, 'r', encoding='utf8') as webquizrc:
+                with codecs.open(rcfile, 'r', encoding='utf8', errors='replace') as webquizrc:
                     for line in webquizrc:
                         if '#' in line:  # remove comments
                             line = line[:line.index('#')]
@@ -1062,7 +1062,7 @@ if __name__ == '__main__':
                 # the latex file BEFORE passing it to MakeWebQuiz. Set
                 # options.pst2pdf = True if pst2pdf is given as an option to
                 # the webquiz documentclass
-                with codecs.open(quiz_file, 'r', encoding='utf8') as q_file:
+                with codecs.open(quiz_file, 'r', encoding='utf8', errors='replace') as q_file:
                     doc = q_file.read()
 
                 try:

@@ -395,7 +395,7 @@ setup(name             = settings.program,
 
       packages=find_packages(),
       include_package_data=True,
-      package_data     = {'webfiles' : '/'},
+      package_data     = {'webfiles' : ['/']},
 
       cmdclass         = {'ctan': WebQuizCtan, 'develop': WebQuizDevelop},
 

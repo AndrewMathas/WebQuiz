@@ -1,3 +1,4 @@
+html_lang          = it
 answer             = Risposta
 check answer       = Controlla la risposta
 choice             = La scelta {} è

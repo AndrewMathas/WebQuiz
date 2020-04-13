@@ -92,7 +92,7 @@ side_menu = r'''<div id="menu-icon">
     </div>
     <div id="sidemenu" class="side-menu">{discussion_list}{question_buttons}
       <div class="school">
-        {department}<p>
+        {department}<br>
         {institution}
       </div>
       <div class="copyright">
