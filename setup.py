@@ -273,7 +273,6 @@ class WebQuizCtan(Command):
                 ('latex/webquiz-*.code.tex',         'latex'),
                 ('latex/webquiz.ini',                'latex'),
                 ('latex/webquiz-*.lang',             'latex'),
-                ('latex/pgfsys-dvisvgm4ht.def',      'latex'),
                 ('CHANGES.rst',                      'scripts'),
                 ('LICENCE',                          'scripts'),
                 ('webquiz/README-scripts',           'scripts'),
