@@ -193,7 +193,7 @@ class MakeWebQuiz(object):
             self.options.talk('Processing {}.tex with TeX4ht'.format(self.quiz_name))
             # there is a slightly torturous process to convert the engine
             # settings into a command line option that make4ht understands
-            cmd = 'make4ht --utf8 --config webquiz.cfg {draft} {engine} {escape} {make4ht_options} {quiz_file}.tex'.format(
+            cmd = 'make4ht --config webquiz.cfg {draft} {engine} {escape} {make4ht_options} {quiz_file}.tex'.format(
                 draft='--mode draft' if self.options.draft else '',
                 engine=self.settings.settings['engine']['values'][self.options.engine],
                 escape='--shell-escape' if self.options.shell_escape else '',
