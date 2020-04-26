@@ -113,90 +113,89 @@ class WebQuizSettings:
     settings = dict(
         webquiz_url={
             'default': '',
-            'advanced': False,
             'help': 'Relative URL for the webquiz web directory',
         },
         webquiz_www={
             'default': '',
-            'advanced': False,
             'help': 'Full path to WebQuiz web directory',
         },
         language={
             'default': 'english',
-            'advanced': False,
+            'can_set_from_latex': True,
             'help': 'Default language used on web pages'
         },
         engine = {
             'default': 'latex',
-            'advanced': False,
             'help': 'Default TeX engine used to compile web pages',
             'values': dict(latex='', lua='--lua', xelatex='--xetex')
         },
         theme={
             'default': 'default',
-            'advanced': False,
+            'can_set_from_latex': True,
             'help': 'Default colour theme used on web pages'
+        },
+        time_limit={
+            'default': 0,
+            'can_set_from_latex': True,
+            'help': 'Time limit quiz (0 is unlimited)'
         },
         breadcrumbs={
             'default': '',
-            'advanced': False,
+            'can_set_from_latex': True,
             'help': 'Breadcrumbs at the top of quiz page',
         },
         department={
             'default': '',
-            'advanced': False,
+            'can_set_from_latex': True,
             'help': 'Name of department',
         },
         department_url={
             'default': '/',
-            'advanced': False,
+            'can_set_from_latex': True,
             'help': 'URL for department',
         },
         institution={
             'default': '',
-            'advanced': False,
+            'can_set_from_latex': True,
             'help': 'Institution or university',
         },
         institution_url={
             'default': '/',
-            'advanced': False,
+            'can_set_from_latex': True,
             'help': 'URL for institution or university',
         },
         hide_side_menu={
             'default': 'false',
-            'advanced': False,
+            'can_set_from_latex': True,
             'help': 'Do not display the side menu at start of quiz',
         },
         one_page={
             'default': 'false',
-            'advanced': False,
+            'can_set_from_latex': True,
             'help': 'Display questions on one page',
         },
         random_order={
             'default': 'false',
-            'advanced': False,
+            'can_set_from_latex': True,
             'help': 'Randomly order the quiz questions',
         },
         webquiz_layout={
-            'default': 'webquiz_layout',
             'advanced': True,
+            'default': 'webquiz_layout',
+            'can_set_from_latex': True,
             'help': 'Name of python module that formats the quizzes',
         },
         make4ht={
-            'default': '',
             'advanced': True,
+            'default': '',
             'help': 'Build file for make4ht',
         },
         mathjax={
-            'default':
-            'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js',
-            'advanced':
-            True,
-            'help':
-            'URL for mathjax',
+            'advanced': True,
+            'default': 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js',
+            'help': 'URL for mathjax',
         },
         version={
-            'advanced': False,
             'help': 'WebQuiz version number for webquizrc settings',
         })
 
@@ -222,8 +221,10 @@ class WebQuizSettings:
         self.settings['version']['default'] = metadata.version
         for key in self.settings:
             self.settings[key]['value'] = self.settings[key]['default']
-            if not 'editable' in self.settings[key]:
-                self.settings[key]['editable'] = False
+            if not 'advanced' in self.settings[key]:
+                self.settings[key]['advanced'] = False
+            if not 'can_set_from_latex' in self.settings[key]:
+                self.settings[key]['can_set_from_latex'] = False
 
         # define user and system rc file and load the ones that exist
 
@@ -262,6 +263,8 @@ class WebQuizSettings:
         r'''
             Customised error messages for the Module
         '''
+        print(f'settings error: {msg}, err={err}')
+        raise ValueError
         webquiz_util.webquiz_error(self.debugging, 'settings: '+msg, err)
 
     def __getitem__(self, key):

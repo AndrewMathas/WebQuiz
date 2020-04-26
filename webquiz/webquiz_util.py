@@ -80,15 +80,13 @@ def webquiz_error(debugging, msg, err=None):
     Consistent handling of errors in magthquiz: print the message `msg` and
     exist with error code `err.errno` if it is available.abs
     '''
-    print('{dash}WebQuiz error:\n  {msg}\n{dash}'.format(
-           msg=msg, dash='-'*40+'\n')
-    )
+    dash='-'*40+'\n'
+    print(f'{dash}WebQuiz error:\n  {msg}\n{dash}')
 
     if err is not None:
         trace = traceback.extract_tb(sys.exc_info()[2])
         filename, lineno, fn, text = trace[-1]
-        print('File: {}, line number: {}\nError {} in {}: {}'.format(
-            filename, lineno, err, fn, text))
+        print(f'File: {filename}, line number: {lineno}\nError {err} in {fn}: {text}')
 
     if debugging and err is not None:
         raise
