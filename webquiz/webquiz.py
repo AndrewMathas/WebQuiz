@@ -226,7 +226,7 @@ class WebQuizSettings:
 
         # define user and system rc file and load the ones that exist
 
-        self.system_rcfile = os.path.join(webquiz_util.kpsewhich('-var TEXMFLOCAL'),
+        self.system_rcfile = os.path.join(webquiz_util.kpsewhich('-var-value TEXMFLOCAL'),
                                            'tex',
                                            'latex',
                                            'webquiz',
@@ -496,7 +496,7 @@ class WebQuizSettings:
                     # if texdoc failed then try using TEXMFMAIN
                     if webquiz_doc=='':
                         try:
-                            webquiz_doc = os.path.join(webquiz_util.kpsewhich('-var TEXMFMAIN'), 'doc','latex', 'webquiz')
+                            webquiz_doc = os.path.join(webquiz_util.kpsewhich('-var-value TEXMFMAIN'), 'doc','latex', 'webquiz')
                         except subprocess.CalledProcessError:
                             pass
 
@@ -648,7 +648,7 @@ class WebQuizSettings:
         Undocumented feature - useful for debugging initialisation routine
         '''
         webquiz_top = os.path.abspath(webquiz_util.webquiz_file('..'))
-        texmf = webquiz_util.kpsewhich('-var TEXMFMAIN')
+        texmf = webquiz_util.kpsewhich('-var-value TEXMFMAIN')
         for (src, target) in [('scripts', 'scripts'),
                          ('latex', 'tex/latex'),
                          ('doc', 'doc/latex')]:
@@ -692,7 +692,7 @@ class WebQuizSettings:
         Undocumented feature - useful for debugging initialisation routine
         '''
         webquiz_top = os.path.abspath(webquiz_util.webquiz_file('..'))
-        texmf = webquiz_util.kpsewhich('-var TEXMFMAIN')
+        texmf = webquiz_util.kpsewhich('-var-value TEXMFMAIN')
         for target in ['scripts', 'tex/latex', 'doc/latex']:
             try:
                 shutil.rmtree(os.path.join(texmf, target, 'webquiz'))

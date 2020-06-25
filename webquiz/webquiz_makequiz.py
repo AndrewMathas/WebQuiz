@@ -87,7 +87,7 @@ class MakeWebQuiz(object):
             self.breadcrumbs = self.settings.initialise_warning + self.breadcrumbs
 
         # now write the quiz to the html file
-        with codecs.open(self.quiz_name + '.html', 'w', encoding='utf8') as file:
+        with codecs.open(self.quiz_name + '.html', 'w', encoding='utf8', errors='replace') as file:
             # write the quiz in the specified format
             file.write(self.options.write_web_page(self))
 
@@ -215,8 +215,8 @@ class MakeWebQuiz(object):
             # file being created but this doesn't seem to work ??
             try:
                 fix_img = re.compile(r'^(|.* )\b(data|src)="([-0-9a-zA-Z]*\.(?:png|svg))" (.*)$')
-                with codecs.open(self.quiz_file + '.html', 'r', encoding='utf8') as make4ht_file:
-                    with codecs.open(self.quiz_name + '.xml', 'w', encoding='utf8') as xml_file:
+                with codecs.open(self.quiz_file + '.html', 'r', encoding='utf8', errors='replace') as make4ht_file:
+                    with codecs.open(self.quiz_name + '.xml', 'w', encoding='utf8', errors='replace') as xml_file:
                         for line in make4ht_file:
                             match = fix_img.match(line)
                             if match is None:
@@ -320,7 +320,7 @@ class MakeWebQuiz(object):
             os.makedirs(self.quiz_name, exist_ok=True)
             os.chmod(self.quiz_name, mode=0o755)
             with codecs.open(os.path.join(self.quiz_name, 'wq-' + self.quiz_name + '.js'), 'w',
-                             encoding='utf8') as quiz_specs:
+                             encoding='utf8', errors='replace') as quiz_specs:
                 if self.number_discussions > 0:
                     for (i, d) in enumerate(self.quiz.discussion_list):
                         quiz_specs.write('Discussion[{}]="{}";\n'.format(i+1, d.heading))
@@ -404,7 +404,7 @@ class MakeWebQuiz(object):
                 **self.language)
             # write a javascript file for displaying the menu
             # quizmenu = the index file for the quizzes in this directory
-            with codecs.open('quizindex.js', 'w', encoding='utf8') as quizmenu:
+            with codecs.open('quizindex.js', 'w', encoding='utf8', errors='replace') as quizmenu:
                 quizmenu.write('var QuizTitles = [\n{titles}\n];\n'.format(
                     titles=',\n'.join("  ['{}', '{}']".format(
                              '{} {}. {}'.format(self.language['quiz'],num+1,q.title) 
