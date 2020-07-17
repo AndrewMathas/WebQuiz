@@ -43,9 +43,9 @@ from webquiz_templates import no_script
 def write_web_page(quiz):
   return quiz_page.format(
     breadcrumbs=quiz.breadcrumbs,      # bread crumb constructed above
-    preamble=quiz.header + quiz.javascript + quiz.css, # header material
     lang=quiz.language['html_lang'],   # sets the HTML langauge tag
     no_script=no_script,               # error when javascript is not enabled
+    preamble=quiz.header+quiz.css,     # header material
     quiz_header=quiz.quiz_header,      # quiz title + navigation arrows
     quiz_questions=quiz.quiz_questions,# html for quiz
     side_menu=quiz.side_menu,          # navigation menu for quiz

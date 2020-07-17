@@ -80,10 +80,6 @@ class MakeWebQuiz(object):
         self.add_quiz_header_and_questions()
         self.add_breadcrumbs()
 
-        # add the initialisation warning if webquiz has not been initialised
-        if self.settings.initialise_warning != '':
-            self.breadcrumbs = self.settings.initialise_warning + self.breadcrumbs
-
         # now write the quiz to the html file
         with codecs.open(self.quiz_name + '.html', 'w', encoding='utf8', errors='replace') as file:
             # write the quiz in the specified format
@@ -198,7 +194,6 @@ class MakeWebQuiz(object):
                 make4ht_options=self.options.make4ht_options,
                 quiz_file=self.quiz_file
             )
-            print(f'cmd={cmd}')
             self.options.run(cmd)
 
             # move the css file into the quiz_file subdirectory
@@ -250,15 +245,17 @@ class MakeWebQuiz(object):
         """ add the meta data for the web page to self.header """
         # meta tags`
         self.header += webquiz_templates.html_meta.format(
-            version=self.metadata.version,
             authors=self.metadata.authors,
-            webquiz_url=self.webquiz_url,
-            description=self.metadata.description,
             copyright=self.metadata.copyright,
             department=self.quiz.department,
+            description=self.metadata.description,
             institution=self.quiz.institution,
+            mathjax=self.settings['mathjax'],
             quiz_file=self.quiz_name,
-            theme=self.quiz.theme)
+            theme=self.quiz.theme,
+            version=self.metadata.version,
+            webquiz_url=self.webquiz_url
+        )
         if self.quiz.mathjs:
             self.header += webquiz_templates.mathjs
 
@@ -354,14 +351,11 @@ class MakeWebQuiz(object):
         except Exception as err:
             self.webquiz_error('error writing quiz specifications', err)
 
-        self.javascript = webquiz_templates.questions_javascript.format(
-            webquiz_url=self.webquiz_url,
-            mathjax=self.settings['mathjax']
-        )
         self.webquiz_init = webquiz_templates.webquiz_init.format(
-            number_questions=self.number_questions,
-            number_discussions=self.number_discussions,
-            quiz_file=self.quiz_name,
+            number_questions   = self.number_questions,
+            number_discussions = self.number_discussions,
+            quiz_file          = self.quiz_name,
+            webquiz_url        = self.webquiz_url
         )
 
     def add_quiz_header_and_questions(self):

@@ -27,19 +27,27 @@ html_meta = r'''<meta http-equiv="Content-Type" content="text/html; charset=utf-
   <meta name="organization" content="{department}, {institution}">
   <meta name="Copyright" content="WebQuiz: {copyright}">
   <meta name="keywords" content="WebQuiz, TeX4ht, make4ht, latex, python, quiz, mathematics">
-  <link href="{webquiz_url}/webquiz-{theme}.css" type="text/css" rel="stylesheet">
+  <link href="{webquiz_url}/webquiz-{theme}.css" type="text/plain" rel="stylesheet">
   <link href="{quiz_file}/{quiz_file}.css" type="text/css" rel="stylesheet">
+  <script src="{mathjax}?config=MML_CHTML"></script>
 '''
 
 # javascript for setting up the questions
-questions_javascript = r'''  <script src="{webquiz_url}/webquiz.js"></script>
-  <script defer src="{mathjax}?config=MML_CHTML"></script>'''
-
 mathjs=r'  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/5.4.0/math.min.js"></script>'
 
 webquiz_init = r'''<div style="display: none;">
-    <script src="quizindex.js"></script>
-    <script>WebQuizInit({number_questions}, {number_discussions}, '{quiz_file}');</script>
+    <script>
+      var webquiz = document.createElement('script');
+      webquiz.src = "{webquiz_url}/webquiz.js"
+      webquiz.type = 'text/plain'
+      document.head.appendChild(webquiz)
+      webquiz.addEventListener('load', () => {{
+        WebQuizInit(1, 0, 'simple')
+        var index =  document.createElement('script');
+        index.src = 'quizindex.js'
+        document.head.appendChild(index)
+      }})
+   </script>
   </div>'''
 
 # Bread crumbs including a drop down menu for all of the quizzes for the unit.
@@ -316,23 +324,6 @@ and typing:
 
 If you want to change the default webquiz settings please use:
     webquiz --edit-settings
-'''
-
-text_initialise_warning = r'''
-WebQuiz has not yet been initialised. To remove this warning please use
-      webquiz --initialise
-to install the WebQuiz web files onto your system.
-'''
-
-web_initialise_warning = r'''
-      <div id="initialisewarning" class="warning">
-        WebQuiz has not yet been initialised. To remove this warning box please use
-        <blockquote>
-          webquiz --initialise
-        </blockquote>
-        to install the WebQuiz web files on your system.
-        <button style="float: right" onclick="document.getElementById('initialisewarning').style.display='none'">OK</button>
-      </div>
 '''
 
 rc_permission_error = r'''

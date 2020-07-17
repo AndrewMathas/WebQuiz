@@ -150,7 +150,7 @@ class QuizHandler(xml.sax.ContentHandler):
 
         # set debugging mode from the latex file...from this point on
         # not sure what the following line is meant to achieve
-        #self.defaults.debugging = self.defaults.debugging or self.debugging
+        # self.defaults.debugging = self.defaults.debugging or self.debugging
 
     def start_link(self, attributes):
         r'''

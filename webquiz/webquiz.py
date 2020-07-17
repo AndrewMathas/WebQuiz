@@ -113,7 +113,7 @@ class WebQuizSettings:
     settings = dict(
         webquiz_url={
             'default': '',
-            'help': 'Relative URL for the webquiz web directory',
+            'help': 'URL for the webquiz web directory',
         },
         webquiz_www={
             'default': '',
@@ -199,9 +199,6 @@ class WebQuizSettings:
             'help': 'WebQuiz version number for webquizrc settings',
         })
 
-    # by default we assume we don't need to print a initialisation warning
-    initialise_warning = ''
-
     # turn debugging on by default because any error message that we hit before
     # we process the command line options really should not happen
     debugging = True
@@ -252,6 +249,12 @@ class WebQuizSettings:
             self.user_rcfile = os.path.join(os.path.expanduser('~'), '.webquizrc')
 
         self.read_webquizrc(self.user_rcfile)
+
+        # if webquiz_url has not been set in the settings files, or if the
+        # version number in the settings file not current, then webquiz_url
+        # defaults to the cdn 
+        if self['webquiz_url'] == '' or self['version'] < metadata.version:
+            self['webquiz_url'] = f'https://cdn.jsdelivr.net/gh/webquiz/release@{self["version"]}/'
 
     def webquiz_debug(self, msg):
         r'''
@@ -419,7 +422,7 @@ class WebQuizSettings:
                         )
                 )
 
-    def initialise_webquiz(self, need_to_initialise=False, developer=False):
+    def webquiz_local_install(self, need_to_initialise=False):
         r'''
         Set the root for the WebQuiz web directory and copy the www files into
         this directory. Once this is done save the settings to webquizrc.
@@ -430,16 +433,6 @@ class WebQuizSettings:
 
         # keep track of whether we have initialised
         self.have_initialised = True
-
-        if need_to_initialise:
-            self.initialise_warning = webquiz_templates.web_initialise_warning
-            initialise = input(webquiz_templates.initialise_invite)
-            if initialise!='' and initialise.strip().lower()[0]!='y':
-                self['webquiz_url'] = 'http://www.maths.usyd.edu.au/u/mathas/WebQuiz'
-                return
-
-        if self['webquiz_url']=='':
-            self['webquiz_url'] = '/WebQuiz'
 
         # prompt for directory and copy files - are these reasonable defaults
         # for each OS?
@@ -519,45 +512,24 @@ class WebQuizSettings:
 
                         webquiz_doc = os.path.join(texdist_dir, 'doc', 'latex', 'webquiz')
 
-                    # get the root directory of the source code for developer
-                    # mode and just in case webquiz_www still does not exist
+                    # get the root directory of the source code just in case
+                    # webquiz_www still does not exist
                     webquiz_src = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
                     webquiz_www = os.path.join(webquiz_src, 'www')
                     if not os.path.isdir(webquiz_www):
                         webquiz_www = os.path.join(webquiz_src, 'doc', 'www')
 
-                    if developer and os.path.isdir(os.path.join(webquiz_src, 'doc')):
-                        # this is a development version so add links from the
-                        # web directory to the css,doc and js directories
-                        print('\nInstalling files for development version')
-                        print(f'Linking web files {web_dir} -> {webquiz_src} ...\n')
-                        if not os.path.exists(web_dir):
-                            os.makedirs(web_dir)
-
-                        for (src, target) in [('javascript', 'js'), ('css', 'css'), ('doc', 'doc')]:
-                            newlink = os.path.join(web_dir, target)
-                            try:
-                                os.remove(newlink)
-                            except FileNotFoundError:
-                                pass
-                            try:
-                                os.symlink(os.path.join(webquiz_src,src), newlink)
-                            except OSError as err:
-                                print(f'There was a problem linking {newlink}: {err}')
-
-                    else:
-                        # loop until we find some files to install or exit
-                        while not os.path.isdir(webquiz_www) or webquiz_www=='':
-                            print('\nUnable to find the WebQuiz web files')
-                            webquiz_www = input('Please enter the location of the WebQuiz www directory\nor press RETURN to exit: ')
-                            webquiz_www = os.path.expanduser(webquiz_www)
-                            if webquiz_www=='':
-                                sys.exit()
-                            if not (webquiz_www.endswith('www/') or webquiz_www.endswith('www')):
-                                print(f'\nThe webquiz web directory is called www, so\n  {webquiz_www}\ncannot be the right directory.')
-                                webquiz_www = False
-
+                    # loop until we find some files to install or exit
+                    while not os.path.isdir(webquiz_www) or webquiz_www=='':
+                        print('\nUnable to find the WebQuiz web files')
+                        webquiz_www = input('Please enter the location of the WebQuiz www directory\nor press RETURN to exit: ')
+                        webquiz_www = os.path.expanduser(webquiz_www)
+                        if webquiz_www=='':
+                            sys.exit()
+                        if not (webquiz_www.endswith('www/') or webquiz_www.endswith('www')):
+                            print(f'\nThe webquiz web directory is called www, so\n  {webquiz_www}\ncannot be the right directory.')
+                            webquiz_www = False
 
                         # the www directory exists so we copy it to web_dir
                         print(f'\nCopying web files to {web_dir} ...')
@@ -692,7 +664,6 @@ class WebQuizSettings:
 
         except subprocess.CalledProcessError as err:
             self.webquiz_error('There was a problem running mktexlsr', err)
-
 
     def update(self):
         '''
@@ -876,11 +847,10 @@ if __name__ == '__main__':
         settings_parser = parser.add_mutually_exclusive_group()
         settings_parser.add_argument(
             '-i',
-            '--initialise',
-            '--initialize',
+            '--local_install',
             action='store_true',
             default=False,
-            help='Install web components of webquiz'
+            help='Install local copies of the web components of webquiz'
         )
         settings_parser.add_argument(
             '-e', '--edit-settings',
@@ -896,18 +866,6 @@ if __name__ == '__main__':
             nargs='?',
             type=str,
             help='List default settings for webquiz'
-        )
-        settings_parser.add_argument(
-            '-u', '--update',
-            action='store_true',
-            default=False,
-            help='Update the installed webquiz javascript and css files'
-        )
-        settings_parser.add_argument(
-            '--developer',
-            action='store_true',
-            default=False,
-            help=argparse.SUPPRESS
         )
 
         # options suppressed from the help message
@@ -994,14 +952,6 @@ if __name__ == '__main__':
             settings.tex_uninstall()
             sys.exit()
 
-        # initialise and exit
-        if options.initialise or options.developer:
-            settings.initialise_webquiz(developer=options.developer)
-
-        # force initialisation if the url is not set
-        elif settings['webquiz_url'] == '':
-            settings.initialise_webquiz(need_to_initialise=True)
-
         # list settings and exit
         if options.settings != '':
             settings.list_settings(options.settings)
@@ -1019,11 +969,8 @@ if __name__ == '__main__':
 
         # if no filename then exit
         if options.quiz_file==[]:
-            if settings.have_initialised:
-                sys.exit()
-            else:
-                parser.print_help()
-                sys.exit(1)
+            parser.print_help()
+            sys.exit(1)
 
         # import the local page formatter
         mod_dir, mod_layout = os.path.split(options.webquiz_layout)
@@ -1125,9 +1072,6 @@ if __name__ == '__main__':
                             os.remove(quiz_name + extention)
                     if os.path.isdir(os.path.join(quiz_name, quiz_name)):
                         shutil.rmtree(os.path.join(quiz_name, quiz_name))
-
-        if settings.initialise_warning != '' and not settings.have_initialised:
-            print(webquiz_templates.text_initialise_warning)
 
     except Exception as err:
 
