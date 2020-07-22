@@ -93,7 +93,7 @@
     symbol CDATA         #REQUIRED
 >
 
-<!ELEMENT response (#PCDATA)>
+<!ELEMENT response (#CDATA)>
 
 <!ELEMENT answer (when*)>
 <!ATTLIST answer
@@ -104,4 +104,4 @@
 <!ELEMENT when (text)>
 <!ATTLIST when type (right|wrong) #REQUIRED>
 
-<!ELEMENT text (#PCDATA)>
+<!ELEMENT text (#CDATA)>

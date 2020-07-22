@@ -208,6 +208,7 @@ class MakeWebQuiz(object):
             # time - in the cfg file, \Preamable{ext=xml} should lead to an xml
             # file being created but this doesn't seem to work ??
             try:
+                shutil.copyfile(f'{self.quiz_file}.html', f'{self.quiz_file}.html.orig')
                 fix_img = re.compile(r'^(|.* )\b(data|src)="([-0-9a-zA-Z]*\.(?:png|svg))" (.*)$')
                 with codecs.open(self.quiz_file + '.html', 'r', encoding='utf8', errors='replace') as make4ht_file:
                     with codecs.open(self.quiz_name + '.xml', 'w', encoding='utf8', errors='replace') as xml_file:
