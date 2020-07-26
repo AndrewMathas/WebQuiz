@@ -137,7 +137,7 @@ class WebQuizSettings:
         time_limit={
             'default': 0,
             'can_set_from_latex': True,
-            'help': 'Time limit quiz (0 is unlimited)'
+            'help': 'Quiz time limit (0 is unlimited)'
         },
         breadcrumbs={
             'default': '',
@@ -266,8 +266,6 @@ class WebQuizSettings:
         r'''
             Customised error messages for the Module
         '''
-        print(f'settings error: {msg}, err={err}')
-        raise ValueError
         webquiz_util.webquiz_error(self.debugging, 'settings: '+msg, err)
 
     def __getitem__(self, key):
@@ -665,10 +663,6 @@ class WebQuizSettings:
         except subprocess.CalledProcessError as err:
             self.webquiz_error('There was a problem running mktexlsr', err)
 
-    def update(self):
-        '''
-            Update the javascript and css files on the web server
-        '''
     def tex_uninstall(self):
         r'''
         UnInstall the tex files into TEXMFMAIN. It is assumed that the files
@@ -781,6 +775,10 @@ class WebQuizSettings:
 
 # =====================================================
 if __name__ == '__main__':
+    if sys.version_info.major<3 or sys.version_info.minor<6:
+        print('WebQuiz requires python 3.6 or later.\n\nPlease update python to the latest version\n')
+        sys.exit(1)
+
     try:
         settings = WebQuizSettings()
 
@@ -845,13 +843,7 @@ if __name__ == '__main__':
             help='Specify location of the webquiz rc-file ')
 
         settings_parser = parser.add_mutually_exclusive_group()
-        settings_parser.add_argument(
-            '-i',
-            '--local_install',
-            action='store_true',
-            default=False,
-            help='Install local copies of the web components of webquiz'
-        )
+
         settings_parser.add_argument(
             '-e', '--edit-settings',
             action='store_true',
@@ -903,6 +895,13 @@ if __name__ == '__main__':
         )
         install_parser.add_argument(
             '--uninstall',
+            action='store_true',
+            default=False,
+            help=argparse.SUPPRESS
+        )
+        install_parser.add_argument(
+            '-i',
+            '--local_install',
             action='store_true',
             default=False,
             help=argparse.SUPPRESS

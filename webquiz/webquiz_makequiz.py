@@ -226,7 +226,7 @@ class MakeWebQuiz(object):
                 self.webquiz_error('there was a problem moving the image files for {self.quiz_name}', err)
 
         except Exception as err:
-            self.webquiz_error(f'something went wrong when running htlatex on {self.quiz_file}', err)
+            self.webquiz_error(f'unknown error when running htlatex on {self.quiz_file}', err)
 
     def read_xml_file(self):
         r'''
@@ -344,7 +344,7 @@ class MakeWebQuiz(object):
 
                 quiz_specs.write('initSession();\n')
                 if self.number_discussions+self.number_questions>0:
-                    quiz_specs.write('gotoQuestion({});\n'.format(-1 if self.number_discussions>0 else 1))
+                    quiz_specs.write(f'gotoQuestion({-1 if self.number_discussions>0 else 1});\n')
 
                 if self.quiz.time_limit>0:
                     quiz_specs.write(f'startQuizTimer({60000*self.quiz.time_limit});\n')
