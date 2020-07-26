@@ -256,18 +256,6 @@ class WebQuizSettings:
         if self['webquiz_url'] == '' or self['version'] < metadata.version:
             self['webquiz_url'] = f'https://cdn.jsdelivr.net/gh/webquiz/release@{self["version"]}/'
 
-    def webquiz_debug(self, msg):
-        r'''
-            Customised debugging message for the MakeSettings module
-        '''
-        webquiz_util.webquiz_debug(self.debugging, 'main: '+msg)
-
-    def webquiz_error(self, msg, err=None):
-        r'''
-            Customised error messages for the Module
-        '''
-        webquiz_util.webquiz_error(self.debugging, 'settings: '+msg, err)
-
     def __getitem__(self, key):
         r'''
         Return the value of the corresponding setting. That is, it returns
@@ -290,40 +278,53 @@ class WebQuizSettings:
         else:
             self.webquiz_error(f'setitem: unknown setting "{key}" in webquizrc')
 
-    def read_webquizrc(self, rcfile, must_exist=False):
+    def edit_settings(self):
         r'''
-        Read the settings from the specified webquizrc file - if it exists, in
-        which case set self.rcfile equal to this directory. If the file does
-        not exist then return without changing the current settings.
+        Change current default values for the WebQuiz settings
         '''
-        if os.path.isfile(rcfile):
-            try:
-                with codecs.open(rcfile, 'r', encoding='utf8', errors='replace') as webquizrc:
-                    for line in webquizrc:
-                        if '#' in line:  # remove comments
-                            line = line[:line.index('#')]
-                        if '=' in line:
-                            key, value = line.split('=')
-                            key = key.strip().lower().replace('-','_')
-                            value = value.strip()
-                            if key in self.settings:
-                                if value != self[key]:
-                                    self[key] = value
-                            elif key != '':
-                                self.webquiz_error(f'unknown setting "{key}" in {rcfile}')
+        advanced_not_started = True
+        for key in self.keys():
+            if key not in ['webquiz_www', 'version']:
+                if advanced_not_started and self.settings[key]['advanced']:
+                    print(webquiz_templates.advanced_settings)
+                    advanced_not_started = False
 
-                # record the rcfile for later use
-                self.rcfile = rcfile
+                skey = '{}'.format(self[key])
+                setting = input('{}{}[{}]: '.format(
+                                    self.settings[key]['help'],
+                                    ' ' if len(skey)<40 else '\n',
+                                    skey
+                          )
+                ).strip()
+                if setting != '':
+                    if key == 'webquiz_url' and setting[0] != '/':
+                        print("  ** prepending '/' to webquiz_url **")
+                        setting = '/' + setting
 
-            except OSError as err:
-                self.webquiz_error(f'there was a problem reading the rc-file {rcfile}', err)
+                    elif key == 'webquiz_layout':
+                        setting = os.path.expanduser(setting)
+                        if setting.endswith('.py'):
+                            print("  ** removing .py extension from webquiz_layout **")
+                            setting = setting[:-3]
 
-            except Exception as err:
-                self.webquiz_error('there was an error reading the webquizrc file,', err)
+                    elif key == 'engine' and setting not in self.settings['engine'].values:
+                        print(f'setting not changed: {setting} is not a valid TeX engine')
+                        setting = self['engine']
 
-        elif must_exist:
-            # this is only an error if we have been asked to read this file
-            self.webquiz_error(f'the rc-file "{rcfile}" does not exist')
+                    elif key in ['hide_side_menu', 'random_order']:
+                        setting = setting.lower()
+                        if setting not in ['true', 'false']:
+                            print(f'setting not changed: {key} must be True or False')
+                            setting = self[key]
+
+                    elif setting=='NONE':
+                        setting = ''
+
+                    self[key] = setting
+
+        # save the settings, print them and exit
+        self.write_webquizrc()
+        self.list_settings()
 
     def keys(self):
         r'''
@@ -331,15 +332,6 @@ class WebQuizSettings:
         advanced options last/
         '''
         return sorted(self.settings.keys(), key=lambda k: f'{self.settings[k]["advanced"]}{k}')
-
-    def write_webquizrc(self):
-        r'''
-        Write the settings to the webquizrc file, defaulting to the user
-        rcfile if unable to write to the system rcfile
-        '''
-        if not hasattr(self, 'rcfile'):
-            # when initialising an rcfile will not exist yet
-            self.rcfile = self.system_rcfile
 
         file_not_written = True
         while file_not_written:
@@ -420,7 +412,7 @@ class WebQuizSettings:
                         )
                 )
 
-    def webquiz_local_install(self, need_to_initialise=False):
+    def local_install(self, need_to_initialise=False):
         r'''
         Set the root for the WebQuiz web directory and copy the www files into
         this directory. Once this is done save the settings to webquizrc.
@@ -563,53 +555,79 @@ class WebQuizSettings:
         self.write_webquizrc()
         print(webquiz_templates.initialise_ending.format(web_dir=self['webquiz_www']))
 
-    def edit_settings(self):
+    def local_uninstall(self):
         r'''
-        Change current default values for the WebQuiz settings
+        Remove all of the webquiz files from the webserver
         '''
-        advanced_not_started = True
-        for key in self.keys():
-            if key not in ['webquiz_www', 'version']:
-                if advanced_not_started and self.settings[key]['advanced']:
-                    print(webquiz_templates.advanced_settings)
-                    advanced_not_started = False
+        if os.path.isdir(self['webquiz_www']):
+            remove = input('Do you really want to remove the WebQuiz from your web server [N/yes]? ')
+            if remove != 'yes':
+                print('WebQuiz unistall aborted!')
+                return
 
-                skey = '{}'.format(self[key])
-                setting = input('{}{}[{}]: '.format(
-                                    self.settings[key]['help'],
-                                    ' ' if len(skey)<40 else '\n',
-                                    skey
-                          )
-                ).strip()
-                if setting != '':
-                    if key == 'webquiz_url' and setting[0] != '/':
-                        print("  ** prepending '/' to webquiz_url **")
-                        setting = '/' + setting
+            try:
+                shutil.rmtree(self['webquiz_www'])
+                print('WebQuiz files successfully removed from {}'.format(self['webquiz_www']))
 
-                    elif key == 'webquiz_layout':
-                        setting = os.path.expanduser(setting)
-                        if setting.endswith('.py'):
-                            print("  ** removing .py extension from webquiz_layout **")
-                            setting = setting[:-3]
+            except PermissionError as err:
+                print(webquiz_templates.insufficient_permissions.format(err))
+                sys.exit(1)
 
-                    elif key == 'engine' and setting not in self.settings['engine'].values:
-                        print(f'setting not changed: {setting} is not a valid TeX engine')
-                        setting = self['engine']
+            except OSError as err:
+                self.webquiz_error('There was a problem removing webquiz files from {}'.format(self['webquiz_www']), err)
 
-                    elif key in ['hide_side_menu', 'random_order']:
-                        setting = setting.lower()
-                        if setting not in ['true', 'false']:
-                            print(f'setting not changed: {key} must be True or False')
-                            setting = self[key]
+            # now reset and save the locations of the webquiz files and URL
+            self['webquiz_url'] = ''
+            self['webquiz_www'] = ''
+            self.write_webquizrc()
 
-                    elif setting=='NONE':
-                        setting = ''
+        else:
+            self.webquiz_error('uninstall: no webquiz files are installed on your web server??')
 
-                    self[key] = setting
+        for rfile in ['system', 'user']:
+            rcfile = getattr(self, rfile+'_rcfile')
+            if os.path.isfile(rcfile):
+                rm = input(f'Remove {rfile} rcfile: {rcfile}\n[Y/no] ')
+                if rm != 'no':
+                    try:
+                        os.remove(rcfile)
+                    except (OSError, PermissionError) as err:
+                        self.webquiz_error(f'There was a problem deleting {rcfile}', err)
 
-        # save the settings, print them and exit
-        self.write_webquizrc()
-        self.list_settings()
+    def read_webquizrc(self, rcfile, must_exist=False):
+        r'''
+        Read the settings from the specified webquizrc file - if it exists, in
+        which case set self.rcfile equal to this directory. If the file does
+        not exist then return without changing the current settings.
+        '''
+        if os.path.isfile(rcfile):
+            try:
+                with codecs.open(rcfile, 'r', encoding='utf8', errors='replace') as webquizrc:
+                    for line in webquizrc:
+                        if '#' in line:  # remove comments
+                            line = line[:line.index('#')]
+                        if '=' in line:
+                            key, value = line.split('=')
+                            key = key.strip().lower().replace('-','_')
+                            value = value.strip()
+                            if key in self.settings:
+                                if value != self[key]:
+                                    self[key] = value
+                            elif key != '':
+                                self.webquiz_error(f'unknown setting "{key}" in {rcfile}')
+
+                # record the rcfile for later use
+                self.rcfile = rcfile
+
+            except OSError as err:
+                self.webquiz_error(f'there was a problem reading the rc-file {rcfile}', err)
+
+            except Exception as err:
+                self.webquiz_error('there was an error reading the webquizrc file,', err)
+
+        elif must_exist:
+            # this is only an error if we have been asked to read this file
+            self.webquiz_error(f'the rc-file "{rcfile}" does not exist')
 
     def tex_install(self):
         r'''
@@ -732,46 +750,17 @@ class WebQuizSettings:
         except OSError as err:
             print(f'There was a problem removing the link to webquiz: {err}')
 
-    def uninstall_webquiz(self):
+    def webquiz_debug(self, msg):
         r'''
-        Remove all of the webquiz files from the webserver
+            Customised debugging message for the MakeSettings module
         '''
+        webquiz_util.webquiz_debug(self.debugging, 'main: '+msg)
 
-        if os.path.isdir(self['webquiz_www']):
-            remove = input('Do you really want to remove the WebQuiz from your web server [N/yes]? ')
-            if remove != 'yes':
-                print('WebQuiz unistall aborted!')
-                return
-
-            try:
-                shutil.rmtree(self['webquiz_www'])
-                print('WebQuiz files successfully removed from {}'.format(self['webquiz_www']))
-
-            except PermissionError as err:
-                print(webquiz_templates.insufficient_permissions.format(err))
-                sys.exit(1)
-
-            except OSError as err:
-                self.webquiz_error('There was a problem removing webquiz files from {}'.format(self['webquiz_www']), err)
-
-            # now reset and save the locations of the webquiz files and URL
-            self['webquiz_url'] = ''
-            self['webquiz_www'] = ''
-            self.write_webquizrc()
-
-        else:
-            self.webquiz_error('uninstall: no webquiz files are installed on your web server??')
-
-        for rfile in ['system', 'user']:
-            rcfile = getattr(self, rfile+'_rcfile')
-            if os.path.isfile(rcfile):
-                rm = input(f'Remove {rfile} rcfile: {rcfile}\n[Y/no] ')
-                if rm != 'no':
-                    try:
-                        os.remove(rcfile)
-                    except (OSError, PermissionError) as err:
-                        self.webquiz_error(f'There was a problem deleting {rcfile}', err)
-
+    def webquiz_error(self, msg, err=None):
+        r'''
+            Customised error messages for the Module
+        '''
+        webquiz_util.webquiz_error(self.debugging, 'settings: '+msg, err)
 
 # =====================================================
 if __name__ == '__main__':
@@ -819,7 +808,8 @@ if __name__ == '__main__':
             const='latex',
             default=settings['engine'],
             dest='engine',
-            help='Use latex to compile document with make4ht (default)')
+            help=argparse.SUPPRESS
+        )
         engine.add_argument(
             '-l',
             '--lua',
@@ -882,6 +872,13 @@ if __name__ == '__main__':
 
         install_parser = parser.add_mutually_exclusive_group()
         install_parser.add_argument(
+            '--diagnostics',
+            action='store_true',
+            default=False,
+            help=argparse.SUPPRESS
+        )
+
+        install_parser.add_argument(
             '--tex-install',
             action='store_true',
             default=False,
@@ -893,15 +890,16 @@ if __name__ == '__main__':
             default=False,
             help=argparse.SUPPRESS
         )
+
         install_parser.add_argument(
-            '--uninstall',
+            '-i',
+            '--local-install',
             action='store_true',
             default=False,
             help=argparse.SUPPRESS
         )
         install_parser.add_argument(
-            '-i',
-            '--local_install',
+            '--local-uninstall',
             action='store_true',
             default=False,
             help=argparse.SUPPRESS
@@ -938,9 +936,16 @@ if __name__ == '__main__':
             rcfile = os.path.expanduser(options.rcfile)
             settings.read_webquizrc(rcfile)
 
-        if options.uninstall:
+        if options.diagnostics:
+            webquiz_util.webquiz_diagnostics()
+            sys.exit()
+        elif options.local_install:
             # uninstall web files and exit
-            settings.uninstall_webquiz()
+            settings.local_install()
+            sys.exit()
+        elif options.local_uninstall:
+            # uninstall web files and exit
+            settings.local_uninstall()
             sys.exit()
         elif options.tex_install:
             # install files from zip file into tex distribution and then exit

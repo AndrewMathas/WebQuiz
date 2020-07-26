@@ -136,24 +136,53 @@ def run(cmd, shell=False):
     Run commands with output to stdout and errors to stderr
     '''
     if shell:
-        subprocess.call(cmd, env=environ, shell=True)
+        return subprocess.run(cmd, env=environ, shell=True, stdout=subprocess.PIPE)
     else:
-        subprocess.call(cmd.split(), env=environ)
+        return subprocess.run(cmd.split(), env=environ, stdout=subprocess.PIPE)
 
 def quiet_run(cmd, shell=False):
     r'''
     Run commands with ignoring and sending errors to stderr
     '''
     if shell:
-        subprocess.call(cmd, env=environ, stdout=open(os.devnull, 'wb'), shell=True)
+        return subprocess.run(cmd, env=environ, stdout=open(os.devnull, 'wb'), shell=True)
     else:
-        subprocess.call(cmd.split(), env=environ, stdout=open(os.devnull, 'wb'))
+        return subprocess.run(cmd.split(), env=environ, stdout=open(os.devnull, 'wb'))
 
 def silent_run(cmd, shell=False):
     r'''
     Run commands ignoring all output and errors
     '''
     if shell:
-        subprocess.call(cmd, env=environ, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'), shell=True)
+        return subprocess.run(cmd, env=environ, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'), shell=True)
     else:
-        subprocess.call(cmd.split(), env=environ, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
+        return subprocess.run(cmd.split(), env=environ, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
+
+def webquiz_diagnostics():
+    r'''
+    Print webquiz diagnostics, which includes:
+        - webquiz version
+        - python version
+        - TeX installation data
+        - Make4ht version
+        - WebQuiz Settings
+    '''
+    import platform
+    make4ht_version = run('make4ht --version').stdout.decode().strip()
+    python_version = run('python3 --version').stdout.decode().strip()
+    tex_version = run('pdflatex --version').stdout.decode().replace('\n', '\n    ')
+    webquiz_settings = run('webquiz --settings').stdout.decode().replace('\n', '\n    ')
+    webquiz_version = run('webquiz --version').stdout.decode().strip()
+    print(rf'''
+WebQuiz diagnostics
+-------------------
+
+WebQuiz: {webquiz_version}
+System:  {platform.uname().version}
+Make4ht: {make4ht_version}
+TeX installation:
+    {tex_version}
+WebQuiz settings:
+    {webquiz_settings}
+''')
+

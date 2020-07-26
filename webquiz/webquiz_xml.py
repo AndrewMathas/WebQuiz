@@ -347,7 +347,7 @@ class QuizHandler(xml.sax.ContentHandler):
                              )
                 )
         elif not hasattr(self.question_list[-1], 'answer') or self.question_list[-1].answer=='':
-            self.webquiz_error(f'question {len(self.question_list)+1} does have not an answer or multiple choice'.)
+            self.webquiz_error(f'question {len(self.question_list)+1} does have not an answer or multiple choice')
 
         if self.text.strip() != '':
             self.question_list[-1].after_text += ' '+self.text.strip()

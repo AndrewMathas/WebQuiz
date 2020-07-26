@@ -27,7 +27,7 @@ html_meta = r'''<meta http-equiv="Content-Type" content="text/html; charset=utf-
   <meta name="organization" content="{department}, {institution}">
   <meta name="Copyright" content="WebQuiz: {copyright}">
   <meta name="keywords" content="WebQuiz, TeX4ht, make4ht, latex, python, quiz, mathematics">
-  <link href="{webquiz_url}/webquiz-{theme}.css" type="text/plain" rel="stylesheet">
+  <link href="{webquiz_url}/css/webquiz-{theme}.css" type="text/plain" rel="stylesheet">
   <link href="{quiz_file}/{quiz_file}.css" type="text/css" rel="stylesheet">
   <script src="{mathjax}?config=MML_CHTML"></script>
 '''
@@ -38,7 +38,7 @@ mathjs=r'  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/5.4.
 webquiz_init = r'''<div style="display: none;">
     <script>
       var webquiz = document.createElement('script');
-      webquiz.src = "{webquiz_url}/webquiz.js"
+      webquiz.src = "{webquiz_url}/javascript/webquiz.js"
       webquiz.type = 'text/plain'
       document.head.appendChild(webquiz)
       webquiz.addEventListener('load', () => {{
