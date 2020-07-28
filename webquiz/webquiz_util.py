@@ -158,6 +158,36 @@ def silent_run(cmd, shell=False):
     else:
         return subprocess.run(cmd.split(), env=environ, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
 
+###############################################################################
+## coloured text
+# Group of Different functions for different styles
+class ColouredText():
+    r'''
+    Prints text in various colours. Supposed this is system independent....
+
+    Inspired partly by:
+        https://stackoverflow.com/questions/287871/how-to-print-colored-text-in-python 
+    '''
+    colours = {
+        'black': 30,
+        'red': 31,
+        'green': 32,
+        'yellow': 33,
+        'blue': 34,
+        'magenta': 35,
+        'cyan': 36,
+        'white': 37,
+        'underline': 4,
+    }
+    def __init__(self):
+        # aparentlty this is needed to enmable colour print on windows
+        if sys.platform.lower() == "win32":
+            os.system('')
+
+    def textcolour(self, colour, text):
+        return f'\033[{self.colours[colour.lower()]}m{text}\033[0m'
+
+###############################################################################
 def webquiz_diagnostics():
     r'''
     Print webquiz diagnostics, which includes:
@@ -168,17 +198,26 @@ def webquiz_diagnostics():
         - WebQuiz Settings
     '''
     import platform
+    import requests
+    c = ColouredText()
+    r = requests.get('http://localhost')
+    webserver = c.textcolour('green', 'OK')  if r.ok else c.textcolour('red', 'FAILED')
+    if sys.version_info.major<3 or sys.version_info.minor<6:
+        python_version = c.textcolour('red', f'{platform.python_version()}')
+    else:
+        python_version = c.textcolour('green', f'{platform.python_version()}')
     make4ht_version = run('make4ht --version').stdout.decode().strip()
     python_version = run('python3 --version').stdout.decode().strip()
     tex_version = run('pdflatex --version').stdout.decode().replace('\n', '\n    ')
     webquiz_settings = run('webquiz --settings').stdout.decode().replace('\n', '\n    ')
     webquiz_version = run('webquiz --version').stdout.decode().strip()
-    print(rf'''
+    print(f'''
 WebQuiz diagnostics
 -------------------
-
-WebQuiz: {webquiz_version}
-System:  {platform.uname().version}
+WebQuiz:   {webquiz_version}
+Python:    {python_version}
+System:    {platform.uname().version}
+Webserver: {webserver}
 Make4ht: {make4ht_version}
 TeX installation:
     {tex_version}
