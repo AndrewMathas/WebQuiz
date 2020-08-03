@@ -1,3 +1,8 @@
+|version|
+|pyversion|
+|ctanBadge|
+|GPL3|
+
 ========
 WebQuiz_
 ========
@@ -97,9 +102,6 @@ webquiz-doc.code.tex
 webquiz-ini.code.tex
      code for reading and accessing the ini fle in latex
 
-pgfsys-dvisvgm4ht.def
-     a custom tikz driver for tex4ht from dvisvgm4ht_ supplied by Michal Hoftich
-
 webquiz-\*.lang
      language support files. These are used by `webquiz_main.py` when writing
      the quiz web pages but we find them by putting them in the LaTeX search
@@ -125,18 +127,18 @@ Javascript
 ----------
 There is one javascript file, `webquiz.js`, in the javascript directory. In
 addition, the `quizindex` environment generates the javascript file
-`quizindex.js`, that generates a drop-down menu for the quizzes in the current
-directory. This file is automatically loaded at the end of each quiz HTML file,
-if it exits.  For each quiz, WebQuiz_ writes another javascript file,
-`wq-file.js`, that specified the questions in the quiz. This file is
-automatically loaded by the quiz page.
+`quizindex.js`, that specifies the drop-down menu of quiz titles for the
+quizzes in the current directory. If it exits, This file is automatically
+loaded at the end of each quiz HTML file, For each quiz, WebQuiz_ writes
+another javascript file, `wq-file.js`, that describes the questions in the
+quiz. This file is automatically loaded by the quiz page.
 
 It would be good to add some javascript unit tests....
 
 Documentation
 -------------
 Once WebQuiz_ is installed you can build the documentation for the package
-using the `bash` shelll-script::
+using the `bash` shell-script::
 
     > doc/makedoc
 
@@ -235,7 +237,7 @@ Public License for more details.
 .. _TeX4ht:     http://www.tug.org/tex4ht/
 .. _TeXLive:    https://www.tug.org/texlive/
 .. _WebQuiz:    https://www.ctan.org/pkg/webquiz/
-.. _`WebQuiz github repository`: https://github.com/AndrewAtLarge/WebQuiz
+.. _`WebQuiz github repository`: https://github.com/webquiz/release
 .. _ctan:       https://www.ctan.org/
 .. _ctanupload: https://ctan.org/pkg/ctanupload
 .. _dvisvgm4ht: https://github.com/michal-h21/dvisvgm4ht
@@ -246,3 +248,10 @@ Public License for more details.
 .. _sass:       https://sass-lang.com/
 .. _uglifyjs:   https://www.npmjs.com/package/uglify-js
 .. _webkit2png: http://www.paulhammond.org/webkit2png/
+.. |version| image:: https://img.shields.io/github/v/tag/webquiz/release?color=success&label=version
+.. |release date| image:: https://img.shields.io/github/release-date/webquiz/release?color=yellow
+.. |pyversion| image:: https://img.shields.io/badge/requires-python3.7%2B-important
+.. |ctanBadge| image:: https://img.shields.io/badge/ctan-WebQuiz-informational 
+   :target: https://www.ctan.org/pkg/webquiz
+.. |GPL3| image:: https://img.shields.io/badge/license-GPLv3-blueviolet.svg 
+   :target: https://www.gnu.org/licenses/gpl-3.0.en.html
