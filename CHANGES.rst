@@ -2,6 +2,17 @@
 WebQuiz Changes
 ===============
 
+Version 6.0:
+------------
+    - replaced local web files with CDN, removing the need to initialise
+    - removed system rc file
+    - changed github repository to https://github.com/webquiz/release to give
+      better URLs for accessing the javascript and css files via a CDN
+
+    - added diagnotics command-line option for biug reports
+    - added timed quizzes
+
+
 Version 5.2:
 ------------
     - compatibility with both MikTeX and TeXLive under windows
