@@ -703,7 +703,6 @@ class WebQuizSettings:
 
         Undocumented feature - useful for debugging initialisation routine
         '''
-        webquiz_top = os.path.abspath(webquiz_util.webquiz_file('..'))
         texmf = webquiz_util.kpsewhich('-var-value TEXMFMAIN')
         for target in ['scripts', 'tex/latex', 'doc/latex']:
             try:
