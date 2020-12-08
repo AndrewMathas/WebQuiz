@@ -251,7 +251,7 @@ Public License for more details.
 .. |version| image:: https://img.shields.io/github/v/tag/webquiz/release?color=success&label=version
 .. |release date| image:: https://img.shields.io/github/release-date/webquiz/release?color=yellow
 .. |pyversion| image:: https://img.shields.io/badge/requires-python3.7%2B-important
-.. |ctanBadge| image:: https://img.shields.io/badge/ctan-WebQuiz-informational 
+.. |ctanBadge| image:: https://img.shields.io/badge/ctan-WebQuiz-informational
    :target: https://www.ctan.org/pkg/webquiz
-.. |GPL3| image:: https://img.shields.io/badge/license-GPLv3-blueviolet.svg 
+.. |GPL3| image:: https://img.shields.io/badge/license-GPLv3-blueviolet.svg
    :target: https://www.gnu.org/licenses/gpl-3.0.en.html
