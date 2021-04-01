@@ -15,6 +15,7 @@ r'''
 '''
 
 import os
+import re
 import subprocess
 import shutil
 import stat
@@ -199,28 +200,91 @@ def webquiz_diagnostics():
     '''
     import platform
     import requests
+
+    # a dictionary of the current requirements for webquiz
+    requirements = {
+        'luaxml':  '0.1m',
+        'make4ht': 'v0.3e',
+        'python':  '3.9',
+        'webquiz': '5.0.0'
+    }
+    version = {}  # will store the version info for each requirement
+
+    # for printing red and green diagnostic messages
     c = ColouredText()
+
+    # check for a local webserver
     r = requests.get('http://localhost')
     webserver = c.textcolour('green', 'OK')  if r.ok else c.textcolour('red', 'FAILED')
-    if sys.version_info.major<3 or sys.version_info.minor<6:
-        python_version = c.textcolour('red', f'{platform.python_version()}')
-    else:
-        python_version = c.textcolour('green', f'{platform.python_version()}')
-    make4ht_version = run('make4ht --version').stdout.decode().strip()
-    python_version = run('python3 --version').stdout.decode().strip()
+
+    # find python version
+    python_version = platform.python_version()
+
+    # find make4ht version
+    try:
+        make4ht_version = run('make4ht --version').stdout.decode().strip().split()[-1]
+
+    except subprocess.CalledProcessError:
+        pass
+
+    # find the luaxml version...need to find luaxml.tex and read the version from there
+    try:
+        luaxml = shell_command('texdoc -ilM luaxml')
+    except subprocess.CalledProcessError:
+        pass
+
+    luaxml_tex = None
+    for bit in luaxml.split('\t'):
+        if bit.endswith('/luaxml.pdf'):
+            luaxml_tex = f'{bit[:-4]}.tex'
+            break
+
+    # check the installed version of luaxml
+    luaxml_version = c.textcolour('red', 'LuaXML not installed!')
+    if luaxml_tex is not None and os.path.isfile(luaxml_tex):
+        with open(luaxml_tex) as lxml:
+            luaxml = lxml.read()
+        search = re.search(r'\\version{([0-9][^}]*)}', luaxml)
+        if search is not None and len(search.groups()) == 1:
+            luaxml_version = search.groups()[0]
+
+    # set the version messages for each of the requirements
+    for tool in requirements:
+        tool_version = f'{tool}_version'
+        try:
+            if version[tool_version] < requirements[tool]:
+                version[tool_version] = c.textcolour('red', f'{version[tool_version]} -- version {requirements[tool]} or later required')
+                print(f'Just set {tool} to {version[tool_version]}')
+            else:
+                version[tool_version] = c.textcolour('green', version[tool_version])
+
+        except KeyError as err:
+            raise
+            version[tool_version] = c.textcolour('red', 'Not found?! -- version {requirements[tool]} or later required')
+
+
+    # get information about the TeX installation
     tex_version = run('pdflatex --version').stdout.decode().replace('\n', '\n    ')
+
+    # check the webquiz settings
     webquiz_settings = run('webquiz --settings').stdout.decode().replace('\n', '\n    ')
-    webquiz_version = run('webquiz --version').stdout.decode().strip()
+    if webquiz_settings.startswith('Please initialise'):
+        webquiz_settings = 'Not initialised'
+    version['webquiz'] = run('webquiz --version').stdout.decode().strip()
     print(f'''
 WebQuiz diagnostics
 -------------------
-WebQuiz:   {webquiz_version}
-Python:    {python_version}
-System:    {platform.uname().version}
+WebQuiz:   {version["webquiz"]}
 Webserver: {webserver}
-Make4ht: {make4ht_version}
+System:    {platform.uname().system} version {platform.uname().release}
+
+LuaXML:    {version["luaxml"]}
+Make4ht:   {version["make4ht"]}
+Python:    {version["python"]}
+
 TeX installation:
     {tex_version}
+
 WebQuiz settings:
     {webquiz_settings}
 ''')

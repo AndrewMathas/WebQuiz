@@ -114,9 +114,6 @@ class WebQuizDevelop(Command):
             else:
                 os.symlink(os.path.join(cwd,'webquiz','webquiz.py'), webquiz)
 
-            # now add links for web files
-            subprocess.call(f'{webquiz} --developer', shell=True)
-
             print('To build the WebQuiz css files run the bash script doc/makedoc -t')
             print('To build the WebQuiz documentation run the bash script doc/makedoc --all')
 
@@ -166,7 +163,7 @@ class WebQuizCtan(Command):
     @staticmethod
     def status(s):
         """Prints things in bold."""
-        print(s'\033[1m{s}\033[0m')
+        print(f'\033[1m{s}\033[0m')
 
     def initialize_options(self):
         pass

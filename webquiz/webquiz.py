@@ -379,8 +379,8 @@ class WebQuizSettings:
         Print the non-default settings for webquiz from the webquizrc
         '''
         if not hasattr(self, 'rcfile'):
-            print(webquiz_templates.initialise_settings)
-            sys.exit(1)
+            print('Please initialise WebQuiz using the command: webquiz --edit-settings\n')
+            return
 
         if setting not in ['all', 'verbose', 'help']:
             setting = setting.replace('-', '_')
@@ -778,69 +778,62 @@ if __name__ == '__main__':
             nargs='*',
             type=str,
             default=None,
-            help='latex quiz files')
+            help='latex quiz files'
+        )
 
-        parser.add_argument(
-            '-q',
-            '--quiet',
+        parser.add_argument('-q', '--quiet',
             action='count',
             default=0,
-            help='Suppress tex4ht messages (also -qq etc)')
+            help='Suppress tex4ht messages (also -qq etc)'
+        )
 
-        parser.add_argument(
-            '-d', '--draft',
+        parser.add_argument('-d', '--draft',
             action='store_true',
             default=False,
-            help='Use make4ht draft mode')
+            help='Use make4ht draft mode'
+        )
 
-        parser.add_argument(
-            '-s',
-            '--shell-escape',
+        parser.add_argument('--shell-escape',
             action='store_true',
             default=False,
-            help='Shell escape for tex4ht/make4ht')
+            help='Shell escape for tex4ht/make4ht'
+        )
 
         engine = parser.add_mutually_exclusive_group()
-        engine.add_argument(
-            '--latex',
+        engine.add_argument('--latex',
             action='store_const',
             const='latex',
             default=settings['engine'],
             dest='engine',
             help=argparse.SUPPRESS
         )
-        engine.add_argument(
-            '-l',
-            '--lua',
+        engine.add_argument('-l', '--lua',
             action='store_const',
             const='lua',
             dest='engine',
-            help='Use lualatex to compile the quiz')
-        engine.add_argument(
-            '-x',
-            '--xelatex',
+            help='Use lualatex to compile the quiz'
+        )
+        engine.add_argument('-x', '--xelatex',
             action='store_const',
             const='xelatex',
             dest='engine',
-            help='Use xelatex to compile the quiz')
+            help='Use xelatex to compile the quiz'
+        )
 
-        parser.add_argument(
-            '-r',
-            '--rcfile',
+        parser.add_argument('-r', '--rcfile',
             action='store',
             default=None,
-            help='Specify location of the webquiz rc-file ')
+            help='Specify location of the webquiz rc-file '
+        )
 
         settings_parser = parser.add_mutually_exclusive_group()
 
-        settings_parser.add_argument(
-            '-e', '--edit-settings',
+        settings_parser.add_argument('-e', '--edit-settings',
             action='store_true',
             default=False,
             help='Edit default settings for webquiz'
         )
-        settings_parser.add_argument(
-            '--settings',
+        settings_parser.add_argument('-s', '--settings',
             action='store',
             const='all',
             default='',
@@ -850,9 +843,7 @@ if __name__ == '__main__':
         )
 
         # options suppressed from the help message
-        parser.add_argument(
-            '-m',
-            '--make4ht',
+        parser.add_argument('-m', '--make4ht',
             action='store',
             type=str,
             dest='make4ht_options',
@@ -860,8 +851,7 @@ if __name__ == '__main__':
             help=argparse.SUPPRESS
         )
 
-        parser.add_argument(
-            '--webquiz_layout',
+        parser.add_argument('--webquiz_layout',
             action='store',
             type=str,
             dest='webquiz_layout',
@@ -870,54 +860,45 @@ if __name__ == '__main__':
         )
 
         install_parser = parser.add_mutually_exclusive_group()
-        install_parser.add_argument(
-            '--diagnostics',
+        install_parser.add_argument('--diagnostics',
+            action='store_true',
+            default=False,
+            help='Print diagnostic messages for WebQuiz (used when submitting bug reports'
+        )
+
+        install_parser.add_argument('--tex-install',
+            action='store_true',
+            default=False,
+            help=argparse.SUPPRESS
+        )
+        install_parser.add_argument('--tex-uninstall',
             action='store_true',
             default=False,
             help=argparse.SUPPRESS
         )
 
-        install_parser.add_argument(
-            '--tex-install',
+        install_parser.add_argument('--local-install',
             action='store_true',
             default=False,
             help=argparse.SUPPRESS
         )
-        install_parser.add_argument(
-            '--tex-uninstall',
-            action='store_true',
-            default=False,
-            help=argparse.SUPPRESS
-        )
-
-        install_parser.add_argument(
-            '-i',
-            '--local-install',
-            action='store_true',
-            default=False,
-            help=argparse.SUPPRESS
-        )
-        install_parser.add_argument(
-            '--local-uninstall',
+        install_parser.add_argument('--local-uninstall',
             action='store_true',
             default=False,
             help=argparse.SUPPRESS
         )
 
-        parser.add_argument(
-            '--version',
+        parser.add_argument('--version',
             action='version',
             version=f'%(prog)s version {metadata.version}',
             help=argparse.SUPPRESS)
 
-        parser.add_argument(
-            '--debugging',
+        parser.add_argument('--debugging',
             action='store_true',
             default=False,
             help=argparse.SUPPRESS)
 
-        parser.add_argument(
-            '--shorthelp',
+        parser.add_argument('--shorthelp',
             action='store_true',
             default=False,
             help=argparse.SUPPRESS
@@ -1081,5 +1062,6 @@ if __name__ == '__main__':
         # there is a small chance that there is an error before the
         # settings.debugging flag has been set
         webquiz_util.webquiz_error(settings.debugging if 'settings' in globals() else True,
-            'unknown problem.\n\nIf you think this is a bug please report it by creating an issue at\n    {}\n'
-            .format(metadata.repository), err)
+           f'unknown problem.\n\nIf you think this is a bug please report it by creating an issue at\n    {metadata.repository}\n',
+           err
+        )

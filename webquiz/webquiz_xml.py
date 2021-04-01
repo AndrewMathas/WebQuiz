@@ -57,8 +57,8 @@ class QuizHandler(xml.sax.ContentHandler):
     """
         The content handler gives the xml tags to `startElement`, which
         initialises the webquiz tags, and then `endElement` attaches the
-        content of each webquiz tag tothe appropriate part of `self`. Any end
-        tag that is ot special to webquiz has its contents appended to
+        content of each webquiz tag to the appropriate part of `self`. Any end
+        tag that is not special to webquiz has its contents appended to
         `self.text`. Any tag that contains `DeFaUlT` is set to the system
         default using the `defaults` dictionary.
     """
