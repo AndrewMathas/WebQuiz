@@ -1,3 +1,4 @@
+html_lang          = cs
 answer             = Odpovědět
 check answer       = Zkontrolujte odpově
 choice             = Volba {} je

@@ -1,6 +1,5 @@
 *.html
 bin/*
-css/*.css
 css/*.css.map
 css/.sass-cache/
 doc/credits.xml

@@ -1,3 +1,4 @@
+html_lang          = el
 answer             = Απάντηση
 check answer       = Ελενξε την απάντηση
 choice             = Επιλογή {} είναι

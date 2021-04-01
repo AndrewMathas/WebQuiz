@@ -79,19 +79,12 @@ class QuizHandler(xml.sax.ContentHandler):
         # to add mathjs when an eval comparison is used
         self.mathjs = False
 
-        # the following tags have defaults set by `defaults`
-        self.setting_tags = [
-               'department',
-               'department_url',
-               'institution',
-               'institution_url',
-               'language',
-               'theme',
-        ]
-        # quiz data
-        for tag in self.setting_tags:
-            setattr(self, tag, defaults[tag])
-        self.breadcrumb = ''
+        # add all default values from `defaults`
+        for tag in defaults.settings:
+            if defaults.settings[tag]['can_set_from_latex']:
+                setattr(self, tag, defaults.settings[tag]['value'])
+
+        # initialise variables used when parsing the xml
         self.text = ''
         self.after_text = ''
         self.title = ''
@@ -120,7 +113,14 @@ class QuizHandler(xml.sax.ContentHandler):
         if value.strip() == 'DeFaUlT':
             setattr(self, key, self.defaults[key])
         else:
-            setattr(self, key, value)
+            if key in ['language', 'theme']: # lower case
+                setattr(self, key, value.lower())
+            elif key in ['time_limit']:     # an integer
+                setattr(self, key, int(value))
+            elif key in ['debugging', 'hide_side_menu', 'one_page', 'pst2pdf', 'random_order']: # boolean
+                setattr(self, key, value.lower()=='true')
+            else:                           # a string
+                setattr(self, key, value)
         self.webquiz_debug('Just set "{}" equal to "{}" from "{}"'.format(key, getattr(self, key), value))
 
     #---- start of start elements --------------------------------------------
@@ -141,22 +141,15 @@ class QuizHandler(xml.sax.ContentHandler):
 
     def start_webquiz(self, attributes):
         r'''
-        Start element for tag="webquiz". Initialise the quix and extract
+        Start element for tag="webquiz". Initialise the quiz and extract
         and process the list of attributes.
         '''
         for key in attributes.keys():
             self.set_default_attribute(key, attributes.get(key))
 
-        # convert the following attibutes to booleans
-        for key in ['debugging', 'hide_side_menu', 'one_page', 'pst2pdf', 'random_order']:
-            setattr(self, key, getattr(self, key)=='true')
-
-        setattr(self, 'language', self.language.lower())
-        setattr(self, 'time_limit', int(self.time_limit))
-        setattr(self, 'theme', self.theme.lower())
-
         # set debugging mode from the latex file...from this point on
-        self.defaults.debugging = self.defaults.debugging or self.debugging
+        # not sure what the following line is meant to achieve
+        # self.defaults.debugging = self.defaults.debugging or self.debugging
 
     def start_link(self, attributes):
         r'''
@@ -286,7 +279,7 @@ class QuizHandler(xml.sax.ContentHandler):
             getattr(self, 'end_'+tag)()
             self.text = ''
 
-        elif tag in self.setting_tags:
+        elif tag in self.defaults.settings and self.defaults.settings[tag]['can_set_from_latex']:
             self.set_default_attribute(tag, self.text)
             self.text = ''
 
@@ -353,8 +346,7 @@ class QuizHandler(xml.sax.ContentHandler):
                              )
                 )
         elif not hasattr(self.question_list[-1], 'answer') or self.question_list[-1].answer=='':
-            self.webquiz_error('question {} does have not an \answer or multiple choice'.format(
-                          len(self.question_list)+1))
+            self.webquiz_error(f'question {len(self.question_list)+1} does have not an answer or multiple choice')
 
         if self.text.strip() != '':
             self.question_list[-1].after_text += ' '+self.text.strip()

@@ -380,6 +380,60 @@
            {tex.stackexchange.com/questions/376649}.
       \index{TeXShop@\TeX Shop}
 
+  \subsection{System requirements, installation and configuration}
+    \label{S:configuration}
+    \index{system requirements}
+    \CrossIndex{system requirements}{tex4ht}
+    \CrossIndex{system requirements}{make4ht}
+    \CrossIndex{system requirements}{python}
+
+    \WebQuiz takes a \LaTeX\ file and translates it into a functional
+    web page. To use \WebQuiz the quiz author only needs to know how to
+    use \LaTeX\ \textit{and} to have all of the programs used by \WebQuiz
+    installed. Fortunately, most of the system requirements will already
+    be installed on a system with an up-to-date installation of
+    \TeXLive, however, some tweaking may still be necessary.
+
+    Behind the scenes, \WebQuiz uses \TeXfht, \python, \Javascript and
+    several other tools to construct and operate the online quizzes.
+    The \WebQuiz program has three main components:
+      \begin{itemize}
+           \item \LaTeX\ files (a class file and \TeXfht configuration files)
+           \item A Python3 program that uses \TeXfht to convert \LaTeX\
+           files into web pages
+           \item Web files (\Javascript, \CSS and online documentation)
+          %\item Documentation
+      \end{itemize}
+    Fortunately, \Ctan takes care of most of this for you but in order to work \WebQuiz needs the following:
+  \begin{itemize}[nosep]
+     \item Your computer needs to be running a web server to display the
+     quizzes.
+
+     \item An up-to-date \LaTeX{} distribution, such as that provided
+     by \TeXLive. In particular, you need to have \TeXfht{} and
+     \ctan{make4ht} installed.
+
+     Unfortunately, the version of \ctan{make4ht} that was released
+     with \TeXLive{} 2018 had some bugs and there have been many
+     recent changes to \ctan{make4ht} and \ctan{pstricks},
+     so it is strongly recommended that you update all packages
+     from \Ctan before you try and use \WebQuiz.
+
+      \item \python[Python 3]. As of writing python 3.7.2 is available
+      but version 3.6, or later, is required.
+      \item \Javascript
+      \item If your quizzes use \ctan{pstricks}, or if you want to
+      compile the \OnlineManual, then you need to ensure that
+      \Ghostscript and \ctan{dvisvgm} are installed and properly
+      configured; see \autoref{SS:pstricks} for more details.
+      \item A web server. As detailed in \autoref{SS:Initialise}, you
+      will need to install the web components of \WebQuiz.
+  \end{itemize}
+
+    \WebQuiz has been tested extensively on Linux and Mac operating
+    systems. Several people have used \WebQuiz on windows computers,
+    but I have not tested the program on a windows computer myself.
+
   \subsection{Credits}
       \WebQuiz{} was written and developed in the
       \href{http://www.maths.usyd.edu.au/}{School of Mathematics and
@@ -399,8 +453,8 @@
         \item A \python program,
         \BashCode|webquiz|, that translates the
         \LaTeX{} into \XML, using \TeXfht, and then into \HTML.
-        \item \CSS, \HTML and \Javascript code controls and style the
-        quiz web pages.
+        \item \CSS, \HTML and \Javascript adds style and controls the
+        \WebQuiz web pages.
       \end{itemize}
 
      The \LaTeX{} component of \WebQuiz{} was written by Andrew Mathas and
@@ -1507,249 +1561,7 @@
       }
     \end{latexcode}
 
-  \section{System requirements, installation and configuration}
-    \label{S:configuration}
-    \index{system requirements}
-    \CrossIndex{system requirements}{tex4ht}
-    \CrossIndex{system requirements}{make4ht}
-    \CrossIndex{system requirements}{python}
-
-    \WebQuiz takes a \LaTeX\ file and translates it into a functional
-    web page. To use \WebQuiz the quiz author only needs to know how to
-    use \LaTeX\ \textit{and} to have all of the programs used by \WebQuiz
-    installed. Fortunately, most of the system requirements will already
-    be installed on a system with an up-to-date installation of
-    \TeXLive, however, some tweaking may still be necessary.
-
-    Behind the scenes, \WebQuiz uses \TeXfht, \python, \Javascript and
-    several other tools to construct and operate the online quizzes.
-    The \WebQuiz program has three main components:
-      \begin{itemize}
-           \item \LaTeX\ files (a class file and \TeXfht configuration files)
-           \item A Python3 program that uses \TeXfht to convert \LaTeX\
-           files into web pages
-           \item Web files (\Javascript, \CSS and online documentation)
-          %\item Documentation
-      \end{itemize}
-    Of course, to use the online quizzes created by \WebQuiz you
-    need a web server. To use \WebQuiz all of these files need to
-    be in appropriate places.  Fortunately, \Ctan takes care of
-    most of this but the web-related files still need to be put onto
-    your web server.
-
-    \WebQuiz has been tested extensively on Linux and Mac operating
-    systems. Several people have used \WebQuiz on windows computers,
-    but I have not tested the program on a windows computer myself.
-
-  \subsection{System requirements}\index{system requirements}
-
-  In order to work \WebQuiz needs the following programs to be
-  installed on your system:
-  \begin{itemize}[nosep]
-     \item An up-to-date \LaTeX{} distribution, such as that provided
-     by \TeXLive. In particular, you need to have \TeXfht{} and
-     \ctan{make4ht} installed.
-
-     Unfortunately, the version of \ctan{make4ht} that was released
-     with \TeXLive{} 2018 had some bugs and there have been many
-     recent changes to \ctan{make4ht} and \ctan{pstricks},
-     so it is strongly recommended that you update all packages
-     from \Ctan before you try and use \WebQuiz.
-
-      \item \python[Python 3]. As of writing python 3.7.2 is available.
-      \item \Javascript
-      \item If your quizzes use \ctan{pstricks}, or if you want to
-      compile the \OnlineManual, then you need to ensure that
-      \Ghostscript and \ctan{dvisvgm} are installed and properly
-      configured; see \autoref{SS:pstricks} for more details.
-      \item A web server. As detailed in \autoref{SS:Initialise}, you
-      will need to install the web components of \WebQuiz.
-  \end{itemize}
-
-  \subsection{Installing
-  \WebQuiz}\label{SS:Install}\index{install}\index{miktex@Mik\TeX}\index{texlive@\TeXLive}
-  \WebQuiz will be included as a package in \TeXLive 2019 and, once a
-  packaging issue is sorted out, it will be included in \MiKTeX. If
-  \WebQuiz is available as a package from either of these distributions
-  then it can be installed in the usual way.
-
-  Alternatively, it is possible to download the
-  \href{http://mirrors.ctan.org/macros/latex/contrib/webquiz.zip}{WebQuiz zipfile} from \Ctan.
-  To install \WebQuiz from the zipfile you should:
-  \begin{enumerate}[nosep]
-    \item Download the
-          \href{http://mirrors.ctan.org/macros/latex/contrib/webquiz.zip}{WebQuiz zipfile} from \Ctan.
-    \item Unzip the file
-    \item Change directory of the \BashCode|webquiz/scripts| subdirectory from the zipfile
-    \item From an administrators account, or using \BashCode|sudo| on a
-    unix-like system, run he command:
-    \begin{bashcode}
-      > webquiz --tex-install
-    \end{bashcode}
-    On windows, use:
-    \begin{bashcode}
-      > webquiz.bat --tex-install
-    \end{bashcode}
-  \end{enumerate}
-  This will install the different components of \WebQuiz to their
-  ``standard'' locations in he \TeX\ search tree.  If you are using
-  \MiKTeX you may need to open the \MiKTeX console, go to the Tasks menu
-  and then rebuild the TeX filename database.
-
-  Once the \WebQuiz package is installed you should initialise thew
-  package, following the steps given in \autoref{SS:Initialise}.
-
-  \subsection{Initialising \WebQuiz}\label{SS:Initialise}
-  \CrossIndex{command-line option}{initialise}
-  \index{initialisation}
-
-  \WebQuiz is a tool for creating online quizzes and in order for
-  it to work efficiently various files
-  (\href{https://en.wikipedia.org/wiki/JavaScript}{javascript} and
-  \href{https://www.w3schools.com/css/css_intro.asp}{cascading style
-  sheets}) need to put onto your web server. \WebQuiz has an
-  \textit{initialisation} routine for installing the web components
-  of the program. In fact, until \WebQuiz has been initialised it
-  will ask you if you to run the initialisation routine every time
-  you use \WebQuiz. You can reinitialise \WebQuiz at any time using
-  the command-line option:
-  \begin{bashcode}
-    > webquiz --initialise
-  \end{bashcode}
-  \WebQuiz will actually work without being initialised, however, any
-  quiz web pages that are created before initialisation will be
-  emblazoned with a message reminding you to initialise \WebQuiz.
-
-  The location of the files on the web server depends both on the
-  operating system that is running on your computer and how your web
-  server has been configured. It is essential that the \WebQuiz files
-  are installed in a directory that is accessible from the web. It
-  does not matter if they are put into a user web directory or into a
-  system web directory.  If in doubt please consult your system
-  administrator.
-
-  Common locations for the \textit{web root} of the server are:
-  \begin{center}
-    \begin{tabular}{ll}
-      \toprule
-      Operating system & Root of web server \\\midrule
-      Mac OSX     & \BashCode|/Library/WebServer/Documents|\\
-      Linux       & \BashCode|/var/www/html|\\
-      Windows     & \BashCode|C:\inetpub\wwwroot|\\
-      \bottomrule
-    \end{tabular}
-  \end{center}
-  \WebQuiz needs to copy several files into a subdirectory of this
-  \textit{web root}. When you run
-  \begin{bashcode}
-    > webquiz --initialise
-  \end{bashcode}
-  you will be prompted for the following:
-  \begin{itemize}
-    \item The location of the \WebQuiz web directory, which needs to
-    be a directory that is visible to your web server
-    \item The relative URL for this directory, which tells your web
-    browser where to find these files
-  \end{itemize}
-  For example, on my system the web root for our web server is
-  \BashCode|/usr/local/httpd/| and the \WebQuiz web files are in
-  the directory \BashCode|/usr/local/httpd/UoS/WebQuiz|.  So, I set:
-  \begin{quote}
-    \begin{tabular}{lll} \WebQuiz web
-          directory &=& \BashCode|/usr/local/httpd/UoS/WebQuiz|\\
-          \WebQuiz relative URL  &=& \BashCode|/UoS/WebQuiz|
-      \end{tabular}
-  \end{quote}
-  Once the initialisation step is complete, \WebQuiz is ready to use
-  although you, possibly from an administrators account or using
-  \BashCode|sudo|, may also want to run:
-  \begin{bashcode}
-     > webquiz --edit-settings
-  \end{bashcode}
-  This will talk you the process of setting system defaults for the quizzes that,
-  for example, specify the name and URL for your department and
-  institution as well as the default language and theme used for the
-  quizzes. If in doubt about any of the option press return to accept
-  the default. See \autoref{SS:rcfile} for more details.
-
-  You can test your \WebQuiz installation by compiling the example
-  files from the \WebQuiz manual. You can find these files in the
-  directory \BashCode|web_root/doc/examples|, where the
-  \BashCode|web_root| is the directory where you just installed
-  the \WebQuiz web files. If \Ghostscript and \ctan{dvisvgm} are
-  installed and properly configured (see \autoref{SS:graphics}) then you
-  should also be able to compile the \OnlineManual using \WebQuiz.
-
-  \begin{dangerous}
-      \textit{To install the \WebQuiz files for general use on
-      your system, or to save system wide settings, you need to run
-      the initialisation command }\BashCode|webquiz --initialise|
-      \textit{using an administrator account or using \BashCode|sudo| on a
-      UNIX or Mac OSX system.}
-
-     If you have already saved a \textit{user} \webquizrc file then to
-     change the \textit{system} \webquizrc* you will use need to
-     use the \BashCode|--rcfile| command-line option:
-     \begin{latexcode}
-         > webquiz --rcfile /path/to/system/rc-file --initialise
-     \end{latexcode}\index{rcfile}
-  \end{dangerous}
-
-  \begin{heading}[Remark]
-    To remove all \WebQuiz files from your web server use:
-    \begin{bashcode}
-        > webquiz --uninstall
-    \end{bashcode}
-  \end{heading}
-
-  \subsection{Graphics and \texorpdfstring{\ctan{dvisvgm}}{dvisvgm}}
-  \label{SS:pstricks}
-
-  \index{pstricks}
-  \noindent
-  \WebQuiz, via \TeXfht, uses \ctan{dvisvgm} to convert certain images to
-  \href{https://en.wikipedia.org/wiki/Scalable_Vector_Graphics}{Scalable
-  Vector Graphics} (SVG). This is done using his is done
-  using \ctan{dvisvgm}. At first sight this is OK because \ctan{dvisvgm} is
-  included in \TeXLive and \MiKTeX, however, \ctan{dvisvgm} uses
-  \Ghostscript and this needs to be correctly configured and, as
-  outlined in \href{http://dvisvgm.bplaced.net/FAQ}{FAQ}, \ctan{dvisvgm}
-  needs to know where to find the \Ghostscript libraries. For example,
-  to get \ctan{dvisvgm} to work on my system I needed to add the line
-  \begin{bashcode}
-    export LIBGS=/usr/local/lib/libgs.dylib
-  \end{bashcode}
-  to my \BashCode|.bashrc| file. To see whether you need to do something
-  similar on your system you need to look at the output from the following
-  two commands:
-
-    \begin{bashcode}
-      > dvisvgm -h
-      > dvisvgm -l
-    \end{bashcode}
-
-  \noindent There are three possibilities:
-
-    \begin{itemize}
-      \item the \BashCode|-h| output does not contain \BashCode|-libgs|
-      and the \BashCode|-l| output contains \BashCode|ps|:
-      ghostscript was linked at build time, so everything should work
-      \item
-      the \BashCode|-h| output contains \BashCode|-libgs| and the
-      \BashCode|-l| output does not contain \BashCode|ps|:
-      gpostscript support is enabled but ghostscript is not linked. You
-      need to locate the ghostscript library
-      \BashCode|libgs.so| or \BashCode|libgs.dylib| on your system and set
-      the \BashCode|LIBGS| environment variable, or equivalent,
-      accordingly
-      \item the \BashCode|-h| output does not contain \BashCode|-libgs|
-      and the \BashCode|-l| output does not contain \BashCode|ps|:
-      \ctan{dvisvgm} was not built with postscript support. In this
-      case, \WebQuiz will not be able to process \ctan{svg} images. You
-      need to reinstall \ctan{dvisvgm} with ghostscript support.
-    \end{itemize}
-
-  \section{The \WebQuiz program} \index{usage}
+\section{The \WebQuiz program} \index{usage}
 
       The \WebQuiz program was designed to be run from the command-line.
       To produce an online quiz from a \WebQuiz \LaTeX{} file \BashCode|quiz.tex|
@@ -1901,16 +1713,11 @@
                 \ctan{make4ht} a custom mk4 file (note that
                 \BashCode|myquiz.mk4| is included, if it exists), you would use
                 \begin{bashcode}
-                          > webquiz --make4ht "-e file.mk4" myquiz.tex
+                > webquiz --make4ht "-e file.mk4" myquiz.tex
                 \end{bashcode}
                 The \BashCode|make4ht| command-line option will be required
                 only in rare instances.
                 \index{lualatex}\index{xelatex}
-
-            \item[\ddash uninstall] Remove all \WebQuiz files from your
-                web server directory. This command only removes files that
-                \WebQuiz may have installed on your web server. It does
-                \textit{not} remove \WebQuiz from your \LaTeX{} distribution.
 
            \item[\ddash webquiz-layout WEBQUIZ-LAYOUT]
            \CrossIndex{command-line option}{layout}
@@ -1929,6 +1736,16 @@
       \begin{description}
         \item[\ddash version] Prints the \WebQuiz version number and
         exit (currently \webquiz{version})
+
+        \item[\ddash local-install] Install local copies of the CSS and
+        javascript components of \WebQuiz. By default, these are
+        accessed via a CDN but you can install local versions of these
+        files if you want to make changes to the files.
+
+        \item[\ddash local-uninstall] Remove all \WebQuiz files from your
+        web server directory. This command only removes files that
+        \WebQuiz may have installed on your web server. It does
+        \textit{not} remove \WebQuiz from your \LaTeX{} distribution.
 
         \item[\ddash tex-install] Use this command-line option if
         you are installing the \LaTeX{} components of
@@ -2215,20 +2032,20 @@
     \index{edit-settings}\index{webquiz-layout}
 
     If you do make modifications to any of these files then, by the
-    \WebQuiz Licensing agreement, you are required to create a new
+    \WebQuiz Licensing agreement, you are required to create a new:
     version of this file that has a \textit{different name}. Doing this
-    will also make it easier for you to integrate your changes with any
+    will ensure that the changes you make will not be overwritten by
     future releases of \WebQuiz.
 
   \subsection{Bugs, issues and feature requests}\index{bug reports}
     Please report any bugs, issues or feature requests using the
     \textit{issue} tracker at
     \begin{quote}
-    \href{https://\webquiz{repository}}{\webquiz{repository}}.
+    \href{https://\webquiz{repository}/issues}{\webquiz{repository}/issues}.
     \end{quote}
     When reporting a bug please provide a \textit{minimal working example}
     that clearly demonstrates your problem. This should be a compilable
-    \LaTeX file that looks something like the following:
+    \LaTeX\ file that looks something like the following:
     \begin{latexcode}
        \documentclass{webquiz}
        \begin{document}
@@ -2300,6 +2117,189 @@
   which will generate errors.
 
   \includepdf[pages=-,pagecommand={\pagestyle{webquiz}}]{webquiz-online-manual}
+
+
+  \subsection{Installing \WebQuiz}\label{SS:Install}\index{install}\index{miktex@Mik\TeX}\index{texlive@\TeXLive}
+  \WebQuiz will be included as a package in \TeXLive 2019 and, once a
+  packaging issue is sorted out, it will be included in \MiKTeX. If
+  \WebQuiz is available as a package from either of these distributions
+  then it can be installed in the usual way.
+
+  Alternatively, it is possible to download the
+  \href{http://mirrors.ctan.org/macros/latex/contrib/webquiz.zip}{WebQuiz zipfile} from \Ctan.
+  To install \WebQuiz from the zipfile you should:
+  \begin{enumerate}[nosep]
+    \item Download the
+          \href{http://mirrors.ctan.org/macros/latex/contrib/webquiz.zip}{WebQuiz zipfile} from \Ctan.
+    \item Unzip the file
+    \item Change directory of the \BashCode|webquiz/scripts| subdirectory from the zipfile
+    \item From an administrators account, or using \BashCode|sudo| on a
+    unix-like system, run the command:
+    \begin{bashcode}
+      > webquiz --tex-install
+    \end{bashcode}
+    On windows, use:
+    \begin{bashcode}
+      > webquiz.bat --tex-install
+    \end{bashcode}
+  \end{enumerate}
+  This will install the different components of \WebQuiz to their
+  ``standard'' locations in the \TeX\ search tree.  If you are using
+  \MiKTeX you may need to open the \MiKTeX console, go to the Tasks menu
+  and then rebuild the TeX filename database.
+
+  Once the \WebQuiz package is installed you should initialise the
+  package, following the steps given in \autoref{SS:Initialise}.
+
+  \subsection{Initialising \WebQuiz}\label{SS:Initialise}
+  \CrossIndex{command-line option}{initialise}
+  \index{initialisation}
+
+  \WebQuiz is a tool for creating online quizzes and in order for
+  it to work efficiently various files
+  (\href{https://en.wikipedia.org/wiki/JavaScript}{javascript} and
+  \href{https://www.w3schools.com/css/css_intro.asp}{cascading style
+  sheets}) need to put onto your web server. \WebQuiz has an
+  \textit{initialisation} routine for installing the web components
+  of the program. In fact, until \WebQuiz has been initialised it
+  will ask you if you to run the initialisation routine every time
+  you use \WebQuiz. You can reinitialise \WebQuiz at any time using
+  the command-line option:
+  \begin{bashcode}
+    > webquiz --initialise
+  \end{bashcode}
+  \WebQuiz will actually work without being initialised, however, any
+  quiz web pages that are created before initialisation will be
+  emblazoned with a message reminding you to initialise \WebQuiz.
+
+  The location of the files on the web server depends both on the
+  operating system that is running on your computer and how your web
+  server has been configured. It is essential that the \WebQuiz files
+  are installed in a directory that is accessible from the web. It
+  does not matter if they are put into a user web directory or into a
+  system web directory.  If in doubt please consult your system
+  administrator.
+
+  Common locations for the \textit{web root} of the server are:
+  \begin{center}
+    \begin{tabular}{ll}
+      \toprule
+      Operating system & Root of web server \\\midrule
+      Mac OSX     & \BashCode|/Library/WebServer/Documents|\\
+      Linux       & \BashCode|/var/www/html|\\
+      Windows     & \BashCode|C:\inetpub\wwwroot|\\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  \WebQuiz needs to copy several files into a subdirectory of this
+  \textit{web root}. When you run
+  \begin{bashcode}
+    > webquiz --initialise
+  \end{bashcode}
+  you will be prompted for the following:
+  \begin{itemize}
+    \item The location of the \WebQuiz web directory, which needs to
+    be a directory that is visible to your web server
+    \item The relative URL for this directory, which tells your web
+    browser where to find these files
+  \end{itemize}
+  For example, on my system the web root for our web server is
+  \BashCode|/usr/local/httpd/| and the \WebQuiz web files are in
+  the directory \BashCode|/usr/local/httpd/UoS/WebQuiz|.  So, I set:
+  \begin{quote}
+    \begin{tabular}{lll} \WebQuiz web
+          directory &=& \BashCode|/usr/local/httpd/UoS/WebQuiz|\\
+          \WebQuiz relative URL  &=& \BashCode|/UoS/WebQuiz|
+      \end{tabular}
+  \end{quote}
+  Once the initialisation step is complete, \WebQuiz is ready to use
+  although you, possibly from an administrators account or using
+  \BashCode|sudo|, may also want to run:
+  \begin{bashcode}
+     > webquiz --edit-settings
+  \end{bashcode}
+  This will talk you the process of setting system defaults for the quizzes that,
+  for example, specify the name and URL for your department and
+  institution as well as the default language and theme used for the
+  quizzes. If in doubt about any of the option press return to accept
+  the default. See \autoref{SS:rcfile} for more details.
+
+  You can test your \WebQuiz installation by compiling the example
+  files from the \WebQuiz manual. You can find these files in the
+  directory \BashCode|web_root/doc/examples|, where the
+  \BashCode|web_root| is the directory where you just installed
+  the \WebQuiz web files. If \Ghostscript and \ctan{dvisvgm} are
+  installed and properly configured (see \autoref{SS:graphics}) then you
+  should also be able to compile the \OnlineManual using \WebQuiz.
+
+  \begin{dangerous}
+      \textit{To install the \WebQuiz files for general use on
+      your system, or to save system wide settings, you need to run
+      the initialisation command }\BashCode|webquiz --initialise|
+      \textit{using an administrator account or using \BashCode|sudo| on a
+      UNIX or Mac OSX system.}
+
+     If you have already saved a \textit{user} \webquizrc file then to
+     change the \textit{system} \webquizrc* you will use need to
+     use the \BashCode|--rcfile| command-line option:
+     \begin{latexcode}
+         > webquiz --rcfile /path/to/system/rc-file --initialise
+     \end{latexcode}\index{rcfile}
+  \end{dangerous}
+
+  \begin{heading}[Remark]
+    To remove all \WebQuiz files from your web server use:
+    \begin{bashcode}
+        > webquiz --uninstall
+    \end{bashcode}
+  \end{heading}
+
+  \subsection{Graphics and \texorpdfstring{\ctan{dvisvgm}}{dvisvgm}}
+  \label{SS:pstricks}
+
+  \index{pstricks}
+  \noindent
+  \WebQuiz, via \TeXfht, uses \ctan{dvisvgm} to convert certain images to
+  \href{https://en.wikipedia.org/wiki/Scalable_Vector_Graphics}{Scalable
+  Vector Graphics} (SVG). This is done using his is done
+  using \ctan{dvisvgm}. At first sight this is OK because \ctan{dvisvgm} is
+  included in \TeXLive and \MiKTeX, however, \ctan{dvisvgm} uses
+  \Ghostscript and this needs to be correctly configured and, as
+  outlined in \href{http://dvisvgm.bplaced.net/FAQ}{FAQ}, \ctan{dvisvgm}
+  needs to know where to find the \Ghostscript libraries. For example,
+  to get \ctan{dvisvgm} to work on my system I needed to add the line
+  \begin{bashcode}
+    export LIBGS=/usr/local/lib/libgs.dylib
+  \end{bashcode}
+  to my \BashCode|.bashrc| file. To see whether you need to do something
+  similar on your system you need to look at the output from the following
+  two commands:
+
+    \begin{bashcode}
+      > dvisvgm -h
+      > dvisvgm -l
+    \end{bashcode}
+
+  \noindent There are three possibilities:
+
+    \begin{itemize}
+      \item the \BashCode|-h| output does not contain \BashCode|-libgs|
+      and the \BashCode|-l| output contains \BashCode|ps|:
+      ghostscript was linked at build time, so everything should work
+      \item
+      the \BashCode|-h| output contains \BashCode|-libgs| and the
+      \BashCode|-l| output does not contain \BashCode|ps|:
+      gpostscript support is enabled but ghostscript is not linked. You
+      need to locate the ghostscript library
+      \BashCode|libgs.so| or \BashCode|libgs.dylib| on your system and set
+      the \BashCode|LIBGS| environment variable, or equivalent,
+      accordingly
+      \item the \BashCode|-h| output does not contain \BashCode|-libgs|
+      and the \BashCode|-l| output does not contain \BashCode|ps|:
+      \ctan{dvisvgm} was not built with postscript support. In this
+      case, \WebQuiz will not be able to process \ctan{svg} images. You
+      need to reinstall \ctan{dvisvgm} with ghostscript support.
+    \end{itemize}
 
 
 \subsection{Licence}

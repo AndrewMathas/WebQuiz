@@ -80,15 +80,13 @@ def webquiz_error(debugging, msg, err=None):
     Consistent handling of errors in magthquiz: print the message `msg` and
     exist with error code `err.errno` if it is available.abs
     '''
-    print('{dash}WebQuiz error:\n  {msg}\n{dash}'.format(
-           msg=msg, dash='-'*40+'\n')
-    )
+    dash='-'*40+'\n'
+    print(f'{dash}WebQuiz error:\n  {msg}\n{dash}')
 
     if err is not None:
         trace = traceback.extract_tb(sys.exc_info()[2])
         filename, lineno, fn, text = trace[-1]
-        print('File: {}, line number: {}\nError {} in {}: {}'.format(
-            filename, lineno, err, fn, text))
+        print(f'File: {filename}, line number: {lineno}\nError {err} in {fn}: {text}')
 
     if debugging and err is not None:
         raise
@@ -138,24 +136,92 @@ def run(cmd, shell=False):
     Run commands with output to stdout and errors to stderr
     '''
     if shell:
-        subprocess.call(cmd, env=environ, shell=True)
+        return subprocess.run(cmd, env=environ, shell=True, stdout=subprocess.PIPE)
     else:
-        subprocess.call(cmd.split(), env=environ)
+        return subprocess.run(cmd.split(), env=environ, stdout=subprocess.PIPE)
 
 def quiet_run(cmd, shell=False):
     r'''
     Run commands with ignoring and sending errors to stderr
     '''
     if shell:
-        subprocess.call(cmd, env=environ, stdout=open(os.devnull, 'wb'), shell=True)
+        return subprocess.run(cmd, env=environ, stdout=open(os.devnull, 'wb'), shell=True)
     else:
-        subprocess.call(cmd.split(), env=environ, stdout=open(os.devnull, 'wb'))
+        return subprocess.run(cmd.split(), env=environ, stdout=open(os.devnull, 'wb'))
 
 def silent_run(cmd, shell=False):
     r'''
     Run commands ignoring all output and errors
     '''
     if shell:
-        subprocess.call(cmd, env=environ, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'), shell=True)
+        return subprocess.run(cmd, env=environ, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'), shell=True)
     else:
-        subprocess.call(cmd.split(), env=environ, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
+        return subprocess.run(cmd.split(), env=environ, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
+
+###############################################################################
+## coloured text
+# Group of Different functions for different styles
+class ColouredText():
+    r'''
+    Prints text in various colours. Supposed this is system independent....
+
+    Inspired partly by:
+        https://stackoverflow.com/questions/287871/how-to-print-colored-text-in-python 
+    '''
+    colours = {
+        'black': 30,
+        'red': 31,
+        'green': 32,
+        'yellow': 33,
+        'blue': 34,
+        'magenta': 35,
+        'cyan': 36,
+        'white': 37,
+        'underline': 4,
+    }
+    def __init__(self):
+        # aparentlty this is needed to enmable colour print on windows
+        if sys.platform.lower() == "win32":
+            os.system('')
+
+    def textcolour(self, colour, text):
+        return f'\033[{self.colours[colour.lower()]}m{text}\033[0m'
+
+###############################################################################
+def webquiz_diagnostics():
+    r'''
+    Print webquiz diagnostics, which includes:
+        - webquiz version
+        - python version
+        - TeX installation data
+        - Make4ht version
+        - WebQuiz Settings
+    '''
+    import platform
+    import requests
+    c = ColouredText()
+    r = requests.get('http://localhost')
+    webserver = c.textcolour('green', 'OK')  if r.ok else c.textcolour('red', 'FAILED')
+    if sys.version_info.major<3 or sys.version_info.minor<6:
+        python_version = c.textcolour('red', f'{platform.python_version()}')
+    else:
+        python_version = c.textcolour('green', f'{platform.python_version()}')
+    make4ht_version = run('make4ht --version').stdout.decode().strip()
+    python_version = run('python3 --version').stdout.decode().strip()
+    tex_version = run('pdflatex --version').stdout.decode().replace('\n', '\n    ')
+    webquiz_settings = run('webquiz --settings').stdout.decode().replace('\n', '\n    ')
+    webquiz_version = run('webquiz --version').stdout.decode().strip()
+    print(f'''
+WebQuiz diagnostics
+-------------------
+WebQuiz:   {webquiz_version}
+Python:    {python_version}
+System:    {platform.uname().version}
+Webserver: {webserver}
+Make4ht: {make4ht_version}
+TeX installation:
+    {tex_version}
+WebQuiz settings:
+    {webquiz_settings}
+''')
+

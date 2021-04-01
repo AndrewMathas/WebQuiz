@@ -283,8 +283,9 @@
   \WQ@Debugging{Ending question...}%
 }
 
-\newenvironment{question}{\WQ@QuestionStart\bigskip\textbf{Question \arabic{question}.\newline}}
-                         {\par\bigskip\WQ@QuestionEnd}
+\newenvironment{question}
+  {\WQ@QuestionStart\bigskip\textbf{Question \arabic{question}.\newline}}
+  {\par\bigskip\WQ@QuestionEnd}
 
 % -----------------------------------------------------------------------
 % choice environment, \correct and \incorrect choices and \feedback
@@ -320,7 +321,7 @@
 \NewDocumentEnvironment{choice}{O{single}}{%
   \WQ@ChoiceStart{#1}%
   \leavevmode\newline%
-% (\textit{The choices will be printed in \pgfkeys{/webquiz checker/columns value} columns in the HTML version of the quiz})%
+  %(\textit{The choices will be printed in \pgfkeys{/webquiz checker/columns value} columns in the HTML version of the quiz})%
   \par%
   \setcounter{choice}{0}%
 }{\WQ@ChoiceEnd}

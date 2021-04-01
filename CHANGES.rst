@@ -2,6 +2,17 @@
 WebQuiz Changes
 ===============
 
+Version 6.0:
+------------
+    - replaced local web files with CDN, removing the need to initialise
+    - removed system rc file
+    - changed github repository to https://github.com/webquiz/release to give
+      better URLs for accessing the javascript and css files via a CDN
+
+    - added diagnotics command-line option for biug reports
+    - added timed quizzes
+
+
 Version 5.2:
 ------------
     - compatibility with both MikTeX and TeXLive under windows
@@ -83,12 +94,16 @@ Versions 1 and 2:
 To do
 -----
 Rather than a to-do list, here are some possible future improvements:
+    - (?) use https://www.jsdelivr.com/?docs=gh to link to java and css files via github
+            => works out of the box without the need to install local javascript and css files
+            => no need to upgrade javascript when upgrading
+            => could track usage
     - (?) improve quiz "security" (would be a side-effect of moving to vue...)
     - (?) randomise order of questions parts with document-class option randomorder
     - (?) allow variables in questions (hardest part is finding a good syntax)
     - (?) rewrite javascript to use vue to render and control quiz pages
     - (?) allow vertical/horizontal/none customisations of question buttons
-    - (?) record marks of students...would need a interface for login details etc
+    - (?) record marks of students...would need an interface for login details etc
     - (?) add timer and/or time limits to quiz
     - (?) responsive columns to replace columns=? in choice environments
     - (?) dynamic themes (easy)

@@ -1,3 +1,4 @@
+html_lang          = ru
 answer             = Ответ
 check answer       = Проверить ответ
 choice             = Выбор {} является

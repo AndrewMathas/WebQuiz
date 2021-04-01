@@ -59,9 +59,7 @@ class WebQuizDevelop(Command):
         Prompt the user for input using the message `message` and with default
         `default` and return the result.
         '''
-        value = input('\n{}{}[{}] '.format(message, '\n' if len(message+default)>50 else ' ',
-                                           default)
-        ).strip()
+        value = input('\n{}{}[{}] '.format(message, '\n' if len(message+default)>50 else ' ', default)).strip()
         return default if value=='' else value
 
     def run(self):
@@ -77,20 +75,29 @@ class WebQuizDevelop(Command):
             # add a link to the latex files
             tex_dir = self.ask('Install links to latex files in directory', tex_dir)
             if os.path.exists(tex_dir):
-                print('Tex files not installed as directory already exists'.format(tex_dir))
+                replace = self.ask(f'The directory {tex_dir} already exists.\nReplace this directory with a symbolic link? (Y/n)', 'Y')
+                if replace.upper().strip()=='Y':
+                    os.rename(tex_dir, tex_dir+'-orig')
+                    os.symlink(os.path.join(cwd,'latex'), tex_dir)
+                else:
+                    print('Tex files not installed as directory already exists')
             else:
                 os.symlink(os.path.join(cwd,'latex'), tex_dir)
 
                 # update the tex search paths if not installed in home directory
-                subprocess.call('mktexlsr {}/'.format(tex_dir), shell=True)
+                subprocess.call(f'mktexlsr {tex_dir}/', shell=True)
 
             # add a link to the doc files
             doc_dir = self.ask('Install links to doc files in directory', doc_dir)
             if os.path.exists(doc_dir):
-                print('doc files not installed as directory already exists'.format(doc_dir))
+                replace = self.ask(f'The directory {doc_dir} already exists.\nReplace this directory with a symbolic link? (Y/n)', 'Y')
+                if replace.upper().strip()=='Y':
+                    os.rename(doc_dir, doc_dir+'-orig')
+                    os.symlink(os.path.join(cwd,'doc'), doc_dir)
+                else:
+                    print('Doc files not installed as directory already exists')
             else:
                 os.symlink(os.path.join(cwd,'doc'), doc_dir)
-
 
             # add a link to webquiz.py
             texbin = os.path.dirname(subprocess.check_output('which pdflatex', shell=True).decode().split()[-1])
@@ -98,12 +105,17 @@ class WebQuizDevelop(Command):
             webquiz = os.path.join(bindir, 'webquiz')
 
             if os.path.exists(webquiz):
-                print('Not installing executable as {} already exists'.format(webquiz))
+                replace = self.ask(f'The executable {webquiz} already exists.\nReplace this with a symbolic link? (Y/n)', 'Y')
+                if replace.upper().strip()=='Y':
+                    os.rename(webquiz, webquiz+'-orig')
+                    os.symlink(os.path.join(cwd,'webquiz','webquiz.py'), webquiz)
+                else:
+                    print('Not installing executable as executable already exists')
             else:
                 os.symlink(os.path.join(cwd,'webquiz','webquiz.py'), webquiz)
 
             # now add links for web files
-            subprocess.call('{} --developer'.format(webquiz), shell=True)
+            subprocess.call(f'{webquiz} --developer', shell=True)
 
             print('To build the WebQuiz css files run the bash script doc/makedoc -t')
             print('To build the WebQuiz documentation run the bash script doc/makedoc --all')
@@ -154,7 +166,7 @@ class WebQuizCtan(Command):
     @staticmethod
     def status(s):
         """Prints things in bold."""
-        print('\033[1m{0}\033[0m'.format(s))
+        print(s'\033[1m{s}\033[0m')
 
     def initialize_options(self):
         pass
@@ -167,14 +179,12 @@ class WebQuizCtan(Command):
         Prompt the user for input using the message `message` and with default
         `default` and return the result.
         '''
-        value = input('\n{}{}[{}] '.format(message, '\n' if len(message+default)>50 else ' ',
-                                           default)
-        ).strip()
+        value = input('\n{}{}[{}] '.format(message, '\n' if len(message+default)>50 else ' ', default)).strip()
         return default if value=='' else value
 
     def run(self):
         # write the zip file for uploading to ctan
-        self.zipfile = 'webquiz-{}.zip'.format(settings.version)
+        self.zipfile = f'webquiz-{settings.version}.zip'
         self.ctan_data['file'] = self.zipfile
         self.write_zip_file()
 
@@ -191,7 +201,7 @@ class WebQuizCtan(Command):
         by two spaces.
         '''
         if not quiet:
-            print('Executing {}'.format(cmd))
+            print(f'Executing {cmd}')
         subprocess.call(cmd, shell=True)
 
     def update_copyright(self):
@@ -209,10 +219,7 @@ class WebQuizCtan(Command):
                       'doc/README-bottom',
                       'README.rst'
                     ]:
-            self.shell_command(
-                "sed -i.bak 's@Copyright (C) 2004-20[0-9][0-9]@{}@' {}".format(copy, file),
-                quiet=True,
-            )
+            self.shell_command(f"sed -i.bak 's@Copyright (C) 2004-20[0-9][0-9]@{copy}@' {file}", quiet=True)
 
     def build_distribution(self):
         r'''
@@ -238,7 +245,7 @@ class WebQuizCtan(Command):
             pass
 
         except OSError as err:
-            print('Something went wrong: {}'.format(err))
+            print(f'Something went wrong: {error}')
             pass
 
         # minify the javascript code
@@ -273,7 +280,6 @@ class WebQuizCtan(Command):
                 ('latex/webquiz-*.code.tex',         'latex'),
                 ('latex/webquiz.ini',                'latex'),
                 ('latex/webquiz-*.lang',             'latex'),
-                ('latex/pgfsys-dvisvgm4ht.def',      'latex'),
                 ('CHANGES.rst',                      'scripts'),
                 ('LICENCE',                          'scripts'),
                 ('webquiz/README-scripts',           'scripts'),
@@ -395,7 +401,7 @@ setup(name             = settings.program,
 
       packages=find_packages(),
       include_package_data=True,
-      package_data     = {'webfiles' : '/'},
+      package_data     = {'webfiles' : ['/']},
 
       cmdclass         = {'ctan': WebQuizCtan, 'develop': WebQuizDevelop},
 
