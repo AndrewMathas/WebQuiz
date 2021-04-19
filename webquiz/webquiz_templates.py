@@ -73,6 +73,8 @@ breadcrumbs = r'''<div class="breadcrumbs">
   </div>
 '''
 
+
+# TODO Add a drop-down menu to the navigation to dynamically change the theme?
 # Should we add a menu to change the theme dynamically? If so then the code
 # below should be added to the breadcrumbs and then fixed a little. Perhaps the
 # trickiest bit is finding the current list of supported themes.
@@ -87,8 +89,6 @@ theme_menu=r'''
             </ul>
         </div>
 '''
-
-# Add a drop-down menu to the navigation to dynamically change the theme?
 
 # question buttons
 button = r'        <div id="button{b}" class="button {cls}" content=" " onClick="gotoQuestion({b})">{b}</div>'
